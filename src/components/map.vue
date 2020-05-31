@@ -12,7 +12,6 @@
 			class="map"
 			:zoom="zoom"
 			:center="mapCenter"
-			ref="map"
 			:options="{ zoomControl: false }"
 			@update:zoom="zoomUpdated"
 			@update:center="mapCenterUpdated"
