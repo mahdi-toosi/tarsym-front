@@ -1,18 +1,26 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<div>
+		<leaflet-map />
+		<!-- <sidebar /> -->
+	</div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import leafletMap from "@/components/map";
+// import sidebar from "@/components/sidebar/sidebar.vue";
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
-}
+	name: "app",
+	components: {
+		leafletMap
+		// sidebar
+	},
+	data() {
+		return {};
+	},
+	methods: {},
+	mounted() {}
+};
 </script>
+
+<style lang="stylus"></style>
