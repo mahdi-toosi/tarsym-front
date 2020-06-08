@@ -1,19 +1,19 @@
 <template>
 	<div>
-		<leaflet-map />
-		<!-- <sidebar /> -->
+		<leaflet-oprator-map />
+		<sidebar />
 	</div>
 </template>
 
 <script>
-import leafletMap from "@/components/map";
-// import sidebar from "@/components/sidebar/sidebar.vue";
+import leafletOpratorMap from "@/components/oprator map";
+import sidebar from "@/components/sidebar/sidebar.vue";
 
 export default {
 	name: "app",
 	components: {
-		leafletMap
-		// sidebar
+		leafletOpratorMap,
+		sidebar
 	},
 	data() {
 		return {};
