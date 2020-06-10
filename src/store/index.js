@@ -2,8 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import {
     FeathersVuex
-} from "../feathers-client";
-import auth from "./auth";
+}
+from "./feathers-client/feathers-client";
+import auth from "./feathers-client/auth";
 import state from "./state";
 import actions from "./actions";
 import mutations from "./mutations";
@@ -13,7 +14,7 @@ Vue.use(FeathersVuex);
 
 const requireModule = require.context(
     // The path where the service modules live
-    "./services",
+    "./feathers-client/services",
     // Whether to look in subfolders
     false,
     // Only include .js files (prevents duplicate imports`)

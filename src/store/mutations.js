@@ -13,15 +13,15 @@ function situations(situations, trueSituations) {
         }
     }
 }
+import router from "../router";
 
 export default {
     newPointMarker(state) {
-        // if (!state.situations.newPoint) {
-        situations(state.situations, 'newPoint')
-
+        router.push({
+            name: 'new point'
+        })
         state.newPoint.coordinates.lat = state.mapCenter.lat
         state.newPoint.coordinates.lng = state.mapCenter.lng
-        // }
     },
 
     backToAllPoints(state) {
@@ -30,6 +30,9 @@ export default {
 
     closeNewPointMarker(state) {
         situations(state.situations, 'allPoints')
+        router.push({
+            name: 'all points'
+        })
         state.newPoint.title = null
         state.newPoint.description = null
     },

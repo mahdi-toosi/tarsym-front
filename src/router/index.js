@@ -11,21 +11,29 @@ const routes = [
   //   component: App
   // },
   {
-    path: "/home",
-    name: "Home",
-    component: () => import("../views/Home.vue")
-  }, {
     path: "/signup",
     name: "Signup",
-    component: () => import("../views/Signup.vue")
+    component: () => import("../components/Signup.vue")
   }, {
     path: "/login",
     name: "Login",
-    component: () => import("../views/Login.vue")
+    component: () => import("../components/Login.vue")
   }, {
     path: "/movingIcon",
     name: "moving Icon",
-    component: () => import("../views/movingIcon.vue")
+    component: () => import("../components/movingIcon.vue")
+  }, {
+    path: "/",
+    name: "all points",
+    component: () => import("../views/allPoints.vue")
+  }, {
+    path: "/new-point",
+    name: "new point",
+    component: () => import("../views/newPoint.vue")
+  }, {
+    path: "/read-point",
+    name: "read point",
+    component: () => import("../views/readPoint.vue")
   }
 ];
 

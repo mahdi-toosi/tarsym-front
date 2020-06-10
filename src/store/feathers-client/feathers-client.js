@@ -29,6 +29,7 @@ const feathersClient = feathers()
         }
     });
 
+
 export default feathersClient;
 
 // Setting up feathers-vuex
