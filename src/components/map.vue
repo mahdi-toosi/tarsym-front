@@ -1,13 +1,5 @@
 <template>
 	<div>
-		<!-- <div class="info" style="height: 15%"> -->
-		<!-- <p>Map Center: {{ mapCenter }}</p> -->
-		<!-- <span>
-				<button @click="addnewpoint">add point</button>
-		</!-->
-		<!-- <p>Zoom: {{ this.$store.state.zoom }}</p> -->
-		<!-- <p>add marker: {{ this.$store.state.newPointCoordinate }}</p> -->
-		<!-- </div> -->
 		<l-map
 			class="map"
 			:zoom="zoom"
@@ -16,21 +8,45 @@
 			@update:zoom="zoomUpdated"
 			@update:center="mapCenterUpdated"
 			@mousemove="setMouseCoordinate"
+			@click="setClickCoordinates"
 		>
-			<l-tile-layer :url="url"></l-tile-layer>
+			<l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
 			<l-marker
 				v-for="marker in allPoints"
 				:key="marker._id"
 				:lat-lng="{
-                    lat: marker.location.coordinates[1],
-                    lng: marker.location.coordinates[0]
-                }"
+					lat: marker.location.coordinates[1],
+					lng: marker.location.coordinates[0],
+				}"
 				@click="readThisPoint"
 			>
 				<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
 			</l-marker>
-			<l-polygon :lat-lngs="polygon.latlngs" :color="polygon.color"></l-polygon>
+			<l-polygon
+				:lat-lngs="polygon.latlngs"
+				:color="polygon.color"
+				:fillOpacity="0.15"
+			/>
+			<l-polygon
+				:dashArray="'10,10'"
+				:lat-lngs="polygonSimolationLatlngs"
+				:color="'red'"
+				v-if="this.polygonToolOn"
+				:fill="false"
+				:opacity="0.5"
+			/>
+
+			<!-- <l-moving-marker
+				v-for="driver in drivers"
+				:key="driver.uuid"
+				v-if="driver.location"
+				:lat-lng="getLocation(driver)"
+				:icon="getIcon(driver.uuid)"
+				@click="setCurrentDriver(driver)"
+				ref="driverMarker"
+				:duration="2000"
+			/> -->
 
 			<!-- <l-marker
 				v-if="situations.newPoint"
@@ -60,15 +76,21 @@
 			</l-marker>-->
 			<l-control-zoom position="bottomright"></l-control-zoom>
 
-			<l-control position="topleft" class="leaflet-control mapmaker">
-				<a href="#" @click="newPointMarker" v-show="!situations.newPoint">
+			<l-control position="bottomright" class="leaflet-control mapmaker">
+				<!-- <a href="#" @click="newPointMarker" v-if="!situations.newPoint">
 					<i class="fas fa-map-marker-alt"></i>
 				</a>
-				<a href="#" @click="closeNewPointMarker" v-show="situations.newPoint">
+				<a href="#" @click="closeNewPointMarker" v-if="situations.newPoint">
 					<i class="fas fa-times"></i>
+				</a>-->
+				<a @click="polygon.latlngs.pop()" v-if="this.polygonToolOn">
+					<i class="fa fa-undo" aria-hidden="true"></i>
 				</a>
 			</l-control>
 		</l-map>
+		<button @click="polygonToolSwitch">
+			polygon tool {{ polygonToolOn ? "on" : "off" }}
+		</button>
 	</div>
 </template>
 <script>
@@ -81,8 +103,10 @@ import {
 	// LTooltip,
 	// LIcon,
 	LControl,
-	LControlZoom
+	LControlZoom,
 } from "vue2-leaflet";
+// import LMovingMarker from "vue2-leaflet-movingmarker";
+
 // import { Icon } from "leaflet";
 // delete Icon.Default.prototype._getIconUrl;
 // Icon.Default.mergeOptions({
@@ -98,27 +122,14 @@ export default {
 	name: "leaflet-map",
 	data() {
 		return {
-			url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			// bounds: null,
 			iconSize: 64,
+			polygonToolOn: false,
 			polygon: {
-				latlngs: [
-					[47.2263299, -1.6222],
-					[47.21024000000001, -1.6270065],
-					[47.1969447, -1.6136169],
-					[47.18527929999999, -1.6143036],
-					[47.1794457, -1.6098404],
-					[47.1775788, -1.5985107],
-					[47.1676598, -1.5753365],
-					[47.1593731, -1.5521622],
-					[47.1593731, -1.5319061],
-					[47.1722111, -1.5143967],
-					[47.1960115, -1.4841843],
-					[47.2263299, -1.6222]
-				],
-				color: "green"
-			}
-			// points: []
+				latlngs: [],
+				color: "green",
+			},
+			// points: [],
 		};
 	},
 	computed: {
@@ -128,33 +139,75 @@ export default {
 			"mapCenter",
 			"newPoint",
 			"zoom",
-			"MouseCoordinate"
+			"MouseCoordinate",
 		]),
+		polygonSimolationLatlngs() {
+			if (
+				this.polygonToolOn &&
+				this.MouseCoordinate.lat &&
+				this.polygon.latlngs.length > 0
+			) {
+				const latlngs = [
+					...this.polygon.latlngs,
+					{
+						lat: this.MouseCoordinate.lat,
+						lng: this.MouseCoordinate.lng,
+					},
+				];
+				return latlngs;
+			}
+			return [];
+		},
 		dynamicSize() {
 			return [this.iconSize, this.iconSize * 1.15];
 		},
 		dynamicAnchor() {
 			return [this.iconSize / 2, this.iconSize * 1.15];
-		}
+		},
 	},
 	methods: {
 		...mapMutations([
 			"newPointMarker",
 			"closeNewPointMarker",
 			"mapCenterUpdated",
-			"readThisPoint"
+			"readThisPoint",
 		]),
+		setClickCoordinates(c) {
+			console.log(c.latlng);
+
+			this.$store.state.clickCoordinates = c.latlng;
+			if (this.polygonToolOn) this.polygon.latlngs.push(c.latlng);
+		},
 		setMouseCoordinate(m) {
-			this.MouseCoordinate = m.latlng;
+			this.$store.state.MouseCoordinate = m.latlng;
 		},
-		zoomUpdated(zoom) {
-			this.zoom = zoom;
+		zoomUpdated(z) {
+			this.$store.state.zoom = z;
 		},
-		newPointCoordinateUpdated(coordinate) {
-			this.$store.state.newPoint.coordinates = coordinate;
-		}
+		newPointCoordinateUpdated(c) {
+			this.$store.state.newPoint.coordinates = c;
+		},
+		polygonToolSwitch() {
+			if (this.polygonToolOn) {
+				this.polygonToolOn = false;
+				this.polygon.latlngs = [];
+			} else {
+				this.polygonToolOn = true;
+			}
+		},
+		keyPressed(e) {
+			// escape pressed
+			switch (e.keyCode === 27) {
+				case this.polygonToolOn:
+					this.polygonToolSwitch();
+					break;
+			}
+		},
 	},
 	mounted() {},
+	created() {
+		document.addEventListener("keyup", this.keyPressed);
+	},
 	components: {
 		LMap,
 		LTileLayer,
@@ -162,16 +215,17 @@ export default {
 		LPolygon,
 		// LIcon,
 		LControl,
-		LControlZoom
+		LControlZoom,
+		// LMovingMarker,
 		// LTooltip
-	}
+	},
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .map {
-	height: 100vh;
+	height: 80vh;
 	width: 60%;
 	position: relative;
 	overflow: hidden;
