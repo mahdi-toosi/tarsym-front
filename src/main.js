@@ -15,6 +15,9 @@ import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import 'font-awesome/css/font-awesome.css';
 Vue.use(VueSweetalert2);
+// * vue toasted
+import Toasted from 'vue-toasted';
+Vue.use(Toasted)
 
 Vue.config.productionTip = false;
 

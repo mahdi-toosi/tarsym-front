@@ -10,9 +10,9 @@
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
-			<button class="btn btn-back" @click="backToAllPoints">
+			<router-link class="btn btn-back" to="/">
 				<i class="fas fa-arrow-left"></i>
-			</button>
+			</router-link>
 		</header>
 		<section class="searchbar shadow">
 			<v-select
@@ -29,6 +29,30 @@
 			</div>
 		</section>
 		<section class="newPoint shadow">
+			<input type="text" placeholder="توضیح" v-model="newPointDescription" />
+			<br />
+			<ul>
+				<li v-for="(point, index) in newPoint.Points" :key="index">
+					<input
+						type="text"
+						placeholder="new point"
+						:index="index"
+						@input="tooltip"
+					/>
+					<br />
+					<button @click="changeCoordinate(index)" v-if="!point.draggable">
+						تغییر مختصات
+					</button>
+					<button
+						@click="saveCoordinate(index)"
+						class="btn-green"
+						v-if="point.draggable"
+					>
+						ثبت مختصات
+					</button>
+				</li>
+			</ul>
+			<button @click="setIcon">set Icon</button>
 			<!-- <tinymce-editor
 					:init="{
 						plugins: 'image link media autolink ',
@@ -59,8 +83,20 @@ import { mapState, mapMutations, mapActions } from "vuex";
 // import Editor from "@tinymce/tinymce-vue";
 export default {
 	methods: {
-		...mapMutations(["backToAllPoints", "closeNewPointMarker"]),
-		...mapActions(["CreateNewPointMarker", "setCategory"])
+		...mapMutations(["closeNewPointMarker", "setIcon", "changeCoordinate"]),
+		...mapActions(["CreateNewPointMarker", "setCategory"]),
+		tooltip(tag) {
+			const obj = {
+				key: tag.target.attributes.index.value,
+				val: tag.target.value,
+			};
+			this.$store.commit("updateTooltip", obj);
+		},
+		saveCoordinate(key) {
+			const newPoint = this.$store.state.newPoint.Points[key];
+			newPoint.coordinates = this.$store.state.newPoint.pointLastChangedCoordinate;
+			newPoint.draggable = false;
+		},
 	},
 	computed: {
 		...mapState(["categories", "category", "newPoint"]),
@@ -69,12 +105,19 @@ export default {
 				return this.$store.getters.newPointTitle;
 			},
 			set(val) {
-				return this.$store.dispatch("updateNewPointTitle", val);
-			}
-		}
-	}
+				return this.$store.commit("updateNewPointTitle", val);
+			},
+		},
+		newPointDescription: {
+			get() {
+				return this.$store.getters.newPointDescription;
+			},
+			set(val) {
+				return this.$store.commit("updateNewPointDescription", val);
+			},
+		},
+	},
 };
 </script>
 
-<style>
-</style>
+<style></style>

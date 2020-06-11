@@ -13,48 +13,41 @@ export default {
 	name: "app",
 	components: {
 		leafletOpratorMap,
-		sidebar
-	},
-	data() {
-		const Toast = this.$swal.mixin({
-			toast: true,
-			position: "bottom-start",
-			showConfirmButton: false,
-			showCloseButton: true,
-			background: "#facea8",
-			onOpen: toast => {
-				toast.addEventListener("mouseenter", this.$swal.stopTimer);
-				toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-			}
-		});
-		return {
-			Toast
-		};
+		sidebar,
 	},
 	computed: {
 		sockedDisonnected() {
 			return !feathersClient.io.connected;
-		}
+		},
 	},
 	methods: {
 		sendToast() {
 			if (this.sockedDisonnected) {
-				this.Toast.fire({
-					icon: "error",
-					title: "you are Disconnected"
+				this.$toasted.error("you are Disconnected", {
+					position: "bottom-left",
+					duration: 5 * 1000,
+					keepOnHover: true,
+					containerClass: "info",
+					iconPack: "fontawesome",
+					icon: "fa-close",
 				});
-				console.log("you are disconnected");
+				// console.log("you are disconnected");
 			}
-		}
+		},
+		mahdi() {},
 	},
 	mounted() {
 		setInterval(() => {
 			this.sendToast();
-		}, 8000);
-	}
+		}, 8 * 1000);
+	},
 };
 </script>
 
 <style lang="stylus">
 @import './assets/styles/main.styl';
+.toasted-primary{
+	border-radius: 5px !important;
+	box-shadow: 0px 0px 16px 0px rgba(5,108,158,0.52) !important;
+}
 </style>

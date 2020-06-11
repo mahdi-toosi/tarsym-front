@@ -14,22 +14,49 @@ function situations(situations, trueSituations) {
     }
 }
 import router from "../router";
+import Vue from "vue";
 
 export default {
-    newPointMarker(state) {
-        router.push({
-            name: 'new point'
-        })
-        state.newPoint.coordinates.lat = state.mapCenter.lat
-        state.newPoint.coordinates.lng = state.mapCenter.lng
+    newPointCoordinateUpdated(state, c) {
+        const coordinates = [c.lat, c.lng];
+        state.newPoint.pointLastChangedCoordinate = coordinates;
     },
-
+    changeCoordinate(state, key) {
+        const points = state.newPoint.Points;
+        const draggablePoints = points.filter(
+            (point) => point.draggable == true
+        );
+        if (draggablePoints.length <= 0) {
+            state.newPoint.pointLastChangedCoordinate = points[key].coordinates;
+            points[key].draggable = true;
+        } else {
+            Vue.toasted.info("ابتدا تغییر مختصات قبلی را ذخیره کنید", {
+                position: "bottom-left",
+                duration: 5 * 1000,
+                keepOnHover: true,
+                containerClass: "info",
+                iconPack: "fontawesome",
+                icon: "fa-close",
+            });
+        }
+    },
+    updateTooltip(state, obj) {
+        state.newPoint.Points[obj.key].tooltip = obj.val
+    },
+    setIcon(state) {
+        const obj = {
+            icon: "",
+            coordinates: state.mapCenter,
+            tooltip: null,
+            draggable: false
+        };
+        state.newPoint.Points.push(obj);
+    },
     backToAllPoints(state) {
         situations(state.situations, 'allPoints')
     },
 
     closeNewPointMarker(state) {
-        situations(state.situations, 'allPoints')
         router.push({
             name: 'all points'
         })

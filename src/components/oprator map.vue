@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<l-map
-			:icon="deafultIcon"
+			:icon="defaultIcon"
 			class="map"
 			:zoom="zoom"
 			:center="mapCenter"
@@ -13,18 +13,19 @@
 		>
 			<l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-			<l-marker
-				:key="marker._id"
-				@click="readThisPoint"
-				v-for="marker in allPoints"
-				:lat-lng="{
-					lat: marker.location.coordinates[1],
-					lng: marker.location.coordinates[0],
-				}"
-			>
-				<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
-			</l-marker>
-
+			<div v-if="allPoints.length">
+				<l-marker
+					:key="marker._id"
+					@click="readThisPoint"
+					v-for="marker in allPoints"
+					:lat-lng="{
+						lat: marker.location.coordinates[1],
+						lng: marker.location.coordinates[0],
+					}"
+				>
+					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
+				</l-marker>
+			</div>
 			<l-polygon
 				:lat-lngs="polygonSimolationLatlngs"
 				v-if="polygonTool.isOn"
@@ -58,14 +59,19 @@
 				:lat-lngs="polylineTool.latlngs"
 				:color="polylineTool.color"
 			/>
-			<!-- <l-marker
-				v-if="situations.newPoint"
-				:lat-lng="newPoint.coordinates"
-				:draggable="newPoint.draggable"
-				@update:latLng="newPointCoordinateUpdated"
-			>
-				<l-tooltip>{{ newPoint.tooltip }}</l-tooltip>
-			</l-marker>-->
+
+			<div v-if="newPoint.Points.length">
+				<l-marker
+					v-for="(point, index) in newPoint.Points"
+					:key="index"
+					:lat-lng="point.coordinates"
+					:draggable="point.draggable"
+					@update:latLng="newPointCoordinateUpdated"
+					:icon="defaultIcon"
+				>
+					<l-tooltip v-if="point.tooltip"> {{ point.tooltip }} </l-tooltip>
+				</l-marker>
+			</div>
 
 			<!-- <l-marker
 				:lat-lng="markerLatLng"
@@ -121,7 +127,6 @@
 				v-if="colorpicker.isOn"
 				:color="colorpicker.defaultColor"
 				@input="updateFromPicker"
-				id="mahdi"
 			/>
 		</div>
 	</div>
@@ -135,7 +140,7 @@ import {
 	LMarker,
 	LPolygon,
 	LPolyline,
-	// LTooltip,
+	LTooltip,
 	// LIcon,
 	LControl,
 	LControlZoom,
@@ -163,7 +168,7 @@ export default {
 			iconAnchor: [5, 5],
 			popupAnchor: [4, -25],
 		});
-		let deafultIcon = L.icon({
+		let defaultIcon = L.icon({
 			iconUrl:
 				"https://s3-eu-west-1.amazonaws.com/ct-documents/emails/A-static.png",
 			iconSize: [21, 31],
@@ -187,7 +192,7 @@ export default {
 				fillColor: "blue",
 			},
 			CircleIcon,
-			deafultIcon,
+			defaultIcon,
 			polylineTool: {
 				latlngs: [],
 				color: "red",
@@ -256,6 +261,7 @@ export default {
 			"closeNewPointMarker",
 			"mapCenterUpdated",
 			"readThisPoint",
+			"newPointCoordinateUpdated",
 		]),
 		updateFromPicker(e) {
 			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
@@ -289,9 +295,7 @@ export default {
 		zoomUpdated(z) {
 			this.$store.state.zoom = z;
 		},
-		newPointCoordinateUpdated(c) {
-			this.$store.state.newPoint.coordinates = c;
-		},
+
 		makeToolOn(tool) {
 			let polygon = tool == "polygonTool";
 			let polyline = tool == "polylineTool";
@@ -343,15 +347,11 @@ export default {
 			}
 		},
 		keyPressed(e) {
-			// escape pressed
-			switch (e.keyCode === 27) {
-				case this.polygonTool.isOn:
-					this.polygonToolSwitch();
-					break;
-				case this.polylineTool.isOn:
-					this.polylineToolSwitch();
-					break;
-			}
+			if (e.keyCode === 27) {
+				if (this.polygonTool.isOn) this.polygonToolSwitch();
+				if (this.polylineTool.isOn) this.polylineToolSwitch();
+				return;
+			} else return;
 		},
 		undoTools() {
 			if (this.polygonTool.latlngs.length > 0) this.polygonTool.latlngs.pop();
@@ -372,7 +372,7 @@ export default {
 		LControl,
 		LControlZoom,
 		LControlPolylineMeasure,
-		// LTooltip
+		LTooltip,
 		Sketch,
 	},
 };

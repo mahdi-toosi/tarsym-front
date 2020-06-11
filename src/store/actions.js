@@ -14,16 +14,6 @@ function situations(situations, trueSituations) {
     }
 }
 export default {
-    updateNewPointTitle({
-        commit,
-    }, val) {
-        commit('updateNewPointTitle', val)
-    },
-    updateNewPointDescription({
-        commit
-    }, val) {
-        commit('updateNewPointDescription', val)
-    },
     async setCategory({
         state,
         commit
@@ -50,9 +40,9 @@ export default {
     // ! post new point
     async CreateNewPointMarker({
         state,
-        commit
+        // commit
     }) {
-        const url = '/point/'
+        // const url = '/point/'
         const coordinate = {
             type: 'Point',
             coordinates: [state.newPoint.coordinates.lng, state.newPoint.coordinates.lat]
@@ -67,11 +57,13 @@ export default {
         }
         // console.log(data);
         try {
-            await this.$axios.post(url, data).then((res) => {
-                if (res.status == 201) {
-                    commit('setNewPointWithoutRefresh', data)
-                }
-            })
+            // await this.$axios.post(url, data).then((res) => {
+            //     if (res.status == 201) {
+            //         commit('setNewPointWithoutRefresh', data)
+            //     }
+
+            // })
+            console.log(data);
         } catch (error) {
             console.log(error);
         }

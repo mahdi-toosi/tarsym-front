@@ -1,10 +1,10 @@
 <template>
 	<div class="allpoints">
 		<header>
-			<button class="btn btn-blue" @click="CreateNewPointForm">
+			<router-link class="btn btn-blue" to="/new-point">
 				نقطه ی جدید ایجاد کن
 				<i class="fas fa-plus"></i>
-			</button>
+			</router-link>
 		</header>
 		<section class="searchbar shadow">
 			<v-select
@@ -86,7 +86,7 @@ export default {
 	},
 	methods: {
 		...mapActions(["getAllPoints", "setCategory"]),
-		...mapMutations(["readThisPoint", "newPointMarker"]),
+		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			console.log(this.search.length);
 			const url = "/point/search/" + this.search;
@@ -97,9 +97,6 @@ export default {
 				.catch(error => {
 					console.log(error);
 				});
-		},
-		CreateNewPointForm() {
-			this.newPointMarker();
 		}
 	},
 	async created() {

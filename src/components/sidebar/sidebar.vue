@@ -14,15 +14,7 @@ export default {
 		return {};
 	},
 	computed: {
-		...mapState(["User"]),
-		newPointDescription: {
-			get() {
-				return this.$store.getters.newPointDescription;
-			},
-			set(val) {
-				return this.$store.dispatch("updateNewPointDescription", val);
-			}
-		}
+		...mapState(["User"])
 	},
 	methods: {
 		...mapActions(["getAllCategories", "getTheCurrentUser"]),
