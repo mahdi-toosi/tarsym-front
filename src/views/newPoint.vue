@@ -36,23 +36,40 @@
 					<input
 						type="text"
 						placeholder="new point"
+						:tooltype="'Points'"
 						:index="index"
-						@input="tooltip"
+						@input="changeTooltip"
 					/>
 					<br />
-					<button @click="changeCoordinate(index)" v-if="!point.draggable">
-						تغییر مختصات
-					</button>
-					<button
-						@click="saveCoordinate(index)"
-						class="btn-green"
-						v-if="point.draggable"
-					>
-						ثبت مختصات
-					</button>
+					<button @click="changeCoordinate(index)" v-if="!point.isOn">تغییر مختصات</button>
+					<button @click="saveCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
 				</li>
 			</ul>
 			<button @click="setIcon">set Icon</button>
+			<br />
+			<br />
+			<ul>
+				<li v-for="(polygon, index) in newPoint.Polygons" :key="index">
+					<input
+						type="text"
+						placeholder="new point"
+						:tooltype="'Polygons'"
+						:index="index"
+						@input="changeTooltip"
+					/>
+					<br />
+					<button @click="toolSwitch( 'Polygons', index )" v-if="!polygon.isOn">redraw the polygon</button>
+					<button
+						@click="toolSwitch( 'Polygons', index , 'off')"
+						class="btn-green"
+						v-if="polygon.isOn"
+					>save the polygon</button>
+					<button @click="deleteTool( 'Polygons', index)" class="btn-red">delete Polygon</button>
+				</li>
+			</ul>
+			<button @click="setPolygon()">set Polygon</button>
+			<br />
+			<button @click="toolSwitch( 'Polylines', index )">polyline tool</button>
 			<!-- <tinymce-editor
 					:init="{
 						plugins: 'image link media autolink ',
@@ -83,40 +100,93 @@ import { mapState, mapMutations, mapActions } from "vuex";
 // import Editor from "@tinymce/tinymce-vue";
 export default {
 	methods: {
-		...mapMutations(["closeNewPointMarker", "setIcon", "changeCoordinate"]),
-		...mapActions(["CreateNewPointMarker", "setCategory"]),
-		tooltip(tag) {
-			const obj = {
-				key: tag.target.attributes.index.value,
-				val: tag.target.value,
-			};
-			this.$store.commit("updateTooltip", obj);
+		...mapMutations([
+			"closeNewPointMarker",
+			"setIcon",
+			"changeCoordinate",
+			"UPDATE_ON_TOOL"
+		]),
+		...mapActions(["CreateNewPointMarker", "setCategory", "setPolygon"]),
+		deleteTool(type, index) {
+			this.newPoint[type].splice(index, 1);
+			this.UPDATE_ON_TOOL();
+		},
+		changeTooltip(tag) {
+			const type = tag.target.attributes.tooltype.value;
+			const key = tag.target.attributes.index.value;
+			const val = tag.target.value;
+			this.newPoint[type][key].tooltip = val;
 		},
 		saveCoordinate(key) {
-			const newPoint = this.$store.state.newPoint.Points[key];
-			newPoint.coordinates = this.$store.state.newPoint.pointLastChangedCoordinate;
-			newPoint.draggable = false;
+			const thisNewPoint = this.newPoint.Points[key];
+			thisNewPoint.coordinates = this.newPoint.pointLastChangedCoordinate;
+			thisNewPoint.isOn = false;
 		},
+		toolSwitch(type, index, off = "on") {
+			const thisTool = this.newPoint[type][index];
+			if (thisTool.isOn || off == "off") {
+				thisTool.isOn = false;
+				this.UPDATE_ON_TOOL();
+			} else {
+				this.makeToolOn(type, index);
+			}
+		},
+		alertSaveTheData() {
+			const msg = "ابتدا دیتا های وارد شده قبلی را ذخیره کنید";
+			this.$toasted.error(msg, {
+				position: "bottom-left",
+				duration: 5 * 1000,
+				keepOnHover: true,
+				iconPack: "fontawesome",
+				icon: "fa-close"
+			});
+		},
+		makeToolOn(type, index) {
+			if (this.newPoint.OnTool.condition) {
+				this.alertSaveTheData();
+				return;
+			} else {
+				const thisTool = this.newPoint[type][index];
+				thisTool.isOn = true;
+				this.UPDATE_ON_TOOL();
+			}
+		},
+		keyPressed(e) {
+			const onTool = this.newPoint.OnTool;
+			if (e.keyCode === 27 && onTool.condition) {
+				this.toolSwitch(onTool.type, onTool.index);
+				return;
+			} else return;
+		}
 	},
 	computed: {
-		...mapState(["categories", "category", "newPoint"]),
+		...mapState([
+			"categories",
+			"category",
+			"newPoint",
+			"polygonTool",
+			"polylineTool"
+		]),
 		newPointTitle: {
 			get() {
-				return this.$store.getters.newPointTitle;
+				return this.newPoint.title;
 			},
 			set(val) {
 				return this.$store.commit("updateNewPointTitle", val);
-			},
+			}
 		},
 		newPointDescription: {
 			get() {
-				return this.$store.getters.newPointDescription;
+				return this.newPoint.description;
 			},
 			set(val) {
 				return this.$store.commit("updateNewPointDescription", val);
-			},
-		},
+			}
+		}
 	},
+	created() {
+		document.addEventListener("keyup", this.keyPressed);
+	}
 };
 </script>
 

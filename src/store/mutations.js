@@ -24,11 +24,11 @@ export default {
     changeCoordinate(state, key) {
         const points = state.newPoint.Points;
         const draggablePoints = points.filter(
-            (point) => point.draggable == true
+            (point) => point.isOn == true
         );
         if (draggablePoints.length <= 0) {
             state.newPoint.pointLastChangedCoordinate = points[key].coordinates;
-            points[key].draggable = true;
+            points[key].isOn = true;
         } else {
             Vue.toasted.info("ابتدا تغییر مختصات قبلی را ذخیره کنید", {
                 position: "bottom-left",
@@ -40,15 +40,22 @@ export default {
             });
         }
     },
-    updateTooltip(state, obj) {
-        state.newPoint.Points[obj.key].tooltip = obj.val
+    SET_POLYGON(state) {
+        const obj = {
+            coordinates: [],
+            color: "green",
+            isOn: true,
+            fillColor: "blue",
+            tooltip: null
+        }
+        state.newPoint.Polygons.push(obj);
     },
     setIcon(state) {
         const obj = {
             icon: "",
             coordinates: state.mapCenter,
             tooltip: null,
-            draggable: false
+            isOn: false
         };
         state.newPoint.Points.push(obj);
     },
@@ -70,6 +77,26 @@ export default {
 
     updateNewPointTitle(state, val) {
         state.newPoint.title = val;
+    },
+    UPDATE_ON_TOOL(state) {
+        const tools = ["Points", "Polygons", "Polylines"];
+        const onTool = state.newPoint.OnTool;
+        onTool.condition = false;
+        onTool.type = "";
+        onTool.index = -1;
+        for (let i = 0; i < tools.length; i++) {
+            const type = tools[i];
+            const thisTool = state.newPoint[type];
+            const condition = (tool) => tool.isOn == true;
+            const OnToolindex = thisTool.findIndex(condition);
+            const weHaveOnTool = OnToolindex >= 0;
+            if (weHaveOnTool) {
+                onTool.condition = true;
+                onTool.type = type;
+                onTool.index = OnToolindex;
+                break;
+            }
+        }
     },
     //  ! Update New Point Description ///////////////////////////////////////////////////////////////////
     updateNewPointDescription(state, val) {

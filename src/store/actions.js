@@ -13,6 +13,8 @@ function situations(situations, trueSituations) {
         }
     }
 }
+import Vue from "vue";
+
 export default {
     async setCategory({
         state,
@@ -115,4 +117,21 @@ export default {
         commit('setAllPoints', allPoints.data)
         situations(state.situations, 'allPoints')
     },
+    async setPolygon({
+        commit,
+        state
+    }) {
+        if (!state.newPoint.OnTool.condition) {
+            await commit('SET_POLYGON');
+            await commit('UPDATE_ON_TOOL');
+        } else {
+            Vue.toasted.info("درحال استفاده از ابزاری هستید", {
+                position: "bottom-left",
+                duration: 5 * 1000,
+                keepOnHover: true,
+                iconPack: "fontawesome",
+                icon: "fa-close",
+            });
+        }
+    }
 }

@@ -26,14 +26,7 @@ const servicePlugins = requireModule
 
 export default new Vuex.Store({
     state,
-    getters: {
-        newPointTitle: state => {
-            return state.newPoint.title;
-        },
-        newPointDescription: state => {
-            return state.newPoint.description;
-        }
-    },
+    getters: {},
     mutations,
     actions,
     plugins: [...servicePlugins, auth]

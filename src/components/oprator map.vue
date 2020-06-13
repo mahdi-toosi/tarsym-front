@@ -26,23 +26,30 @@
 					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
 				</l-marker>
 			</div>
-			<l-polygon
-				:lat-lngs="polygonSimolationLatlngs"
-				v-if="polygonTool.isOn"
-				:dashArray="'10,10'"
-				:opacity="0.5"
-				:color="polygonTool.color"
-				:fill="false"
-			/>
-			<l-polygon
-				:fillOpacity="0.15"
-				:fillColor="polygonTool.fillColor"
-				:color="polygonTool.color"
-				:lat-lngs="polygonTool.latlngs"
-			/>
+
+			<div v-if="newPoint.Polygons.length">
+				<div v-for="(polygon, index) in newPoint.Polygons" :key="index">
+					<l-polygon
+						:lat-lngs="polygonOrPolylineSimolationCoordinates"
+						v-if="polygon.isOn"
+						:dashArray="'10,10'"
+						:opacity="0.5"
+						:color="polygon.color"
+						:fill="false"
+					/>
+					<l-polygon
+						:fillOpacity="0.15"
+						:fillColor="polygon.fillColor"
+						:color="polygon.color"
+						:lat-lngs="polygon.coordinates"
+					>
+						<l-tooltip v-if="polygon.tooltip">{{ polygon.tooltip }}</l-tooltip>
+					</l-polygon>
+				</div>
+			</div>
 
 			<l-polyline
-				:lat-lngs="polylineSimolationLatlngs"
+				:lat-lngs="polygonOrPolylineSimolationCoordinates"
 				:color="polylineTool.color"
 				v-if="polylineTool.isOn"
 				:dashArray="'10,10'"
@@ -50,26 +57,23 @@
 				:fill="false"
 			/>
 			<l-marker
-				v-for="(latlng, index) in polylineTool.latlngs"
+				v-for="(latlng, index) in polylineTool.coordinates"
 				:lat-lng="latlng"
 				:key="index"
 				:icon="CircleIcon"
 			/>
-			<l-polyline
-				:lat-lngs="polylineTool.latlngs"
-				:color="polylineTool.color"
-			/>
+			<l-polyline :lat-lngs="polylineTool.coordinates" :color="polylineTool.color" />
 
 			<div v-if="newPoint.Points.length">
 				<l-marker
 					v-for="(point, index) in newPoint.Points"
 					:key="index"
 					:lat-lng="point.coordinates"
-					:draggable="point.draggable"
+					:draggable="point.isOn"
 					@update:latLng="newPointCoordinateUpdated"
 					:icon="defaultIcon"
 				>
-					<l-tooltip v-if="point.tooltip"> {{ point.tooltip }} </l-tooltip>
+					<l-tooltip v-if="point.tooltip">{{ point.tooltip }}</l-tooltip>
 				</l-marker>
 			</div>
 
@@ -95,33 +99,17 @@
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
-				v-if="!anyToolisOn"
+				v-if="!this.newPoint.OnTool.condition"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
-				<!-- <a href="#" @click="newPointMarker" v-if="!situations.newPoint">
-					<i class="fas fa-map-marker-alt"></i>
-				</a>
-				<a href="#" @click="closeNewPointMarker" v-if="situations.newPoint">
-					<i class="fas fa-times"></i>
-				</a>-->
-				<a @click="undoTools" v-if="anyToolisOn">
+				<a @click="undoTools" v-if="this.newPoint.OnTool.condition">
 					<i class="fa fa-undo" aria-hidden="true"></i>
 				</a>
 			</l-control>
 		</l-map>
 
-		<button @click="polygonToolSwitch">
-			polygon tool {{ polygonTool.isOn ? "On" : "Off" }}
-		</button>
-
-		<button @click="polylineToolSwitch">
-			polyline tool {{ polylineTool.isOn ? "On" : "Off" }}
-		</button>
-
 		<div ref="colorpicker">
-			<button @click="colorpickerSwitch">
-				color picker {{ colorpicker.isOn ? "On" : "Off" }}
-			</button>
+			<button @click="colorpickerSwitch">color picker {{ colorpicker.isOn ? "On" : "Off" }}</button>
 			<sketch
 				v-model="colorpicker.color"
 				v-if="colorpicker.isOn"
@@ -143,7 +131,7 @@ import {
 	LTooltip,
 	// LIcon,
 	LControl,
-	LControlZoom,
+	LControlZoom
 } from "vue2-leaflet";
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 import { Sketch } from "vue-color";
@@ -158,93 +146,66 @@ export default {
 			<svg xmlns='http://www.w3.org/2000/svg' height="100" width="100">
 				<circle cx="50" cy="50" r="40" stroke="#4a47ff" stroke-width="10" fill="white" />
 			</svg>`;
-		let myIconUrl = encodeURI("data:image/svg+xml," + achenSvgString).replace(
-			"#",
-			"%23"
-		);
+		let myIconUrl = encodeURI(
+			"data:image/svg+xml," + achenSvgString
+		).replace("#", "%23");
 		let CircleIcon = L.icon({
 			iconUrl: myIconUrl,
 			iconSize: [10, 10],
 			iconAnchor: [5, 5],
-			popupAnchor: [4, -25],
+			popupAnchor: [4, -25]
 		});
 		let defaultIcon = L.icon({
 			iconUrl:
 				"https://s3-eu-west-1.amazonaws.com/ct-documents/emails/A-static.png",
 			iconSize: [21, 31],
 			iconAnchor: [10.5, 31],
-			popupAnchor: [4, -25],
+			popupAnchor: [4, -25]
 		});
 		return {
 			colorpicker: {
 				color: {
-					hex: "#194d33",
+					hex: "#194d33"
 				},
 				defaultColor: "#FF0000",
-				isOn: false,
+				isOn: false
 			},
 			// bounds: null,
 			iconSize: 64,
-			polygonTool: {
-				latlngs: [],
-				color: "green",
-				isOn: false,
-				fillColor: "blue",
-			},
 			CircleIcon,
-			defaultIcon,
-			polylineTool: {
-				latlngs: [],
-				color: "red",
-				isOn: false,
-			},
+			defaultIcon
+
 			// points: [],
 		};
 	},
 	computed: {
 		...mapState([
 			"allPoints",
-			"situations",
 			"mapCenter",
 			"newPoint",
 			"zoom",
 			"MouseCoordinate",
+			"polylineTool"
 		]),
-		anyToolisOn() {
-			if (this.polygonTool.isOn || this.polylineTool.isOn) return true;
-			else return false;
-		},
-		polygonSimolationLatlngs() {
-			if (
-				this.polygonTool.isOn &&
-				this.MouseCoordinate.lat &&
-				this.polygonTool.latlngs.length > 0
-			) {
-				const latlngs = [
-					...this.polygonTool.latlngs,
-					{
-						lat: this.MouseCoordinate.lat,
-						lng: this.MouseCoordinate.lng,
-					},
-				];
-				return latlngs;
-			}
-			return [];
-		},
-		polylineSimolationLatlngs() {
-			if (
-				this.polylineTool.isOn &&
-				this.MouseCoordinate.lat &&
-				this.polylineTool.latlngs.length > 0
-			) {
-				const latlngs = [
-					...this.polylineTool.latlngs,
-					{
-						lat: this.MouseCoordinate.lat,
-						lng: this.MouseCoordinate.lng,
-					},
-				];
-				return latlngs;
+		polygonOrPolylineSimolationCoordinates() {
+			const type = this.newPoint.OnTool.type;
+			const isPolygonOrPolylineOn =
+				type == "Polygons" || type == "Polylines";
+
+			if (isPolygonOrPolylineOn && this.MouseCoordinate) {
+				const index = this.newPoint.OnTool.index;
+				const thisTool = this.newPoint[type][index];
+
+				if (thisTool.coordinates.length > 0) {
+					const coordinates = [
+						...thisTool.coordinates,
+						{
+							lat: this.MouseCoordinate.lat,
+							lng: this.MouseCoordinate.lng
+						}
+					];
+					return coordinates;
+				}
 			}
 			return [];
 		},
@@ -253,7 +214,7 @@ export default {
 		},
 		dynamicAnchor() {
 			return [this.iconSize / 2, this.iconSize * 1.15];
-		},
+		}
 	},
 	methods: {
 		...mapMutations([
@@ -262,6 +223,7 @@ export default {
 			"mapCenterUpdated",
 			"readThisPoint",
 			"newPointCoordinateUpdated",
+			"updateOnTool"
 		]),
 		updateFromPicker(e) {
 			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
@@ -286,8 +248,12 @@ export default {
 		setClickCoordinates(c) {
 			// console.log(c.latlng);
 			this.$store.state.clickCoordinates = c.latlng;
-			if (this.polygonTool.isOn) this.polygonTool.latlngs.push(c.latlng);
-			if (this.polylineTool.isOn) this.polylineTool.latlngs.push(c.latlng);
+			const OnTool = this.newPoint.OnTool;
+			if (OnTool.condition) {
+				const type = OnTool.type;
+				const index = OnTool.index;
+				this.newPoint[type][index].coordinates.push(c.latlng);
+			}
 		},
 		setMouseCoordinate(m) {
 			this.$store.state.MouseCoordinate = m.latlng;
@@ -295,73 +261,13 @@ export default {
 		zoomUpdated(z) {
 			this.$store.state.zoom = z;
 		},
-
-		makeToolOn(tool) {
-			let polygon = tool == "polygonTool";
-			let polyline = tool == "polylineTool";
-			if (this.polygonTool.isOn || this.polylineTool.isOn) {
-				this.$swal
-					.fire({
-						icon: "info",
-						html: `.دیتا های وارد شده بدون ذخیره سازی
-								<b>از بین خواهند رفت </b>
-								<br/>مایل به تعویض ابزار هستید؟`,
-						showCancelButton: true,
-						focusConfirm: true,
-						confirmButtonColor: "#f80000ab",
-						cancelButtonColor: "#00bc00",
-						confirmButtonText: '<i class="fa fa-thumbs-up"></i> Owki!',
-						cancelButtonText: '<i class="fa fa-thumbs-down"></i> bikhial',
-					})
-					.then((result) => {
-						if (result.value) {
-							this.polygonToolSwitch("off");
-							this.polylineToolSwitch("off");
-							if (polygon) this.polygonTool.isOn = true;
-							if (polyline) this.polylineTool.isOn = true;
-						}
-					});
-
-				// (
-				// 	"دیتا های وارد شده بدون ذخیره سازی از بین خواهند رفت. مایل به تعویض ابزار هستید؟"
-				// );
-			} else {
-				if (polygon) this.polygonTool.isOn = true;
-				if (polyline) this.polylineTool.isOn = true;
-			}
-		},
-		polygonToolSwitch(off) {
-			if (this.polygonTool.isOn || off == "off") {
-				this.polygonTool.isOn = false;
-				this.polygonTool.latlngs = [];
-			} else {
-				this.makeToolOn("polygonTool");
-			}
-		},
-		polylineToolSwitch(off = null) {
-			if (this.polylineTool.isOn || off == "off") {
-				this.polylineTool.isOn = false;
-				this.polylineTool.latlngs = [];
-			} else {
-				this.makeToolOn("polylineTool");
-			}
-		},
-		keyPressed(e) {
-			if (e.keyCode === 27) {
-				if (this.polygonTool.isOn) this.polygonToolSwitch();
-				if (this.polylineTool.isOn) this.polylineToolSwitch();
-				return;
-			} else return;
-		},
 		undoTools() {
-			if (this.polygonTool.latlngs.length > 0) this.polygonTool.latlngs.pop();
-			if (this.polylineTool.latlngs.length > 0) this.polylineTool.latlngs.pop();
-		},
+			const OnTool = this.newPoint.OnTool;
+			if (OnTool.condition)
+				this.newPoint[OnTool.type][OnTool.index].coordinates.pop();
+		}
 	},
 	mounted() {},
-	created() {
-		document.addEventListener("keyup", this.keyPressed);
-	},
 	components: {
 		LMap,
 		LTileLayer,
@@ -373,8 +279,8 @@ export default {
 		LControlZoom,
 		LControlPolylineMeasure,
 		LTooltip,
-		Sketch,
-	},
+		Sketch
+	}
 };
 </script>
 

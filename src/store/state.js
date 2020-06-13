@@ -3,7 +3,19 @@ export default {
         title: null,
         description: null,
         Points: [],
-        pointLastChangedCoordinate: null
+        Polygons: [],
+        Polylines: [],
+        pointLastChangedCoordinate: null,
+        OnTool: {
+            condition: false,
+            type: "",
+            index: ""
+        }
+    },
+    polylineTool: {
+        latlngs: [],
+        color: "red",
+        isOn: false
     },
     zoom: 13,
     MouseCoordinate: null,
