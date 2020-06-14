@@ -14,33 +14,15 @@ function situations(situations, trueSituations) {
     }
 }
 import router from "../router";
-import Vue from "vue";
 
 export default {
-    newPointCoordinateUpdated(state, c) {
+    UPDATE_THIS_POINT_COORDINATE(state, c) {
         const coordinates = [c.lat, c.lng];
-        state.newPoint.pointLastChangedCoordinate = coordinates;
+        const index = state.newPoint.OnTool.index
+        const thisPoint = state.newPoint.Points[index];
+        thisPoint.coordinates = coordinates;
     },
-    changeCoordinate(state, key) {
-        const points = state.newPoint.Points;
-        const draggablePoints = points.filter(
-            (point) => point.isOn == true
-        );
-        if (draggablePoints.length <= 0) {
-            state.newPoint.pointLastChangedCoordinate = points[key].coordinates;
-            points[key].isOn = true;
-        } else {
-            Vue.toasted.info("ابتدا تغییر مختصات قبلی را ذخیره کنید", {
-                position: "bottom-left",
-                duration: 5 * 1000,
-                keepOnHover: true,
-                containerClass: "info",
-                iconPack: "fontawesome",
-                icon: "fa-close",
-            });
-        }
-    },
-    SET_POLYGON(state) {
+    SET_TOOL(state, type) {
         const obj = {
             coordinates: [],
             color: "green",
@@ -48,16 +30,11 @@ export default {
             fillColor: "blue",
             tooltip: null
         }
-        state.newPoint.Polygons.push(obj);
-    },
-    setIcon(state) {
-        const obj = {
-            icon: "",
-            coordinates: state.mapCenter,
-            tooltip: null,
-            isOn: false
-        };
-        state.newPoint.Points.push(obj);
+        if (type == "Points") {
+            obj.icon = "";
+            obj.coordinates = state.mapCenter
+        }
+        state.newPoint[type].push(obj);
     },
     backToAllPoints(state) {
         situations(state.situations, 'allPoints')

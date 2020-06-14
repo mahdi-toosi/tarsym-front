@@ -48,21 +48,25 @@
 				</div>
 			</div>
 
-			<l-polyline
-				:lat-lngs="polygonOrPolylineSimolationCoordinates"
-				:color="polylineTool.color"
-				v-if="polylineTool.isOn"
-				:dashArray="'10,10'"
-				:opacity="0.5"
-				:fill="false"
-			/>
-			<l-marker
-				v-for="(latlng, index) in polylineTool.coordinates"
-				:lat-lng="latlng"
-				:key="index"
-				:icon="CircleIcon"
-			/>
-			<l-polyline :lat-lngs="polylineTool.coordinates" :color="polylineTool.color" />
+			<div v-if="newPoint.Polylines.length">
+				<div v-for="(polyline, index) in newPoint.Polylines" :key="index">
+					<l-polyline
+						:lat-lngs="polygonOrPolylineSimolationCoordinates"
+						:color="polyline.color"
+						v-if="polyline.isOn"
+						:dashArray="'10,10'"
+						:opacity="0.5"
+						:fill="false"
+					/>
+					<l-marker
+						v-for="(coordinate, index) in polyline.coordinates"
+						:lat-lng="coordinate"
+						:key="index"
+						:icon="CircleIcon"
+					/>
+					<l-polyline :lat-lngs="polyline.coordinates" :color="polyline.color" />
+				</div>
+			</div>
 
 			<div v-if="newPoint.Points.length">
 				<l-marker
@@ -70,7 +74,7 @@
 					:key="index"
 					:lat-lng="point.coordinates"
 					:draggable="point.isOn"
-					@update:latLng="newPointCoordinateUpdated"
+					@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 					:icon="defaultIcon"
 				>
 					<l-tooltip v-if="point.tooltip">{{ point.tooltip }}</l-tooltip>
@@ -222,8 +226,7 @@ export default {
 			"closeNewPointMarker",
 			"mapCenterUpdated",
 			"readThisPoint",
-			"newPointCoordinateUpdated",
-			"updateOnTool"
+			"UPDATE_THIS_POINT_COORDINATE"
 		]),
 		updateFromPicker(e) {
 			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
@@ -250,6 +253,7 @@ export default {
 			this.$store.state.clickCoordinates = c.latlng;
 			const OnTool = this.newPoint.OnTool;
 			if (OnTool.condition) {
+				if (OnTool.type == "Points") return;
 				const type = OnTool.type;
 				const index = OnTool.index;
 				this.newPoint[type][index].coordinates.push(c.latlng);

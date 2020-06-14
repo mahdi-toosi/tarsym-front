@@ -36,24 +36,25 @@
 					<input
 						type="text"
 						placeholder="new point"
-						:tooltype="'Points'"
+						:toolType="'Points'"
 						:index="index"
 						@input="changeTooltip"
 					/>
 					<br />
-					<button @click="changeCoordinate(index)" v-if="!point.isOn">تغییر مختصات</button>
-					<button @click="saveCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
+					<button @click="turnOnThisPoint(index)" v-if="!point.isOn">تغییر مختصات</button>
+					<button @click="savePointCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
+					<button @click="deleteTool( 'Points', index)" class="btn-red">delete Point</button>
 				</li>
 			</ul>
-			<button @click="setIcon">set Icon</button>
+			<button @click="setTool('Points')">set point</button>
 			<br />
 			<br />
 			<ul>
 				<li v-for="(polygon, index) in newPoint.Polygons" :key="index">
 					<input
 						type="text"
-						placeholder="new point"
-						:tooltype="'Polygons'"
+						placeholder="new polygon"
+						:toolType="'Polygons'"
 						:index="index"
 						@input="changeTooltip"
 					/>
@@ -67,9 +68,31 @@
 					<button @click="deleteTool( 'Polygons', index)" class="btn-red">delete Polygon</button>
 				</li>
 			</ul>
-			<button @click="setPolygon()">set Polygon</button>
+			<button @click="setTool('Polygons')">set Polygon</button>
 			<br />
-			<button @click="toolSwitch( 'Polylines', index )">polyline tool</button>
+			<br />
+			<!-- // ! polyline section -->
+			<ul>
+				<li v-for="(polyline, index) in newPoint.Polylines" :key="index">
+					<input
+						type="text"
+						placeholder="new polyline"
+						:toolType="'Polylines'"
+						:index="index"
+						@input="changeTooltip"
+					/>
+					<br />
+					<button @click="toolSwitch( 'Polylines', index )" v-if="!polyline.isOn">redraw the polyline</button>
+					<button
+						@click="toolSwitch( 'Polylines', index , 'off')"
+						class="btn-green"
+						v-if="polyline.isOn"
+					>save the polyline</button>
+					<button @click="deleteTool( 'Polylines', index)" class="btn-red">delete Polygon</button>
+				</li>
+			</ul>
+			<button @click="setTool('Polylines')">set Polyline</button>
+
 			<!-- <tinymce-editor
 					:init="{
 						plugins: 'image link media autolink ',
@@ -100,27 +123,37 @@ import { mapState, mapMutations, mapActions } from "vuex";
 // import Editor from "@tinymce/tinymce-vue";
 export default {
 	methods: {
-		...mapMutations([
-			"closeNewPointMarker",
-			"setIcon",
-			"changeCoordinate",
-			"UPDATE_ON_TOOL"
+		...mapMutations(["closeNewPointMarker", "UPDATE_ON_TOOL"]),
+		...mapActions([
+			"CreateNewPointMarker",
+			"setCategory",
+			"setTool",
+			"turnOnThisPoint"
 		]),
-		...mapActions(["CreateNewPointMarker", "setCategory", "setPolygon"]),
+		updateTooltips(type) {
+			const thisType = this.newPoint[type];
+			thisType.forEach((element, index) => {
+				const input = `input[toolType="${type}"][index="${index}"]`;
+				const thisInput = document.querySelector(input);
+				thisInput.value = element.tooltip;
+			});
+		},
 		deleteTool(type, index) {
 			this.newPoint[type].splice(index, 1);
+			this.updateTooltips(type);
 			this.UPDATE_ON_TOOL();
 		},
 		changeTooltip(tag) {
-			const type = tag.target.attributes.tooltype.value;
+			const type = tag.target.attributes.toolType.value;
 			const key = tag.target.attributes.index.value;
 			const val = tag.target.value;
 			this.newPoint[type][key].tooltip = val;
 		},
-		saveCoordinate(key) {
-			const thisNewPoint = this.newPoint.Points[key];
-			thisNewPoint.coordinates = this.newPoint.pointLastChangedCoordinate;
-			thisNewPoint.isOn = false;
+		savePointCoordinate(key) {
+			const thisPoint = this.newPoint.Points[key];
+			thisPoint.coordinates = this.newPoint.pointLastChangedCoordinate;
+			thisPoint.isOn = false;
+			this.UPDATE_ON_TOOL();
 		},
 		toolSwitch(type, index, off = "on") {
 			const thisTool = this.newPoint[type][index];

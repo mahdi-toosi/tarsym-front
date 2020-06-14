@@ -15,6 +15,16 @@ function situations(situations, trueSituations) {
 }
 import Vue from "vue";
 
+function sendinfoToast(text) {
+    Vue.toasted.info(text, {
+        position: "bottom-left",
+        duration: 5 * 1000,
+        keepOnHover: true,
+        iconPack: "fontawesome",
+        icon: "fa-close",
+    });
+}
+
 export default {
     async setCategory({
         state,
@@ -117,21 +127,30 @@ export default {
         commit('setAllPoints', allPoints.data)
         situations(state.situations, 'allPoints')
     },
-    async setPolygon({
+    async setTool({
         commit,
         state
-    }) {
+    }, type) {
         if (!state.newPoint.OnTool.condition) {
-            await commit('SET_POLYGON');
+            await commit('SET_TOOL', type);
             await commit('UPDATE_ON_TOOL');
+            return;
         } else {
-            Vue.toasted.info("درحال استفاده از ابزاری هستید", {
-                position: "bottom-left",
-                duration: 5 * 1000,
-                keepOnHover: true,
-                iconPack: "fontawesome",
-                icon: "fa-close",
-            });
+            sendinfoToast("درحال استفاده از ابزاری هستید");
         }
-    }
+    },
+    async turnOnThisPoint({
+        commit,
+        state
+    }, index) {
+        if (!state.newPoint.OnTool.condition) {
+            const ThisPoints = state.newPoint.Points[index];
+            ThisPoints.isOn = true;
+            await commit('UPDATE_ON_TOOL');
+            return;
+        } else {
+            sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
+        }
+    },
+
 }
