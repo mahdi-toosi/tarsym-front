@@ -14,6 +14,7 @@ function situations(situations, trueSituations) {
     }
 }
 import Vue from "vue";
+import router from "../router";
 
 function sendinfoToast(text) {
     Vue.toasted.info(text, {
@@ -131,7 +132,7 @@ export default {
         commit,
         state
     }, type) {
-        if (!state.newPoint.OnTool.condition) {
+        if (!state.newDocProp.OnTool.condition) {
             await commit('SET_TOOL', type);
             await commit('UPDATE_ON_TOOL');
             return;
@@ -143,7 +144,7 @@ export default {
         commit,
         state
     }, index) {
-        if (!state.newPoint.OnTool.condition) {
+        if (!state.newDocProp.OnTool.condition) {
             const ThisPoints = state.newPoint.Points[index];
             ThisPoints.isOn = true;
             await commit('UPDATE_ON_TOOL');
@@ -152,5 +153,15 @@ export default {
             sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
         }
     },
+    async addAndGoToNewDoc({
+        commit,
+        state
+    }) {
+        await commit('ADD_NEW_DOCUMENT')
+        const docID = state.newDocProp.lastAddedDocID
+        const path = `/new-point/${docID}`
+        await router.push(path)
+        await commit('UPDATE_NEW_DOC_INDEX')
+    }
 
 }

@@ -26,61 +26,61 @@
 					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
 				</l-marker>
 			</div>
-
-			<div v-if="newPoint.Polygons.length">
-				<div v-for="(polygon, index) in newPoint.Polygons" :key="index">
-					<l-polygon
-						:lat-lngs="polygonOrPolylineSimolationCoordinates"
-						v-if="polygon.isOn"
-						:dashArray="'10,10'"
-						:opacity="0.5"
-						:color="polygon.color"
-						:fill="false"
-					/>
-					<l-polygon
-						:fillOpacity="0.15"
-						:fillColor="polygon.fillColor"
-						:color="polygon.color"
-						:lat-lngs="polygon.coordinates"
-					>
-						<l-tooltip v-if="polygon.tooltip">{{ polygon.tooltip }}</l-tooltip>
-					</l-polygon>
+			<div v-if="newPoint.length > 0">
+				<div v-if="docLayer.Polygons.length">
+					<div v-for="(polygon, index) in docLayer.Polygons" :key="index">
+						<l-polygon
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							v-if="polygon.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:color="polygon.color"
+							:fill="false"
+						/>
+						<l-polygon
+							:fillOpacity="0.15"
+							:fillColor="polygon.fillColor"
+							:color="polygon.color"
+							:lat-lngs="polygon.coordinates"
+						>
+							<l-tooltip v-if="polygon.tooltip">{{ polygon.tooltip }}</l-tooltip>
+						</l-polygon>
+					</div>
 				</div>
-			</div>
 
-			<div v-if="newPoint.Polylines.length">
-				<div v-for="(polyline, index) in newPoint.Polylines" :key="index">
-					<l-polyline
-						:lat-lngs="polygonOrPolylineSimolationCoordinates"
-						:color="polyline.color"
-						v-if="polyline.isOn"
-						:dashArray="'10,10'"
-						:opacity="0.5"
-						:fill="false"
-					/>
+				<div v-if="docLayer.Polylines.length">
+					<div v-for="(polyline, index) in docLayer.Polylines" :key="index">
+						<l-polyline
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							:color="polyline.color"
+							v-if="polyline.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:fill="false"
+						/>
+						<l-marker
+							v-for="(coordinate, index) in polyline.coordinates"
+							:lat-lng="coordinate"
+							:key="index"
+							:icon="CircleIcon"
+						/>
+						<l-polyline :lat-lngs="polyline.coordinates" :color="polyline.color" />
+					</div>
+				</div>
+
+				<div v-if="docLayer.Points.length">
 					<l-marker
-						v-for="(coordinate, index) in polyline.coordinates"
-						:lat-lng="coordinate"
+						v-for="(point, index) in docLayer.Points"
 						:key="index"
-						:icon="CircleIcon"
-					/>
-					<l-polyline :lat-lngs="polyline.coordinates" :color="polyline.color" />
+						:lat-lng="point.coordinates"
+						:draggable="point.isOn"
+						@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+						:icon="defaultIcon"
+					>
+						<l-tooltip v-if="point.tooltip">{{ point.tooltip }}</l-tooltip>
+					</l-marker>
 				</div>
 			</div>
-
-			<div v-if="newPoint.Points.length">
-				<l-marker
-					v-for="(point, index) in newPoint.Points"
-					:key="index"
-					:lat-lng="point.coordinates"
-					:draggable="point.isOn"
-					@update:latLng="UPDATE_THIS_POINT_COORDINATE"
-					:icon="defaultIcon"
-				>
-					<l-tooltip v-if="point.tooltip">{{ point.tooltip }}</l-tooltip>
-				</l-marker>
-			</div>
-
 			<!-- <l-marker
 				:lat-lng="markerLatLng"
 				:draggable="true"
@@ -103,10 +103,10 @@
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
-				v-if="!this.newPoint.OnTool.condition"
+				v-if="!newDocProp.OnTool.condition"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
-				<a @click="undoTools" v-if="this.newPoint.OnTool.condition">
+				<a @click="undoTools" v-if="newDocProp.OnTool.condition">
 					<i class="fa fa-undo" aria-hidden="true"></i>
 				</a>
 			</l-control>
@@ -187,18 +187,22 @@ export default {
 			"allPoints",
 			"mapCenter",
 			"newPoint",
+			"newDocProp",
 			"zoom",
 			"MouseCoordinate",
 			"polylineTool"
 		]),
+		docLayer() {
+			return this.$store.getters.newDocLayer;
+		},
 		polygonOrPolylineSimolationCoordinates() {
-			const type = this.newPoint.OnTool.type;
+			const type = this.newDocProp.OnTool.type;
 			const isPolygonOrPolylineOn =
 				type == "Polygons" || type == "Polylines";
 
 			if (isPolygonOrPolylineOn && this.MouseCoordinate) {
-				const index = this.newPoint.OnTool.index;
-				const thisTool = this.newPoint[type][index];
+				const index = this.newDocProp.OnTool.index;
+				const thisTool = this.docLayer[type][index];
 
 				if (thisTool.coordinates.length > 0) {
 					const coordinates = [
@@ -226,7 +230,8 @@ export default {
 			"closeNewPointMarker",
 			"mapCenterUpdated",
 			"readThisPoint",
-			"UPDATE_THIS_POINT_COORDINATE"
+			"UPDATE_THIS_POINT_COORDINATE",
+			"UPDATE_NEW_DOC_INDEX"
 		]),
 		updateFromPicker(e) {
 			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
@@ -251,12 +256,12 @@ export default {
 		setClickCoordinates(c) {
 			// console.log(c.latlng);
 			this.$store.state.clickCoordinates = c.latlng;
-			const OnTool = this.newPoint.OnTool;
+			const OnTool = this.newDocProp.OnTool;
 			if (OnTool.condition) {
 				if (OnTool.type == "Points") return;
 				const type = OnTool.type;
 				const index = OnTool.index;
-				this.newPoint[type][index].coordinates.push(c.latlng);
+				this.docLayer[type][index].coordinates.push(c.latlng);
 			}
 		},
 		setMouseCoordinate(m) {
@@ -266,12 +271,11 @@ export default {
 			this.$store.state.zoom = z;
 		},
 		undoTools() {
-			const OnTool = this.newPoint.OnTool;
+			const OnTool = this.newDocProp.OnTool;
 			if (OnTool.condition)
-				this.newPoint[OnTool.type][OnTool.index].coordinates.pop();
+				this.docLayer[OnTool.type][OnTool.index].coordinates.pop();
 		}
 	},
-	mounted() {},
 	components: {
 		LMap,
 		LTileLayer,

@@ -1,10 +1,10 @@
 <template>
 	<div class="allpoints">
 		<header>
-			<router-link class="btn btn-blue" to="/new-point">
+			<a class="btn btn-blue" @click="addAndGoToNewDoc()">
 				نقطه ی جدید ایجاد کن
 				<i class="fas fa-plus"></i>
-			</router-link>
+			</a>
 		</header>
 		<section class="searchbar shadow">
 			<v-select
@@ -85,10 +85,10 @@ export default {
 		...mapState(["allPoints", "categories", "category"])
 	},
 	methods: {
-		...mapActions(["getAllPoints", "setCategory"]),
+		...mapActions(["getAllPoints", "setCategory", "addAndGoToNewDoc"]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
-			console.log(this.search.length);
+			// console.log(this.search.length);
 			const url = "/point/search/" + this.search;
 			this.$axios
 				.get(url)

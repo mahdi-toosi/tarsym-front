@@ -26,7 +26,11 @@ const servicePlugins = requireModule
 
 export default new Vuex.Store({
     state,
-    getters: {},
+    getters: {
+        newDocLayer: state => {
+            return state.newPoint[state.newDocProp.index]
+        }
+    },
     mutations,
     actions,
     plugins: [...servicePlugins, auth]

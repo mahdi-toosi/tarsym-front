@@ -1,16 +1,13 @@
 export default {
-    newPoint: {
-        title: null,
-        description: null,
-        Points: [],
-        Polygons: [],
-        Polylines: [],
-        pointLastChangedCoordinate: null,
+    newPoint: [],
+    newDocProp: {
+        index: 0,
+        lastAddedDocID: 0,
         OnTool: {
             condition: false,
             type: "",
-            index: ""
-        }
+            index: -1
+        },
     },
     polylineTool: {
         latlngs: [],

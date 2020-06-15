@@ -27,6 +27,10 @@ const routes = [
     name: "all points",
     component: () => import("../views/allPoints.vue")
   }, {
+    path: "/new-point/:id",
+    name: "new point with prop",
+    component: () => import("../views/newPoint.vue")
+  }, {
     path: "/new-point",
     name: "new point",
     component: () => import("../views/newPoint.vue")

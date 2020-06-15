@@ -16,10 +16,34 @@ function situations(situations, trueSituations) {
 import router from "../router";
 
 export default {
+    UPDATE_NEW_DOC_INDEX(state) {
+        const isNewDocRoute = router.currentRoute.name == "new point"
+        if (isNewDocRoute) {
+            const docID = router.currentRoute.params.id
+            const thisObject = (obj) => obj.id == docID
+            const index = state.newPoint.findIndex(thisObject);
+            state.newDocProp.index = index
+        }
+    },
+    ADD_NEW_DOCUMENT(state) {
+        const fakeID = new Date().getTime()
+        const newDocObj = {
+            id: fakeID,
+            title: "",
+            description: "",
+            Points: [],
+            Polygons: [],
+            Polylines: [],
+            childs_id: [],
+        };
+        state.newPoint.push(newDocObj)
+        state.newDocProp.lastAddedDocID = fakeID
+    },
     UPDATE_THIS_POINT_COORDINATE(state, c) {
         const coordinates = [c.lat, c.lng];
-        const index = state.newPoint.OnTool.index
-        const thisPoint = state.newPoint.Points[index];
+        const index = state.newDocProp.OnTool.index
+        const thisLayer = state.newPoint[state.newDocProp.index]
+        const thisPoint = thisLayer.Points[index];
         thisPoint.coordinates = coordinates;
     },
     SET_TOOL(state, type) {
@@ -34,7 +58,8 @@ export default {
             obj.icon = "";
             obj.coordinates = state.mapCenter
         }
-        state.newPoint[type].push(obj);
+        const index = state.newDocProp.index
+        state.newPoint[index][type].push(obj);
     },
     backToAllPoints(state) {
         situations(state.situations, 'allPoints')
@@ -52,32 +77,26 @@ export default {
         state.mapCenter = center;
     },
 
-    updateNewPointTitle(state, val) {
-        state.newPoint.title = val;
-    },
     UPDATE_ON_TOOL(state) {
-        const tools = ["Points", "Polygons", "Polylines"];
-        const onTool = state.newPoint.OnTool;
+        const toolTypes = ["Points", "Polygons", "Polylines"];
+        const onTool = state.newDocProp.OnTool;
         onTool.condition = false;
         onTool.type = "";
         onTool.index = -1;
-        for (let i = 0; i < tools.length; i++) {
-            const type = tools[i];
-            const thisTool = state.newPoint[type];
+        for (let i = 0; i < toolTypes.length; i++) {
+            const toolType = toolTypes[i];
+            const thisNewDoc = state.newPoint[state.newDocProp.index]
+            const thisTool = thisNewDoc[toolType];
             const condition = (tool) => tool.isOn == true;
             const OnToolindex = thisTool.findIndex(condition);
             const weHaveOnTool = OnToolindex >= 0;
             if (weHaveOnTool) {
                 onTool.condition = true;
-                onTool.type = type;
+                onTool.type = toolType;
                 onTool.index = OnToolindex;
                 break;
             }
         }
-    },
-    //  ! Update New Point Description ///////////////////////////////////////////////////////////////////
-    updateNewPointDescription(state, val) {
-        state.newPoint.description = val;
     },
     //  ! Set All Categories ///////////////////////////////////////////////////////////////////
     setAllCategories(state, categories) {

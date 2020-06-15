@@ -32,7 +32,7 @@
 			<input type="text" placeholder="توضیح" v-model="newPointDescription" />
 			<br />
 			<ul>
-				<li v-for="(point, index) in newPoint.Points" :key="index">
+				<li v-for="(point, index) in docLayer.Points" :key="index">
 					<input
 						type="text"
 						placeholder="new point"
@@ -50,7 +50,7 @@
 			<br />
 			<br />
 			<ul>
-				<li v-for="(polygon, index) in newPoint.Polygons" :key="index">
+				<li v-for="(polygon, index) in docLayer.Polygons" :key="index">
 					<input
 						type="text"
 						placeholder="new polygon"
@@ -73,7 +73,7 @@
 			<br />
 			<!-- // ! polyline section -->
 			<ul>
-				<li v-for="(polyline, index) in newPoint.Polylines" :key="index">
+				<li v-for="(polyline, index) in docLayer.Polylines" :key="index">
 					<input
 						type="text"
 						placeholder="new polyline"
@@ -123,15 +123,20 @@ import { mapState, mapMutations, mapActions } from "vuex";
 // import Editor from "@tinymce/tinymce-vue";
 export default {
 	methods: {
-		...mapMutations(["closeNewPointMarker", "UPDATE_ON_TOOL"]),
+		...mapMutations([
+			"closeNewPointMarker",
+			"UPDATE_ON_TOOL",
+			"UPDATE_NEW_DOC_INDEX"
+		]),
 		...mapActions([
 			"CreateNewPointMarker",
 			"setCategory",
 			"setTool",
-			"turnOnThisPoint"
+			"turnOnThisPoint",
+			"addAndGoToNewDoc"
 		]),
 		updateTooltips(type) {
-			const thisType = this.newPoint[type];
+			const thisType = this.docLayer[type];
 			thisType.forEach((element, index) => {
 				const input = `input[toolType="${type}"][index="${index}"]`;
 				const thisInput = document.querySelector(input);
@@ -139,7 +144,7 @@ export default {
 			});
 		},
 		deleteTool(type, index) {
-			this.newPoint[type].splice(index, 1);
+			this.docLayer[type].splice(index, 1);
 			this.updateTooltips(type);
 			this.UPDATE_ON_TOOL();
 		},
@@ -147,16 +152,15 @@ export default {
 			const type = tag.target.attributes.toolType.value;
 			const key = tag.target.attributes.index.value;
 			const val = tag.target.value;
-			this.newPoint[type][key].tooltip = val;
+			this.docLayer[type][key].tooltip = val;
 		},
 		savePointCoordinate(key) {
-			const thisPoint = this.newPoint.Points[key];
-			thisPoint.coordinates = this.newPoint.pointLastChangedCoordinate;
+			const thisPoint = this.docLayer.Points[key];
 			thisPoint.isOn = false;
 			this.UPDATE_ON_TOOL();
 		},
 		toolSwitch(type, index, off = "on") {
-			const thisTool = this.newPoint[type][index];
+			const thisTool = this.docLayer[type][index];
 			if (thisTool.isOn || off == "off") {
 				thisTool.isOn = false;
 				this.UPDATE_ON_TOOL();
@@ -175,17 +179,17 @@ export default {
 			});
 		},
 		makeToolOn(type, index) {
-			if (this.newPoint.OnTool.condition) {
+			if (this.newDocProp.OnTool.condition) {
 				this.alertSaveTheData();
 				return;
 			} else {
-				const thisTool = this.newPoint[type][index];
+				const thisTool = this.docLayer[type][index];
 				thisTool.isOn = true;
 				this.UPDATE_ON_TOOL();
 			}
 		},
 		keyPressed(e) {
-			const onTool = this.newPoint.OnTool;
+			const onTool = this.newDocProp.OnTool;
 			if (e.keyCode === 27 && onTool.condition) {
 				this.toolSwitch(onTool.type, onTool.index);
 				return;
@@ -197,29 +201,39 @@ export default {
 			"categories",
 			"category",
 			"newPoint",
+			"newDocProp",
 			"polygonTool",
 			"polylineTool"
 		]),
+		docLayer() {
+			return this.$store.getters.newDocLayer;
+		},
 		newPointTitle: {
 			get() {
-				return this.newPoint.title;
+				return this.docLayer.title;
 			},
 			set(val) {
-				return this.$store.commit("updateNewPointTitle", val);
+				return (this.docLayer.title = val);
 			}
 		},
 		newPointDescription: {
 			get() {
-				return this.newPoint.description;
+				return this.docLayer.description;
 			},
 			set(val) {
-				return this.$store.commit("updateNewPointDescription", val);
+				return (this.docLayer.description = val);
 			}
 		}
 	},
-	created() {
+	async created() {
 		document.addEventListener("keyup", this.keyPressed);
-	}
+		const unCorrectRouteProp =
+			this.$route.params.id !== this.newDocProp.lastAddedDocID;
+		if (unCorrectRouteProp) {
+			await this.addAndGoToNewDoc();
+		}
+	},
+	mounted() {}
 };
 </script>
 
