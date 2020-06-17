@@ -17,27 +17,34 @@ import router from "../router";
 
 export default {
     UPDATE_NEW_DOC_INDEX(state) {
-        const isNewDocRoute = router.currentRoute.name == "new point"
-        if (isNewDocRoute) {
-            const docID = router.currentRoute.params.id
-            const thisObject = (obj) => obj.id == docID
-            const index = state.newPoint.findIndex(thisObject);
-            state.newDocProp.index = index
+        // const isNewDocRoute = router.currentRoute.name == "new point with prop"
+        // if (isNewDocRoute) {
+        const docID = router.currentRoute.params.id
+        const Docs = state.newPoint
+        const thisObject = (obj) => obj.id == docID
+        const index = Docs.findIndex(thisObject);
+        state.newDocProp.index = index
+        state.newDocProp.id = Docs[index].id
+        if (Docs.length == 1) {
+            state.newDocProp.rootID = Docs[index].id
         }
+        // }
     },
-    ADD_NEW_DOCUMENT(state) {
-        const fakeID = new Date().getTime()
+    ADD_NEW_DOCUMENT(state, {
+        fake_id,
+        father_id
+    }) {
         const newDocObj = {
-            id: fakeID,
+            id: fake_id,
             title: "",
             description: "",
             Points: [],
             Polygons: [],
             Polylines: [],
+            father_id: father_id,
             childs_id: [],
         };
         state.newPoint.push(newDocObj)
-        state.newDocProp.lastAddedDocID = fakeID
     },
     UPDATE_THIS_POINT_COORDINATE(state, c) {
         const coordinates = [c.lat, c.lng];

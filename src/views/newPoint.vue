@@ -10,90 +10,102 @@
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
-			<router-link class="btn btn-back" to="/">
+			<button class="btn btn-back" @click="goBack()" v-if="newDocProp.id !== newDocProp.rootID">
 				<i class="fas fa-arrow-left"></i>
-			</router-link>
+			</button>
 		</header>
-		<section class="searchbar shadow">
-			<v-select
-				:options="categories"
-				:value="category"
-				@input="setCategory"
-				label="name"
-				:searchable="false"
-				placeholder="موضوع"
-				dir="rtl"
-			/>
-			<div class="searchInput">
-				<input type="text" placeholder="عنوان" v-model="newPointTitle" />
-			</div>
-		</section>
-		<section class="newPoint shadow">
-			<input type="text" placeholder="توضیح" v-model="newPointDescription" />
-			<br />
-			<ul>
-				<li v-for="(point, index) in docLayer.Points" :key="index">
-					<input
-						type="text"
-						placeholder="new point"
-						:toolType="'Points'"
-						:index="index"
-						@input="changeTooltip"
-					/>
-					<br />
-					<button @click="turnOnThisPoint(index)" v-if="!point.isOn">تغییر مختصات</button>
-					<button @click="savePointCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
-					<button @click="deleteTool( 'Points', index)" class="btn-red">delete Point</button>
-				</li>
-			</ul>
-			<button @click="setTool('Points')">set point</button>
-			<br />
-			<br />
-			<ul>
-				<li v-for="(polygon, index) in docLayer.Polygons" :key="index">
-					<input
-						type="text"
-						placeholder="new polygon"
-						:toolType="'Polygons'"
-						:index="index"
-						@input="changeTooltip"
-					/>
-					<br />
-					<button @click="toolSwitch( 'Polygons', index )" v-if="!polygon.isOn">redraw the polygon</button>
-					<button
-						@click="toolSwitch( 'Polygons', index , 'off')"
-						class="btn-green"
-						v-if="polygon.isOn"
-					>save the polygon</button>
-					<button @click="deleteTool( 'Polygons', index)" class="btn-red">delete Polygon</button>
-				</li>
-			</ul>
-			<button @click="setTool('Polygons')">set Polygon</button>
-			<br />
-			<br />
-			<!-- // ! polyline section -->
-			<ul>
-				<li v-for="(polyline, index) in docLayer.Polylines" :key="index">
-					<input
-						type="text"
-						placeholder="new polyline"
-						:toolType="'Polylines'"
-						:index="index"
-						@input="changeTooltip"
-					/>
-					<br />
-					<button @click="toolSwitch( 'Polylines', index )" v-if="!polyline.isOn">redraw the polyline</button>
-					<button
-						@click="toolSwitch( 'Polylines', index , 'off')"
-						class="btn-green"
-						v-if="polyline.isOn"
-					>save the polyline</button>
-					<button @click="deleteTool( 'Polylines', index)" class="btn-red">delete Polygon</button>
-				</li>
-			</ul>
-			<button @click="setTool('Polylines')">set Polyline</button>
+		<div v-if="newPoint.length > 0">
+			<section class="searchbar shadow">
+				<v-select
+					:options="categories"
+					:value="category"
+					@input="setCategory"
+					label="name"
+					:searchable="false"
+					placeholder="موضوع"
+					dir="rtl"
+				/>
+				<div class="searchInput">
+					<input type="text" placeholder="عنوان" v-model="newPointTitle" />
+				</div>
+			</section>
+			<section class="newPoint shadow">
+				<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
+				<ul>
+					<li v-for="(child, index) in newDocChilds" :key="index">
+						<button @click="goToChild(child.id)" class="btn btn-green">{{ child.id }}</button>
+					</li>
+				</ul>
+				<input type="text" placeholder="توضیح" v-model="newPointDescription" />
+				<br />
+				<ul>
+					<li v-for="(point, index) in newDocLayer.Points" :key="index">
+						<input
+							type="text"
+							placeholder="new point"
+							:toolType="'Points'"
+							:index="index"
+							@input="changeTooltip"
+						/>
+						<br />
+						<button @click="turnOnThisPoint(index)" v-if="!point.isOn">تغییر مختصات</button>
+						<button @click="savePointCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
+						<button @click="deleteTool( 'Points', index)" class="btn-red">delete Point</button>
+					</li>
+				</ul>
+				<button @click="setTool('Points')">set point</button>
+				<br />
+				<br />
+				<ul>
+					<li v-for="(polygon, index) in newDocLayer.Polygons" :key="index">
+						<input
+							type="text"
+							placeholder="new polygon"
+							:toolType="'Polygons'"
+							:index="index"
+							@input="changeTooltip"
+						/>
+						<br />
+						<button @click="toolSwitch( 'Polygons', index )" v-if="!polygon.isOn">redraw the polygon</button>
+						<button
+							@click="toolSwitch( 'Polygons', index , 'off')"
+							class="btn-green"
+							v-if="polygon.isOn"
+						>save the polygon</button>
+						<button @click="deleteTool( 'Polygons', index)" class="btn-red">delete Polygon</button>
+					</li>
+				</ul>
+				<button @click="setTool('Polygons')">set Polygon</button>
+				<br />
+				<br />
+				<!-- // ! polyline section -->
+				<ul>
+					<li v-for="(polyline, index) in newDocLayer.Polylines" :key="index">
+						<input
+							type="text"
+							placeholder="new polyline"
+							:toolType="'Polylines'"
+							:index="index"
+							@input="changeTooltip"
+						/>
+						<br />
+						<button @click="toolSwitch( 'Polylines', index )" v-if="!polyline.isOn">redraw the polyline</button>
+						<button
+							@click="toolSwitch( 'Polylines', index , 'off')"
+							class="btn-green"
+							v-if="polyline.isOn"
+						>save the polyline</button>
+						<button @click="deleteTool( 'Polylines', index)" class="btn-red">delete Polygon</button>
+					</li>
+				</ul>
+				<button @click="setTool('Polylines')">set Polyline</button>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
 
-			<!-- <tinymce-editor
+				<!-- <tinymce-editor
 					:init="{
 						plugins: 'image link media autolink ',
 						directionality: 'rtl',
@@ -111,32 +123,31 @@
 						height: '60vh',
 					}"
 					v-model="newPointDescription"
-			></tinymce-editor>-->
-		</section>
+				></tinymce-editor>-->
+			</section>
+		</div>
 	</div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 // * tinymce
 // import Editor from "@tinymce/tinymce-vue";
 export default {
 	methods: {
-		...mapMutations([
-			"closeNewPointMarker",
-			"UPDATE_ON_TOOL",
-			"UPDATE_NEW_DOC_INDEX"
-		]),
+		...mapMutations(["closeNewPointMarker", "UPDATE_ON_TOOL"]),
 		...mapActions([
 			"CreateNewPointMarker",
 			"setCategory",
 			"setTool",
 			"turnOnThisPoint",
-			"addAndGoToNewDoc"
+			"addNewDoc",
+			"goBack",
+			"goToChild"
 		]),
 		updateTooltips(type) {
-			const thisType = this.docLayer[type];
+			const thisType = this.newDocLayer[type];
 			thisType.forEach((element, index) => {
 				const input = `input[toolType="${type}"][index="${index}"]`;
 				const thisInput = document.querySelector(input);
@@ -144,7 +155,7 @@ export default {
 			});
 		},
 		deleteTool(type, index) {
-			this.docLayer[type].splice(index, 1);
+			this.newDocLayer[type].splice(index, 1);
 			this.updateTooltips(type);
 			this.UPDATE_ON_TOOL();
 		},
@@ -152,15 +163,15 @@ export default {
 			const type = tag.target.attributes.toolType.value;
 			const key = tag.target.attributes.index.value;
 			const val = tag.target.value;
-			this.docLayer[type][key].tooltip = val;
+			this.newDocLayer[type][key].tooltip = val;
 		},
 		savePointCoordinate(key) {
-			const thisPoint = this.docLayer.Points[key];
+			const thisPoint = this.newDocLayer.Points[key];
 			thisPoint.isOn = false;
 			this.UPDATE_ON_TOOL();
 		},
 		toolSwitch(type, index, off = "on") {
-			const thisTool = this.docLayer[type][index];
+			const thisTool = this.newDocLayer[type][index];
 			if (thisTool.isOn || off == "off") {
 				thisTool.isOn = false;
 				this.UPDATE_ON_TOOL();
@@ -183,7 +194,7 @@ export default {
 				this.alertSaveTheData();
 				return;
 			} else {
-				const thisTool = this.docLayer[type][index];
+				const thisTool = this.newDocLayer[type][index];
 				thisTool.isOn = true;
 				this.UPDATE_ON_TOOL();
 			}
@@ -205,33 +216,32 @@ export default {
 			"polygonTool",
 			"polylineTool"
 		]),
-		docLayer() {
-			return this.$store.getters.newDocLayer;
-		},
+		...mapGetters(["newDocLayer", "lastAddedDocID", "newDocChilds"]),
 		newPointTitle: {
 			get() {
-				return this.docLayer.title;
+				return this.newDocLayer.title;
 			},
 			set(val) {
-				return (this.docLayer.title = val);
+				return (this.newDocLayer.title = val);
 			}
 		},
 		newPointDescription: {
 			get() {
-				return this.docLayer.description;
+				return this.newDocLayer.description;
 			},
 			set(val) {
-				return (this.docLayer.description = val);
+				return (this.newDocLayer.description = val);
 			}
 		}
 	},
 	async created() {
-		document.addEventListener("keyup", this.keyPressed);
-		const unCorrectRouteProp =
-			this.$route.params.id !== this.newDocProp.lastAddedDocID;
-		if (unCorrectRouteProp) {
-			await this.addAndGoToNewDoc();
+		const lastAddedDocID = this.lastAddedDocID;
+		const routeID = this.$route.params.id;
+		if (routeID !== lastAddedDocID) {
+			await this.addNewDoc();
+			return;
 		}
+		document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {}
 };

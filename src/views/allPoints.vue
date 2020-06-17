@@ -1,7 +1,7 @@
 <template>
 	<div class="allpoints">
 		<header>
-			<a class="btn btn-blue" @click="addAndGoToNewDoc()">
+			<a class="btn btn-blue" @click="addNewDoc()">
 				نقطه ی جدید ایجاد کن
 				<i class="fas fa-plus"></i>
 			</a>
@@ -85,7 +85,7 @@ export default {
 		...mapState(["allPoints", "categories", "category"])
 	},
 	methods: {
-		...mapActions(["getAllPoints", "setCategory", "addAndGoToNewDoc"]),
+		...mapActions(["getAllPoints", "setCategory", "addNewDoc"]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);

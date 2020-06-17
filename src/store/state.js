@@ -2,7 +2,8 @@ export default {
     newPoint: [],
     newDocProp: {
         index: 0,
-        lastAddedDocID: 0,
+        id: 0,
+        rootID: 0,
         OnTool: {
             condition: false,
             type: "",

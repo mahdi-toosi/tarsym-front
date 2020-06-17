@@ -132,7 +132,8 @@ export default {
         commit,
         state
     }, type) {
-        if (!state.newDocProp.OnTool.condition) {
+        const all_tools_is_off = !state.newDocProp.OnTool.condition;
+        if (all_tools_is_off) {
             await commit('SET_TOOL', type);
             await commit('UPDATE_ON_TOOL');
             return;
@@ -144,7 +145,8 @@ export default {
         commit,
         state
     }, index) {
-        if (!state.newDocProp.OnTool.condition) {
+        const all_tools_is_off = !state.newDocProp.OnTool.condition;
+        if (all_tools_is_off) {
             const ThisPoints = state.newPoint.Points[index];
             ThisPoints.isOn = true;
             await commit('UPDATE_ON_TOOL');
@@ -153,15 +155,58 @@ export default {
             sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
         }
     },
-    async addAndGoToNewDoc({
+    async addNewDoc({
+        commit,
+        getters,
+        state
+    }, father_id = 0) {
+        const all_tools_is_off = !state.newDocProp.OnTool.condition;
+        if (all_tools_is_off) {
+            const fake_id = new Date().getTime();
+            if (father_id !== 0) {
+                const index = state.newDocProp.index;
+                state.newPoint[index].childs_id.push(fake_id);
+            }
+            await commit('ADD_NEW_DOCUMENT', {
+                fake_id,
+                father_id
+            })
+            const path = `/new-point/${getters.lastAddedDocID}`;
+            await router.push(path);
+            await commit('UPDATE_NEW_DOC_INDEX');
+            return;
+        } else {
+            sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
+        }
+    },
+    async goBack({
+        state,
+        commit
+    }) {
+        const all_tools_is_off = !state.newDocProp.OnTool.condition;
+        if (all_tools_is_off) {
+            const thisDoc = state.newDocProp.index;
+            const father_id = state.newPoint[thisDoc].father_id;
+            const path = `/new-point/${father_id}`;
+            await router.push(path);
+            await commit('UPDATE_NEW_DOC_INDEX');
+            return;
+        } else {
+            sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
+        }
+    },
+    async goToChild({
         commit,
         state
-    }) {
-        await commit('ADD_NEW_DOCUMENT')
-        const docID = state.newDocProp.lastAddedDocID
-        const path = `/new-point/${docID}`
-        await router.push(path)
-        await commit('UPDATE_NEW_DOC_INDEX')
-    }
-
+    }, id) {
+        const all_tools_is_off = !state.newDocProp.OnTool.condition;
+        if (all_tools_is_off) {
+            const path = `/new-point/${id}`;
+            await router.push(path);
+            await commit('UPDATE_NEW_DOC_INDEX');
+            return;
+        } else {
+            sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
+        }
+    },
 }
