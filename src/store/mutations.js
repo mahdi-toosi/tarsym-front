@@ -16,6 +16,20 @@ function situations(situations, trueSituations) {
 import router from "../router";
 
 export default {
+    ADD_COLOR(state, {
+        color,
+        type,
+        index,
+        fillColor
+    }) {
+        const thisDoc = state.newPoint[state.newDocProp.index]
+        if (!fillColor) {
+            thisDoc[type][index].color = color;
+            return;
+        } else {
+            thisDoc[type][index].fillColor = color
+        }
+    },
     UPDATE_NEW_DOC_INDEX(state) {
         // const isNewDocRoute = router.currentRoute.name == "new point with prop"
         // if (isNewDocRoute) {
@@ -56,7 +70,8 @@ export default {
     SET_TOOL(state, type) {
         const obj = {
             coordinates: [],
-            color: "green",
+            color: "#194d33",
+            colorpicker: false,
             isOn: true,
             fillColor: "blue",
             tooltip: null

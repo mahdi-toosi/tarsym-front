@@ -47,6 +47,7 @@
 							:index="index"
 							@input="changeTooltip"
 						/>
+						<chrome-color-picker :value="point.color" :toolType="'Points'" :index="index" />
 						<br />
 						<button @click="turnOnThisPoint(index)" v-if="!point.isOn">تغییر مختصات</button>
 						<button @click="savePointCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
@@ -64,6 +65,18 @@
 							:toolType="'Polygons'"
 							:index="index"
 							@input="changeTooltip"
+						/>
+						<chrome-color-picker
+							:value="polygon.color"
+							:toolType="'Polygons'"
+							:index="index"
+							:fillColor="false"
+						/>
+						<chrome-color-picker
+							:value="polygon.color"
+							:toolType="'Polygons'"
+							:index="index"
+							:fillColor="true"
 						/>
 						<br />
 						<button @click="toolSwitch( 'Polygons', index )" v-if="!polygon.isOn">redraw the polygon</button>
@@ -88,6 +101,7 @@
 							:index="index"
 							@input="changeTooltip"
 						/>
+						<chrome-color-picker :value="polyline.color" :toolType="'Polylines'" :index="index" />
 						<br />
 						<button @click="toolSwitch( 'Polylines', index )" v-if="!polyline.isOn">redraw the polyline</button>
 						<button
@@ -131,10 +145,15 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
-
+import ChromeColorPicker from "@/components/sidebar/chrome";
 // * tinymce
 // import Editor from "@tinymce/tinymce-vue";
 export default {
+	data() {
+		return {
+			defaultColor: "#FF0000"
+		};
+	},
 	methods: {
 		...mapMutations(["closeNewPointMarker", "UPDATE_ON_TOOL"]),
 		...mapActions([
@@ -205,6 +224,34 @@ export default {
 				this.toolSwitch(onTool.type, onTool.index);
 				return;
 			} else return;
+		},
+		updateFromPicker(e) {
+			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
+			if (this.polylineTool.isOn) this.polylineTool.color = e.hex;
+		},
+		colorpickerSwitch(type, index, off = null) {
+			if (off == "off") {
+				document.removeEventListener("click", this.documentClick);
+				const toolTypes = ["Points", "Polygons", "Polylines"];
+				toolTypes.forEach(type => {
+					const toolType = toolTypes[type];
+					toolType.forEach(tool => {
+						tool.colorpicker = false;
+					});
+				});
+				return;
+			} else {
+				document.addEventListener("click", this.documentClick);
+				const thisTool = this.newDocLayer[type][index];
+				thisTool.colorpicker = true;
+			}
+		},
+		documentClick() {
+			// var el = this.$refs.colorpicker,
+			// 	target = e.target;
+			// if (el !== target && !el.contains(target)) {
+			// 	this.colorpickerSwitch("off");
+			// }
 		}
 	},
 	computed: {
@@ -243,7 +290,10 @@ export default {
 		}
 		document.addEventListener("keyup", this.keyPressed);
 	},
-	mounted() {}
+	mounted() {},
+	components: {
+		ChromeColorPicker
+	}
 };
 </script>
 

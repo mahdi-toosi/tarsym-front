@@ -38,7 +38,7 @@
 							:fill="false"
 						/>
 						<l-polygon
-							:fillOpacity="0.15"
+							:fillOpacity="0.4"
 							:fillColor="polygon.fillColor"
 							:color="polygon.color"
 							:lat-lngs="polygon.coordinates"
@@ -111,16 +111,6 @@
 				</a>
 			</l-control>
 		</l-map>
-
-		<div ref="colorpicker">
-			<button @click="colorpickerSwitch">color picker {{ colorpicker.isOn ? "On" : "Off" }}</button>
-			<sketch
-				v-model="colorpicker.color"
-				v-if="colorpicker.isOn"
-				:color="colorpicker.defaultColor"
-				@input="updateFromPicker"
-			/>
-		</div>
 	</div>
 </template>
 <script>
@@ -138,7 +128,6 @@ import {
 	LControlZoom
 } from "vue2-leaflet";
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
-import { Sketch } from "vue-color";
 
 // import imgadr from "@/assets/img/icon for test.png";
 // import points from "../../data/points.json";
@@ -167,13 +156,6 @@ export default {
 			popupAnchor: [4, -25]
 		});
 		return {
-			colorpicker: {
-				color: {
-					hex: "#194d33"
-				},
-				defaultColor: "#FF0000",
-				isOn: false
-			},
 			// bounds: null,
 			iconSize: 64,
 			CircleIcon,
@@ -233,26 +215,6 @@ export default {
 			"UPDATE_THIS_POINT_COORDINATE",
 			"UPDATE_NEW_DOC_INDEX"
 		]),
-		updateFromPicker(e) {
-			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
-			if (this.polylineTool.isOn) this.polylineTool.color = e.hex;
-		},
-		colorpickerSwitch(off = null) {
-			if (this.colorpicker.isOn || off == "off") {
-				document.removeEventListener("click", this.documentClick);
-				this.colorpicker.isOn = false;
-			} else {
-				document.addEventListener("click", this.documentClick);
-				this.colorpicker.isOn = true;
-			}
-		},
-		documentClick(e) {
-			var el = this.$refs.colorpicker,
-				target = e.target;
-			if (el !== target && !el.contains(target)) {
-				this.colorpickerSwitch("off");
-			}
-		},
 		setClickCoordinates(c) {
 			// console.log(c.latlng);
 			this.$store.state.clickCoordinates = c.latlng;
@@ -286,8 +248,7 @@ export default {
 		LControl,
 		LControlZoom,
 		LControlPolylineMeasure,
-		LTooltip,
-		Sketch
+		LTooltip
 	}
 };
 </script>
