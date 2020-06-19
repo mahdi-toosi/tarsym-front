@@ -6,18 +6,11 @@ export default {
         rootID: 0,
         OnTool: {
             condition: false,
-            type: "",
             index: -1
         },
     },
-    polylineTool: {
-        latlngs: [],
-        color: "red",
-        isOn: false
-    },
     zoom: 13,
     MouseCoordinate: null,
-    clickCoordinates: null,
     category: null,
     categories: [],
     allPoints: [],

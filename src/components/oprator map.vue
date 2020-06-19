@@ -26,59 +26,57 @@
 					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
 				</l-marker>
 			</div>
-			<div v-if="newPoint.length > 0">
-				<div v-if="docLayer.Polygons.length">
-					<div v-for="(polygon, index) in docLayer.Polygons" :key="index">
-						<l-polygon
-							:lat-lngs="polygonOrPolylineSimolationCoordinates"
-							v-if="polygon.isOn"
-							:dashArray="'10,10'"
-							:opacity="0.5"
-							:color="polygon.color"
-							:fill="false"
-						/>
-						<l-polygon
-							:fillOpacity="0.4"
-							:fillColor="polygon.fillColor"
-							:color="polygon.color"
-							:lat-lngs="polygon.coordinates"
-						>
-							<l-tooltip v-if="polygon.tooltip">{{ polygon.tooltip }}</l-tooltip>
-						</l-polygon>
+			<div v-if="newPoint.length > 0 ">
+				<div v-if=" docLayer.tools.length > 0">
+					<div v-for="(tool, index) in docLayer.tools" :key="index">
+						<div v-if="tool.type == 'Polygon'">
+							<l-polygon
+								:lat-lngs="polygonOrPolylineSimolationCoordinates"
+								v-if=" tool.isOn"
+								:dashArray="'10,10'"
+								:opacity="0.5"
+								:color="tool.color"
+								:fill="false"
+							/>
+							<l-polygon
+								:fillOpacity="0.4"
+								:fillColor="tool.fillColor"
+								:color="tool.color"
+								:lat-lngs="tool.coordinates"
+							>
+								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+							</l-polygon>
+						</div>
+						<div v-if="tool.type == 'Polyline'">
+							<l-polyline
+								:lat-lngs="polygonOrPolylineSimolationCoordinates"
+								:color="tool.color"
+								v-if="tool.isOn"
+								:dashArray="'10,10'"
+								:opacity="0.5"
+								:fill="false"
+							/>
+							<l-marker
+								v-for="(coordinate, index) in tool.coordinates"
+								:lat-lng="coordinate"
+								:key="index"
+								:icon="CircleIcon"
+							/>
+							<l-polyline :lat-lngs="tool.coordinates" :color="tool.color">
+								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+							</l-polyline>
+						</div>
+						<div v-if="tool.type == 'Point'">
+							<l-marker
+								:lat-lng="tool.coordinates"
+								:draggable="tool.isOn"
+								@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+								:icon="defaultIcon"
+							>
+								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+							</l-marker>
+						</div>
 					</div>
-				</div>
-
-				<div v-if="docLayer.Polylines.length">
-					<div v-for="(polyline, index) in docLayer.Polylines" :key="index">
-						<l-polyline
-							:lat-lngs="polygonOrPolylineSimolationCoordinates"
-							:color="polyline.color"
-							v-if="polyline.isOn"
-							:dashArray="'10,10'"
-							:opacity="0.5"
-							:fill="false"
-						/>
-						<l-marker
-							v-for="(coordinate, index) in polyline.coordinates"
-							:lat-lng="coordinate"
-							:key="index"
-							:icon="CircleIcon"
-						/>
-						<l-polyline :lat-lngs="polyline.coordinates" :color="polyline.color" />
-					</div>
-				</div>
-
-				<div v-if="docLayer.Points.length">
-					<l-marker
-						v-for="(point, index) in docLayer.Points"
-						:key="index"
-						:lat-lng="point.coordinates"
-						:draggable="point.isOn"
-						@update:latLng="UPDATE_THIS_POINT_COORDINATE"
-						:icon="defaultIcon"
-					>
-						<l-tooltip v-if="point.tooltip">{{ point.tooltip }}</l-tooltip>
-					</l-marker>
 				</div>
 			</div>
 			<!-- <l-marker
@@ -106,7 +104,7 @@
 				v-if="!newDocProp.OnTool.condition"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
-				<a @click="undoTools" v-if="newDocProp.OnTool.condition">
+				<a @click="undoTools" v-if="undoCondition">
 					<i class="fa fa-undo" aria-hidden="true"></i>
 				</a>
 			</l-control>
@@ -177,27 +175,29 @@ export default {
 		docLayer() {
 			return this.$store.getters.newDocLayer;
 		},
+		undoCondition() {
+			const onTool = this.newDocProp.OnTool;
+			if (!onTool.condition) return false;
+			const thisTool = this.docLayer.tools[onTool.index];
+			if (thisTool.type !== "Point") return true;
+			else return false;
+		},
 		polygonOrPolylineSimolationCoordinates() {
-			const type = this.newDocProp.OnTool.type;
+			const OnToolProp = this.newDocProp.OnTool;
+			if (!OnToolProp.condition) return [];
+			const OnTool = this.docLayer.tools[OnToolProp.index];
 			const isPolygonOrPolylineOn =
-				type == "Polygons" || type == "Polylines";
-
-			if (isPolygonOrPolylineOn && this.MouseCoordinate) {
-				const index = this.newDocProp.OnTool.index;
-				const thisTool = this.docLayer[type][index];
-
-				if (thisTool.coordinates.length > 0) {
-					const coordinates = [
-						...thisTool.coordinates,
-						{
-							lat: this.MouseCoordinate.lat,
-							lng: this.MouseCoordinate.lng
-						}
-					];
-					return coordinates;
+				OnTool.type == "Polygon" || OnTool.type == "Polyline";
+			if (!isPolygonOrPolylineOn && !this.MouseCoordinate) return [];
+			if (OnTool.coordinates.length < 1) return [];
+			const coordinates = [
+				...OnTool.coordinates,
+				{
+					lat: this.MouseCoordinate.lat,
+					lng: this.MouseCoordinate.lng
 				}
-			}
-			return [];
+			];
+			return coordinates;
 		},
 		dynamicSize() {
 			return [this.iconSize, this.iconSize * 1.15];
@@ -216,15 +216,11 @@ export default {
 			"UPDATE_NEW_DOC_INDEX"
 		]),
 		setClickCoordinates(c) {
-			// console.log(c.latlng);
-			this.$store.state.clickCoordinates = c.latlng;
 			const OnTool = this.newDocProp.OnTool;
-			if (OnTool.condition) {
-				if (OnTool.type == "Points") return;
-				const type = OnTool.type;
-				const index = OnTool.index;
-				this.docLayer[type][index].coordinates.push(c.latlng);
-			}
+			if (!OnTool.condition) return;
+			const thisTool = this.docLayer.tools[OnTool.index];
+			if (thisTool.type == "Point") return;
+			thisTool.coordinates.push(c.latlng);
 		},
 		setMouseCoordinate(m) {
 			this.$store.state.MouseCoordinate = m.latlng;
@@ -235,7 +231,7 @@ export default {
 		undoTools() {
 			const OnTool = this.newDocProp.OnTool;
 			if (OnTool.condition)
-				this.docLayer[OnTool.type][OnTool.index].coordinates.pop();
+				this.docLayer.tools[OnTool.index].coordinates.pop();
 		}
 	},
 	components: {

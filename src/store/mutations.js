@@ -18,16 +18,15 @@ import router from "../router";
 export default {
     ADD_COLOR(state, {
         color,
-        type,
         index,
         fillColor
     }) {
         const thisDoc = state.newPoint[state.newDocProp.index]
         if (!fillColor) {
-            thisDoc[type][index].color = color;
+            thisDoc.tools[index].color = color;
             return;
         } else {
-            thisDoc[type][index].fillColor = color
+            thisDoc.tools[index].fillColor = color
         }
     },
     UPDATE_NEW_DOC_INDEX(state) {
@@ -52,9 +51,7 @@ export default {
             id: fake_id,
             title: "",
             description: "",
-            Points: [],
-            Polygons: [],
-            Polylines: [],
+            tools: [],
             father_id: father_id,
             childs_id: [],
         };
@@ -64,11 +61,12 @@ export default {
         const coordinates = [c.lat, c.lng];
         const index = state.newDocProp.OnTool.index
         const thisLayer = state.newPoint[state.newDocProp.index]
-        const thisPoint = thisLayer.Points[index];
+        const thisPoint = thisLayer.tools[index];
         thisPoint.coordinates = coordinates;
     },
     SET_TOOL(state, type) {
         const obj = {
+            type: type,
             coordinates: [],
             color: "#194d33",
             colorpicker: false,
@@ -76,12 +74,12 @@ export default {
             fillColor: "blue",
             tooltip: null
         }
-        if (type == "Points") {
+        if (type == "Point") {
             obj.icon = "";
             obj.coordinates = state.mapCenter
         }
-        const index = state.newDocProp.index
-        state.newPoint[index][type].push(obj);
+        const thisLayer = state.newPoint[state.newDocProp.index]
+        thisLayer.tools.push(obj);
     },
     backToAllPoints(state) {
         situations(state.situations, 'allPoints')
@@ -100,21 +98,17 @@ export default {
     },
 
     UPDATE_ON_TOOL(state) {
-        const toolTypes = ["Points", "Polygons", "Polylines"];
+        const Docs = state.newPoint
         const onTool = state.newDocProp.OnTool;
         onTool.condition = false;
-        onTool.type = "";
         onTool.index = -1;
-        for (let i = 0; i < toolTypes.length; i++) {
-            const toolType = toolTypes[i];
-            const thisNewDoc = state.newPoint[state.newDocProp.index]
-            const thisTool = thisNewDoc[toolType];
+        for (let i = 0; i < Docs.length; i++) {
+            const thisDoc = Docs[i];
             const condition = (tool) => tool.isOn == true;
-            const OnToolindex = thisTool.findIndex(condition);
+            const OnToolindex = thisDoc.tools.findIndex(condition);
             const weHaveOnTool = OnToolindex >= 0;
             if (weHaveOnTool) {
                 onTool.condition = true;
-                onTool.type = toolType;
                 onTool.index = OnToolindex;
                 break;
             }

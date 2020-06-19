@@ -141,20 +141,6 @@ export default {
             sendinfoToast("درحال استفاده از ابزاری هستید");
         }
     },
-    async turnOnThisPoint({
-        commit,
-        state
-    }, index) {
-        const all_tools_is_off = !state.newDocProp.OnTool.condition;
-        if (all_tools_is_off) {
-            const ThisPoints = state.newPoint.Points[index];
-            ThisPoints.isOn = true;
-            await commit('UPDATE_ON_TOOL');
-            return;
-        } else {
-            sendinfoToast("ابتدا تغییر مختصات قبلی را ذخیره کنید");
-        }
-    },
     async addNewDoc({
         commit,
         getters,

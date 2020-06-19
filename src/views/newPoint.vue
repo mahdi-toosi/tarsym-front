@@ -38,86 +38,24 @@
 				</ul>
 				<input type="text" placeholder="توضیح" v-model="newPointDescription" />
 				<br />
-				<ul>
-					<li v-for="(point, index) in newDocLayer.Points" :key="index">
-						<input
-							type="text"
-							placeholder="new point"
-							:toolType="'Points'"
-							:index="index"
-							@input="changeTooltip"
-						/>
-						<chrome-color-picker :value="point.color" :toolType="'Points'" :index="index" />
-						<br />
-						<button @click="turnOnThisPoint(index)" v-if="!point.isOn">تغییر مختصات</button>
-						<button @click="savePointCoordinate(index)" class="btn-green" v-if="point.isOn">ثبت مختصات</button>
-						<button @click="deleteTool( 'Points', index)" class="btn-red">delete Point</button>
-					</li>
-				</ul>
-				<button @click="setTool('Points')">set point</button>
-				<br />
-				<br />
-				<ul>
-					<li v-for="(polygon, index) in newDocLayer.Polygons" :key="index">
-						<input
-							type="text"
-							placeholder="new polygon"
-							:toolType="'Polygons'"
-							:index="index"
-							@input="changeTooltip"
-						/>
+				<ul class="tools">
+					<li v-for="(tool, index) in newDocLayer.tools" :key="index">
+						<input type="text" :placeholder="`new ${tool.type}`" :index="index" @input="changeTooltip" />
+						<chrome-color-picker :value="tool.color" :index="index" />
 						<chrome-color-picker
-							:value="polygon.color"
-							:toolType="'Polygons'"
-							:index="index"
-							:fillColor="false"
-						/>
-						<chrome-color-picker
-							:value="polygon.color"
-							:toolType="'Polygons'"
+							:value="tool.color"
 							:index="index"
 							:fillColor="true"
+							v-if="tool.type == 'Polygon' "
 						/>
-						<br />
-						<button @click="toolSwitch( 'Polygons', index )" v-if="!polygon.isOn">redraw the polygon</button>
-						<button
-							@click="toolSwitch( 'Polygons', index , 'off')"
-							class="btn-green"
-							v-if="polygon.isOn"
-						>save the polygon</button>
-						<button @click="deleteTool( 'Polygons', index)" class="btn-red">delete Polygon</button>
+						<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
+						<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
+						<button @click="deleteTool(index)" class="btn-red">حذف</button>
 					</li>
 				</ul>
-				<button @click="setTool('Polygons')">set Polygon</button>
-				<br />
-				<br />
-				<!-- // ! polyline section -->
-				<ul>
-					<li v-for="(polyline, index) in newDocLayer.Polylines" :key="index">
-						<input
-							type="text"
-							placeholder="new polyline"
-							:toolType="'Polylines'"
-							:index="index"
-							@input="changeTooltip"
-						/>
-						<chrome-color-picker :value="polyline.color" :toolType="'Polylines'" :index="index" />
-						<br />
-						<button @click="toolSwitch( 'Polylines', index )" v-if="!polyline.isOn">redraw the polyline</button>
-						<button
-							@click="toolSwitch( 'Polylines', index , 'off')"
-							class="btn-green"
-							v-if="polyline.isOn"
-						>save the polyline</button>
-						<button @click="deleteTool( 'Polylines', index)" class="btn-red">delete Polygon</button>
-					</li>
-				</ul>
-				<button @click="setTool('Polylines')">set Polyline</button>
-				<br />
-				<br />
-				<br />
-				<br />
-				<br />
+				<button @click="setTool('Point')">set point</button>
+				<button @click="setTool('Polygon')">set Polygon</button>
+				<button @click="setTool('Polyline')">set Polyline</button>
 
 				<!-- <tinymce-editor
 					:init="{
@@ -160,42 +98,34 @@ export default {
 			"CreateNewPointMarker",
 			"setCategory",
 			"setTool",
-			"turnOnThisPoint",
 			"addNewDoc",
 			"goBack",
 			"goToChild"
 		]),
-		updateTooltips(type) {
-			const thisType = this.newDocLayer[type];
-			thisType.forEach((element, index) => {
-				const input = `input[toolType="${type}"][index="${index}"]`;
+		updateTooltips() {
+			this.newDocLayer.tools.forEach((element, index) => {
+				const input = `input[index="${index}"]`;
 				const thisInput = document.querySelector(input);
 				thisInput.value = element.tooltip;
 			});
 		},
-		deleteTool(type, index) {
-			this.newDocLayer[type].splice(index, 1);
-			this.updateTooltips(type);
+		deleteTool(index) {
+			this.newDocLayer.tools.splice(index, 1);
+			this.updateTooltips();
 			this.UPDATE_ON_TOOL();
 		},
 		changeTooltip(tag) {
-			const type = tag.target.attributes.toolType.value;
-			const key = tag.target.attributes.index.value;
+			const index = tag.target.attributes.index.value;
 			const val = tag.target.value;
-			this.newDocLayer[type][key].tooltip = val;
+			this.newDocLayer.tools[index].tooltip = val;
 		},
-		savePointCoordinate(key) {
-			const thisPoint = this.newDocLayer.Points[key];
-			thisPoint.isOn = false;
-			this.UPDATE_ON_TOOL();
-		},
-		toolSwitch(type, index, off = "on") {
-			const thisTool = this.newDocLayer[type][index];
+		toolSwitch(index, off = "on") {
+			const thisTool = this.newDocLayer.tools[index];
 			if (thisTool.isOn || off == "off") {
 				thisTool.isOn = false;
 				this.UPDATE_ON_TOOL();
 			} else {
-				this.makeToolOn(type, index);
+				this.makeToolOn(index);
 			}
 		},
 		alertSaveTheData() {
@@ -208,43 +138,22 @@ export default {
 				icon: "fa-close"
 			});
 		},
-		makeToolOn(type, index) {
+		makeToolOn(index) {
 			if (this.newDocProp.OnTool.condition) {
 				this.alertSaveTheData();
 				return;
 			} else {
-				const thisTool = this.newDocLayer[type][index];
+				const thisTool = this.newDocLayer.tools[index];
 				thisTool.isOn = true;
 				this.UPDATE_ON_TOOL();
 			}
 		},
 		keyPressed(e) {
-			const onTool = this.newDocProp.OnTool;
-			if (e.keyCode === 27 && onTool.condition) {
-				this.toolSwitch(onTool.type, onTool.index);
+			const OnTool = this.newDocProp.OnTool;
+			if (e.keyCode === 27 && OnTool.condition) {
+				this.toolSwitch(OnTool.index);
 				return;
 			} else return;
-		},
-		updateFromPicker(e) {
-			if (this.polygonTool.isOn) this.polygonTool.color = e.hex;
-			if (this.polylineTool.isOn) this.polylineTool.color = e.hex;
-		},
-		colorpickerSwitch(type, index, off = null) {
-			if (off == "off") {
-				document.removeEventListener("click", this.documentClick);
-				const toolTypes = ["Points", "Polygons", "Polylines"];
-				toolTypes.forEach(type => {
-					const toolType = toolTypes[type];
-					toolType.forEach(tool => {
-						tool.colorpicker = false;
-					});
-				});
-				return;
-			} else {
-				document.addEventListener("click", this.documentClick);
-				const thisTool = this.newDocLayer[type][index];
-				thisTool.colorpicker = true;
-			}
 		},
 		documentClick() {
 			// var el = this.$refs.colorpicker,
@@ -297,4 +206,15 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="stylus">
+.tools {
+	padding: 0px;
+
+	li {
+		border-top: 1px solid gray;
+		border-bottom: 1px solid gray;
+		padding: 5px;
+		list-style-type: none;
+	}
+}
+</style>

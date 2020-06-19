@@ -38,7 +38,6 @@ export default {
 	name: "Chrome",
 	mixins: [colorMixin],
 	props: {
-		toolType: String,
 		index: Number,
 		fillColor: { type: Boolean, default: false }
 	},
@@ -64,11 +63,9 @@ export default {
 		ADD_COLOR(color) {
 			const data = {
 				color: color,
-				type: this.toolType,
 				index: this.index,
 				fillColor: this.fillColor
 			};
-			console.log(this.fillColor);
 			this.$store.commit("ADD_COLOR", data);
 		},
 		childChange(data) {
