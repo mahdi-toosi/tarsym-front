@@ -1,5 +1,5 @@
 export default {
-    newPoint: [],
+    newDocs: [],
     newDocProp: {
         index: 0,
         id: 0,

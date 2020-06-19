@@ -26,8 +26,8 @@
 					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
 				</l-marker>
 			</div>
-			<div v-if="newPoint.length > 0 ">
-				<div v-if=" docLayer.tools.length > 0">
+			<div v-if="newDocs.length > 0 ">
+				<div v-if="docLayer.tools.length > 0">
 					<div v-for="(tool, index) in docLayer.tools" :key="index">
 						<div v-if="tool.type == 'Polygon'">
 							<l-polygon
@@ -166,7 +166,7 @@ export default {
 		...mapState([
 			"allPoints",
 			"mapCenter",
-			"newPoint",
+			"newDocs",
 			"newDocProp",
 			"zoom",
 			"MouseCoordinate",

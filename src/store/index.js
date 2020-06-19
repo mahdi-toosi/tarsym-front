@@ -28,10 +28,10 @@ export default new Vuex.Store({
     state,
     getters: {
         newDocLayer: state => {
-            return state.newPoint[state.newDocProp.index]
+            return state.newDocs[state.newDocProp.index]
         },
         lastAddedDocID: state => {
-            const Docs = state.newPoint
+            const Docs = state.newDocs
             if (Docs.length > 0) {
                 return Docs[Docs.length - 1].id
             }
@@ -40,7 +40,7 @@ export default new Vuex.Store({
         newDocChilds: (state, getters) => {
             const childsID = getters.newDocLayer.childs_id
             const childs = []
-            const Docs = state.newPoint
+            const Docs = state.newDocs
             childsID.forEach(id => {
                 const thisObject = (obj) => obj.id == id
                 const index = Docs.findIndex(thisObject);

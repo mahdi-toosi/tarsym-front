@@ -21,7 +21,7 @@ export default {
         index,
         fillColor
     }) {
-        const thisDoc = state.newPoint[state.newDocProp.index]
+        const thisDoc = state.newDocs[state.newDocProp.index]
         if (!fillColor) {
             thisDoc.tools[index].color = color;
             return;
@@ -33,7 +33,7 @@ export default {
         // const isNewDocRoute = router.currentRoute.name == "new point with prop"
         // if (isNewDocRoute) {
         const docID = router.currentRoute.params.id
-        const Docs = state.newPoint
+        const Docs = state.newDocs
         const thisObject = (obj) => obj.id == docID
         const index = Docs.findIndex(thisObject);
         state.newDocProp.index = index
@@ -55,12 +55,12 @@ export default {
             father_id: father_id,
             childs_id: [],
         };
-        state.newPoint.push(newDocObj)
+        state.newDocs.push(newDocObj)
     },
     UPDATE_THIS_POINT_COORDINATE(state, c) {
         const coordinates = [c.lat, c.lng];
         const index = state.newDocProp.OnTool.index
-        const thisLayer = state.newPoint[state.newDocProp.index]
+        const thisLayer = state.newDocs[state.newDocProp.index]
         const thisPoint = thisLayer.tools[index];
         thisPoint.coordinates = coordinates;
     },
@@ -78,7 +78,7 @@ export default {
             obj.icon = "";
             obj.coordinates = state.mapCenter
         }
-        const thisLayer = state.newPoint[state.newDocProp.index]
+        const thisLayer = state.newDocs[state.newDocProp.index]
         thisLayer.tools.push(obj);
     },
     backToAllPoints(state) {
@@ -89,8 +89,8 @@ export default {
         router.push({
             name: 'all points'
         })
-        state.newPoint.title = null
-        state.newPoint.description = null
+        state.newDocs.title = null
+        state.newDocs.description = null
     },
 
     mapCenterUpdated(state, center) {
@@ -98,7 +98,7 @@ export default {
     },
 
     UPDATE_ON_TOOL(state) {
-        const Docs = state.newPoint
+        const Docs = state.newDocs
         const onTool = state.newDocProp.OnTool;
         onTool.condition = false;
         onTool.index = -1;

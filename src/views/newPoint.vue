@@ -14,7 +14,7 @@
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
-		<div v-if="newPoint.length > 0">
+		<div v-if="newDocs.length > 0">
 			<section class="searchbar shadow">
 				<v-select
 					:options="categories"
@@ -167,7 +167,7 @@ export default {
 		...mapState([
 			"categories",
 			"category",
-			"newPoint",
+			"newDocs",
 			"newDocProp",
 			"polygonTool",
 			"polylineTool"

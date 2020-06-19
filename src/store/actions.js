@@ -151,7 +151,7 @@ export default {
             const fake_id = new Date().getTime();
             if (father_id !== 0) {
                 const index = state.newDocProp.index;
-                state.newPoint[index].childs_id.push(fake_id);
+                state.newDocs[index].childs_id.push(fake_id);
             }
             await commit('ADD_NEW_DOCUMENT', {
                 fake_id,
@@ -172,7 +172,7 @@ export default {
         const all_tools_is_off = !state.newDocProp.OnTool.condition;
         if (all_tools_is_off) {
             const thisDoc = state.newDocProp.index;
-            const father_id = state.newPoint[thisDoc].father_id;
+            const father_id = state.newDocs[thisDoc].father_id;
             const path = `/new-point/${father_id}`;
             await router.push(path);
             await commit('UPDATE_NEW_DOC_INDEX');
