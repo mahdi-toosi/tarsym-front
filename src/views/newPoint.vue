@@ -37,12 +37,13 @@
 					</li>
 				</ul>
 				<input type="text" placeholder="توضیح" v-model="newPointDescription" />
+				<date-picker :docLayer="newDocProp.index" />
 				<br />
 				<ul class="tools">
 					<li v-for="(tool, index) in newDocLayer.tools" :key="index">
 						<input type="text" :placeholder="`new ${tool.type}`" :index="index" @input="changeTooltip" />
-						<chrome-color-picker :value="tool.color" :index="index" />
-						<chrome-color-picker
+						<color-picker :value="tool.color" :index="index" />
+						<color-picker
 							:value="tool.color"
 							:index="index"
 							:fillColor="true"
@@ -83,7 +84,8 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
-import ChromeColorPicker from "@/components/sidebar/chrome";
+import colorPicker from "@/components/sidebar/colorPicker";
+import datePicker from "@/components/sidebar/datePicker";
 // * tinymce
 // import Editor from "@tinymce/tinymce-vue";
 export default {
@@ -201,7 +203,8 @@ export default {
 	},
 	mounted() {},
 	components: {
-		ChromeColorPicker
+		colorPicker,
+		datePicker
 	}
 };
 </script>

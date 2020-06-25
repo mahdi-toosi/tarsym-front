@@ -52,6 +52,7 @@ export default {
             title: "",
             description: "",
             tools: [],
+            date: null,
             father_id: father_id,
             childs_id: [],
         };
