@@ -1,0 +1,739 @@
+[{
+    "name": "add-square-button"
+}, {
+    "name": "adjust-contrast"
+}, {
+    "name": "align-justify"
+}, {
+    "name": "align-to-left"
+}, {
+    "name": "align-to-right"
+}, {
+    "name": "ambulance"
+}, {
+    "name": "anchor-shape"
+}, {
+    "name": "android-character-symbol"
+}, {
+    "name": "angle-arrow-down"
+}, {
+    "name": "angle-arrow-pointing-to-right"
+}, {
+    "name": "angle-pointing-to-left"
+}, {
+    "name": "apple-logo"
+}, {
+    "name": "archive-black-box"
+}, {
+    "name": "arrow-angle-pointing-down"
+}, {
+    "name": "arrow-down-on-black-circular-background"
+}, {
+    "name": "arrow-pointing-down"
+}, {
+    "name": "arrow-pointing-right-in-a-circle"
+}, {
+    "name": "arrow-pointing-to-left"
+}, {
+    "name": "arrow-pointing-to-right"
+}, {
+    "name": "arrow-up-on-a-black-circle-background"
+}, {
+    "name": "arrow-up"
+}, {
+    "name": "arrowhead-pointing-to-the-right"
+}, {
+    "name": "arrowhead-pointing-up-inside-a-square-box-outline"
+}, {
+    "name": "arrowheads-pointing-to-the-left"
+}, {
+    "name": "asterisk"
+}, {
+    "name": "ban-circle-symbol"
+}, {
+    "name": "bar-graph-on-a-rectangle"
+}, {
+    "name": "barcode"
+}, {
+    "name": "beaker"
+}, {
+    "name": "beer-jar-black-silhouette"
+}, {
+    "name": "bell-musical-tool"
+}, {
+    "name": "bitbucket-logotype-camera-lens-in-perspective"
+}, {
+    "name": "bitbucket-sign"
+}, {
+    "name": "bitcoin-logo"
+}, {
+    "name": "blank-file"
+}, {
+    "name": "bold-text-option"
+}, {
+    "name": "book"
+}, {
+    "name": "bookmark-black-shape"
+}, {
+    "name": "bookmark-white"
+}, {
+    "name": "branch-with-leaves-black-shape"
+}, {
+    "name": "briefcase"
+}, {
+    "name": "bug"
+}, {
+    "name": "building-front"
+}, {
+    "name": "bull-horn-announcer"
+}, {
+    "name": "bullseye"
+}, {
+    "name": "calendar-page-empty"
+}, {
+    "name": "calendar-with-spring-binder-and-date-blocks"
+}, {
+    "name": "camera-retro"
+}, {
+    "name": "caret-arrow-up"
+}, {
+    "name": "caret-down"
+}, {
+    "name": "center-text-alignment"
+}, {
+    "name": "certificate-shape"
+}, {
+    "name": "check-box-empty"
+}, {
+    "name": "check-mark"
+}, {
+    "name": "check-sign-in-a-rounded-black-square"
+}, {
+    "name": "check"
+}, {
+    "name": "checked-symbol"
+}, {
+    "name": "checkered-raised-flag"
+}, {
+    "name": "chevron-arrow-down"
+}, {
+    "name": "chevron-arrow-up"
+}, {
+    "name": "chevron-pointing-to-the-left"
+}, {
+    "name": "chevron-sign-down"
+}, {
+    "name": "chevron-sign-left"
+}, {
+    "name": "chevron-sign-to-right"
+}, {
+    "name": "chevron-up"
+}, {
+    "name": "circle-shape-outline"
+}, {
+    "name": "circle-with-an-arrow-pointing-to-left"
+}, {
+    "name": "circular-shape-silhouette"
+}, {
+    "name": "cloud-storage-download"
+}, {
+    "name": "cloud-storage-uploading-option"
+}, {
+    "name": "cocktail-glass"
+}, {
+    "name": "code-fork-symbol"
+}, {
+    "name": "code"
+}, {
+    "name": "coffee-cup-on-a-plate-black-silhouettes"
+}, {
+    "name": "cog-wheel-silhouette"
+}, {
+    "name": "collapse-window-option"
+}, {
+    "name": "comment-black-oval-bubble-shape"
+}, {
+    "name": "comment-white-oval-bubble"
+}, {
+    "name": "comments"
+}, {
+    "name": "compass-circular-variant"
+}, {
+    "name": "computer-tablet"
+}, {
+    "name": "copy-document"
+}, {
+    "name": "correct-symbol"
+}, {
+    "name": "couple-of-arrows-changing-places"
+}, {
+    "name": "credit-card"
+}, {
+    "name": "crop-symbol"
+}, {
+    "name": "cross-mark-on-a-black-circle-background"
+}, {
+    "name": "css-3-logo"
+}, {
+    "name": "cursor"
+}, {
+    "name": "cut"
+}, {
+    "name": "dashboard"
+}, {
+    "name": "delivery-truck-silhouette"
+}, {
+    "name": "desktop-monitor"
+}, {
+    "name": "dollar-symbol"
+}, {
+    "name": "dot-and-circle"
+}, {
+    "name": "double-angle-pointing-to-right"
+}, {
+    "name": "double-left-chevron"
+}, {
+    "name": "double-sided-eraser"
+}, {
+    "name": "double-strikethrough-option"
+}, {
+    "name": "down-arrow"
+}, {
+    "name": "download-symbol"
+}, {
+    "name": "download-to-storage-drive"
+}, {
+    "name": "dribbble-logo"
+}, {
+    "name": "dropbox-logo"
+}, {
+    "name": "earth-globe"
+}, {
+    "name": "edit-interface-sign"
+}, {
+    "name": "eject-symbol"
+}, {
+    "name": "envelope-of-white-paper"
+}, {
+    "name": "envelope"
+}, {
+    "name": "euro-currency-symbol"
+}, {
+    "name": "exchange-arrows"
+}, {
+    "name": "exclamation-sign"
+}, {
+    "name": "exclamation"
+}, {
+    "name": "external-link-square-with-an-arrow-in-right-diagonal"
+}, {
+    "name": "external-link-symbol"
+}, {
+    "name": "eye-open"
+}, {
+    "name": "eye-with-a-diagonal-line-interface-symbol-for-invisibility"
+}, {
+    "name": "facebook-logo-1"
+}, {
+    "name": "facebook-logo"
+}, {
+    "name": "facetime-button"
+}, {
+    "name": "fast-forward-arrows"
+}, {
+    "name": "female-silhouette"
+}, {
+    "name": "fighter-jet-silhouette"
+}, {
+    "name": "file"
+}, {
+    "name": "film-strip-with-two-photograms"
+}, {
+    "name": "filter-tool-black-shape"
+}, {
+    "name": "finger-of-a-hand-pointing-to-right-direction"
+}, {
+    "name": "fire-extinguisher"
+}, {
+    "name": "fire-symbol"
+}, {
+    "name": "flag-black-shape"
+}, {
+    "name": "flickr-website-logo-silhouette"
+}, {
+    "name": "fluffy-cloud-silhouette"
+}, {
+    "name": "folder-closed-black-shape"
+}, {
+    "name": "folder-white-shape"
+}, {
+    "name": "font-selection-editor"
+}, {
+    "name": "font-symbol-of-letter-a"
+}, {
+    "name": "fork-and-knife-silhouette"
+}, {
+    "name": "forward-button"
+}, {
+    "name": "four-black-squares"
+}, {
+    "name": "foursquare-button"
+}, {
+    "name": "frown"
+}, {
+    "name": "fullscreen-symbol"
+}, {
+    "name": "gamepad-console"
+}, {
+    "name": "gift-box"
+}, {
+    "name": "github-character"
+}, {
+    "name": "github-logo"
+}, {
+    "name": "github-sign"
+}, {
+    "name": "gittip-website-logo"
+}, {
+    "name": "google-plus-symbol-1"
+}, {
+    "name": "google-plus-symbol"
+}, {
+    "name": "great-britain-pound"
+}, {
+    "name": "group-profile-users"
+}, {
+    "name": "half-star-shape"
+}, {
+    "name": "hand-finger-pointing-down"
+}, {
+    "name": "hand-pointing-to-left-direction"
+}, {
+    "name": "hand-pointing-upward"
+}, {
+    "name": "hard-drive"
+}, {
+    "name": "heart-shape-outline"
+}, {
+    "name": "heart-shape-silhouette"
+}, {
+    "name": "home"
+}, {
+    "name": "horizontal-resize-option"
+}, {
+    "name": "hostpital-building"
+}, {
+    "name": "hotel-letter-h-sign-inside-a-black-rounded-square"
+}, {
+    "name": "html-5-logo"
+}, {
+    "name": "inbox"
+}, {
+    "name": "increase-size-option"
+}, {
+    "name": "indent-right"
+}, {
+    "name": "information-button"
+}, {
+    "name": "information-symbol"
+}, {
+    "name": "instagram-symbol"
+}, {
+    "name": "italicize-text"
+}, {
+    "name": "keyboard"
+}, {
+    "name": "left-arrow-1"
+}, {
+    "name": "left-arrow"
+}, {
+    "name": "left-indentation-option"
+}, {
+    "name": "legal-hammer"
+}, {
+    "name": "lemon"
+}, {
+    "name": "leter-a-inside-a-black-circle"
+}, {
+    "name": "letter-p-symbol"
+}, {
+    "name": "level-up"
+}, {
+    "name": "light-bulb"
+}, {
+    "name": "lightning-bolt-shadow"
+}, {
+    "name": "link-symbol"
+}, {
+    "name": "linkedin-letters"
+}, {
+    "name": "linkedin-sign"
+}, {
+    "name": "linux-logo"
+}, {
+    "name": "list-on-window"
+}, {
+    "name": "list-with-dots"
+}, {
+    "name": "list"
+}, {
+    "name": "listing-option"
+}, {
+    "name": "long-arrow-pointing-to-left"
+}, {
+    "name": "long-arrow-pointing-to-the-right"
+}, {
+    "name": "long-arrow-pointing-up"
+}, {
+    "name": "magic-wand"
+}, {
+    "name": "magnifying-glass"
+}, {
+    "name": "man"
+}, {
+    "name": "map-marker"
+}, {
+    "name": "maxcdn-website-logo"
+}, {
+    "name": "medical-kit"
+}, {
+    "name": "meh-face-emoticon"
+}, {
+    "name": "microphone-black-shape"
+}, {
+    "name": "microphone-off"
+}, {
+    "name": "minus-button"
+}, {
+    "name": "minus-sign-inside-a-black-circle"
+}, {
+    "name": "minus-sign-inside-a-black-rounded-square-shape"
+}, {
+    "name": "minus-sign-on-a-square-outline"
+}, {
+    "name": "minus-symbol"
+}, {
+    "name": "mobile-phone"
+}, {
+    "name": "moon-phase-outline"
+}, {
+    "name": "move-option"
+}, {
+    "name": "music-headphones"
+}, {
+    "name": "music-note-black-symbol"
+}, {
+    "name": "musical-bell-outline"
+}, {
+    "name": "nine-black-tiles"
+}, {
+    "name": "numbered-list"
+}, {
+    "name": "open-folder-outline"
+}, {
+    "name": "open-folder"
+}, {
+    "name": "open-laptop-computer"
+}, {
+    "name": "open-padlock-silhouette"
+}, {
+    "name": "open-wrench-tool-silhouette"
+}, {
+    "name": "padlock-unlock"
+}, {
+    "name": "padlock"
+}, {
+    "name": "paper-bill"
+}, {
+    "name": "paper-clip-outline"
+}, {
+    "name": "paper-push-pin"
+}, {
+    "name": "paste-from-clipboard"
+}, {
+    "name": "pause-symbol"
+}, {
+    "name": "pencil"
+}, {
+    "name": "photo-camera"
+}, {
+    "name": "picture"
+}, {
+    "name": "pinterest-logo"
+}, {
+    "name": "pinterest-sign"
+}, {
+    "name": "plane"
+}, {
+    "name": "plant-leaf-with-white-details"
+}, {
+    "name": "play-button"
+}, {
+    "name": "play-circle"
+}, {
+    "name": "play-sign"
+}, {
+    "name": "play-video-button"
+}, {
+    "name": "plus-black-symbol"
+}, {
+    "name": "plus-sign-in-a-black-circle"
+}, {
+    "name": "plus-symbol-in-a-rounded-black-square"
+}, {
+    "name": "power-button-off"
+}, {
+    "name": "printing-tool"
+}, {
+    "name": "puzzle-piece-silhouette"
+}, {
+    "name": "qr-code"
+}, {
+    "name": "question-mark-on-a-circular-black-background"
+}, {
+    "name": "question-sign"
+}, {
+    "name": "quote-left"
+}, {
+    "name": "reduced-volume"
+}, {
+    "name": "refresh-arrow"
+}, {
+    "name": "refresh-page-option"
+}, {
+    "name": "remove-button"
+}, {
+    "name": "remove-symbol"
+}, {
+    "name": "renren-social-network-of-china-logotype"
+}, {
+    "name": "reorder-option"
+}, {
+    "name": "reply-arrow"
+}, {
+    "name": "reply"
+}, {
+    "name": "resize-option"
+}, {
+    "name": "retweet-arrows-symbol"
+}, {
+    "name": "rewind-button"
+}, {
+    "name": "right-arrow-in-a-circle"
+}, {
+    "name": "right-chevron"
+}, {
+    "name": "right-quotation-mark"
+}, {
+    "name": "road-perspective"
+}, {
+    "name": "rounded-black-square-shape"
+}, {
+    "name": "rss-feed-button"
+}, {
+    "name": "rss-symbol"
+}, {
+    "name": "rupee-indian"
+}, {
+    "name": "save-file-option"
+}, {
+    "name": "screenshot"
+}, {
+    "name": "settings"
+}, {
+    "name": "share-option"
+}, {
+    "name": "share-post-symbol"
+}, {
+    "name": "share-symbol"
+}, {
+    "name": "shield"
+}, {
+    "name": "shopping-cart-black-shape"
+}, {
+    "name": "sign-in"
+}, {
+    "name": "sign-out-option"
+}, {
+    "name": "signal-bars"
+}, {
+    "name": "sitemap"
+}, {
+    "name": "skype-logo"
+}, {
+    "name": "small-rocket-ship-silhouette"
+}, {
+    "name": "smile"
+}, {
+    "name": "sort-arrows-couple-pointing-up-and-down"
+}, {
+    "name": "sort-by-alphabet"
+}, {
+    "name": "sort-by-attributes-interface-button-option"
+}, {
+    "name": "sort-by-attributes"
+}, {
+    "name": "sort-by-numeric-order"
+}, {
+    "name": "sort-by-order"
+}, {
+    "name": "sort-down"
+}, {
+    "name": "sort-reverse-alphabetical-order"
+}, {
+    "name": "sort-up"
+}, {
+    "name": "speech-bubbles-comment-option"
+}, {
+    "name": "spinner-of-dots"
+}, {
+    "name": "square-shape-shadow"
+}, {
+    "name": "stack-exchange-logo"
+}, {
+    "name": "stack-exchange-symbol"
+}, {
+    "name": "star-1"
+}, {
+    "name": "star-half-empty"
+}, {
+    "name": "star"
+}, {
+    "name": "step-backward"
+}, {
+    "name": "step-forward"
+}, {
+    "name": "stethoscope"
+}, {
+    "name": "strikethrough"
+}, {
+    "name": "suitcase-with-white-details"
+}, {
+    "name": "sun"
+}, {
+    "name": "superscript-text-formatting"
+}, {
+    "name": "table-grid"
+}, {
+    "name": "tag-black-shape"
+}, {
+    "name": "tags"
+}, {
+    "name": "tasks-list"
+}, {
+    "name": "telephone-handle-silhouette"
+}, {
+    "name": "telephone-symbol-button"
+}, {
+    "name": "terminal"
+}, {
+    "name": "text-file-1"
+}, {
+    "name": "text-file"
+}, {
+    "name": "text-height-adjustment"
+}, {
+    "name": "text-width"
+}, {
+    "name": "thin-arrowheads-pointing-down"
+}, {
+    "name": "three-small-square-shapes"
+}, {
+    "name": "thumb-down"
+}, {
+    "name": "thumbs-down-silhouette"
+}, {
+    "name": "thumbs-up-hand-symbol"
+}, {
+    "name": "thumbs-up"
+}, {
+    "name": "ticket"
+}, {
+    "name": "time"
+}, {
+    "name": "tint-drop"
+}, {
+    "name": "trash"
+}, {
+    "name": "trello-website-logo"
+}, {
+    "name": "trophy"
+}, {
+    "name": "tumblr-logo-1"
+}, {
+    "name": "tumblr-logo"
+}, {
+    "name": "turkish-lire-symbol"
+}, {
+    "name": "twitter-black-shape"
+}, {
+    "name": "twitter-sign"
+}, {
+    "name": "two-columns-layout"
+}, {
+    "name": "u-shaped-thick-magnet"
+}, {
+    "name": "umbrella-black-silhouette"
+}, {
+    "name": "underline-text-option"
+}, {
+    "name": "undo-arrow"
+}, {
+    "name": "unlink-symbol"
+}, {
+    "name": "up-arrow"
+}, {
+    "name": "up-chevron-button"
+}, {
+    "name": "upload-button"
+}, {
+    "name": "upload"
+}, {
+    "name": "user-md-symbol"
+}, {
+    "name": "user-shape"
+}, {
+    "name": "vertical-ellipsis"
+}, {
+    "name": "vertical-resizing-option"
+}, {
+    "name": "video-play-square-button"
+}, {
+    "name": "vimeo-square-logo"
+}, {
+    "name": "vintage-key-outline"
+}, {
+    "name": "vk-social-network-logo"
+}, {
+    "name": "volume-off"
+}, {
+    "name": "volume-up-interface-symbol"
+}, {
+    "name": "warning-sign-on-a-triangular-background"
+}, {
+    "name": "weibo-website-logo"
+}, {
+    "name": "wheelchair"
+}, {
+    "name": "white-flag-symbol"
+}, {
+    "name": "windows-logo-silhouette"
+}, {
+    "name": "x2-symbol-of-a-letter-and-a-number-subscript"
+}, {
+    "name": "xing-logo"
+}, {
+    "name": "xing-logotype"
+}, {
+    "name": "yen-symbol"
+}, {
+    "name": "youtube-logo-1"
+}, {
+    "name": "youtube-logo-2"
+}, {
+    "name": "youtube-logo"
+}, {
+    "name": "zoom-in"
+}, {
+    "name": "zoom-out"
+}]

@@ -12,8 +12,7 @@
 			@mousemove="setMouseCoordinate"
 		>
 			<l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-			<div v-if="allPoints.length">
+			<!-- <div v-if="allPoints.length">
 				<l-marker
 					:key="marker._id"
 					@click="readThisPoint"
@@ -22,10 +21,11 @@
 						lat: marker.location.coordinates[1],
 						lng: marker.location.coordinates[0],
 					}"
-				>
-					<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
-				</l-marker>
-			</div>
+			>-->
+			<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
+			<!-- </l-marker>
+			</div>-->
+
 			<div v-if="newDocs.length > 0 ">
 				<div v-if="docLayer.tools.length > 0">
 					<div v-for="(tool, index) in docLayer.tools" :key="index">
@@ -73,31 +73,26 @@
 								@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 								:icon="defaultIcon"
 							>
+								<l-icon
+									:icon-size="dynamicSize"
+									:icon-anchor="dynamicAnchor"
+									:icon-url="`/icons/${tool.icon}.svg`"
+									v-if="tool.icon"
+								>
+									<!-- <img
+										:width="dynamicSize"
+										:src="`/icons/${tool.icon}.svg`"
+										style="transform: rotate(20deg)"
+									/>-->
+								</l-icon>
 								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 							</l-marker>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- <l-marker
-				:lat-lng="markerLatLng"
-				:draggable="true"
-				@update:latLng="latUpdated"
-				@click="logsomthing"
-			>
-				<l-icon
-					:icon-size="dynamicSize"
-					:icon-anchor="dynamicAnchor"
-					icon-url="@/assets/icon for test.png"
-				>
-					<div class="headline">
-						<img :src="img" alt />
-					</div>
-				</l-icon>
-				<l-tooltip>Hello!</l-tooltip>
-			</l-marker>-->
-			<l-control-zoom position="bottomright"></l-control-zoom>
 
+			<l-control-zoom position="bottomright"></l-control-zoom>
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
@@ -121,15 +116,13 @@ import {
 	LPolygon,
 	LPolyline,
 	LTooltip,
-	// LIcon,
+	LIcon,
 	LControl,
 	LControlZoom
 } from "vue2-leaflet";
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
-
-// import imgadr from "@/assets/img/icon for test.png";
-// import points from "../../data/points.json";
 import { mapMutations, mapState } from "vuex";
+
 export default {
 	name: "leaflet-oprator-map",
 	data() {
@@ -154,12 +147,9 @@ export default {
 			popupAnchor: [4, -25]
 		});
 		return {
-			// bounds: null,
-			iconSize: 64,
+			iconSize: 35,
 			CircleIcon,
 			defaultIcon
-
-			// points: [],
 		};
 	},
 	computed: {
@@ -240,7 +230,7 @@ export default {
 		LMarker,
 		LPolygon,
 		LPolyline,
-		// LIcon,
+		LIcon,
 		LControl,
 		LControlZoom,
 		LControlPolylineMeasure,

@@ -42,13 +42,14 @@
 				<ul class="tools">
 					<li v-for="(tool, index) in newDocLayer.tools" :key="index">
 						<input type="text" :placeholder="`new ${tool.type}`" :index="index" @input="changeTooltip" />
-						<color-picker :value="tool.color" :index="index" />
+						<color-picker :value="tool.color" :index="index" v-if="!tool.type == 'Point' " />
 						<color-picker
 							:value="tool.color"
 							:index="index"
 							:fillColor="true"
 							v-if="tool.type == 'Polygon' "
 						/>
+						<icon-picker :index="index" v-if="tool.type == 'Point' " />
 						<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
 						<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
 						<button @click="deleteTool(index)" class="btn-red">حذف</button>
@@ -86,6 +87,7 @@
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import colorPicker from "@/components/sidebar/colorPicker";
 import datePicker from "@/components/sidebar/datePicker";
+import iconPicker from "@/components/sidebar/iconPicker";
 // * tinymce
 // import Editor from "@tinymce/tinymce-vue";
 export default {
@@ -204,7 +206,8 @@ export default {
 	mounted() {},
 	components: {
 		colorPicker,
-		datePicker
+		datePicker,
+		iconPicker
 	}
 };
 </script>

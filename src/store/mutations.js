@@ -16,6 +16,13 @@ function situations(situations, trueSituations) {
 import router from "../router";
 
 export default {
+    ADD_ICON(state, {
+        iconName,
+        index
+    }) {
+        const thisDoc = state.newDocs[state.newDocProp.index]
+        thisDoc.tools[index].icon = iconName;
+    },
     ADD_COLOR(state, {
         color,
         index,
@@ -76,7 +83,7 @@ export default {
             tooltip: null
         }
         if (type == "Point") {
-            obj.icon = "";
+            obj.icon = null;
             obj.coordinates = state.mapCenter
         }
         const thisLayer = state.newDocs[state.newDocProp.index]
