@@ -10,6 +10,7 @@
 			:options="{ zoomControl: false }"
 			@update:center="mapCenterUpdated"
 			@mousemove="setMouseCoordinate"
+			ref="myMap"
 		>
 			<l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 			<!-- <div v-if="allPoints.length">
@@ -120,9 +121,9 @@ import {
 	LControl,
 	LControlZoom
 } from "vue2-leaflet";
+require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 import { mapMutations, mapState } from "vuex";
-
 export default {
 	name: "leaflet-oprator-map",
 	data() {
@@ -223,6 +224,14 @@ export default {
 			if (OnTool.condition)
 				this.docLayer.tools[OnTool.index].coordinates.pop();
 		}
+	},
+	mounted() {
+		L.easyPrint({
+			position: "bottomleft",
+			sizeModes: ["Current"],
+			exportOnly: true,
+			filename: "tarsym"
+		}).addTo(this.$refs.myMap.mapObject);
 	},
 	components: {
 		LMap,

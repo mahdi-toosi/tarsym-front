@@ -212,7 +212,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
 .tools {
 	padding: 0px;
 
