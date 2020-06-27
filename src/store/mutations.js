@@ -1,18 +1,3 @@
-//  ! Set All situations false except this trueSituations  /////////////////////////////////////////////////
-function situations(situations, trueSituations) {
-    for (let key in situations) {
-        let hasSituationsProperty = Object.prototype.hasOwnProperty.call(situations, key);
-        if (hasSituationsProperty) {
-            if (key == trueSituations) {
-                // console.log(trueSituations);
-                situations[key] = true
-            } else {
-                situations[key] = false
-            }
-            // console.log(`${key} : ${situations[key]}`)
-        }
-    }
-}
 import router from "../router";
 
 export default {
@@ -95,8 +80,8 @@ export default {
         const thisLayer = state.newDocs[state.newDocProp.index]
         thisLayer.tools.push(obj);
     },
-    backToAllPoints(state) {
-        situations(state.situations, 'allPoints')
+    backToAllPoints() {
+        // situations(state.situations, 'allPoints')
     },
 
     closeNewPointMarker(state) {
@@ -135,14 +120,14 @@ export default {
     //  ! Set All Points we get ///////////////////////////////////////////////////////////////////
     setAllPoints(state, Points) {
         if (Points.length == 0) {
-            situations(state.situations, 'thereIsNoPoint')
+            // situations(state.situations, 'thereIsNoPoint')
             console.log('barai in category hichi sabt nashode');
         } else {
             state.allPoints = []
             Points.forEach(point => {
                 state.allPoints.push(point)
             });
-            situations(state.situations, 'allPoints')
+            // situations(state.situations, 'allPoints')
         }
     },
     //  ! Set Category ///////////////////////////////////////////////////////////////////
@@ -154,7 +139,7 @@ export default {
         if (state.situations.newPoint) {
             let sure = confirm('انصراف میدی ؟؟')
             if (sure) {
-                situations(state.situations, 'readPoint')
+                // situations(state.situations, 'readPoint')
             } else {
                 return
             }
@@ -170,7 +155,7 @@ export default {
             })
             state.readPoint = point[0];
         }
-        situations(state.situations, 'readPoint')
+        // situations(state.situations, 'readPoint')
     },
     //  ! Set The Current User ///////////////////////////////////////////////////////////////////
     setTheCurrentUser(state, CurrentUser) {
@@ -180,6 +165,6 @@ export default {
     setNewPointWithoutRefresh(state, data) {
         data.user = state.User
         state.allPoints.unshift(data);
-        situations(state.situations, 'allPoints')
+        // situations(state.situations, 'allPoints')
     },
 }

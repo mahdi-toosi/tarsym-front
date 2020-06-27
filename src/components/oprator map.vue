@@ -12,7 +12,8 @@
 			@mousemove="setMouseCoordinate"
 			ref="myMap"
 		>
-			<l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
+
 			<!-- <div v-if="allPoints.length">
 				<l-marker
 					:key="marker._id"
@@ -74,17 +75,8 @@
 								@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 								:icon="defaultIcon"
 							>
-								<l-icon
-									:icon-size="dynamicSize"
-									:icon-anchor="dynamicAnchor"
-									:icon-url="`/icons/${tool.icon}.svg`"
-									v-if="tool.icon"
-								>
-									<!-- <img
-										:width="dynamicSize"
-										:src="`/icons/${tool.icon}.svg`"
-										style="transform: rotate(20deg)"
-									/>-->
+								<l-icon :icon-size="dynamicSize" :icon-anchor="dynamicAnchor" v-if="tool.icon">
+									<i :class="tool.icon" :style="{fontSize: iconSize + 'px', color: tool.color}"></i>
 								</l-icon>
 								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 							</l-marker>
@@ -148,6 +140,9 @@ export default {
 			popupAnchor: [4, -25]
 		});
 		return {
+			// bingApiKey: "1mNX1ryO2Ny_3kzHceofAUIfZFIk8LEjB37y43NYPBzk-jgBLvPxc",
+			openStreetTileURL:
+				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			iconSize: 35,
 			CircleIcon,
 			defaultIcon

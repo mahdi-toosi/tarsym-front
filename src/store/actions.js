@@ -1,18 +1,3 @@
-//  ! Set All situations false except this trueSituations  /////////////////////////////////////////////////
-function situations(situations, trueSituations) {
-    for (let key in situations) {
-        let hasSituationsProperty = Object.prototype.hasOwnProperty.call(situations, key);
-        if (hasSituationsProperty) {
-            if (key == trueSituations) {
-                // console.log(trueSituations);
-                situations[key] = true
-            } else {
-                situations[key] = false
-            }
-            // console.log(`${key} : ${situations[key]}`)
-        }
-    }
-}
 import Vue from "vue";
 import router from "../router";
 
@@ -28,26 +13,26 @@ function sendinfoToast(text) {
 
 export default {
     async setCategory({
-        state,
+        // state,
         commit
     }, category) {
         await commit('setCategory', category)
 
         // * just for see all points select below! :D
-        if (state.situations.allPoints || state.situations.thereIsNoPoint) {
-            situations(state.situations, 'loading')
-            // * get the all points with this category
-            const url = '/point/' + category._id
-            try {
-                await this.$axios.get(url).then((res) => {
-                    if (res.status == 200) {
-                        commit('setAllPoints', res.data)
-                    }
-                })
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        // if (state.situations.allPoints || state.situations.thereIsNoPoint) {
+        //     situations(state.situations, 'loading')
+        //     // * get the all points with this category
+        //     const url = '/point/' + category._id
+        //     try {
+        //         await this.$axios.get(url).then((res) => {
+        //             if (res.status == 200) {
+        //                 commit('setAllPoints', res.data)
+        //             }
+        //         })
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
     },
 
     // ! post new point
@@ -121,12 +106,12 @@ export default {
 
     async getAllPoints({
         commit,
-        state
+        // state
     }) {
         const url = "/point/";
         const allPoints = await this.$axios.get(url);
         commit('setAllPoints', allPoints.data)
-        situations(state.situations, 'allPoints')
+        // situations(state.situations, 'allPoints')
     },
     async setTool({
         commit,

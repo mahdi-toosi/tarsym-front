@@ -30,7 +30,7 @@
 				</div>
 			</section>
 			<section class="newPoint shadow">
-				<quill-editor dir="ltr" v-model="newPointDescription" :options="quillEditorOptions" />
+				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
 				<v-select
 					:options="allTags"
 					:value="chosenTags"
@@ -47,7 +47,7 @@
 				<ul class="tools">
 					<li v-for="(tool, index) in newDocLayer.tools" :key="index">
 						<input type="text" :placeholder="`new ${tool.type}`" :index="index" @input="changeTooltip" />
-						<color-picker :value="tool.color" :index="index" v-if="!tool.type == 'Point' " />
+						<color-picker :value="tool.color" :index="index" />
 						<color-picker
 							:value="tool.color"
 							:index="index"
@@ -87,10 +87,15 @@ import { quillEditor } from "vue-quill-editor";
 export default {
 	data() {
 		const toolbarOptions = [
-			["bold", "italic", "underline", "blockquote", { align: [] }], // toggled buttons
-			[{ color: [] }, { background: [] }],
-			[{ header: [2, 3, 4, false] }],
-			["image"],
+			["blockquote", "italic", "underline", "bold"], // toggled buttons
+			[
+				"image",
+				{ background: [] },
+				{ color: [] },
+				{ align: [] },
+				{ direction: "rtl" }
+			],
+			[{ header: [2, 3, false] }],
 			["clean"]
 		];
 		return {

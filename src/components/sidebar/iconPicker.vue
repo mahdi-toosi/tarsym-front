@@ -5,8 +5,8 @@
 			<i class="fa fa-search" aria-hidden="true"></i>
 			<input type="text" v-model.lazy="search" placeholder="search in icons" v-debounce="500" />
 			<transition-group name="flip-list" tag="ul">
-				<li v-for="icon in filteredicons" :key="icon.name" @click="ADD_ICON(icon.name)">
-					<img :src="`/icons/${icon.name}.svg`" v-show="icon.show" />
+				<li v-for="icon in filteredicons" :key="icon" @click="ADD_ICON(icon)">
+					<i :class="icon"></i>
 				</li>
 			</transition-group>
 		</div>
@@ -28,15 +28,12 @@ export default {
 	},
 	computed: {
 		filteredicons() {
-			this.icons.forEach(icon => {
-				const icons = icon.name.toLowerCase();
-				const val = this.search.toLowerCase();
-				icon.show = false;
-				if (icons.includes(val)) {
-					icon.show = true;
-				}
+			const filteredIcons = this.icons.filter(name => {
+				const icon = name.toLowerCase();
+				const char = this.search.toLowerCase();
+				return icon.includes(char);
 			});
-			return this.icons;
+			return filteredIcons;
 		}
 	},
 	methods: {
@@ -66,11 +63,6 @@ export default {
 				this.hidePicker();
 			}
 		}
-	},
-	created() {
-		this.icons.forEach(icon => {
-			icon.show = true;
-		});
 	}
 };
 </script>
