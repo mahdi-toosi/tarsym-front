@@ -36,7 +36,7 @@
 						<button @click="goToChild(child.id)" class="btn btn-green">{{ child.id }}</button>
 					</li>
 				</ul>
-				<input type="text" placeholder="توضیح" v-model="newPointDescription" />
+				<quill-editor dir="ltr" v-model="newPointDescription" :options="quillEditorOptions" />
 				<date-picker :docLayer="newDocProp.index" />
 				<br />
 				<ul class="tools">
@@ -58,26 +58,6 @@
 				<button @click="setTool('Point')">set point</button>
 				<button @click="setTool('Polygon')">set Polygon</button>
 				<button @click="setTool('Polyline')">set Polyline</button>
-
-				<!-- <tinymce-editor
-					:init="{
-						plugins: 'image link media autolink ',
-						directionality: 'rtl',
-						language: 'fa_IR',
-						language_url: 'http://localhost:3030/js/fa_IR.js',
-						content_css: 'http://localhost:3030/css/tinymceStyles.css',
-						toolbar:
-							'alignright  aligncenter alignleft alignjustify bold italic underline link | image media  formatselect | forecolor | template  ',
-						menubar: '',
-						automatic_uploads: true,
-						file_picker_types: 'image media',
-						images_upload_url: 'upload.php',
-						images_upload_credentials: true,
-						images_upload_handler: function() {},
-						height: '60vh',
-					}"
-					v-model="newPointDescription"
-				></tinymce-editor>-->
 			</section>
 		</div>
 	</div>
@@ -88,11 +68,25 @@ import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import colorPicker from "@/components/sidebar/colorPicker";
 import datePicker from "@/components/sidebar/datePicker";
 import iconPicker from "@/components/sidebar/iconPicker";
-// * tinymce
-// import Editor from "@tinymce/tinymce-vue";
+// * quill Editor
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import { quillEditor } from "vue-quill-editor";
+
 export default {
 	data() {
+		const toolbarOptions = [
+			["bold", "italic", "underline", "blockquote", { align: [] }], // toggled buttons
+			[{ color: [] }, { background: [] }],
+			[{ header: [2, 3, 4, false] }],
+			["image"],
+			["clean"]
+		];
 		return {
+			quillEditorOptions: {
+				modules: { toolbar: toolbarOptions },
+				theme: "snow"
+			},
 			defaultColor: "#FF0000"
 		};
 	},
@@ -207,7 +201,8 @@ export default {
 	components: {
 		colorPicker,
 		datePicker,
-		iconPicker
+		iconPicker,
+		quillEditor
 	}
 };
 </script>
