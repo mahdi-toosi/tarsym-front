@@ -19,7 +19,7 @@
 				<v-select
 					:options="categories"
 					:value="category"
-					@input="setCategory"
+					@input="SET_CHOSEN_TAG"
 					label="name"
 					:searchable="false"
 					placeholder="موضوع"
@@ -30,13 +30,18 @@
 				</div>
 			</section>
 			<section class="newPoint shadow">
-				<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
-				<ul>
-					<li v-for="(child, index) in newDocChilds" :key="index">
-						<button @click="goToChild(child.id)" class="btn btn-green">{{ child.id }}</button>
-					</li>
-				</ul>
 				<quill-editor dir="ltr" v-model="newPointDescription" :options="quillEditorOptions" />
+				<v-select
+					:options="allTags"
+					:value="chosenTags"
+					@input="SET_CHOSEN_TAG"
+					label="name"
+					placeholder="تگ ..."
+					multiple
+					taggable
+					push-tags
+					dir="rtl"
+				/>
 				<date-picker :docLayer="newDocProp.index" />
 				<br />
 				<ul class="tools">
@@ -58,6 +63,12 @@
 				<button @click="setTool('Point')">set point</button>
 				<button @click="setTool('Polygon')">set Polygon</button>
 				<button @click="setTool('Polyline')">set Polyline</button>
+				<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
+				<ul>
+					<li v-for="(child, index) in newDocChilds" :key="index">
+						<button @click="goToChild(child.id)" class="btn btn-green">{{ child.id }}</button>
+					</li>
+				</ul>
 			</section>
 		</div>
 	</div>
@@ -85,13 +96,18 @@ export default {
 		return {
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
-				theme: "snow"
+				theme: "snow",
+				placeholder: "توضیحات ..."
 			},
 			defaultColor: "#FF0000"
 		};
 	},
 	methods: {
-		...mapMutations(["closeNewPointMarker", "UPDATE_ON_TOOL"]),
+		...mapMutations([
+			"closeNewPointMarker",
+			"UPDATE_ON_TOOL",
+			"SET_CHOSEN_TAG"
+		]),
 		...mapActions([
 			"CreateNewPointMarker",
 			"setCategory",
@@ -168,9 +184,15 @@ export default {
 			"newDocs",
 			"newDocProp",
 			"polygonTool",
-			"polylineTool"
+			"polylineTool",
+			"allTags"
 		]),
-		...mapGetters(["newDocLayer", "lastAddedDocID", "newDocChilds"]),
+		...mapGetters([
+			"newDocLayer",
+			"lastAddedDocID",
+			"newDocChilds",
+			"chosenTags"
+		]),
 		newPointTitle: {
 			get() {
 				return this.newDocLayer.title;

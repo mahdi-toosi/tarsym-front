@@ -48,6 +48,10 @@ export default new Vuex.Store({
             });
             return childs
         },
+        chosenTags: (state, getters) => {
+            const thisDoc = getters.newDocLayer
+            return thisDoc.tags
+        }
     },
     mutations,
     actions,

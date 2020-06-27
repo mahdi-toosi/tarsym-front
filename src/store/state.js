@@ -9,6 +9,7 @@ export default {
             index: -1
         },
     },
+    allTags: [],
     zoom: 13,
     MouseCoordinate: null,
     category: null,

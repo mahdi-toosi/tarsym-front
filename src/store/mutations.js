@@ -16,6 +16,11 @@ function situations(situations, trueSituations) {
 import router from "../router";
 
 export default {
+    SET_CHOSEN_TAG(state, tags) {
+        const thisDoc = state.newDocs[state.newDocProp.index]
+        console.log(tags);
+        thisDoc.tags = tags
+    },
     ADD_ICON(state, {
         iconName,
         index
@@ -58,6 +63,7 @@ export default {
             id: fake_id,
             title: "",
             description: "",
+            tags: [],
             tools: [],
             date: null,
             father_id: father_id,
