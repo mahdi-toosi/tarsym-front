@@ -58,15 +58,21 @@
 								:opacity="0.5"
 								:fill="false"
 							/>
-							<l-marker
+							<!-- <l-marker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
 								:key="index"
 								:icon="CircleIcon"
-							/>
+							/>-->
 							<l-polyline :lat-lngs="tool.coordinates" :color="tool.color">
 								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 							</l-polyline>
+							<polyline-decorator
+								:lat-lngs="tool.coordinates"
+								:types="['arrow' , 'icon']"
+								:icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }"
+								:arrow-color="tool.color"
+							/>
 						</div>
 						<div v-if="tool.type == 'Point'">
 							<l-marker
@@ -115,6 +121,7 @@ import {
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
+import polylineDecorator from "@/components/polyline-decorator";
 import { mapMutations, mapState } from "vuex";
 export default {
 	name: "leaflet-oprator-map",
@@ -238,6 +245,7 @@ export default {
 		LControl,
 		LControlZoom,
 		LControlPolylineMeasure,
+		polylineDecorator,
 		LTooltip
 	}
 };

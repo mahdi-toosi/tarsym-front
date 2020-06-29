@@ -18,11 +18,13 @@ const routes = [
     path: "/login",
     name: "Login",
     component: () => import("../components/Login.vue")
-  }, {
-    path: "/movingIcon",
-    name: "moving Icon",
-    component: () => import("../components/movingIcon.vue")
-  }, {
+  },
+  // {
+  //   path: "/movingIcon",
+  //   name: "moving Icon",
+  //   component: () => import("../components/movingIcon.vue")
+  // },
+  {
     path: "/",
     name: "all points",
     component: () => import("../views/allPoints.vue")
