@@ -69,10 +69,15 @@
 							</l-polyline>
 							<polyline-decorator
 								:lat-lngs="tool.coordinates"
+								:iconSize="tool.decorator.icon.size"
+								:iconName="tool.decorator.icon.name"
+								:iconColor="tool.decorator.icon.color"
+								:iconRotate="tool.decorator.icon.rotate"
+								:iconRepeat="tool.decorator.icon.repeat"
 								:types="['arrow' , 'icon']"
-								:icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }"
 								:arrow-color="tool.color"
 							/>
+							<!-- :icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }" -->
 						</div>
 						<div v-if="tool.type == 'Point'">
 							<l-marker

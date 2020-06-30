@@ -5,6 +5,8 @@
 </template>
 
 <script>
+//  this baster dosent edit and remove ! and bind !
+
 import L from "leaflet";
 import "leaflet-polylinedecorator";
 import { findRealParent, propsBinder } from "vue2-leaflet";
@@ -26,15 +28,25 @@ const props = {
 		type: String,
 		default: "red"
 	},
-	icon: {
-		type: Object,
-		default: {
-			name: "fa fa-plane",
-			color: null,
-			size: 35,
-			rotate: 0,
-			repeat: 30
-		}
+	iconName: {
+		type: String,
+		default: "fa fa-plane"
+	},
+	iconColor: {
+		type: String,
+		default: "#8d96ac"
+	},
+	iconSize: {
+		type: Number,
+		default: 35
+	},
+	iconRotate: {
+		type: Number,
+		default: 0
+	},
+	iconRepeat: {
+		type: Number,
+		default: 30
 	}
 };
 export default {
@@ -43,19 +55,15 @@ export default {
 	data: () => ({
 		ready: false
 	}),
-	watch: {
-		arrowColor() {
-			this.reBuild();
-		},
-		icon() {
-			this.reBuild();
-		}
-	},
+
 	methods: {
-		reBuild() {
+		remove() {
 			const parent = findRealParent(this.$parent);
 			parent.removeLayer(this);
 			this.ready = false;
+		},
+		reBuild() {
+			this.remove();
 			this.build();
 		},
 		build() {
@@ -82,10 +90,10 @@ export default {
 		},
 		HTMLicon() {
 			const HTMLicon = `
-				<i class="${this.icon.name}" 
-					style=" color: ${this.icon.color ? this.icon.color : this.arrowColor};
-								font-size: ${this.icon.size - 2}px; 
-								transform: rotate(${this.icon.rotate}deg)" 
+				<i class="${this.iconName}" 
+					style=" color: ${this.iconColor};
+								font-size: ${this.iconSize - 2}px; 
+								transform: rotate(${this.iconRotate}deg)" 
 					aria-hidden="true">
 				</i>`;
 			return HTMLicon;
@@ -98,8 +106,8 @@ export default {
 				className: "fontAwesomeIcon"
 			});
 			const obj = {
-				offset: "2%",
-				repeat: `${this.icon.repeat}%`,
+				offset: "0.5%",
+				repeat: `${this.iconRepeat}%`,
 				symbol: L.Symbol.marker({
 					rotate: true,
 					markerOptions: {
@@ -122,10 +130,37 @@ export default {
 			return obj;
 		},
 		dynamicSize() {
-			return [this.icon.size, this.icon.size * 1.15];
+			return [this.iconSize, this.iconSize * 1.15];
 		},
 		dynamicAnchor() {
-			return [this.icon.size / 2, this.icon.size * 1.15];
+			return [this.iconSize / 2, this.iconSize * 1.15];
+		}
+	},
+	watch: {
+		arrowColor() {
+			this.reBuild();
+		},
+		iconName() {
+			this.reBuild();
+		},
+		iconColor() {
+			this.reBuild();
+		},
+		iconSize() {
+			this.reBuild();
+		},
+		iconRotate() {
+			this.reBuild();
+		},
+		iconRepeat() {
+			this.reBuild();
+		},
+		latLngs(val) {
+			this.reBuild();
+			console.log(val);
+		},
+		types() {
+			this.reBuild();
 		}
 	},
 	mounted() {

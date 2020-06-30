@@ -1,6 +1,27 @@
 import router from "../router";
 
 export default {
+    CHANGE_ICON_REPEAT(state, tag) {
+        const index = tag.target.attributes.index.value;
+        const val = tag.target.value;
+        const thisDoc = state.newDocs[state.newDocProp.index]
+        const thisTool = thisDoc.tools[index]
+        thisTool.decorator.icon.repeat = Number(val);
+    },
+    CHANGE_ICON_ANGLE(state, tag) {
+        const index = tag.target.attributes.index.value;
+        const val = tag.target.value;
+        const thisDoc = state.newDocs[state.newDocProp.index]
+        const thisTool = thisDoc.tools[index]
+        thisTool.decorator.icon.rotate = Number(val);
+    },
+    CHANGE_ICON_SIZE(state, tag) {
+        const index = tag.target.attributes.index.value;
+        const val = tag.target.value;
+        const thisDoc = state.newDocs[state.newDocProp.index]
+        const thisTool = thisDoc.tools[index]
+        thisTool.decorator.icon.size = Number(val);
+    },
     SET_CHOSEN_TAG(state, tags) {
         const thisDoc = state.newDocs[state.newDocProp.index]
         console.log(tags);
@@ -11,19 +32,33 @@ export default {
         index
     }) {
         const thisDoc = state.newDocs[state.newDocProp.index]
+        if (thisDoc.tools[index].type == "Polyline") {
+            thisDoc.tools[index].decorator.icon.name = iconName
+            return
+        }
         thisDoc.tools[index].icon = iconName;
     },
     ADD_COLOR(state, {
         color,
         index,
-        fillColor
+        type,
+        secondaryColor
     }) {
         const thisDoc = state.newDocs[state.newDocProp.index]
-        if (!fillColor) {
-            thisDoc.tools[index].color = color;
-            return;
-        } else {
-            thisDoc.tools[index].fillColor = color
+        const thisTool = thisDoc.tools[index]
+        if (!secondaryColor) {
+            thisTool.color = color;
+            return
+        }
+        switch (type) {
+            case "Polygon":
+                thisTool.fillColor = color
+                break;
+            case "Polyline":
+                thisTool.decorator.icon.color = color
+                break;
+            default:
+                break;
         }
     },
     UPDATE_NEW_DOC_INDEX(state) {
@@ -76,6 +111,17 @@ export default {
         if (type == "Point") {
             obj.icon = null;
             obj.coordinates = state.mapCenter
+        }
+        if (type == "Polyline") {
+            obj.decorator = {
+                icon: {
+                    name: "fa fa-plane",
+                    color: null,
+                    size: 35,
+                    rotate: 0,
+                    repeat: 30
+                }
+            }
         }
         const thisLayer = state.newDocs[state.newDocProp.index]
         thisLayer.tools.push(obj);

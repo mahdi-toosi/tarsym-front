@@ -39,7 +39,8 @@ export default {
 	mixins: [colorMixin],
 	props: {
 		index: Number,
-		fillColor: { type: Boolean, default: false }
+		type: { type: String, default: "Polygon" },
+		secondaryColor: { type: Boolean, default: false }
 	},
 	components: {
 		saturation,
@@ -64,7 +65,8 @@ export default {
 			const data = {
 				color: color,
 				index: this.index,
-				fillColor: this.fillColor
+				type: this.type,
+				secondaryColor: this.secondaryColor
 			};
 			this.$store.commit("ADD_COLOR", data);
 		},

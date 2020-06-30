@@ -51,10 +51,41 @@
 						<color-picker
 							:value="tool.color"
 							:index="index"
-							:fillColor="true"
-							v-if="tool.type == 'Polygon' "
+							:type="tool.type"
+							:secondaryColor="true"
+							v-if="tool.type !== 'Point' "
 						/>
-						<icon-picker :index="index" v-if="tool.type == 'Point' " />
+						<icon-picker :index="index" v-if="tool.type !== 'Polygon' " />
+						<input
+							dir="ltr"
+							type="range"
+							:index="index"
+							v-if="tool.type == 'Polyline' "
+							min="10"
+							max="45"
+							value="35"
+							@input="CHANGE_ICON_SIZE"
+						/>
+						<input
+							dir="ltr"
+							type="range"
+							:index="index"
+							v-if="tool.type == 'Polyline' "
+							min="0"
+							max="360"
+							value="0"
+							@input="CHANGE_ICON_ANGLE"
+						/>
+						<input
+							dir="ltr"
+							type="range"
+							:index="index"
+							v-if="tool.type == 'Polyline' "
+							min="2"
+							max="100"
+							value="30"
+							@input="CHANGE_ICON_REPEAT"
+						/>
 						<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
 						<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
 						<button @click="deleteTool(index)" class="btn-red">حذف</button>
@@ -111,7 +142,10 @@ export default {
 		...mapMutations([
 			"closeNewPointMarker",
 			"UPDATE_ON_TOOL",
-			"SET_CHOSEN_TAG"
+			"SET_CHOSEN_TAG",
+			"CHANGE_ICON_SIZE",
+			"CHANGE_ICON_ANGLE",
+			"CHANGE_ICON_REPEAT"
 		]),
 		...mapActions([
 			"CreateNewPointMarker",
@@ -138,6 +172,7 @@ export default {
 			const val = tag.target.value;
 			this.newDocLayer.tools[index].tooltip = val;
 		},
+
 		toolSwitch(index, off = "on") {
 			const thisTool = this.newDocLayer.tools[index];
 			if (thisTool.isOn || off == "off") {
