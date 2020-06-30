@@ -162,10 +162,16 @@ export default {
 				thisInput.value = element.tooltip;
 			});
 		},
-		deleteTool(index) {
-			this.newDocLayer.tools.splice(index, 1);
-			this.updateTooltips();
-			this.UPDATE_ON_TOOL();
+		async deleteTool(index) {
+			await this.delete_polyine_decorator(index);
+			await this.newDocLayer.tools.splice(index, 1);
+			await this.updateTooltips();
+			await this.UPDATE_ON_TOOL();
+		},
+		delete_polyine_decorator(index) {
+			const thisTool = this.newDocLayer.tools[index];
+			if (thisTool.type !== "Polyline") return;
+			thisTool.coordinates = [];
 		},
 		changeTooltip(tag) {
 			const index = tag.target.attributes.index.value;

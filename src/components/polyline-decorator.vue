@@ -7,7 +7,13 @@
 <script>
 //  this baster dosent edit and remove ! and bind !
 
-import L from "leaflet";
+import {
+	polyline,
+	polylineDecorator,
+	DomEvent,
+	divIcon,
+	Symbol
+} from "leaflet";
 import "leaflet-polylinedecorator";
 import { findRealParent, propsBinder } from "vue2-leaflet";
 const props = {
@@ -67,9 +73,11 @@ export default {
 			this.build();
 		},
 		build() {
-			const polyline = L.polyline(this.latLngs);
-			this.mapObject = L.polylineDecorator(polyline, this.patterns());
-			L.DomEvent.on(this.mapObject, this.$listeners);
+			this.mapObject = polylineDecorator(
+				polyline(this.latLngs),
+				this.patterns()
+			);
+			DomEvent.on(this.mapObject, this.$listeners);
 			propsBinder(this, this.mapObject, props);
 			this.ready = true;
 			const parent = findRealParent(this.$parent);
@@ -99,7 +107,7 @@ export default {
 			return HTMLicon;
 		},
 		geticon() {
-			const fontAwesomeIcon = L.divIcon({
+			const fontAwesomeIcon = divIcon({
 				html: this.HTMLicon(),
 				iconSize: this.dynamicSize(),
 				iconAnchor: this.dynamicAnchor(),
@@ -108,7 +116,7 @@ export default {
 			const obj = {
 				offset: "0.5%",
 				repeat: `${this.iconRepeat}%`,
-				symbol: L.Symbol.marker({
+				symbol: Symbol.marker({
 					rotate: true,
 					markerOptions: {
 						icon: fontAwesomeIcon
@@ -121,7 +129,7 @@ export default {
 			const obj = {
 				offset: "100%",
 				repeat: 0,
-				symbol: L.Symbol.arrowHead({
+				symbol: Symbol.arrowHead({
 					pixelSize: 10,
 					polygon: false,
 					pathOptions: { stroke: true, color: this.arrowColor }
@@ -155,9 +163,8 @@ export default {
 		iconRepeat() {
 			this.reBuild();
 		},
-		latLngs(val) {
+		latLngs() {
 			this.reBuild();
-			console.log(val);
 		},
 		types() {
 			this.reBuild();
