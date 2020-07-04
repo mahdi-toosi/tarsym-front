@@ -2,8 +2,7 @@
 	<div class="date_time_picker_wrapper">
 		<button
 			@click="showPicker()"
-			class="btn"
-			:class="[ picked.year && picked.month ? 'btn-green' : 'btn-red' ]"
+			:class="[ picked.year && picked.month ? '' : 'btn-red' ]"
 		>{{ pickedDate ? `${picked.day} / ${picked.month} / ${picked.year}` : 'pick a Date' }}</button>
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>

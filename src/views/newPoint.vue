@@ -1,5 +1,5 @@
 <template>
-	<div class="allpoints">
+	<div class="newpoint">
 		<header>
 			<button class="btn btn-red ml1" @click="closeNewPointMarker">
 				منصرف شدم
@@ -15,22 +15,11 @@
 			</button>
 		</header>
 		<div v-if="newDocs.length > 0">
-			<section class="searchbar shadow">
-				<v-select
-					:options="categories"
-					:value="category"
-					@input="SET_CHOSEN_TAG"
-					label="name"
-					:searchable="false"
-					placeholder="موضوع"
-					dir="rtl"
-				/>
-				<div class="searchInput">
-					<input type="text" placeholder="عنوان" v-model="newPointTitle" />
-				</div>
-			</section>
-			<section class="newPoint shadow">
+			<section class="shadow">
+				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
 				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
+			</section>
+			<section class="tag_date_section">
 				<v-select
 					:options="allTags"
 					:value="chosenTags"
@@ -40,66 +29,89 @@
 					multiple
 					taggable
 					push-tags
-					dir="rtl"
+					class="tags"
 				/>
-				<date-picker :docLayer="newDocProp.index" />
+				<date-picker class="datepicker" :docLayer="newDocProp.index" />
+			</section>
+			<section class="tools shadow">
 				<br />
-				<ul class="tools">
-					<li v-for="(tool, index) in newDocLayer.tools" :key="index">
-						<input type="text" :placeholder="`new ${tool.type}`" :index="index" @input="changeTooltip" />
-						<color-picker :value="tool.color" :index="index" />
-						<color-picker
-							:value="tool.color"
-							:index="index"
-							:type="tool.type"
-							:secondaryColor="true"
-							v-if="tool.type !== 'Point' "
-						/>
-						<icon-picker :index="index" v-if="tool.type !== 'Polygon' " />
-						<input
-							dir="ltr"
-							type="range"
-							:index="index"
-							v-if="tool.type == 'Polyline' "
-							min="10"
-							max="45"
-							value="35"
-							@input="CHANGE_ICON_SIZE"
-						/>
-						<input
-							dir="ltr"
-							type="range"
-							:index="index"
-							v-if="tool.type == 'Polyline' "
-							min="0"
-							max="360"
-							value="0"
-							@input="CHANGE_ICON_ANGLE"
-						/>
-						<input
-							dir="ltr"
-							type="range"
-							:index="index"
-							v-if="tool.type == 'Polyline' "
-							min="2"
-							max="100"
-							value="30"
-							@input="CHANGE_ICON_REPEAT"
-						/>
-						<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-						<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
-						<button @click="deleteTool(index)" class="btn-red">حذف</button>
-					</li>
-				</ul>
-				<button @click="setTool('Point')">set point</button>
-				<button @click="setTool('Polygon')">set Polygon</button>
-				<button @click="setTool('Polyline')">set Polyline</button>
-				<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
-				<ul>
-					<li v-for="(child, index) in newDocChilds" :key="index">
-						<button @click="goToChild(child.id)" class="btn btn-green">{{ child.id }}</button>
-					</li>
-				</ul>
+				<div class="tabs">
+					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">tools</span>
+					<span @click="tabContent = 'layers'" :class="tabContent == 'layers' ? 'activeTab' : ''">layers</span>
+				</div>
+				<div class="content">
+					<div class="tools-content" v-show="tabContent == 'tools'">
+						<ul class="tools">
+							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
+								<div class="tool_header">
+									<icon-picker :index="index" v-if="tool.type !== 'Polygon' " />
+									<input
+										type="text"
+										class="tooltip"
+										:placeholder="`new ${tool.type}`"
+										:index="index"
+										@input="changeTooltip"
+									/>
+									<button @click="deleteTool(index)" class="delete_button">
+										<i class="far fa-trash-alt"></i>
+									</button>
+								</div>
+								<color-picker :value="tool.color" :index="index" />
+								<color-picker
+									:value="tool.color"
+									:index="index"
+									:type="tool.type"
+									:secondaryColor="true"
+									v-if="tool.type !== 'Point' "
+								/>
+								<input
+									dir="ltr"
+									type="range"
+									:index="index"
+									v-if="tool.type == 'Polyline' "
+									min="10"
+									max="45"
+									value="35"
+									@input="CHANGE_ICON_SIZE"
+								/>
+								<input
+									dir="ltr"
+									type="range"
+									:index="index"
+									v-if="tool.type !== 'Polygon' "
+									min="0"
+									max="360"
+									value="0"
+									@input="CHANGE_ICON_ANGLE"
+								/>
+								<input
+									dir="ltr"
+									type="range"
+									:index="index"
+									v-if="tool.type == 'Polyline' "
+									min="2"
+									max="100"
+									value="30"
+									@input="CHANGE_ICON_REPEAT"
+								/>
+								<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
+								<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
+							</li>
+						</ul>
+						<gooey-menu />
+					</div>
+					<div class="layers-content" v-show="tabContent == 'layers'">
+						<ul>
+							<li v-for="(child, index) in newDocChilds" :key="index">
+								<button
+									@click="goToChild(child.id)"
+									class="btn btn-green"
+								>{{ child.title ? child.title : child.id }}</button>
+							</li>
+						</ul>
+						<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
+					</div>
+				</div>
 			</section>
 		</div>
 	</div>
@@ -110,6 +122,7 @@ import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import colorPicker from "@/components/sidebar/colorPicker";
 import datePicker from "@/components/sidebar/datePicker";
 import iconPicker from "@/components/sidebar/iconPicker";
+import gooeyMenu from "@/components/sidebar/gooeyMenu";
 // * quill Editor
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -130,6 +143,7 @@ export default {
 			["clean"]
 		];
 		return {
+			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
 				theme: "snow",
@@ -150,7 +164,6 @@ export default {
 		...mapActions([
 			"CreateNewPointMarker",
 			"setCategory",
-			"setTool",
 			"addNewDoc",
 			"goBack",
 			"goToChild"
@@ -270,7 +283,8 @@ export default {
 		colorPicker,
 		datePicker,
 		iconPicker,
-		quillEditor
+		quillEditor,
+		gooeyMenu
 	}
 };
 </script>
