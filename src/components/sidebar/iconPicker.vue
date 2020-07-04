@@ -1,7 +1,7 @@
 <template>
-	<div class="icons_box_wrapper">
+	<div class="icons_box_wrapper" ref="iconpicker">
 		<i class="fas fa-map-marker-alt" @click="togglePicker()"></i>
-		<div class="icons_box" :class="[ displayPicker ? 'show' : '' ]">
+		<div class="icons_box" :class="displayPicker ? 'show' : '' ">
 			<i class="fa fa-search" aria-hidden="true"></i>
 			<input type="text" v-model.lazy="search" placeholder="search in icons" v-debounce="500" />
 			<transition-group name="flip-list" tag="ul">
@@ -57,7 +57,7 @@ export default {
 			this.displayPicker ? this.hidePicker() : this.showPicker();
 		},
 		documentClick(e) {
-			var el = document.querySelector(".icons_box_wrapper"),
+			var el = this.$refs.iconpicker,
 				target = e.target;
 			if (el !== target && !el.contains(target)) {
 				this.hidePicker();
