@@ -6,19 +6,19 @@
 </template>
 <script>
 import leafletOpratorMap from "@/components/oprator map";
-import sidebar from "@/components/sidebar/sidebar";
+import sidebar from "@/components/sidebar";
 import feathersClient from "@/store/feathers-client/feathers-client.js";
 
 export default {
 	name: "app",
 	components: {
 		leafletOpratorMap,
-		sidebar,
+		sidebar
 	},
 	computed: {
 		sockedDisonnected() {
 			return !feathersClient.io.connected;
-		},
+		}
 	},
 	methods: {
 		sendToast() {
@@ -29,25 +29,26 @@ export default {
 					keepOnHover: true,
 					containerClass: "info",
 					iconPack: "fontawesome",
-					icon: "fa-close",
+					icon: "fa-close"
 				});
 				// console.log("you are disconnected");
 			}
 		},
-		mahdi() {},
+		mahdi() {}
 	},
 	mounted() {
 		setInterval(() => {
 			this.sendToast();
 		}, 8 * 1000);
-	},
+	}
 };
 </script>
 
 <style lang="stylus">
 @import './assets/styles/main.styl';
-.toasted-primary{
+
+.toasted-primary {
 	border-radius: 5px !important;
-	box-shadow: 0px 0px 16px 0px rgba(5,108,158,0.52) !important;
+	box-shadow: 0px 0px 16px 0px rgba(5, 108, 158, 0.52) !important;
 }
 </style>

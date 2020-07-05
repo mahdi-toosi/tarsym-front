@@ -10,15 +10,15 @@ const routes = [
   //   name: "App",
   //   component: App
   // },
-  {
-    path: "/signup",
-    name: "Signup",
-    component: () => import("../components/Signup.vue")
-  }, {
-    path: "/login",
-    name: "Login",
-    component: () => import("../components/Login.vue")
-  },
+  // {
+  //   path: "/signup",
+  //   name: "Signup",
+  //   component: () => import("../components/just save/Signup.vue")
+  // }, {
+  //   path: "/login",
+  //   name: "Login",
+  //   component: () => import("../components/just save/Login.vue")
+  // },
   // {
   //   path: "/movingIcon",
   //   name: "moving Icon",
@@ -27,19 +27,19 @@ const routes = [
   {
     path: "/",
     name: "all points",
-    component: () => import("../views/allPoints.vue")
+    component: () => import("../views/allDocs.vue")
   }, {
     path: "/new-point/:id",
     name: "new point with prop",
-    component: () => import("../views/newPoint.vue")
+    component: () => import("../views/newDoc.vue")
   }, {
     path: "/new-point",
     name: "new point",
-    component: () => import("../views/newPoint.vue")
+    component: () => import("../views/newDoc.vue")
   }, {
     path: "/read-point",
     name: "read point",
-    component: () => import("../views/readPoint.vue")
+    component: () => import("../views/readDoc.vue")
   }
 ];
 

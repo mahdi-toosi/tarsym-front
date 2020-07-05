@@ -71,7 +71,7 @@
 import { mapState, mapMutations } from "vuex";
 
 // * Human readable time component
-import VueMomentsAgo from "@/components/sidebar/moments-ago.vue";
+import VueMomentsAgo from "@/components/moments-ago.vue";
 export default {
 	name: "readPointComponent",
 	data() {

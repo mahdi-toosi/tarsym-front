@@ -155,10 +155,10 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
-import colorPicker from "@/components/sidebar/colorPicker";
-import datePicker from "@/components/sidebar/datePicker";
-import iconPicker from "@/components/sidebar/iconPicker";
-import gooeyMenu from "@/components/sidebar/gooeyMenu";
+import colorPicker from "@/components/newDoc/colorPicker";
+import datePicker from "@/components/newDoc/datePicker";
+import iconPicker from "@/components/newDoc/iconPicker";
+import gooeyMenu from "@/components/newDoc/gooeyMenu";
 // * quill Editor
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
