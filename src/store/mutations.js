@@ -114,8 +114,10 @@ export default {
             obj.iconSize = 35
         }
         if (type == "Polyline") {
+            obj.showIcon = false
+            obj.showArrow = false
             obj.iconName = "fa fa-plane"
-            obj.iconColor = null
+            obj.iconColor = "#194d33"
             obj.iconSize = 35
             obj.iconRotate = 0
             obj.iconRepeat = 30

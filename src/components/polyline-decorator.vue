@@ -26,9 +26,13 @@ const props = {
 		custom: true,
 		default: true
 	},
-	types: {
-		type: Array,
-		default: () => []
+	showIcon: {
+		type: Boolean,
+		default: false
+	},
+	showArrow: {
+		type: Boolean,
+		default: false
 	},
 	arrowColor: {
 		type: String,
@@ -70,7 +74,7 @@ export default {
 		},
 		reBuild() {
 			this.remove();
-			this.build();
+			if (this.showIcon || this.showArrow) this.build();
 		},
 		build() {
 			this.mapObject = polylineDecorator(
@@ -85,15 +89,8 @@ export default {
 		},
 		patterns() {
 			let options = { patterns: [] };
-			this.types.forEach(type => {
-				if (type == "arrow") {
-					options.patterns.push(this.getArrow());
-					return;
-				} else if (type == "icon") {
-					options.patterns.push(this.geticon());
-					return;
-				}
-			});
+			if (this.showIcon) options.patterns.push(this.geticon());
+			if (this.showArrow) options.patterns.push(this.getArrow());
 			return options;
 		},
 		HTMLicon() {
@@ -145,6 +142,12 @@ export default {
 		}
 	},
 	watch: {
+		showArrow() {
+			this.reBuild();
+		},
+		showIcon() {
+			this.reBuild();
+		},
 		arrowColor() {
 			this.reBuild();
 		},

@@ -44,7 +44,9 @@
 						<ul class="tools">
 							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
 								<div class="tool_header">
-									<icon-picker :index="index" v-if="tool.type !== 'Polygon' " />
+									<icon-picker :index="index" v-if="tool.type == 'Point' " />
+									<icon-picker :index="index" v-if="tool.type == 'Polyline' && tool.showIcon" />
+									<i class="fas fa-long-arrow-alt-up" v-if="tool.type == 'Polyline' && !tool.showIcon" />
 									<input
 										type="text"
 										class="tooltip"
@@ -68,7 +70,7 @@
 									dir="ltr"
 									type="range"
 									:index="index"
-									v-if="tool.type !== 'Polygon' "
+									v-if="tool.type == 'Point'"
 									min="10"
 									max="45"
 									value="35"
@@ -78,7 +80,17 @@
 									dir="ltr"
 									type="range"
 									:index="index"
-									v-if="tool.type !== 'Polygon' "
+									v-if="tool.type == 'Polyline' && tool.showIcon "
+									min="10"
+									max="45"
+									value="35"
+									v-on:input="CHANGE_ICON({ $event , type: 'size' })"
+								/>
+								<input
+									dir="ltr"
+									type="range"
+									:index="index"
+									v-if="tool.type == 'Point'"
 									min="0"
 									max="360"
 									value="0"
@@ -88,7 +100,31 @@
 									dir="ltr"
 									type="range"
 									:index="index"
+									v-if="tool.type == 'Polyline' && tool.showIcon "
+									min="0"
+									max="360"
+									value="0"
+									@input="CHANGE_ICON({ $event, type:'angle' })"
+								/>
+								<input
+									type="checkbox"
+									:index="index"
+									@input="changePolylineDecorator"
+									changeType="icon"
+									v-if="tool.type == 'Polyline'"
+								/>
+								<input
+									type="checkbox"
+									:index="index"
+									@input="changePolylineDecorator"
+									changeType="arrow"
 									v-if="tool.type == 'Polyline' "
+								/>
+								<input
+									dir="ltr"
+									type="range"
+									:index="index"
+									v-if="tool.type == 'Polyline' && tool.showIcon"
 									min="2"
 									max="100"
 									value="30"
@@ -143,6 +179,7 @@ export default {
 			["clean"]
 		];
 		return {
+			mahdi: false,
 			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
@@ -186,8 +223,17 @@ export default {
 		},
 		changeTooltip(tag) {
 			const index = tag.target.attributes.index.value;
+			const thisTool = this.newDocLayer.tools[index];
 			const val = tag.target.value;
-			this.newDocLayer.tools[index].tooltip = val;
+			thisTool.tooltip = val;
+		},
+		changePolylineDecorator(tag) {
+			const index = tag.target.attributes.index.value;
+			const changeType = tag.target.attributes.changeType.value;
+			const thisTool = this.newDocLayer.tools[index];
+			const val = tag.target.checked;
+			if (changeType == "arrow") thisTool.showArrow = val;
+			if (changeType == "icon") thisTool.showIcon = val;
 		},
 
 		toolSwitch(index, off = "on") {

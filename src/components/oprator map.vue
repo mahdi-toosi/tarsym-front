@@ -73,13 +73,14 @@
 						</l-polyline>
 						<polyline-decorator
 							:lat-lngs="tool.coordinates"
-							:iconSize="tool.iconSize"
-							:iconName="tool.iconName"
-							:iconColor="tool.iconColor"
-							:iconRotate="tool.iconRotate"
-							:iconRepeat="tool.iconRepeat"
-							:types="['arrow' , 'icon']"
+							:icon-size="tool.iconSize"
+							:icon-name="tool.iconName"
+							:icon-color="tool.iconColor"
+							:icon-rotate="tool.iconRotate"
+							:icon-repeat="tool.iconRepeat"
 							:arrow-color="tool.color"
+							:show-icon="tool.showIcon"
+							:show-arrow="tool.showArrow"
 						/>
 						<!-- :icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }" -->
 					</div>
