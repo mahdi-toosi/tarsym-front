@@ -1,42 +1,42 @@
 import router from "../router";
 
+function thisDoc(state) {
+    return state.newDocs[state.newDocProp.index]
+}
 export default {
-    CHANGE_ICON_REPEAT(state, tag) {
-        const index = tag.target.attributes.index.value;
-        const val = tag.target.value;
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        const thisTool = thisDoc.tools[index]
-        thisTool.decorator.icon.repeat = Number(val);
-    },
-    CHANGE_ICON_ANGLE(state, tag) {
-        const index = tag.target.attributes.index.value;
-        const val = tag.target.value;
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        const thisTool = thisDoc.tools[index]
-        thisTool.decorator.icon.rotate = Number(val);
-    },
-    CHANGE_ICON_SIZE(state, tag) {
-        const index = tag.target.attributes.index.value;
-        const val = tag.target.value;
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        const thisTool = thisDoc.tools[index]
-        thisTool.decorator.icon.size = Number(val);
+
+    CHANGE_ICON(state, obj) {
+        const index = obj.$event.target.attributes.index.value;
+        const val = Number(obj.$event.target.value);
+        const thisTool = thisDoc(state).tools[index]
+        switch (obj.type) {
+            case 'angle':
+                thisTool.iconRotate = val;
+                break;
+            case 'size':
+                thisTool.iconSize = val;
+                break;
+            case 'repeat':
+                thisTool.iconRepeat = val;
+                break;
+            default:
+                break;
+        }
     },
     SET_CHOSEN_TAG(state, tags) {
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        console.log(tags);
-        thisDoc.tags = tags
+        // console.log(tags);
+        thisDoc(state).tags = tags
     },
     ADD_ICON(state, {
         iconName,
         index
     }) {
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        if (thisDoc.tools[index].type == "Polyline") {
-            thisDoc.tools[index].decorator.icon.name = iconName
+        const thisTool = thisDoc(state).tools[index]
+        if (thisTool.type == "Polyline") {
+            thisTool.iconName = iconName
             return
         }
-        thisDoc.tools[index].icon = iconName;
+        thisTool.icon = iconName;
     },
     ADD_COLOR(state, {
         color,
@@ -44,8 +44,7 @@ export default {
         type,
         secondaryColor
     }) {
-        const thisDoc = state.newDocs[state.newDocProp.index]
-        const thisTool = thisDoc.tools[index]
+        const thisTool = thisDoc(state).tools[index]
         if (!secondaryColor) {
             thisTool.color = color;
             return
@@ -55,7 +54,7 @@ export default {
                 thisTool.fillColor = color
                 break;
             case "Polyline":
-                thisTool.decorator.icon.color = color
+                thisTool.iconColor = color
                 break;
             default:
                 break;
@@ -111,17 +110,15 @@ export default {
         if (type == "Point") {
             obj.icon = null;
             obj.coordinates = state.mapCenter
+            obj.iconRotate = 0
+            obj.iconSize = 35
         }
         if (type == "Polyline") {
-            obj.decorator = {
-                icon: {
-                    name: "fa fa-plane",
-                    color: null,
-                    size: 35,
-                    rotate: 0,
-                    repeat: 30
-                }
-            }
+            obj.iconName = "fa fa-plane"
+            obj.iconColor = null
+            obj.iconSize = 35
+            obj.iconRotate = 0
+            obj.iconRepeat = 30
         }
         const thisLayer = state.newDocs[state.newDocProp.index]
         thisLayer.tools.push(obj);

@@ -28,10 +28,11 @@
 			<!-- </l-marker>
 			</div>-->
 
-			<div v-if="newDocs.length > 0 ">
-				<div v-if="docLayer.tools.length > 0">
-					<div v-for="(tool, index) in docLayer.tools" :key="index">
-						<div v-if="tool.type == 'Polygon'">
+			<div v-if="newDocs.length > 0 && docLayer.tools.length > 0">
+				<!-- <div v-if="docLayer.tools.length > 0"> -->
+				<div v-for="(tool, index) in docLayer.tools" :key="index">
+					<div v-if="tool.type == 'Polygon'">
+						<span v-if="newDocProp.OnTool.condition">
 							<l-polygon
 								:lat-lngs="polygonOrPolylineSimolationCoordinates"
 								v-if=" tool.isOn"
@@ -40,16 +41,18 @@
 								:color="tool.color"
 								:fill="false"
 							/>
-							<l-polygon
-								:fillOpacity="0.4"
-								:fillColor="tool.fillColor"
-								:color="tool.color"
-								:lat-lngs="tool.coordinates"
-							>
-								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
-							</l-polygon>
-						</div>
-						<div v-if="tool.type == 'Polyline'">
+						</span>
+						<l-polygon
+							:fillOpacity="0.4"
+							:fillColor="tool.fillColor"
+							:color="tool.color"
+							:lat-lngs="tool.coordinates"
+						>
+							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+						</l-polygon>
+					</div>
+					<div v-if="tool.type == 'Polyline'">
+						<span v-if="newDocProp.OnTool.condition">
 							<l-polyline
 								:lat-lngs="polygonOrPolylineSimolationCoordinates"
 								:color="tool.color"
@@ -58,42 +61,53 @@
 								:opacity="0.5"
 								:fill="false"
 							/>
-							<!-- <l-marker
+						</span>
+						<!-- <l-marker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
 								:key="index"
 								:icon="CircleIcon"
-							/>-->
-							<l-polyline :lat-lngs="tool.coordinates" :color="tool.color">
-								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
-							</l-polyline>
-							<polyline-decorator
-								:lat-lngs="tool.coordinates"
-								:iconSize="tool.decorator.icon.size"
-								:iconName="tool.decorator.icon.name"
-								:iconColor="tool.decorator.icon.color"
-								:iconRotate="tool.decorator.icon.rotate"
-								:iconRepeat="tool.decorator.icon.repeat"
-								:types="['arrow' , 'icon']"
-								:arrow-color="tool.color"
-							/>
-							<!-- :icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }" -->
-						</div>
-						<div v-if="tool.type == 'Point'">
-							<l-marker
-								:lat-lng="tool.coordinates"
-								:draggable="tool.isOn"
-								@update:latLng="UPDATE_THIS_POINT_COORDINATE"
-								:icon="defaultIcon"
+						/>-->
+						<l-polyline :lat-lngs="tool.coordinates" :color="tool.color">
+							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+						</l-polyline>
+						<polyline-decorator
+							:lat-lngs="tool.coordinates"
+							:iconSize="tool.iconSize"
+							:iconName="tool.iconName"
+							:iconColor="tool.iconColor"
+							:iconRotate="tool.iconRotate"
+							:iconRepeat="tool.iconRepeat"
+							:types="['arrow' , 'icon']"
+							:arrow-color="tool.color"
+						/>
+						<!-- :icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }" -->
+					</div>
+					<div v-if="tool.type == 'Point'">
+						<l-marker
+							:lat-lng="tool.coordinates"
+							:draggable="tool.isOn"
+							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+							:icon="defaultIcon"
+						>
+							<l-icon
+								:icon-size="dynamicSize(tool.iconSize)"
+								:icon-anchor="dynamicAnchor(tool.iconSize)"
+								v-if="tool.icon"
 							>
-								<l-icon :icon-size="dynamicSize" :icon-anchor="dynamicAnchor" v-if="tool.icon">
-									<i :class="tool.icon" :style="{fontSize: iconSize + 'px', color: tool.color}"></i>
-								</l-icon>
-								<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
-							</l-marker>
-						</div>
+								<i
+									:class="tool.icon"
+									:style="{ fontSize: tool.iconSize + 'px', 
+												color: tool.color , 
+												transform: 'rotate('+tool.iconRotate+ 'deg)' 
+												}"
+								/>
+							</l-icon>
+							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
+						</l-marker>
 					</div>
 				</div>
+				<!-- </div> -->
 			</div>
 
 			<l-control-zoom position="bottomright"></l-control-zoom>
@@ -155,7 +169,6 @@ export default {
 			// bingApiKey: "1mNX1ryO2Ny_3kzHceofAUIfZFIk8LEjB37y43NYPBzk-jgBLvPxc",
 			openStreetTileURL:
 				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-			iconSize: 35,
 			CircleIcon,
 			defaultIcon
 		};
@@ -182,7 +195,6 @@ export default {
 		},
 		polygonOrPolylineSimolationCoordinates() {
 			const OnToolProp = this.newDocProp.OnTool;
-			if (!OnToolProp.condition) return [];
 			const OnTool = this.docLayer.tools[OnToolProp.index];
 			const isPolygonOrPolylineOn =
 				OnTool.type == "Polygon" || OnTool.type == "Polyline";
@@ -196,15 +208,15 @@ export default {
 				}
 			];
 			return coordinates;
-		},
-		dynamicSize() {
-			return [this.iconSize, this.iconSize * 1.15];
-		},
-		dynamicAnchor() {
-			return [this.iconSize / 2, this.iconSize * 1.15];
 		}
 	},
 	methods: {
+		dynamicSize(iconSize) {
+			return [iconSize, iconSize * 1.15];
+		},
+		dynamicAnchor(iconSize) {
+			return [iconSize / 2, iconSize * 1.15];
+		},
 		...mapMutations([
 			"newPointMarker",
 			"closeNewPointMarker",

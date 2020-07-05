@@ -68,11 +68,11 @@
 									dir="ltr"
 									type="range"
 									:index="index"
-									v-if="tool.type == 'Polyline' "
+									v-if="tool.type !== 'Polygon' "
 									min="10"
 									max="45"
 									value="35"
-									@input="CHANGE_ICON_SIZE"
+									v-on:input="CHANGE_ICON({ $event , type: 'size' })"
 								/>
 								<input
 									dir="ltr"
@@ -82,7 +82,7 @@
 									min="0"
 									max="360"
 									value="0"
-									@input="CHANGE_ICON_ANGLE"
+									@input="CHANGE_ICON({ $event, type:'angle' })"
 								/>
 								<input
 									dir="ltr"
@@ -92,7 +92,7 @@
 									min="2"
 									max="100"
 									value="30"
-									@input="CHANGE_ICON_REPEAT"
+									@input="CHANGE_ICON({ $event, type: 'repeat' })"
 								/>
 								<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
 								<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
@@ -157,9 +157,7 @@ export default {
 			"closeNewPointMarker",
 			"UPDATE_ON_TOOL",
 			"SET_CHOSEN_TAG",
-			"CHANGE_ICON_SIZE",
-			"CHANGE_ICON_ANGLE",
-			"CHANGE_ICON_REPEAT"
+			"CHANGE_ICON"
 		]),
 		...mapActions([
 			"CreateNewPointMarker",
