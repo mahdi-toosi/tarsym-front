@@ -7,7 +7,7 @@
 <script>
 import leafletOpratorMap from "@/components/oprator map";
 import sidebar from "@/components/sidebar";
-import feathersClient from "@/store/feathers-client/feathers-client.js";
+// import feathersClient from "@/store/feathers-client/feathers-client.js";
 
 export default {
 	name: "app",
@@ -16,29 +16,29 @@ export default {
 		sidebar
 	},
 	computed: {
-		sockedDisonnected() {
-			return !feathersClient.io.connected;
-		}
+		// sockedDisonnected() {
+		// 	return !feathersClient.io.connected;
+		// }
 	},
 	methods: {
-		sendToast() {
-			if (this.sockedDisonnected) {
-				this.$toasted.error("you are Disconnected", {
-					position: "bottom-left",
-					duration: 5 * 1000,
-					keepOnHover: true,
-					containerClass: "info",
-					iconPack: "fontawesome",
-					icon: "fa-close"
-				});
-				// console.log("you are disconnected");
-			}
-		}
+		// sendToast() {
+		// 	if (this.sockedDisonnected) {
+		// 		this.$toasted.error("you are Disconnected", {
+		// 			position: "bottom-left",
+		// 			duration: 5 * 1000,
+		// 			keepOnHover: true,
+		// 			containerClass: "info",
+		// 			iconPack: "fontawesome",
+		// 			icon: "fa-close"
+		// 		});
+		// console.log("you are disconnected");
+		// }
+		// }
 	},
 	mounted() {
-		setInterval(() => {
-			this.sendToast();
-		}, 8 * 1000);
+		// setInterval(() => {
+		// 	this.sendToast();
+		// }, 8 * 1000);
 	}
 };
 </script>

@@ -62,7 +62,9 @@ export default {
 			return false;
 		}
 	},
-	mounted() {}
+	created() {
+		console.log(this.$FeathersVuex.api);
+	}
 };
 </script>
 

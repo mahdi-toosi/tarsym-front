@@ -10,11 +10,12 @@ const routes = [
   //   name: "App",
   //   component: App
   // },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: () => import("../components/just save/Signup.vue")
+  },
   // {
-  //   path: "/signup",
-  //   name: "Signup",
-  //   component: () => import("../components/just save/Signup.vue")
-  // }, {
   //   path: "/login",
   //   name: "Login",
   //   component: () => import("../components/just save/Login.vue")
