@@ -1,12 +1,16 @@
 <template>
 	<div class="icons_box_wrapper" ref="iconpicker">
-		<i class="fas fa-map-marker-alt" @click="togglePicker()"></i>
+		<i
+			:class=" logo ? logo : 'fas fa-map-marker-alt' "
+			:style="{color: logoColor}"
+			@click="togglePicker()"
+		/>
 		<div class="icons_box" :class="displayPicker ? 'show' : '' ">
-			<i class="fa fa-search" aria-hidden="true"></i>
+			<i class="fa fa-search" aria-hidden="true" />
 			<input type="text" v-model.lazy="search" placeholder="search in icons" v-debounce="500" />
 			<transition-group name="flip-list" tag="ul">
 				<li v-for="icon in filteredicons" :key="icon" @click="ADD_ICON(icon)">
-					<i :class="icon"></i>
+					<i :class="icon" />
 				</li>
 			</transition-group>
 		</div>
@@ -34,6 +38,18 @@ export default {
 				return icon.includes(char);
 			});
 			return filteredIcons;
+		},
+		logo() {
+			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDoc = this.$store.state.newDocs[thisDocLayer];
+			const thisTool = thisDoc.tools[this.index];
+			return thisTool.iconName;
+		},
+		logoColor() {
+			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDoc = this.$store.state.newDocs[thisDocLayer];
+			const thisTool = thisDoc.tools[this.index];
+			return thisTool.secondaryColor;
 		}
 	},
 	methods: {

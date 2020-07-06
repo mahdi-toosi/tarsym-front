@@ -141,6 +141,9 @@ export default {
 			return [this.iconSize / 2, this.iconSize * 1.15];
 		}
 	},
+	beforeDestroy() {
+		this.remove();
+	},
 	watch: {
 		showArrow() {
 			this.reBuild();

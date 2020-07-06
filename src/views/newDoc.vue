@@ -36,102 +36,16 @@
 			<section class="tools shadow">
 				<br />
 				<div class="tabs">
-					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">tools</span>
 					<span @click="tabContent = 'layers'" :class="tabContent == 'layers' ? 'activeTab' : ''">layers</span>
+					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">tools</span>
 				</div>
 				<div class="content">
 					<div class="tools-content" v-show="tabContent == 'tools'">
 						<ul class="tools">
 							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
-								<div class="tool_header">
-									<icon-picker :index="index" v-if="tool.type == 'Point' " />
-									<icon-picker :index="index" v-if="tool.type == 'Polyline' && tool.showIcon" />
-									<i class="fas fa-long-arrow-alt-up" v-if="tool.type == 'Polyline' && !tool.showIcon" />
-									<input
-										type="text"
-										class="tooltip"
-										:placeholder="`new ${tool.type}`"
-										:index="index"
-										@input="changeTooltip"
-									/>
-									<button @click="deleteTool(index)" class="delete_button">
-										<i class="far fa-trash-alt"></i>
-									</button>
-								</div>
-								<color-picker :value="tool.color" :index="index" />
-								<color-picker
-									:value="tool.color"
-									:index="index"
-									:type="tool.type"
-									:secondaryColor="true"
-									v-if="tool.type !== 'Point' "
-								/>
-								<input
-									dir="ltr"
-									type="range"
-									:index="index"
-									v-if="tool.type == 'Point'"
-									min="10"
-									max="45"
-									value="35"
-									v-on:input="CHANGE_ICON({ $event , type: 'size' })"
-								/>
-								<input
-									dir="ltr"
-									type="range"
-									:index="index"
-									v-if="tool.type == 'Polyline' && tool.showIcon "
-									min="10"
-									max="45"
-									value="35"
-									v-on:input="CHANGE_ICON({ $event , type: 'size' })"
-								/>
-								<input
-									dir="ltr"
-									type="range"
-									:index="index"
-									v-if="tool.type == 'Point'"
-									min="0"
-									max="360"
-									value="0"
-									@input="CHANGE_ICON({ $event, type:'angle' })"
-								/>
-								<input
-									dir="ltr"
-									type="range"
-									:index="index"
-									v-if="tool.type == 'Polyline' && tool.showIcon "
-									min="0"
-									max="360"
-									value="0"
-									@input="CHANGE_ICON({ $event, type:'angle' })"
-								/>
-								<input
-									type="checkbox"
-									:index="index"
-									@input="changePolylineDecorator"
-									changeType="icon"
-									v-if="tool.type == 'Polyline'"
-								/>
-								<input
-									type="checkbox"
-									:index="index"
-									@input="changePolylineDecorator"
-									changeType="arrow"
-									v-if="tool.type == 'Polyline' "
-								/>
-								<input
-									dir="ltr"
-									type="range"
-									:index="index"
-									v-if="tool.type == 'Polyline' && tool.showIcon"
-									min="2"
-									max="100"
-									value="30"
-									@input="CHANGE_ICON({ $event, type: 'repeat' })"
-								/>
-								<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-								<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
+								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" />
+								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" />
+								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" />
 							</li>
 						</ul>
 						<gooey-menu />
@@ -154,17 +68,20 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
-import colorPicker from "@/components/newDoc/colorPicker";
-import datePicker from "@/components/newDoc/datePicker";
-import iconPicker from "@/components/newDoc/iconPicker";
-import gooeyMenu from "@/components/newDoc/gooeyMenu";
 // * quill Editor
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import { quillEditor } from "vue-quill-editor";
+// * components
+import datePicker from "@/components/newDoc/datePicker";
+import gooeyMenu from "@/components/newDoc/gooeyMenu";
+import newPoint from "@/components/newDoc/newPoint";
+import newPolygon from "@/components/newDoc/newPolygon";
+import newPolyline from "@/components/newDoc/newPolyline";
+import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
+	name: "newDoc",
 	data() {
 		const toolbarOptions = [
 			["blockquote", "italic", "underline", "bold"], // toggled buttons
@@ -190,106 +107,24 @@ export default {
 		};
 	},
 	methods: {
-		...mapMutations([
-			"closeNewPointMarker",
-			"UPDATE_ON_TOOL",
-			"SET_CHOSEN_TAG",
-			"CHANGE_ICON"
-		]),
+		...mapMutations(["closeNewPointMarker", "SET_CHOSEN_TAG"]),
 		...mapActions([
 			"CreateNewPointMarker",
-			"setCategory",
 			"addNewDoc",
 			"goBack",
 			"goToChild"
-		]),
-		updateTooltips() {
-			this.newDocLayer.tools.forEach((element, index) => {
-				const input = `input[index="${index}"]`;
-				const thisInput = document.querySelector(input);
-				thisInput.value = element.tooltip;
-			});
-		},
-		async deleteTool(index) {
-			await this.delete_polyine_decorator(index);
-			await this.newDocLayer.tools.splice(index, 1);
-			await this.updateTooltips();
-			await this.UPDATE_ON_TOOL();
-		},
-		delete_polyine_decorator(index) {
-			const thisTool = this.newDocLayer.tools[index];
-			if (thisTool.type !== "Polyline") return;
-			thisTool.coordinates = [];
-		},
-		changeTooltip(tag) {
-			const index = tag.target.attributes.index.value;
-			const thisTool = this.newDocLayer.tools[index];
-			const val = tag.target.value;
-			thisTool.tooltip = val;
-		},
-		changePolylineDecorator(tag) {
-			const index = tag.target.attributes.index.value;
-			const changeType = tag.target.attributes.changeType.value;
-			const thisTool = this.newDocLayer.tools[index];
-			const val = tag.target.checked;
-			if (changeType == "arrow") thisTool.showArrow = val;
-			if (changeType == "icon") thisTool.showIcon = val;
-		},
+		])
 
-		toolSwitch(index, off = "on") {
-			const thisTool = this.newDocLayer.tools[index];
-			if (thisTool.isOn || off == "off") {
-				thisTool.isOn = false;
-				this.UPDATE_ON_TOOL();
-			} else {
-				this.makeToolOn(index);
-			}
-		},
-		alertSaveTheData() {
-			const msg = "ابتدا دیتا های وارد شده قبلی را ذخیره کنید";
-			this.$toasted.error(msg, {
-				position: "bottom-left",
-				duration: 5 * 1000,
-				keepOnHover: true,
-				iconPack: "fontawesome",
-				icon: "fa-close"
-			});
-		},
-		makeToolOn(index) {
-			if (this.newDocProp.OnTool.condition) {
-				this.alertSaveTheData();
-				return;
-			} else {
-				const thisTool = this.newDocLayer.tools[index];
-				thisTool.isOn = true;
-				this.UPDATE_ON_TOOL();
-			}
-		},
-		keyPressed(e) {
-			const OnTool = this.newDocProp.OnTool;
-			if (e.keyCode === 27 && OnTool.condition) {
-				this.toolSwitch(OnTool.index);
-				return;
-			} else return;
-		},
-		documentClick() {
-			// var el = this.$refs.colorpicker,
-			// 	target = e.target;
-			// if (el !== target && !el.contains(target)) {
-			// 	this.colorpickerSwitch("off");
-			// }
-		}
+		// keyPressed(e) {
+		// 	const OnTool = this.newDocProp.OnTool;
+		// 	if (e.keyCode === 27 && OnTool.condition) {
+		// 		this.toolSwitch(OnTool.index);
+		// 		return;
+		// 	} else return;
+		// },
 	},
 	computed: {
-		...mapState([
-			"categories",
-			"category",
-			"newDocs",
-			"newDocProp",
-			"polygonTool",
-			"polylineTool",
-			"allTags"
-		]),
+		...mapState(["newDocs", "newDocProp", "allTags"]),
 		...mapGetters([
 			"newDocLayer",
 			"lastAddedDocID",
@@ -320,15 +155,15 @@ export default {
 			await this.addNewDoc();
 			return;
 		}
-		document.addEventListener("keyup", this.keyPressed);
+		// document.addEventListener("keyup", this.keyPressed);
 	},
-	mounted() {},
 	components: {
-		colorPicker,
 		datePicker,
-		iconPicker,
 		quillEditor,
-		gooeyMenu
+		gooeyMenu,
+		newPoint,
+		newPolygon,
+		newPolyline
 	}
 };
 </script>

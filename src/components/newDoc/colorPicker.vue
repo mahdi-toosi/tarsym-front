@@ -39,7 +39,6 @@ export default {
 	mixins: [colorMixin],
 	props: {
 		index: Number,
-		type: { type: String, default: "Polygon" },
 		secondaryColor: { type: Boolean, default: false }
 	},
 	components: {
@@ -65,7 +64,6 @@ export default {
 			const data = {
 				color: color,
 				index: this.index,
-				type: this.type,
 				secondaryColor: this.secondaryColor
 			};
 			this.$store.commit("ADD_COLOR", data);

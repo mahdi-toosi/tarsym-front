@@ -1,14 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import state from "./state";
+import getters from "./getters";
+import actions from "./actions/";
+import mutations from "./mutations/";
+import auth from "./feathers-client/auth";
 import {
     FeathersVuex
 }
 from "./feathers-client/feathers-client";
-import auth from "./feathers-client/auth";
-import state from "./state";
-import actions from "./actions";
-import mutations from "./mutations";
-import getters from "./getters";
 
 Vue.use(Vuex);
 Vue.use(FeathersVuex);

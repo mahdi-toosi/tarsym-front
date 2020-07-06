@@ -33,8 +33,7 @@ export default {
 				});
 				// console.log("you are disconnected");
 			}
-		},
-		mahdi() {}
+		}
 	},
 	mounted() {
 		setInterval(() => {

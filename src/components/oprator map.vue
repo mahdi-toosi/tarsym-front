@@ -44,7 +44,7 @@
 						</span>
 						<l-polygon
 							:fillOpacity="0.4"
-							:fillColor="tool.fillColor"
+							:fillColor="tool.secondaryColor"
 							:color="tool.color"
 							:lat-lngs="tool.coordinates"
 						>
@@ -75,7 +75,7 @@
 							:lat-lngs="tool.coordinates"
 							:icon-size="tool.iconSize"
 							:icon-name="tool.iconName"
-							:icon-color="tool.iconColor"
+							:icon-color="tool.secondaryColor"
 							:icon-rotate="tool.iconRotate"
 							:icon-repeat="tool.iconRepeat"
 							:arrow-color="tool.color"
@@ -94,12 +94,12 @@
 							<l-icon
 								:icon-size="dynamicSize(tool.iconSize)"
 								:icon-anchor="dynamicAnchor(tool.iconSize)"
-								v-if="tool.icon"
+								v-if="tool.iconName"
 							>
 								<i
-									:class="tool.icon"
+									:class="tool.iconName"
 									:style="{ fontSize: tool.iconSize + 'px', 
-												color: tool.color , 
+												color: tool.secondaryColor , 
 												transform: 'rotate('+tool.iconRotate+ 'deg)' 
 												}"
 								/>
@@ -181,8 +181,7 @@ export default {
 			"newDocs",
 			"newDocProp",
 			"zoom",
-			"MouseCoordinate",
-			"polylineTool"
+			"MouseCoordinate"
 		]),
 		docLayer() {
 			return this.$store.getters.newDocLayer;
@@ -212,20 +211,18 @@ export default {
 		}
 	},
 	methods: {
+		...mapMutations([
+			"newPointMarker",
+			"mapCenterUpdated",
+			"readThisPoint",
+			"UPDATE_THIS_POINT_COORDINATE"
+		]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
 		},
 		dynamicAnchor(iconSize) {
 			return [iconSize / 2, iconSize * 1.15];
 		},
-		...mapMutations([
-			"newPointMarker",
-			"closeNewPointMarker",
-			"mapCenterUpdated",
-			"readThisPoint",
-			"UPDATE_THIS_POINT_COORDINATE",
-			"UPDATE_NEW_DOC_INDEX"
-		]),
 		setClickCoordinates(c) {
 			const OnTool = this.newDocProp.OnTool;
 			if (!OnTool.condition) return;
