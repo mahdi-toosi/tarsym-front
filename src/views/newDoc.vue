@@ -150,7 +150,7 @@ export default {
 	},
 	async created() {
 		const lastAddedDocID = this.lastAddedDocID;
-		const routeID = this.$route.params.id;
+		const routeID = Number(this.$route.params.id);
 		if (routeID !== lastAddedDocID) {
 			await this.addNewDoc();
 			return;

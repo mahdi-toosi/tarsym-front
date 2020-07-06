@@ -140,4 +140,20 @@ export default {
         }
         // }
     },
+    ADD_NEW_DOCUMENT(state, {
+        fake_id,
+        father_id
+    }) {
+        const newDocObj = {
+            id: fake_id,
+            title: "",
+            description: "",
+            tags: [],
+            tools: [],
+            date: null,
+            father_id: father_id,
+            childs_id: [],
+        };
+        state.newDocs.push(newDocObj)
+    },
 }
