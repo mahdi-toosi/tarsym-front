@@ -5,12 +5,12 @@
 				منصرف شدم
 				<i class="fas fa-times"></i>
 			</button>
-			<button class="btn btn-green" @click="CreateNewPointMarker">
+			<button class="btn btn-green" @click="Create_Documents()">
 				ثبت
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
-			<button class="btn btn-back" @click="goBack()" v-if="newDocProp.id !== newDocProp.rootID">
+			<button class="btn btn-back" @click="goBack()" v-if="newDocProp.index !== 0">
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
@@ -59,7 +59,7 @@
 								>{{ child.title ? child.title : child.id }}</button>
 							</li>
 						</ul>
-						<button @click="addNewDoc(newDocProp.id)" class="btn btn-blue">add child</button>
+						<button @click="addChild()" class="btn btn-blue">add child</button>
 					</div>
 				</div>
 			</section>
@@ -109,10 +109,11 @@ export default {
 	methods: {
 		...mapMutations(["closeNewPointMarker", "SET_CHOSEN_TAG"]),
 		...mapActions([
-			"CreateNewPointMarker",
+			"Create_Documents",
 			"addNewDoc",
 			"goBack",
-			"goToChild"
+			"goToChild",
+			"addChild"
 		])
 
 		// keyPressed(e) {
@@ -149,6 +150,8 @@ export default {
 		}
 	},
 	async created() {
+		// console.log(this.newDocLayer.father_id);
+
 		const lastAddedDocID = this.lastAddedDocID;
 		const routeID = Number(this.$route.params.id);
 		if (routeID !== lastAddedDocID) {

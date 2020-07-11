@@ -56,6 +56,9 @@ export default {
         // console.log(tags);
         thisDoc(state).tags = tags
     },
+    ADD_DATE(state, picked) {
+        thisDoc(state).date = picked;
+    },
     ADD_ICON(state, {
         iconName,
         index
@@ -85,11 +88,13 @@ export default {
             colorpicker: false,
             secondaryColor: "blue",
         }
+        const is_searchable_point = thisDoc(state).tools.length < 1
         if (type == "Point") {
             obj.iconName = null
             obj.coordinates = state.mapCenter
             obj.iconRotate = 0
             obj.iconSize = 35
+            if (is_searchable_point) obj.searchable = true
         }
         if (type == "Polyline") {
             obj.showIcon = false
@@ -124,6 +129,7 @@ export default {
         const index = state.newDocProp.OnTool.index
         const thisLayer = state.newDocs[state.newDocProp.index]
         const thisPoint = thisLayer.tools[index];
+        // console.log(thisPoint);
         thisPoint.coordinates = coordinates;
     },
     UPDATE_NEW_DOC_INDEX(state) {
@@ -135,12 +141,12 @@ export default {
         const index = Docs.findIndex(thisObject);
         state.newDocProp.index = index
         state.newDocProp.id = Docs[index].id
-        if (Docs.length == 1) {
-            state.newDocProp.rootID = Docs[index].id
-        }
+        // if (Docs.length == 1) {
+        // state.newDocProp.rootID = Docs[index].id
+        // }
         // }
     },
-    ADD_NEW_DOCUMENT(state, {
+    SET_NEW_DOCUMENT(state, {
         fake_id,
         father_id
     }) {
@@ -151,9 +157,17 @@ export default {
             tags: [],
             tools: [],
             date: null,
-            father_id: father_id,
+            father_id: String(father_id),
             childs_id: [],
         };
         state.newDocs.push(newDocObj)
     },
+    ADD_NEW_ID(state, {
+        doc,
+        id
+    }) {
+        // console.log(doc.father_id == 0);
+        doc.previous_id = doc.id
+        doc.id = id
+    }
 }

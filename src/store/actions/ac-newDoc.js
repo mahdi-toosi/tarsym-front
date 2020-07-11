@@ -29,28 +29,74 @@ export default {
             sendinfoToast('info', "درحال استفاده از ابزاری هستید");
         }
     },
+    async addChild({
+        state,
+        dispatch
+    }) {
+        const thisDoc = state.newDocs[state.newDocProp.index],
+            new_id = await dispatch('Create_this_Document', thisDoc);
+        if (new_id) {
+            await dispatch('addNewDoc', new_id);
+            await dispatch('Update_father_Document_for_this_child', new_id);
+        }
+    },
     async addNewDoc({
         commit,
         getters,
-        state
+        state,
+        dispatch
     }, father_id = 0) {
-        const all_tools_is_off = !state.newDocProp.OnTool.condition;
-        if (all_tools_is_off) {
-            const fake_id = new Date().getTime();
-            if (father_id !== 0) {
-                const index = state.newDocProp.index;
-                state.newDocs[index].childs_id.push(fake_id);
-            }
-            await commit('ADD_NEW_DOCUMENT', {
-                fake_id,
-                father_id
-            })
-            const path = `/new-point/${getters.lastAddedDocID}`;
-            await router.push(path);
-            await commit('UPDATE_NEW_DOC_INDEX');
-            return;
-        } else {
+        const is_any_tool_on = state.newDocProp.OnTool.condition,
+            fake_id = new Date().getTime(),
+            thisDoc = state.newDocs[state.newDocProp.index];
+
+        if (is_any_tool_on) {
+            // TODO => auto swich off the tool
             sendinfoToast('info', "ابتدا تغییر مختصات قبلی را ذخیره کنید");
+            return;
+        }
+
+        if (father_id !== 0) {
+            thisDoc.childs_id.push(fake_id);
+        }
+        await commit('SET_NEW_DOCUMENT', {
+            fake_id,
+            father_id
+        })
+        const path = `/new-point/${getters.lastAddedDocID}`;
+        await router.push(path);
+
+        await commit('UPDATE_NEW_DOC_INDEX');
+
+        if (father_id == 0) await dispatch('setTool', 'Point')
+    },
+    is_this_Doc_valid({
+        state
+    }, thisDoc) {
+        let errors = []
+        // validate conditions
+        const title = thisDoc.title.length > 5,
+            description = thisDoc.description.length > 20,
+            tools = thisDoc.tools.length > 0,
+            date = thisDoc.date,
+            tags = thisDoc.tags.length > 0,
+            // * later => auto swich off the tool
+            is_any_tool_on = state.newDocProp.OnTool.condition;
+
+        if (!title) errors.push('تیتر کمتر از 5 کاراکتر است')
+        if (!description) errors.push('توضیحات کمتر از 5 کاراکتر است')
+        if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
+        if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
+        if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
+        // * later => auto swich off the tool
+        if (is_any_tool_on) errors.push('در حال استفاده از ابزاری هستید')
+
+        if (errors.length == 0) return true
+        else {
+            errors.forEach(msg => {
+                sendinfoToast('error', msg)
+            });
+            return false
         }
     },
     async goBack({

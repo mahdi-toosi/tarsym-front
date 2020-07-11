@@ -9,10 +9,7 @@
 				<ul class="pages">
 					<li class="type" @click="changeType()">{{calendar.curentName}}</li>
 					<li class="year" @click="changePage('years')">{{picked.year}}</li>
-					<li
-						class="month"
-						@click="changePage('months')"
-					>{{this.calendar.types[this.calendar.curentType].months[Number(picked.month)].name }}</li>
+					<li class="month" @click="changePage('months')">{{ curentMonthName }}</li>
 				</ul>
 			</header>
 			<div class="page_wrapper">
@@ -129,7 +126,7 @@ export default {
 			picked: {
 				century: null,
 				year: null,
-				month: null,
+				month: "01",
 				day: "01"
 			},
 			calendar: calendar,
@@ -139,16 +136,25 @@ export default {
 				months: false,
 				days: false
 			},
+			years: [],
 			newPageZindex: "years"
 		};
 	},
 	computed: {
+		curentMonthName() {
+			const pickedMonth = Number(this.picked.month - 1);
+			const calendarCurentType = this.calendar.curentType;
+			const name = this.calendar.types[calendarCurentType].months[
+				pickedMonth
+			].name;
+			return name;
+		},
 		pickedDate() {
 			const p = this.picked;
 			if (!p.year || !p.month) return null;
 			const picked = p.year + p.month + p.day;
-			this.addDate(picked);
-
+			const lastNumber = Number(picked) + 2000000;
+			this.$store.commit("ADD_DATE", lastNumber);
 			return picked;
 		},
 		centurys() {
@@ -164,16 +170,7 @@ export default {
 			}
 			return centurys;
 		},
-		years() {
-			let startYear = this.picked.century;
-			if (!startYear) return;
-			let years = [];
-			const endYear = startYear + 50;
-			for (startYear; startYear < endYear; startYear++) {
-				years.push(startYear);
-			}
-			return years;
-		},
+
 		calcMonths() {
 			const ThisType = this.calendar.curentType;
 			const months = this.calendar.types[ThisType].months;
@@ -188,9 +185,6 @@ export default {
 		}
 	},
 	methods: {
-		addDate(picked) {
-			this.$store.state.newDocs[this.docLayer].date = picked;
-		},
 		changeType() {
 			const type = this.calendar;
 			if (type.curentType < type.types.length - 1) {
@@ -219,9 +213,18 @@ export default {
 				}
 			}
 		},
-		pickCentury(century) {
+		async pickCentury(century) {
 			this.picked.century = century;
+			await this.fillYears();
 			this.changePage("years");
+		},
+		fillYears() {
+			this.years = [];
+			let startYear = this.picked.century,
+				endYear = startYear + 50;
+			for (startYear; startYear < endYear; startYear++) {
+				this.years.push(startYear);
+			}
 		},
 		pickYear(year) {
 			this.picked.year = year.toString();

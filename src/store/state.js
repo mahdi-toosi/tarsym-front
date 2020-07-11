@@ -3,7 +3,7 @@ export default {
     newDocProp: {
         index: 0,
         id: 0,
-        rootID: 0,
+        rootID: 'balabla',
         OnTool: {
             condition: false,
             index: -1

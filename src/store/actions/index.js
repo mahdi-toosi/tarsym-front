@@ -1,7 +1,9 @@
 import newDoc from "./ac-newDoc"
+import crudNewDoc from "./CRUD-newDoc"
 
 export default {
     ...newDoc,
+    ...crudNewDoc,
     async setCategory({
         // state,
         commit
@@ -24,39 +26,29 @@ export default {
         //     }
         // }
     },
-
-    // ! post new point
-    async CreateNewPointMarker({
-        state,
-        // commit
-    }) {
-        // const url = '/point/'
-        const coordinate = {
-            type: 'Point',
-            coordinates: [state.newPoint.coordinates.lng, state.newPoint.coordinates.lat]
+    ready_document_for_send(state, thisDoc) {
+        let doc = {
+            ...thisDoc,
+            junk: {}
         }
-        const data = {
-            title: state.newPoint.title,
-            excerpt: state.newPoint.description,
-            description: state.newPoint.description,
-            location: coordinate,
-            zoom: state.zoom,
-            category: state.category._id
+        if (thisDoc.father_id == 0) {
+            const this_tool = obj => obj.searchable == true
+            const searchable_tool_index = thisDoc.tools.findIndex(this_tool)
+            doc.coordinates = {
+                type: "Point",
+                coordinates: thisDoc.tools[searchable_tool_index].coordinates
+            }
         }
-        // console.log(data);
-        try {
-            // await this.$axios.post(url, data).then((res) => {
-            //     if (res.status == 201) {
-            //         commit('setNewPointWithoutRefresh', data)
-            //     }
-
-            // })
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
+        //  * description must be junk ?? (should include in the search query)
+        const clear_this_items = ['tools']
+        clear_this_items.forEach(element => {
+            doc.junk[element] = thisDoc[element]
+            delete doc[element]
+        });
+        doc.junk = JSON.stringify(doc.junk)
+        const data_striggify = JSON.stringify(doc)
+        return data_striggify
     },
-
     async getAllCategories({
         commit
     }) {

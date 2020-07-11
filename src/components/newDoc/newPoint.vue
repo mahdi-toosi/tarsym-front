@@ -9,7 +9,8 @@
 				:index="index"
 				@input="CHANGE_TOOLTIP"
 			/>
-			<button @click="deleteTool(index)" class="delete_button">
+			<pre v-if="tool.searchable">searchable</pre>
+			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
 				<i class="far fa-trash-alt"></i>
 			</button>
 		</div>
