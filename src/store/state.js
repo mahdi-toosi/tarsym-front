@@ -9,11 +9,12 @@ export default {
             index: -1
         },
     },
-    allTags: [],
+    allTags: [{
+        _id: '5f0a6f41327b9a32f07b7f35',
+        name: 'tarsym'
+    }],
     zoom: 13,
     MouseCoordinate: null,
-    category: null,
-    categories: [],
     allPoints: [],
     mapCenter: ["36.21193841525171", "57.680192944186096"],
     readPoint: null,

@@ -133,23 +133,14 @@ export default {
         thisPoint.coordinates = coordinates;
     },
     UPDATE_NEW_DOC_INDEX(state) {
-        // const isNewDocRoute = router.currentRoute.name == "new point with prop"
-        // if (isNewDocRoute) {
         const docID = router.currentRoute.params.id
         const Docs = state.newDocs
         const thisObject = (obj) => obj.id == docID
         const index = Docs.findIndex(thisObject);
         state.newDocProp.index = index
         state.newDocProp.id = Docs[index].id
-        // if (Docs.length == 1) {
-        // state.newDocProp.rootID = Docs[index].id
-        // }
-        // }
     },
-    SET_NEW_DOCUMENT(state, {
-        fake_id,
-        father_id
-    }) {
+    SET_NEW_DOCUMENT(state, fake_id) {
         const newDocObj = {
             id: fake_id,
             title: "",
@@ -157,7 +148,6 @@ export default {
             tags: [],
             tools: [],
             date: null,
-            father_id: String(father_id),
             childs_id: [],
         };
         state.newDocs.push(newDocObj)
@@ -166,8 +156,21 @@ export default {
         doc,
         id
     }) {
-        // console.log(doc.father_id == 0);
-        doc.previous_id = doc.id
-        doc.id = id
-    }
+        doc._id = id
+    },
+    CANSEL_CREATE_DOCUMENTS(state) {
+        router.push({
+            name: 'all points'
+        })
+        state.newDocs = []
+        state.newDocProp = {
+            index: 0,
+            id: 0,
+            rootID: 'balabla',
+            OnTool: {
+                condition: false,
+                index: -1
+            },
+        }
+    },
 }

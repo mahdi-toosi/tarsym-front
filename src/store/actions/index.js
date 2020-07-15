@@ -26,18 +26,22 @@ export default {
         //     }
         // }
     },
-    ready_document_for_send(state, thisDoc) {
+    ready_document_for_send({
+        state
+    }, thisDoc) {
         let doc = {
             ...thisDoc,
             junk: {}
         }
-        if (thisDoc.father_id == 0) {
+        const is_this_doc_root = state.newDocProp.rootID == thisDoc.id
+        if (is_this_doc_root) {
             const this_tool = obj => obj.searchable == true
             const searchable_tool_index = thisDoc.tools.findIndex(this_tool)
             doc.coordinates = {
                 type: "Point",
                 coordinates: thisDoc.tools[searchable_tool_index].coordinates
             }
+            doc.root = true
         }
         //  * description must be junk ?? (should include in the search query)
         const clear_this_items = ['tools']
@@ -45,9 +49,11 @@ export default {
             doc.junk[element] = thisDoc[element]
             delete doc[element]
         });
+        delete doc.childs_id
+
         doc.junk = JSON.stringify(doc.junk)
-        const data_striggify = JSON.stringify(doc)
-        return data_striggify
+        // const data_striggify = JSON.stringify(doc)
+        return doc
     },
     async getAllCategories({
         commit

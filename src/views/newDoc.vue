@@ -1,7 +1,7 @@
 <template>
 	<div class="newpoint">
 		<header>
-			<button class="btn btn-red ml1" @click="closeNewPointMarker">
+			<button class="btn btn-red ml1" @click="CANSEL_CREATE_DOCUMENTS()">
 				منصرف شدم
 				<i class="fas fa-times"></i>
 			</button>
@@ -57,9 +57,12 @@
 									@click="goToChild(child.id)"
 									class="btn btn-green"
 								>{{ child.title ? child.title : child.id }}</button>
+								<button @click="Delete_this_Document(child.id)" class="delete_button">
+									<i class="far fa-trash-alt"></i>
+								</button>
 							</li>
 						</ul>
-						<button @click="addChild()" class="btn btn-blue">add child</button>
+						<button @click="addNewDoc(false)" class="btn btn-blue">add child</button>
 					</div>
 				</div>
 			</section>
@@ -107,13 +110,13 @@ export default {
 		};
 	},
 	methods: {
-		...mapMutations(["closeNewPointMarker", "SET_CHOSEN_TAG"]),
+		...mapMutations(["CANSEL_CREATE_DOCUMENTS", "SET_CHOSEN_TAG"]),
 		...mapActions([
 			"Create_Documents",
 			"addNewDoc",
 			"goBack",
 			"goToChild",
-			"addChild"
+			"Delete_this_Document"
 		])
 
 		// keyPressed(e) {
@@ -150,8 +153,6 @@ export default {
 		}
 	},
 	async created() {
-		// console.log(this.newDocLayer.father_id);
-
 		const lastAddedDocID = this.lastAddedDocID;
 		const routeID = Number(this.$route.params.id);
 		if (routeID !== lastAddedDocID) {

@@ -7,8 +7,11 @@
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>
 				<ul class="pages">
-					<li class="type" @click="changeType()">{{calendar.curentName}}</li>
-					<li class="year" @click="changePage('years')">{{picked.year}}</li>
+					<li class="type" @click="changeType()">{{ calendar.curentName }}</li>
+					<li
+						class="year"
+						@click="changePage( picked.year ? 'years' : 'centurys' )"
+					>{{ picked.year ? picked.year : 'سال' }}</li>
 					<li class="month" @click="changePage('months')">{{ curentMonthName }}</li>
 				</ul>
 			</header>

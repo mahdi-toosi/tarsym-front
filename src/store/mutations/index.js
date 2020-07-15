@@ -1,4 +1,3 @@
-import router from "../../router";
 import newDoc from "./mu-newDoc"
 
 export default {
@@ -6,14 +5,6 @@ export default {
 
     backToAllPoints() {
         // situations(state.situations, 'allPoints')
-    },
-
-    closeNewPointMarker(state) {
-        router.push({
-            name: 'all points'
-        })
-        state.newDocs.title = null
-        state.newDocs.description = null
     },
 
     mapCenterUpdated(state, center) {
