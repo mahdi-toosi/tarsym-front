@@ -183,19 +183,19 @@ export default {
                 new_id: doc._id,
                 childs: []
             }
-            if (doc.childs_id.length > 0) {
-                doc.childs_id.forEach(child => {
-                    const new_id = Docs.filter(el => el.id == child)[0]._id
-                    obj.childs.push(new_id)
-                });
-                list.push(obj)
-            }
+            if (doc.childs_id.length == 0) return
+
+            doc.childs_id.forEach(child => {
+                const new_id = Docs.filter(el => el.id == child)[0]._id
+                obj.childs.push(new_id)
+            });
+            list.push(obj)
         });
         return list
     },
     async create_relationships(state, list) {
+        if (list.length == 0) return
         const url = `${ domain }/create/documents/relationship`;
-        console.log(list);
 
         try {
             const data = await axios.post(url, list).then((res) => {

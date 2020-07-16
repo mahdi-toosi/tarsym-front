@@ -1,5 +1,20 @@
+import Vue from "vue";
+import axios from 'axios';
 import newDoc from "./ac-newDoc"
 import crudNewDoc from "./CRUD-newDoc"
+import router from "../../router";
+
+const domain = 'http://localhost:3030';
+
+function sendToast(type, text) {
+    Vue.toasted[type](text, {
+        position: "bottom-left",
+        duration: 5 * 1000,
+        keepOnHover: true,
+        iconPack: "fontawesome",
+        icon: "fa-close",
+    });
+}
 
 export default {
     ...newDoc,
@@ -33,7 +48,7 @@ export default {
             ...thisDoc,
             junk: {}
         }
-        const is_this_doc_root = state.newDocProp.rootID == thisDoc.id
+        const is_this_doc_root = state.newDocs[0].id == thisDoc.id
         if (is_this_doc_root) {
             const this_tool = obj => obj.searchable == true
             const searchable_tool_index = thisDoc.tools.findIndex(this_tool)
@@ -43,17 +58,23 @@ export default {
             }
             doc.root = true
         }
-        //  * description must be junk ?? (should include in the search query)
-        const clear_this_items = ['tools']
-        clear_this_items.forEach(element => {
-            doc.junk[element] = thisDoc[element]
-            delete doc[element]
-        });
-        delete doc.childs_id
+        const imgs = doc.description.match(/<img/gm);
+        doc.imgsCount = (imgs || []).length
 
-        doc.junk = JSON.stringify(doc.junk)
+        //  * description must be junk ?? (should include in the search query)
+        const clear_this_items = ['tools', 'imgsCount']
+        clear_this_items.forEach(element => {
+            doc.junk[element] = thisDoc[element];
+            delete doc[element];
+        });
+        delete doc.childs_id;
+
+        // const videos = doc.description.match(/<iframe/gm);
+        // console.log('videos', (videos || []).length);
+
+        doc.junk = JSON.stringify(doc.junk);
         // const data_striggify = JSON.stringify(doc)
-        return doc
+        return doc;
     },
     async getAllCategories({
         commit
@@ -92,13 +113,28 @@ export default {
 
     },
 
-    async getAllPoints({
-        commit,
-        // state
+    async getAllDocs({
+        commit
     }) {
-        const url = "/point/";
-        const allPoints = await this.$axios.get(url);
-        commit('setAllPoints', allPoints.data)
-        // situations(state.situations, 'allPoints')
+        const url = `${domain}/documents`;
+        await axios.get(url, {
+            params: {
+                root: true,
+                $skip: 2
+            }
+        }).then((res) => {
+            // console.log('getAllDocs res  =>', res);
+            if (res.status == 200) {
+                commit('SET_ALL_DOCS', res.data)
+            } else if (res.code >= 500) {
+                sendToast('error', 'مشکلی در سرور بوجود آمده')
+            } else if (res.code >= 400) {
+                sendToast('error', 'مشکلی بوجود آمده')
+            }
+        });
     },
+    editThisDoc(state, doc_id) {
+        const path = `/update/doc/${doc_id}`
+        router.push(path)
+    }
 }

@@ -54,13 +54,12 @@ export default {
         }
         const fake_id = new Date().getTime(),
             thisDoc = state.newDocs[state.newDocProp.index];
-
         if (!root) {
             thisDoc.childs_id.push(fake_id);
         }
         await commit('SET_NEW_DOCUMENT', fake_id)
 
-        const path = `/create-point/${getters.lastAddedDocID}`;
+        const path = `/create/doc/${getters.lastAddedDocID}`;
         await router.push(path);
 
         if (root) await dispatch('setTool', 'Point')
@@ -91,7 +90,7 @@ export default {
             const action = [{
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
-                    const path = `/create-point/${thisDoc.id}`;
+                    const path = `/create/doc/${thisDoc.id}`;
                     await router.push(path);
                     toastObject.goAway(0);
                 }
@@ -116,7 +115,7 @@ export default {
         if (all_tools_is_off) {
             const doc_id = state.newDocProp.id;
             const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0].id
-            const path = `/create-point/${father_id}`;
+            const path = `/create/doc/${father_id}`;
             await router.push(path);
             return;
         } else {
@@ -128,7 +127,7 @@ export default {
     }, id) {
         const all_tools_is_off = !state.newDocProp.OnTool.condition;
         if (all_tools_is_off) {
-            const path = `/create-point/${id}`;
+            const path = `/create/doc/${id}`;
             await router.push(path);
             return;
         } else {

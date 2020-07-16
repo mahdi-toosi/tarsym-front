@@ -137,6 +137,7 @@ export default {
         const Docs = state.newDocs
         const thisObject = (obj) => obj.id == docID
         const index = Docs.findIndex(thisObject);
+        console.log('UPDATE_NEW_DOC_INDEX', index);
         state.newDocProp.index = index
         state.newDocProp.id = Docs[index].id
     },
@@ -160,13 +161,12 @@ export default {
     },
     CANSEL_CREATE_DOCUMENTS(state) {
         router.push({
-            name: 'all points'
+            name: 'all docs'
         })
         state.newDocs = []
         state.newDocProp = {
             index: 0,
             id: 0,
-            rootID: 'balabla',
             OnTool: {
                 condition: false,
                 index: -1

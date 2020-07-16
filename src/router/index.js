@@ -29,16 +29,21 @@ const routes = [
     // },
     {
         path: "/",
-        name: "all points",
+        name: "all docs",
         component: () => import("../views/allDocs.vue")
     }, {
-        path: "/create-point/:id",
-        name: "create point with prop",
+        path: "/create/doc/:id",
+        name: "create doc",
         component: () => import("../views/newDoc.vue")
     }, {
-        path: "/create-point",
-        name: "create point",
+        path: "/update/doc/:id",
+        name: "update doc",
         component: () => import("../views/newDoc.vue")
+    },
+    {
+        path: "/my-docs",
+        name: "my docs",
+        component: () => import("../views/allDocs.vue")
     }, {
         path: "/read-point",
         name: "read point",

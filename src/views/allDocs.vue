@@ -3,19 +3,10 @@
 		<header>
 			<a class="btn btn-blue" @click="addNewDoc()">
 				نقطه ی جدید ایجاد کن
-				<i class="fas fa-plus"></i>
+				<i class="fas fa-plus" />
 			</a>
 		</header>
 		<section class="searchbar shadow">
-			<v-select
-				:options="categories"
-				:value="category"
-				@input="setCategory"
-				label="name"
-				:searchable="false"
-				placeholder="موضوع"
-				dir="rtl"
-			/>
 			<div class="searchInput">
 				<input
 					type="search"
@@ -26,40 +17,38 @@
 				/>
 				{{ search }}
 				<a href="#">
-					<i class="fas fa-search"></i>
+					<i class="fas fa-search" />
 				</a>
 			</div>
 		</section>
 		<section class="points">
-			<div
-				class="point shadow"
-				v-for="point in allPoints"
-				:key="point._id"
-				@click="readThisPoint(point.location.coordinates)"
-			>
+			<div class="point shadow" v-for="doc in allDocs.data" :key="doc._id">
+				<!-- @click="readThisPoint(doc.coordinates)" -->
 				<header>
-					<img :src="point.user.image" alt />
+					<i
+						class="logo"
+						:class=" doc.tools[0].iconName ? doc.tools[0].iconName : 'fas fa-map-marker-alt' "
+						:style="{ color : doc.tools[0].iconName ?  doc.tools[0].color : '#277696' }"
+						aria-hidden="true"
+					/>
 					<div class="nameandsituation">
-						<a href="#" v-text="point.user.name"></a>
-						<a href="#" v-text="point.user.situation"></a>
+						<a href="#" v-text="doc.title"></a>
+						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
-					<time>
-						<vue-moments-ago prefix suffix="قبل" :date="point.createdAt" lang="fa" />
-					</time>
+					<time>{{ doc.date | date }}</time>
+					<button class="editDoc" @click="editThisDoc(doc._id)">
+						<i class="far fa-edit"></i>
+					</button>
 				</header>
-				<main v-html="point.excerpt"></main>
+				<main v-html="doc.description"></main>
 				<footer>
-					<!-- <ul>
-						<li
-							v-for="(media, index) in point.contentMedia"
-							:key="index"
-							:class="mediaClass(media.type)"
-						>
-							<i class="fas" :class="mediaImage(media.type)"></i>
-							<span v-text="media.num"></span>
-							{{ mediaText(media.type) }}
+					<ul>
+						<li v-if="doc.imgsCount">
+							<i class="far fa-images" />
+							<span v-text="doc.imgsCount"></span>
+							تصویر
 						</li>
-					</ul>-->
+					</ul>
 				</footer>
 			</div>
 		</section>
@@ -70,10 +59,8 @@
 import debounce from "v-debounce";
 import { mapState, mapMutations, mapActions } from "vuex";
 
-// * Human readable time component
-import VueMomentsAgo from "@/components/moments-ago.vue";
 export default {
-	name: "allPoint",
+	name: "all-Docs",
 	directives: { debounce },
 	data() {
 		return {
@@ -82,10 +69,13 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(["allPoints", "categories", "category"])
+		...mapState(["allDocs"]),
+		docLayer() {
+			return this.$store.getters.docs_list;
+		}
 	},
 	methods: {
-		...mapActions(["getAllPoints", "setCategory", "addNewDoc"]),
+		...mapActions(["getAllDocs", "addNewDoc", "editThisDoc"]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);
@@ -99,8 +89,19 @@ export default {
 				});
 		}
 	},
+	filters: {
+		date(val) {
+			const day = String(val).slice(-2);
+			const month = String(val).slice(-4, -2);
+			const year = String(val).slice(0, -4);
+			return `${year}/${month}/${day}`;
+		}
+	},
 	async created() {
 		// await this.getAllPoints();
+		if (this.$route.name == "my docs") {
+			this.getAllDocs();
+		}
 	},
 	watch: {
 		search() {
@@ -109,10 +110,10 @@ export default {
 			}
 		}
 	},
-	mounted() {},
-	components: {
-		VueMomentsAgo
-	}
+	mounted() {
+		this.docLayer;
+	},
+	components: {}
 };
 </script>
 

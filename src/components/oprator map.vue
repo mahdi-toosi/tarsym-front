@@ -28,7 +28,7 @@
 			<!-- </l-marker>
 			</div>-->
 
-			<div v-if="newDocs.length > 0 && docLayer.tools.length > 0">
+			<div v-if="docs_list.length > 0 && docLayer.tools.length > 0">
 				<!-- <div v-if="docLayer.tools.length > 0"> -->
 				<div v-for="(tool, index) in docLayer.tools" :key="index">
 					<div v-if="tool.type == 'Polygon'">
@@ -175,16 +175,12 @@ export default {
 		};
 	},
 	computed: {
-		...mapState([
-			"allPoints",
-			"mapCenter",
-			"newDocs",
-			"newDocProp",
-			"zoom",
-			"MouseCoordinate"
-		]),
+		...mapState(["mapCenter", "newDocProp", "zoom", "MouseCoordinate"]),
 		docLayer() {
 			return this.$store.getters.newDocLayer;
+		},
+		docs_list() {
+			return this.$store.getters.docs_list;
 		},
 		undoCondition() {
 			const onTool = this.newDocProp.OnTool;

@@ -153,11 +153,14 @@ export default {
 		}
 	},
 	async created() {
-		const lastAddedDocID = this.lastAddedDocID;
+		const routeName = this.$route.name;
 		const routeID = Number(this.$route.params.id);
-		if (routeID !== lastAddedDocID) {
-			await this.addNewDoc();
-			return;
+		const lastAddedDocID = this.lastAddedDocID;
+		if (routeName == "create doc") {
+			if (!routeID) return await this.addNewDoc();
+			if (routeID !== lastAddedDocID) return await this.addNewDoc();
+		} else if (routeName == "update doc") {
+			await this.update_this_doc(routeID);
 		}
 		// document.addEventListener("keyup", this.keyPressed);
 	},

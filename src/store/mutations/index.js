@@ -2,7 +2,21 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
-
+    SET_ALL_DOCS(state, allDocs) {
+        const newData = []
+        allDocs.data.forEach(doc => {
+            const junk = JSON.parse(doc.junk)
+            delete doc.junk
+            const m = {
+                ...doc,
+                ...junk
+            }
+            newData.push(m)
+        });
+        allDocs.data = newData
+        state.allDocs = allDocs
+        state.newDocs = allDocs.data
+    },
     backToAllPoints() {
         // situations(state.situations, 'allPoints')
     },
