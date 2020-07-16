@@ -3,9 +3,10 @@ import router from "../router";
 export default {
     docs_list: (state) => {
         const routeName = state.route.name
-        if (routeName == 'create doc with prop' || routeName == 'create doc') return state.newDocs
-        else if (routeName == 'my docs') return state.allDocs.data
-        else return router.push('/create/doc/forward')
+        if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs
+        // else if (routeName == 'all docs') return state.allDocs.data
+        else if (routeName == 'my docs') return (state.allDocs.data || [])
+        else return router.push('/my-docs')
     },
     newDocLayer: state => {
         return state.newDocs[state.newDocProp.index]
