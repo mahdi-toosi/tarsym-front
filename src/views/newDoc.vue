@@ -5,7 +5,7 @@
 				منصرف شدم
 				<i class="fas fa-times"></i>
 			</button>
-			<button class="btn btn-green" @click="Create_Documents()">
+			<button class="btn btn-green" @click="Create_or_Update_Documents()">
 				{{ $route.name == 'create doc' ? 'ثبت' : 'بروزرسانی' }}
 				<i class="fas fa-save"></i>
 			</button>
@@ -115,7 +115,7 @@ export default {
 	methods: {
 		...mapMutations(["CANSEL_CREATE_DOCUMENTS", "SET_CHOSEN_TAG"]),
 		...mapActions([
-			"Create_Documents",
+			"Create_or_Update_Documents",
 			"addNewDoc",
 			"goBack",
 			"goToChild",

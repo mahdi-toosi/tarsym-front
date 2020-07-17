@@ -47,9 +47,6 @@ export default {
 
         const url = `${ domain }/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
-        // obj = {
-        //     data: ready_doc
-        // };
 
         try {
             const newID = await axios.post(url, ready_doc).then((res) => {
@@ -74,24 +71,16 @@ export default {
     async Update_this_Document({
         dispatch,
     }, doc, ) {
-        const is_this_Doc_valid = await dispatch('is_this_Doc_valid', doc);
-        if (!is_this_Doc_valid) return false;
-
-        const url = `${ domain }/documents/${doc.id}`,
-            ready_doc = await dispatch('ready_document_for_send', doc),
-            obj = {
-                data: ready_doc
-            };
-        console.log("request for update", url);
-
+        const url = `${ domain }/documents/${doc._id}`,
+            ready_doc = await dispatch('ready_document_for_send', doc)
         try {
-            const newID = await axios.put(url, obj).then(async (res) => {
+            const newID = await axios.put(url, ready_doc).then(async (res) => {
                 if (res.status == 200) {
-                    console.log('UPDATED => ', res.data.title);
+                    // console.log('UPDATED => ', res.data);
+                    return res.data
                 } else if (res.status == 500) {
                     sendToast('error', `Update_this_Document => ${res.message}`);
                 }
-                return res.data._id // remember this set value for newID
             })
             return newID
         } catch (error) {
@@ -105,29 +94,19 @@ export default {
         dispatch,
         commit
     }, id, ) {
-        const doc = state.newDocs.filter(el => el.id == id)[0]
-        console.log(doc);
-
-        //  TODO => check for childs, if have child send toast for childs will delete ?
-        if (doc.childs_id.length > 0) {
-            // const remove_childs = await sendToast_yes_or_no('error', 'این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟')
-            const remove_childs = confirm('این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟');
-            console.log(remove_childs);
-        }
-        let mahdi = true
-        if (mahdi) return
-        // TODO => if doc is not create in database remove form state and done
         if (typeof (id) == 'number') {
+            const doc = state.newDocs.filter(el => el._id == id)[0]
+            //  TODO => check for childs, if have child send toast for childs will delete ?
+            if (doc.childs_id.length > 0) {
+                // const remove_childs = await sendToast_yes_or_no('error', 'این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟')
+                const remove_childs = confirm('این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟');
+                console.log(remove_childs);
+            }
+            // TODO => if doc is not create in database remove form state and done
             commit('REMOVE_THIS_DOC', id)
             return
         }
-        const url = `${ domain }/documents/${id}`,
-            ready_doc = await dispatch('ready_document_for_send', doc),
-            obj = {
-                data: ready_doc
-            };
-        console.log("request for update", url);
-
+        const url = `${ domain }/documents/${id}`
         try {
             const newID = await axios.put(url, obj).then(async (res) => {
                 if (res.status == 200) {
@@ -143,7 +122,7 @@ export default {
     },
 
     // ! CREATE Document 
-    async Create_Documents({
+    async Create_or_Update_Documents({
         state,
         dispatch,
         commit
@@ -158,17 +137,23 @@ export default {
         // create and add new id s
         for (let index = 0; index < Docs.length; index++) {
             // TODO => when user can import existing doc =>  if is new create , else update
-            const created_doc = await dispatch('Create_this_Document', Docs[index])
-            if (created_doc == false) return false
-
-            await commit('ADD_NEW_ID', {
-                doc: Docs[index],
-                id: created_doc._id
-            })
+            const doc = Docs[index]
+            if (doc._id) {
+                const updated_doc = await dispatch('Update_this_Document', doc)
+                if (updated_doc == false) return false
+            } else {
+                const created_doc = await dispatch('Create_this_Document', doc)
+                if (created_doc == false) return false
+                await commit('ADD_NEW_ID', {
+                    doc,
+                    id: created_doc._id
+                })
+            }
         }
         const relationships_list = await dispatch('get_relationship_list');
-        const data = dispatch('create_relationships', relationships_list);
-        console.log(data);
+        console.log('relationships_list', relationships_list);
+        const data = await dispatch('create_relationships', relationships_list);
+        console.log('create_relationships', data);
 
         // get and add childs
         // TODO show done  if work is successful
@@ -183,11 +168,12 @@ export default {
                 new_id: doc._id,
                 childs: []
             }
-            if (doc.childs_id.length == 0) return
+            if (!doc.childs_id.length) return
 
             doc.childs_id.forEach(child => {
-                const new_id = Docs.filter(el => el.id == child)[0]._id
-                obj.childs.push(new_id)
+                const new_child = Docs.filter(el => (el._id ? el._id : el.id) == child)
+                console.log('new_child', new_child);
+                if (new_child.length) obj.childs.push(new_child[0]._id)
             });
             list.push(obj)
         });

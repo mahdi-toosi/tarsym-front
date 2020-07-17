@@ -48,13 +48,14 @@ export default {
             ...thisDoc,
             junk: {}
         }
-        const is_this_doc_root = state.newDocs[0].id == thisDoc.id
+
+        const is_this_doc_root = doc._id ? state.newDocs[0]._id == doc._id : state.newDocs[0].id == doc.id
         if (is_this_doc_root) {
             const this_tool = obj => obj.searchable == true
-            const searchable_tool_index = thisDoc.tools.findIndex(this_tool)
+            const searchable_tool_index = doc.tools.findIndex(this_tool)
             doc.coordinates = {
                 type: "Point",
-                coordinates: thisDoc.tools[searchable_tool_index].coordinates
+                coordinates: doc.tools[searchable_tool_index].coordinates
             }
             doc.root = true
         }
@@ -72,7 +73,7 @@ export default {
         //  * description must be junk ?? (should include in the search query)
         const clear_this_items = ['tools', 'imgsCount', 'date_props']
         clear_this_items.forEach(element => {
-            doc.junk[element] = thisDoc[element];
+            doc.junk[element] = doc[element];
             delete doc[element];
         });
         delete doc.childs_id;
