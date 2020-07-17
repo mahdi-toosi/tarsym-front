@@ -6,7 +6,7 @@
 				<i class="fas fa-times"></i>
 			</button>
 			<button class="btn btn-green" @click="Create_Documents()">
-				ثبت
+				{{ $route.name == 'create doc' ? 'ثبت' : 'بروزرسانی' }}
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
@@ -54,10 +54,13 @@
 						<ul>
 							<li v-for="(child, index) in newDocChilds" :key="index">
 								<button
-									@click="goToChild(child.id)"
+									@click="goToChild(child._id ? child._id : child.id)"
 									class="btn btn-green"
 								>{{ child.title ? child.title : child.id }}</button>
-								<button @click="Delete_this_Document(child.id)" class="delete_button">
+								<button
+									@click="Delete_this_Document(child._id ? child._id : child.id)"
+									class="delete_button"
+								>
 									<i class="far fa-trash-alt"></i>
 								</button>
 							</li>
@@ -116,7 +119,9 @@ export default {
 			"addNewDoc",
 			"goBack",
 			"goToChild",
-			"Delete_this_Document"
+			"Delete_this_Document",
+			"update_this_doc",
+			"get_childs"
 		])
 
 		// keyPressed(e) {
@@ -154,13 +159,14 @@ export default {
 	},
 	async created() {
 		const routeName = this.$route.name;
-		const routeID = Number(this.$route.params.id);
+		const routeID = this.$route.params.id;
 		const lastAddedDocID = this.lastAddedDocID;
 		if (routeName == "create doc") {
-			if (!routeID) return await this.addNewDoc();
-			if (routeID !== lastAddedDocID) return await this.addNewDoc();
+			if (Number(routeID) !== lastAddedDocID)
+				return await this.addNewDoc();
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(routeID);
+			await this.get_childs(this.newDocLayer);
 		}
 		// document.addEventListener("keyup", this.keyPressed);
 	},

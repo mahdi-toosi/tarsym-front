@@ -1,15 +1,15 @@
-import router from "../router";
+// import router from "../router";
 
 export default {
     docs_list: (state) => {
         const routeName = state.route.name
-        if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs
+        if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs || []
         // else if (routeName == 'all docs') return state.allDocs.data
-        else if (routeName == 'my docs') return (state.allDocs.data || [])
-        else return router.push('/my-docs')
+        else if (routeName == 'my docs') return state.allDocs.data || []
+        else return []
     },
-    newDocLayer: state => {
-        return state.newDocs[state.newDocProp.index]
+    newDocLayer: (state, getters) => {
+        return getters.docs_list[state.newDocProp.index]
     },
     lastAddedDocID: state => {
         const Docs = state.newDocs
@@ -18,14 +18,14 @@ export default {
         }
         return false
     },
-    newDocChilds: (state, getters) => {
-        const childsID = getters.newDocLayer.childs_id
+    newDocChilds: state => {
+        const Docs = state.newDocs
+        const childsID = Docs[state.newDocProp.index].childs_id
         const childs = []
-        const Docs = getters.docs_list
         childsID.forEach(id => {
-            const thisObject = (obj) => obj.id == id
+            const thisObject = (doc) => (doc._id ? doc._id : doc.id) == id
             const index = Docs.findIndex(thisObject);
-            childs.push(Docs[index])
+            if (Docs[index]) childs.push(Docs[index])
         });
         return childs
     },

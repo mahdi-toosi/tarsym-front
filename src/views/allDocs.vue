@@ -22,7 +22,7 @@
 			</div>
 		</section>
 		<section class="points">
-			<div class="point shadow" v-for="doc in allDocs.data" :key="doc._id">
+			<div class="point shadow" v-for="doc in allDocs.data " :key="doc._id">
 				<!-- @click="readThisPoint(doc.coordinates)" -->
 				<header>
 					<i
@@ -36,7 +36,7 @@
 						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
 					<time>{{ doc.date | date }}</time>
-					<button class="editDoc" @click="editThisDoc(doc._id)">
+					<button class="editDoc" @click="$router.push(`/update/doc/${doc._id}`)">
 						<i class="far fa-edit"></i>
 					</button>
 				</header>
@@ -75,7 +75,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(["getAllDocs", "addNewDoc", "editThisDoc"]),
+		...mapActions(["getAllDocs", "addNewDoc"]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);

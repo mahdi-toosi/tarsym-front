@@ -56,11 +56,13 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 });
-router.afterEach((to) => {
-    if (to.fullPath.split('/')[1] == "create-point") {
-        if (store.state.newDocs.length > 0) {
-            store.commit('UPDATE_NEW_DOC_INDEX');
-        }
+router.afterEach(async (to) => {
+    if (to.fullPath == "/create/doc/") {
+        await router.push('/create/doc/forward')
+        return
+    }
+    if (to.name == "create doc" || to.name == "update doc") {
+        if (store.state.newDocs.length > 0) store.commit('UPDATE_NEW_DOC_INDEX');
     }
 })
 

@@ -3,7 +3,7 @@
 		<button
 			@click="showPicker()"
 			:class="[ picked.year && picked.month ? '' : 'btn-red' ]"
-		>{{ pickedDate ? `${picked.day} / ${picked.month} / ${picked.year}` : 'pick a Date' }}</button>
+		>{{ picked.month && picked.year ? `${picked.day} / ${picked.month} / ${picked.year}` : 'pick a Date' }}</button>
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>
 				<ul class="pages">
@@ -126,12 +126,6 @@ export default {
 	data() {
 		return {
 			displayPicker: false,
-			picked: {
-				century: null,
-				year: null,
-				month: "01",
-				day: "01"
-			},
 			calendar: calendar,
 			pages: {
 				centurys: true,
@@ -144,6 +138,9 @@ export default {
 		};
 	},
 	computed: {
+		picked() {
+			return this.$store.state.newDocs[this.docLayer].date_props;
+		},
 		curentMonthName() {
 			const pickedMonth = Number(this.picked.month - 1);
 			const calendarCurentType = this.calendar.curentType;
@@ -151,14 +148,6 @@ export default {
 				pickedMonth
 			].name;
 			return name;
-		},
-		pickedDate() {
-			const p = this.picked;
-			if (!p.year || !p.month) return null;
-			const picked = p.year + p.month + p.day;
-			const lastNumber = Number(picked) + 2000000;
-			this.$store.commit("ADD_DATE", lastNumber);
-			return picked;
 		},
 		centurys() {
 			let centurys = [-100, -50],
@@ -217,7 +206,7 @@ export default {
 			}
 		},
 		async pickCentury(century) {
-			this.picked.century = century;
+			this.$store.commit("ADD_DATE", { century });
 			await this.fillYears();
 			this.changePage("years");
 		},
@@ -230,7 +219,9 @@ export default {
 			}
 		},
 		pickYear(year) {
-			this.picked.year = year.toString();
+			this.$store.commit("ADD_DATE", {
+				year: year.toString()
+			});
 			this.changePage("months");
 		},
 		zeroCheck(num) {
@@ -241,11 +232,11 @@ export default {
 		pickMonth(index) {
 			this.calendar.curentMonthIndex = index;
 			const num = index + 1;
-			this.picked.month = this.zeroCheck(num);
+			this.$store.commit("ADD_DATE", { month: this.zeroCheck(num) });
 			this.changePage("days");
 		},
 		pickDay(day) {
-			this.picked.day = this.zeroCheck(day);
+			this.$store.commit("ADD_DATE", { day: this.zeroCheck(day) });
 			this.hidePicker();
 		},
 		showPicker() {

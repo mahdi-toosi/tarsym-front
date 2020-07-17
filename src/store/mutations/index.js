@@ -2,9 +2,17 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
-    SET_ALL_DOCS(state, allDocs) {
+    UPDATE_THIS_DOC(state, doc) {
+        state.newDocs = doc
+    },
+    SET_DOCS_TO(state, {
+        docs,
+        list,
+        merge
+    }) {
         const newData = []
-        allDocs.data.forEach(doc => {
+        const Docs = docs.data || docs
+        Docs.forEach(doc => {
             const junk = JSON.parse(doc.junk)
             delete doc.junk
             const m = {
@@ -13,9 +21,16 @@ export default {
             }
             newData.push(m)
         });
-        allDocs.data = newData
-        state.allDocs = allDocs
-        state.newDocs = allDocs.data
+        docs.data ? docs.data = newData : docs = newData
+        if (list == 'allDocs') {
+            if (merge) {
+                state[list].data = [...state[list].data, ...docs.data]
+            } else state[list] = docs
+        } else if (list == 'newDocs') {
+            if (merge) {
+                state[list] = [...state[list], ...docs.data]
+            } else state[list] = docs
+        }
     },
     backToAllPoints() {
         // situations(state.situations, 'allPoints')

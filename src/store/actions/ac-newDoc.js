@@ -72,7 +72,7 @@ export default {
         const title = thisDoc.title.length > 5,
             description = thisDoc.description.length > 20,
             tools = thisDoc.tools.length > 0,
-            date = thisDoc.date,
+            date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
             tags = thisDoc.tags.length > 0,
             // * later => auto swich off the tool
             is_any_tool_on = state.newDocProp.OnTool.condition;
@@ -127,7 +127,8 @@ export default {
     }, id) {
         const all_tools_is_off = !state.newDocProp.OnTool.condition;
         if (all_tools_is_off) {
-            const path = `/create/doc/${id}`;
+            const routeName = router.currentRoute.name
+            const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${id}`;
             await router.push(path);
             return;
         } else {

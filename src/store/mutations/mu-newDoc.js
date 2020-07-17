@@ -56,8 +56,16 @@ export default {
         // console.log(tags);
         thisDoc(state).tags = tags
     },
-    ADD_DATE(state, picked) {
-        thisDoc(state).date = picked;
+    ADD_DATE(state, {
+        century,
+        year,
+        month,
+        day
+    }) {
+        century ? thisDoc(state).date_props.century = century : ''
+        year ? thisDoc(state).date_props.year = year : ''
+        month ? thisDoc(state).date_props.month = month : ''
+        day ? thisDoc(state).date_props.day = day : ''
     },
     ADD_ICON(state, {
         iconName,
@@ -135,11 +143,10 @@ export default {
     UPDATE_NEW_DOC_INDEX(state) {
         const docID = router.currentRoute.params.id
         const Docs = state.newDocs
-        const thisObject = (obj) => obj.id == docID
+        const thisObject = (obj) => (obj._id ? obj._id : obj.id) == docID
         const index = Docs.findIndex(thisObject);
-        console.log('UPDATE_NEW_DOC_INDEX', index);
         state.newDocProp.index = index
-        state.newDocProp.id = Docs[index].id
+        state.newDocProp.id = Docs[index]._id ? Docs[index]._id : Docs[index].id
     },
     SET_NEW_DOCUMENT(state, fake_id) {
         const newDocObj = {
@@ -148,7 +155,12 @@ export default {
             description: "",
             tags: [],
             tools: [],
-            date: null,
+            date_props: {
+                century: null,
+                year: null,
+                month: "01",
+                day: "01"
+            },
             childs_id: [],
         };
         state.newDocs.push(newDocObj)

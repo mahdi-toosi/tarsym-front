@@ -1,8 +1,8 @@
 import Vue from "vue";
 import axios from 'axios';
+import router from "../../router";
 import newDoc from "./ac-newDoc"
 import crudNewDoc from "./CRUD-newDoc"
-import router from "../../router";
 
 const domain = 'http://localhost:3030';
 
@@ -61,8 +61,16 @@ export default {
         const imgs = doc.description.match(/<img/gm);
         doc.imgsCount = (imgs || []).length
 
+        const year = doc.date_props.year,
+            month = doc.date_props.month,
+            day = doc.date_props.day;
+        doc.date = year + month + day
+        console.log(doc.date);
+        doc.date = Number(doc.date) + 2 * 1000 * 1000
+        console.log(doc.date);
+
         //  * description must be junk ?? (should include in the search query)
-        const clear_this_items = ['tools', 'imgsCount']
+        const clear_this_items = ['tools', 'imgsCount', 'date_props']
         clear_this_items.forEach(element => {
             doc.junk[element] = thisDoc[element];
             delete doc[element];
@@ -117,24 +125,80 @@ export default {
         commit
     }) {
         const url = `${domain}/documents`;
-        await axios.get(url, {
+        const params = {
             params: {
                 root: true,
                 $skip: 2
             }
-        }).then((res) => {
-            // console.log('getAllDocs res  =>', res);
-            if (res.status == 200) {
-                commit('SET_ALL_DOCS', res.data)
-            } else if (res.code >= 500) {
+        }
+        const docs = await axios.get(url, params).then((res) => {
+            if (res.status == 200) return res.data
+            else if (res.code >= 500) {
                 sendToast('error', 'مشکلی در سرور بوجود آمده')
             } else if (res.code >= 400) {
                 sendToast('error', 'مشکلی بوجود آمده')
             }
         });
+        if (!docs) return
+
+        await commit('SET_DOCS_TO', {
+            docs: docs,
+            list: 'allDocs',
+            merge: false
+        })
+
     },
-    editThisDoc(state, doc_id) {
-        const path = `/update/doc/${doc_id}`
-        router.push(path)
+    async update_this_doc({
+        state,
+        commit,
+    }, doc_id) {
+        if (state.allDocs.data) {
+            const doc = state.allDocs.data.filter(el => el._id == doc_id)
+            if (doc) {
+                await commit('UPDATE_THIS_DOC', doc)
+                return
+            }
+            const url = `${domain}/documents/${doc_id}`
+            const doc2 = await axios.get(url).then(res => {
+                if (res.status == 200) return res.data
+                // TODO => show errors 
+            })
+            if (!doc2) return
+            await commit('SET_DOCS_TO', {
+                docs: [doc2],
+                list: 'newDocs',
+                merge: false
+            })
+            // await commit('UPDATE_NEW_DOC_INDEX')
+        }
+        router.push('/my-docs')
+    },
+    get_childs({
+        dispatch
+    }, doc) {
+        if (!doc) return
+        if (!doc.childs_id.length) return
+        const can_be_num = Number(doc.childs_id[0])
+        if (!can_be_num) {
+            dispatch('get_this_docs', doc.childs_id);
+        } else return
+
+    },
+    async get_this_docs({
+            commit
+        },
+        doc_ids) {
+        let url = `${domain}/documents/`
+        doc_ids.forEach(id => {
+            url = url + `?_id[$in]=${id}&`
+        });
+        const docs = await axios.get(url).then(async res => res.data)
+        // TODO => show errors for get method
+        await commit('SET_DOCS_TO', {
+            docs: docs,
+            list: 'newDocs',
+            merge: true
+        })
+        // console.log('doc', docs);
     }
 }
