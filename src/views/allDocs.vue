@@ -39,6 +39,9 @@
 					<button class="editDoc" @click="$router.push(`/update/doc/${doc._id}`)">
 						<i class="far fa-edit"></i>
 					</button>
+					<button @click="Delete_this_Document(doc._id)" class="delete_button">
+						<i class="far fa-trash-alt"></i>
+					</button>
 				</header>
 				<main v-html="doc.description"></main>
 				<footer>
@@ -75,7 +78,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(["getAllDocs", "addNewDoc"]),
+		...mapActions(["getAllDocs", "addNewDoc", "Delete_this_Document"]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);

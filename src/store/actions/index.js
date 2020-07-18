@@ -66,9 +66,9 @@ export default {
             month = doc.date_props.month,
             day = doc.date_props.day;
         doc.date = year + month + day
-        console.log(doc.date);
+        // console.log(doc.date);
         doc.date = Number(doc.date) + 2 * 1000 * 1000
-        console.log(doc.date);
+        // console.log(doc.date);
 
         //  * description must be junk ?? (should include in the search query)
         const clear_this_items = ['tools', 'imgsCount', 'date_props']
@@ -129,24 +129,28 @@ export default {
         const params = {
             params: {
                 root: true,
-                $skip: 2
+                $skip: 0
             }
         }
-        const docs = await axios.get(url, params).then((res) => {
-            if (res.status == 200) return res.data
-            else if (res.code >= 500) {
-                sendToast('error', 'مشکلی در سرور بوجود آمده')
-            } else if (res.code >= 400) {
-                sendToast('error', 'مشکلی بوجود آمده')
-            }
-        });
-        if (!docs) return
+        try {
+            const docs = await axios.get(url, params).then((res) => {
+                if (res.status == 200) return res.data
+                else if (res.code >= 500) {
+                    sendToast('error', 'مشکلی در سرور بوجود آمده')
+                } else if (res.code >= 400) {
+                    sendToast('error', 'مشکلی بوجود آمده')
+                }
+            });
+            if (!docs) return
+            await commit('SET_DOCS_TO', {
+                docs: docs,
+                list: 'allDocs',
+                merge: false
+            })
+        } catch (error) {
+            console.log(error);
+        }
 
-        await commit('SET_DOCS_TO', {
-            docs: docs,
-            list: 'allDocs',
-            merge: false
-        })
 
     },
     async update_this_doc({
@@ -174,32 +178,35 @@ export default {
         }
         router.push('/my-docs')
     },
-    get_childs({
-        dispatch
+    async get_childs({
+        dispatch,
+        commit
     }, doc) {
         if (!doc) return
         if (!doc.childs_id.length) return
         const can_be_num = Number(doc.childs_id[0])
         if (!can_be_num) {
-            dispatch('get_this_docs', doc.childs_id);
+            const childs = await dispatch('get_this_docs', doc.childs_id);
+            childs.data.forEach(child => {
+                child.father_id = doc._id
+            });
+            await commit('SET_DOCS_TO', {
+                docs: childs,
+                list: 'newDocs',
+                merge: true
+            })
         } else return
 
+
     },
-    async get_this_docs({
-            commit
-        },
-        doc_ids) {
+    async get_this_docs(state, doc_ids) {
         let url = `${domain}/documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`
         });
         const docs = await axios.get(url).then(async res => res.data)
+        return docs
         // TODO => show errors for get method
-        await commit('SET_DOCS_TO', {
-            docs: docs,
-            list: 'newDocs',
-            merge: true
-        })
         // console.log('doc', docs);
     }
 }

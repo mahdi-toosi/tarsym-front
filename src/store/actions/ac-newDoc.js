@@ -114,8 +114,8 @@ export default {
         const all_tools_is_off = !state.newDocProp.OnTool.condition;
         if (all_tools_is_off) {
             const doc_id = state.newDocProp.id;
-            const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0].id
-            const path = `/create/doc/${father_id}`;
+            const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
+            const path = `/${ state.router.name == 'create' ? 'create' : 'update'}/doc/${ father_id._id ? father_id._id : father_id.id }`;
             await router.push(path);
             return;
         } else {

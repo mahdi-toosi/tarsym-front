@@ -5,6 +5,31 @@ function thisDoc(state) {
 }
 
 export default {
+    async REMOVE_THIS_DOC(state, id) {
+        let Docs = state.allDocs.data;
+        let doc_index = await Docs.findIndex(doc => doc._id == id);
+        if (doc_index >= 0) Docs.splice(Docs[doc_index], 1)
+
+        Docs = state.newDocs
+        doc_index = await Docs.findIndex(doc => (doc._id ? doc._id : doc.id) == id)
+        if (doc_index < 0) return
+
+        const doc = Docs[doc_index]
+        if (!doc.childs_id.length) {
+            Docs.splice(doc_index, 1)
+            return
+        } else {
+            let childs_index = []
+            doc.childs_id.forEach(async child_id => {
+                const doc_index = await Docs.findIndex(el => (el._id ? el._id : el.id) == child_id)
+                if (doc_index > 0) childs_index.push(doc_index)
+            });
+            if (!childs_index.length) return
+            childs_index.forEach(child_index => {
+                Docs.splice(child_index, 1)
+            });
+        }
+    },
     CHANGE_POLYLINE_DECORATOR(state, tag) {
         const index = tag.target.attributes.index.value;
         const changeType = tag.target.attributes.changeType.value;
@@ -170,6 +195,13 @@ export default {
         id
     }) {
         doc._id = id
+        const fakeID = doc.id
+        state.newDocs.forEach(doc => {
+            const index = doc.childs_id.findIndex(child_id => child_id == fakeID)
+            if (index < 0) return
+            doc.childs_id[index] = id
+        });
+        if (state.newDocProp.id == fakeID) state.newDocProp.id = id
     },
     CANSEL_CREATE_DOCUMENTS(state) {
         router.push({

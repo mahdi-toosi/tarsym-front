@@ -11,31 +11,6 @@ function sendToast(type, text) {
     });
 }
 
-// async function sendToast_yes_or_no(type, text) {
-//     await Vue.toasted[type](text, {
-//         position: "bottom-left",
-//         duration: 5 * 1000,
-//         keepOnHover: true,
-//         iconPack: "fontawesome",
-//         icon: "fa-close",
-//         action: [{
-//                 text: 'Cancel',
-//                 onClick: (e, toastObject) => {
-//                     toastObject.goAway(0);
-//                     return false
-//                 }
-//             },
-//             {
-//                 text: 'Ok',
-//                 onClick: (e, toastObject) => {
-//                     toastObject.goAway(0);
-//                     return true
-//                 }
-//             }
-//         ]
-//     });
-// }
-
 const domain = 'http://localhost:3030';
 
 export default {
@@ -91,28 +66,28 @@ export default {
     },
     async Delete_this_Document({
         state,
-        dispatch,
         commit
     }, id, ) {
         if (typeof (id) == 'number') {
-            const doc = state.newDocs.filter(el => el._id == id)[0]
+            const doc = state.newDocs.filter(el => el.id == id)[0]
             //  TODO => check for childs, if have child send toast for childs will delete ?
-            if (doc.childs_id.length > 0) {
-                // const remove_childs = await sendToast_yes_or_no('error', 'این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟')
-                const remove_childs = confirm('این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شوند؟');
-                console.log(remove_childs);
+            if (doc.childs_id.length) {
+                const remove_childs = confirm('این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شود؟');
+                if (remove_childs) commit('REMOVE_THIS_DOC', id)
+            } else {
+                commit('REMOVE_THIS_DOC', id)
             }
-            // TODO => if doc is not create in database remove form state and done
-            commit('REMOVE_THIS_DOC', id)
             return
         }
+        const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
+        if (!remove_childs) return
         const url = `${ domain }/documents/${id}`
         try {
-            const newID = await axios.put(url, obj).then(async (res) => {
+            const newID = await axios.delete(url).then(res => {
                 if (res.status == 200) {
-                    console.log('UPDATED => ', res.data.title);
+                    commit('REMOVE_THIS_DOC', id)
                 }
-                return res.data._id // remember this set value for newID
+                return res // remember this set value for newID
             })
             return newID
         } catch (error) {
@@ -170,17 +145,18 @@ export default {
             }
             if (!doc.childs_id.length) return
 
-            doc.childs_id.forEach(child => {
-                const new_child = Docs.filter(el => (el._id ? el._id : el.id) == child)
+            doc.childs_id.forEach(child_id => {
+                console.log('Docs = >', Docs);
+                const new_child = Docs.filter(doc => doc._id == child_id)
                 console.log('new_child', new_child);
-                if (new_child.length) obj.childs.push(new_child[0]._id)
+                if (new_child.length) obj.childs.push((new_child[0]._id))
             });
             list.push(obj)
         });
         return list
     },
     async create_relationships(state, list) {
-        if (list.length == 0) return
+        if (!list.length) return
         const url = `${ domain }/create/documents/relationship`;
 
         try {
