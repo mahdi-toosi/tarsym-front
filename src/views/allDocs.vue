@@ -36,10 +36,19 @@
 						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
 					<time>{{ doc.date | date }}</time>
-					<button class="editDoc" @click="$router.push(`/update/doc/${doc._id}`)">
+					<button
+						class="editDoc"
+						@click="$router.push(`/update/doc/${doc._id}`)"
+						v-if="$route.name == 'my docs'"
+					>
 						<i class="far fa-edit"></i>
 					</button>
-					<button @click="Delete_this_Document(doc._id)" class="delete_button">
+					<button
+						@click="Delete_this_Document(doc._id)"
+						class="editDoc"
+						v-if="$route.name == 'my docs'"
+						style="margin-right: 5px;"
+					>
 						<i class="far fa-trash-alt"></i>
 					</button>
 				</header>

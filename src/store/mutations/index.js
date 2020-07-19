@@ -2,6 +2,9 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
+    SET_ALL_TAGS(state, tags) {
+        state.allTags = tags.data
+    },
     UPDATE_THIS_DOC(state, doc) {
         state.newDocs = doc
     },

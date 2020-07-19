@@ -36,6 +36,7 @@ export default {
 		// }
 	},
 	mounted() {
+		this.$store.dispatch("get_All_Tag");
 		// setInterval(() => {
 		// 	this.sendToast();
 		// }, 8 * 1000);

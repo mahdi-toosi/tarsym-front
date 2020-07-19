@@ -126,9 +126,7 @@ export default {
             }
         }
         const relationships_list = await dispatch('get_relationship_list');
-        console.log('relationships_list', relationships_list);
-        const data = await dispatch('create_relationships', relationships_list);
-        console.log('create_relationships', data);
+        await dispatch('create_relationships', relationships_list);
 
         // get and add childs
         // TODO show done  if work is successful
@@ -146,9 +144,7 @@ export default {
             if (!doc.childs_id.length) return
 
             doc.childs_id.forEach(child_id => {
-                console.log('Docs = >', Docs);
                 const new_child = Docs.filter(doc => doc._id == child_id)
-                console.log('new_child', new_child);
                 if (new_child.length) obj.childs.push((new_child[0]._id))
             });
             list.push(obj)
@@ -177,5 +173,35 @@ export default {
             return false
         }
 
+    },
+    get_All_Tag({
+        commit
+    }) {
+        const
+            limit = 50,
+            url = `${domain}/tags?$limit=${limit}`,
+            allTags = JSON.parse(localStorage.getItem("allTags"))
+        if (allTags) {
+            const
+                current = new Date(),
+                allTagsDate = new Date(allTags.date),
+                Difference_In_Time = current.getTime() - allTagsDate.getTime(),
+                Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+            if (Difference_In_Days < 5) {
+                commit('SET_ALL_TAGS', allTags)
+                return
+            }
+        }
+        try {
+            axios.get(url).then(res => {
+                if (res.status == 200) {
+                    res.data.date = new Date()
+                    localStorage.setItem("allTags", JSON.stringify(res.data));
+                    commit('SET_ALL_TAGS', res.data)
+                }
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
