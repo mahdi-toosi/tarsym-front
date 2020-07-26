@@ -1,5 +1,5 @@
 // @import './libs/resetAndHelpers.styl'
-@import './components'
+@import 'libs/normalize'
 *
     // border 1px #ff000070 dashed
 //     transition: all 0.5s ease
@@ -29,20 +29,23 @@
     font-family: iranSans
     font-style: normal
     font-weight: normal
-    src: url('/fonts/iranSans/eot/IRANSansWeb.eot')
-    src: url('/fonts/iranSans/eot/IRANSansWeb.eot?#iefix') format('embedded-opentype'),
-    url('/fonts/iranSans/woff2/IRANSansWeb.woff2') format('woff2'),
-    url('/fonts/iranSans/woff/IRANSansWeb.woff') format('woff'),
-    url('/fonts/iranSans/ttf/IRANSansWeb.ttf') format('truetype')
+    src: url('/fonts/eot/IRANSansWeb.eot')
+    src: url('/fonts/eot/IRANSansWeb.eot?#iefix') format('embedded-opentype'), 
+        url('/fonts/woff2/IRANSansWeb.woff2') format('woff2'), 
+        url('/fonts/woff/IRANSansWeb.woff') format('woff'),
+        url('/fonts/ttf/IRANSansWeb.ttf') format('truetype');
 
 body 
-    font-family: iransans
+    font-family: iranSans
     background: #f4f3fb
     color: #8d96ac
 a
     text-decoration: none
     color: inherit;
 
+button
+    background: transparent
+    border none
 
 .navigation-header 
     padding: 20px 0
@@ -263,3 +266,4 @@ a
                 span
                     background: #00c305;
 
+@import './components'

@@ -56,7 +56,7 @@
 							<li v-for="(child, index) in newDocChilds" :key="index">
 								<button
 									@click="goToChild(child._id ? child._id : child.id)"
-									class="btn btn-green"
+									class="child"
 								>{{ child.title ? child.title : child.id }}</button>
 								<button
 									@click="Delete_this_Document(child._id ? child._id : child.id)"

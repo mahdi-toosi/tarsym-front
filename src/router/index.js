@@ -48,6 +48,10 @@ const routes = [
         path: "/read-point",
         name: "read point",
         component: () => import("../views/readDoc.vue")
+    }, {
+        path: "*",
+        name: "read point",
+        component: () => import("../views/notFount.vue")
     }
 ];
 

@@ -10,6 +10,7 @@
 			:options="{ zoomControl: false }"
 			@update:center="mapCenterUpdated"
 			@mousemove="setMouseCoordinate"
+			:minZoom="4"
 			ref="myMap"
 		>
 			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
@@ -68,7 +69,12 @@
 								:key="index"
 								:icon="CircleIcon"
 						/>-->
-						<l-polyline :lat-lngs="tool.coordinates" :color="tool.color">
+						<l-polyline
+							:lat-lngs="tool.coordinates"
+							:color="tool.color"
+							:dashArray=" tool.dashed ? '10,10' : '' "
+							@click="mahdi(tool)"
+						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polyline>
 						<polyline-decorator
@@ -137,7 +143,7 @@ import {
 	LTooltip,
 	LIcon,
 	LControl,
-	LControlZoom
+	LControlZoom,
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
@@ -157,21 +163,21 @@ export default {
 			iconUrl: myIconUrl,
 			iconSize: [10, 10],
 			iconAnchor: [5, 5],
-			popupAnchor: [4, -25]
+			popupAnchor: [4, -25],
 		});
 		let defaultIcon = L.icon({
 			iconUrl:
 				"https://s3-eu-west-1.amazonaws.com/ct-documents/emails/A-static.png",
 			iconSize: [21, 31],
 			iconAnchor: [10.5, 31],
-			popupAnchor: [4, -25]
+			popupAnchor: [4, -25],
 		});
 		return {
 			// bingApiKey: "1mNX1ryO2Ny_3kzHceofAUIfZFIk8LEjB37y43NYPBzk-jgBLvPxc",
 			openStreetTileURL:
 				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			CircleIcon,
-			defaultIcon
+			defaultIcon,
 		};
 	},
 	computed: {
@@ -200,18 +206,18 @@ export default {
 				...OnTool.coordinates,
 				{
 					lat: this.MouseCoordinate.lat,
-					lng: this.MouseCoordinate.lng
-				}
+					lng: this.MouseCoordinate.lng,
+				},
 			];
 			return coordinates;
-		}
+		},
 	},
 	methods: {
 		...mapMutations([
 			"newPointMarker",
 			"mapCenterUpdated",
 			"readThisPoint",
-			"UPDATE_THIS_POINT_COORDINATE"
+			"UPDATE_THIS_POINT_COORDINATE",
 		]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
@@ -236,14 +242,14 @@ export default {
 			const OnTool = this.newDocProp.OnTool;
 			if (OnTool.condition)
 				this.docLayer.tools[OnTool.index].coordinates.pop();
-		}
+		},
 	},
 	mounted() {
 		L.easyPrint({
 			position: "bottomleft",
 			sizeModes: ["Current"],
 			exportOnly: true,
-			filename: "tarsym"
+			filename: "tarsym",
 		}).addTo(this.$refs.myMap.mapObject);
 	},
 	components: {
@@ -257,8 +263,8 @@ export default {
 		LControlZoom,
 		LControlPolylineMeasure,
 		polylineDecorator,
-		LTooltip
-	}
+		LTooltip,
+	},
 };
 </script>
 

@@ -31,14 +31,16 @@
         margin: 20px 10px;
         border-radius: 6px;
         overflow: hidden;
-        overflow-y: auto;
         .tool
             margin: 5px;
             padding: 10px;
             list-style-type: none;
             border-right: #898888 solid 2px;
-            &.tool_is_on
-                border-right: #0ce509 solid 2px;
+            transition: .3s
+            &:hover
+                border-right-color: green
+                transform: translateX(-5px)
+
         .tool_header
             display: flex
             pre
@@ -50,9 +52,18 @@
                 border-bottom: 1px gray solid
                 height: 30px;
                 background: transparent
-            .delete_button
+            .editIcon
+                border none 
+                background: transparent
+                cursor pointer
                 transition: .2s
                 margin-right: auto; 
+                &:hover
+                    color: #0ce509;
+            .tool_is_on
+                color: #0ce509;
+            .delete_button
+                transition: .2s
                 cursor pointer
                 background: transparent
                 border none
@@ -64,6 +75,8 @@
                 display inline-block
         .tools-content
             .tools
+                li
+
                 label 
                     font-size: 15px
                     padding: 2px 5px 2px 10px
@@ -110,8 +123,29 @@
             padding: 4px 15px
             cursor pointer
             margin: 10px 15px
-    
-    
+    .content
+        .layers-content
+            padding: 15px 0
+            ul
+                padding: 0
+                margin: 0
+            li
+                list-style none
+                display flex
+                padding: 10px
+            .child
+                width: 100%;
+                text-align: right;
+                padding: 10px
+                border-right: #898888 solid 2px;
+                cursor pointer
+                transition .3s
+                &:hover
+                    border-right-color: green
+                    transform: translateX(-5px)
+            .delete_button
+                margin-right: auto
+
     .addNewLayer //button
         border-radius: 999px
         margin: 20px auto 10px;

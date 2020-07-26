@@ -1,7 +1,7 @@
 <template>
 	<div class="panel">
 		<router-view />
-		<footer style="text-align: center">footer</footer>
+		<!-- <footer style="text-align: center">footer</footer> -->
 	</div>
 </template>
 <script>
@@ -14,7 +14,7 @@ export default {
 		return {};
 	},
 	computed: {
-		...mapState(["User"])
+		...mapState(["User"]),
 	},
 	methods: {
 		...mapActions(["getAllCategories", "getTheCurrentUser"]),
@@ -41,13 +41,13 @@ export default {
 				case "video":
 					return "video";
 			}
-		}
+		},
 	},
 
 	async created() {
 		// await this.getAllCategories();
 		// await this.getTheCurrentUser();
-	}
+	},
 };
 </script>
 

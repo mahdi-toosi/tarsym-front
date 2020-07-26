@@ -1,23 +1,23 @@
 <template>
 	<div class="color-picker" ref="colorpicker" dir="ltr">
 		<span class="color-picker-container">
-			<span class="current-color" :style="'background-color: ' + activeColor" @click="togglePicker()"></span>
+			<span class="current-color" :style="'background-color: ' + colors.hex8" @click="togglePicker()"></span>
 			<div class="vc-chrome" v-if="displayPicker">
 				<div class="vc-chrome-saturation-wrap">
-					<saturation v-model="colors" @change="childChange"></saturation>
+					<saturation v-model="colors" @change="childChange" />
 				</div>
 				<div class="vc-chrome-body">
 					<div class="vc-chrome-controls">
 						<div class="vc-chrome-color-wrap">
-							<div class="vc-chrome-active-color" :style="{background: activeColor}"></div>
-							<checkboard></checkboard>
+							<div class="vc-chrome-active-color" :style="{background: colors.hex8}"></div>
+							<checkboard />
 						</div>
 						<div class="vc-chrome-sliders">
 							<div class="vc-chrome-hue-wrap">
-								<hue v-model="colors" @change="childChange"></hue>
+								<hue v-model="colors" @change="childChange" />
 							</div>
 							<div class="vc-chrome-alpha-wrap">
-								<alpha v-model="colors" @change="childChange"></alpha>
+								<alpha v-model="colors" @change="childChange" />
 							</div>
 						</div>
 					</div>
@@ -39,32 +39,32 @@ export default {
 	mixins: [colorMixin],
 	props: {
 		index: Number,
-		secondaryColor: { type: Boolean, default: false }
+		secondaryColor: { type: Boolean, default: false },
 	},
 	components: {
 		saturation,
 		hue,
 		alpha,
-		checkboard
+		checkboard,
 	},
 	data() {
 		return {
-			displayPicker: false
+			displayPicker: false,
 		};
 	},
-	computed: {
-		activeColor() {
+	watch: {
+		colors() {
 			const color = this.colors.hex8;
 			this.ADD_COLOR(color);
 			return color;
-		}
+		},
 	},
 	methods: {
 		ADD_COLOR(color) {
 			const data = {
-				color: color,
+				color,
 				index: this.index,
-				secondaryColor: this.secondaryColor
+				secondaryColor: this.secondaryColor,
 			};
 			this.$store.commit("ADD_COLOR", data);
 		},
@@ -78,7 +78,7 @@ export default {
 			this.isValidHex(data.hex);
 			this.colorChange({
 				hex: data.hex,
-				source: "hex"
+				source: "hex",
 			});
 		},
 		showPicker() {
@@ -98,7 +98,11 @@ export default {
 			if (el !== target && !el.contains(target)) {
 				this.hidePicker();
 			}
-		}
-	}
+		},
+	},
+	mounted() {
+		const color = this.colors.hex8;
+		this.ADD_COLOR(color);
+	},
 };
 </script>

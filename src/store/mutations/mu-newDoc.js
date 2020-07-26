@@ -6,13 +6,15 @@ function thisDoc(state) {
 
 export default {
     async REMOVE_THIS_DOC(state, id) {
-        let Docs = state.allDocs.data;
-        let doc_index = await Docs.findIndex(doc => doc._id == id);
-        if (doc_index >= 0) Docs.splice(Docs[doc_index], 1)
+        if (state.allDocs.data) {
+            let Docs = state.allDocs.data;
+            let doc_index = await Docs.findIndex(doc => doc._id == id);
+            if (doc_index >= 0) Docs.splice(doc_index, 1)
+        }
 
-        Docs = state.newDocs
-        doc_index = await Docs.findIndex(doc => (doc._id ? doc._id : doc.id) == id)
-        if (doc_index < 0) return
+        let Docs = state.newDocs
+        let doc_index = await Docs.findIndex(doc => (doc._id || doc.id) == id)
+        // if (doc_index < 0) return
 
         const doc = Docs[doc_index]
         if (!doc.childs_id.length) {
@@ -21,7 +23,7 @@ export default {
         } else {
             let childs_index = []
             doc.childs_id.forEach(async child_id => {
-                const doc_index = await Docs.findIndex(el => (el._id ? el._id : el.id) == child_id)
+                const doc_index = await Docs.findIndex(el => (el._id || el.id) == child_id)
                 if (doc_index > 0) childs_index.push(doc_index)
             });
             if (!childs_index.length) return
@@ -30,13 +32,16 @@ export default {
             });
         }
     },
-    CHANGE_POLYLINE_DECORATOR(state, tag) {
-        const index = tag.target.attributes.index.value;
-        const changeType = tag.target.attributes.changeType.value;
+    CHANGE_POLYLINE_DECORATOR(state, {
+        $event,
+        index,
+        type
+    }) {
         const thisTool = thisDoc(state).tools[index];
-        const val = tag.target.checked;
-        if (changeType == "arrow") thisTool.showArrow = val;
-        if (changeType == "icon") thisTool.showIcon = val;
+        const val = $event.target.checked;
+        if (type == "arrow") thisTool.showArrow = val;
+        if (type == "icon") thisTool.showIcon = val;
+        if (type == "dashed") thisTool.dashed = val;
     },
     CHANGE_TOOLTIP(state, tag) {
         const index = tag.target.attributes.index.value;
@@ -45,9 +50,9 @@ export default {
         thisTool.tooltip = val;
     },
     DELETE_TOOL(state, index) {
-        thisDoc(state).tools.splice(index, 1);
         const onTool = state.newDocProp.OnTool;
         onTool.condition = false;
+        thisDoc(state).tools.splice(index, 1);
     },
     UPDATE_TOOLTIPS(state) {
         thisDoc(state).tools.forEach((element, index) => {
@@ -150,8 +155,7 @@ export default {
         onTool.index = -1;
         for (let i = 0; i < Docs.length; i++) {
             const thisDoc = Docs[i];
-            const condition = (tool) => tool.isOn == true;
-            const OnToolindex = thisDoc.tools.findIndex(condition);
+            const OnToolindex = thisDoc.tools.findIndex(tool => tool.isOn == true);
             const weHaveOnTool = OnToolindex >= 0;
             if (weHaveOnTool) {
                 onTool.condition = true;

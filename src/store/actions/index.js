@@ -71,10 +71,12 @@ export default {
         // console.log(doc.date);
 
         //  * description must be junk ?? (should include in the search query)
-        const clear_this_items = ['tools', 'imgsCount', 'date_props']
+        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'dashed']
         clear_this_items.forEach(element => {
-            doc.junk[element] = doc[element];
-            delete doc[element];
+            if (doc[element]) {
+                doc.junk[element] = doc[element];
+                delete doc[element];
+            }
         });
         delete doc.childs_id;
 

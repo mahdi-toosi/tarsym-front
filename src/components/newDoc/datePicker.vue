@@ -1,9 +1,12 @@
 <template>
 	<div class="date_time_picker_wrapper">
-		<button
-			@click="showPicker()"
-			:class="[ picked.year && picked.month ? '' : 'btn-red' ]"
-		>{{ picked.month && picked.year ? `${picked.day} / ${picked.month} / ${picked.year}` : 'تاریخ' }}</button>
+		<button @click="showPicker()" :class="[ picked.year && picked.month ? '' : 'btn-red' ]">
+			{{
+			picked.month && picked.year ?
+			`${ picked.day } / ${ picked.month } / ${ picked.year }` :
+			'تاریخ'
+			}}
+		</button>
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>
 				<ul class="pages">
@@ -80,9 +83,9 @@ const calendar = {
 				{ name: "رمضان", days: 30 },
 				{ name: "شوال", days: 29 },
 				{ name: "ذی القعده", days: 30 },
-				{ name: "ذی الحجه", days: 30 }
-			]
-		}
+				{ name: "ذی الحجه", days: 30 },
+			],
+		},
 		// {
 		// 	name: "شمسی",
 		// 	end: 1500,
@@ -119,7 +122,7 @@ const calendar = {
 		// 		{ name: "دسامبر", days: 31 }
 		// 	]
 		// }
-	]
+	],
 };
 export default {
 	props: ["docLayer"],
@@ -131,10 +134,10 @@ export default {
 				centurys: true,
 				years: false,
 				months: false,
-				days: false
+				days: false,
 			},
 			years: [],
-			newPageZindex: "years"
+			newPageZindex: "years",
 		};
 	},
 	computed: {
@@ -174,7 +177,7 @@ export default {
 			const curentMonth = this.calendar.curentMonthIndex;
 			const days = thisType.months[curentMonth].days;
 			return days;
-		}
+		},
 	},
 	methods: {
 		changeType() {
@@ -220,7 +223,7 @@ export default {
 		},
 		pickYear(year) {
 			this.$store.commit("ADD_DATE", {
-				year: year.toString()
+				year: year.toString(),
 			});
 			this.changePage("months");
 		},
@@ -256,8 +259,8 @@ export default {
 			if (el !== target && !el.contains(target)) {
 				this.hidePicker();
 			}
-		}
+		},
 	},
-	mounted() {}
+	mounted() {},
 };
 </script>

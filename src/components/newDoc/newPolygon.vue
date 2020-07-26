@@ -1,18 +1,21 @@
 <template>
-	<div
-		class="newPolygon"
-		@click="toolSwitch(index)"
-		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
-	>
+	<div class="newPolygon">
 		<div class="tool_header">
 			<i class="fas fa-draw-polygon" style="font-size: 24px; padding: 3px 4px;"></i>
 			<input
 				type="text"
 				class="tooltip"
-				:placeholder="`new ${tool.type}`"
+				placeholder="توضیح کوتاه چند ضلعی"
 				:index="index"
 				@input="CHANGE_TOOLTIP"
 			/>
+			<button
+				class="editIcon"
+				@click="toolSwitch(index)"
+				:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+			>
+				<i class="fas fa-pencil-alt"></i>
+			</button>
 			<button @click="deleteTool(index)" class="delete_button">
 				<i class="far fa-trash-alt"></i>
 			</button>

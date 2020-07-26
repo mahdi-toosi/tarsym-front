@@ -1,9 +1,5 @@
 <template>
-	<div
-		class="newPolyline"
-		@click="toolSwitch(index)"
-		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
-	>
+	<div class="newPolyline">
 		<div class="tool_header">
 			<icon-picker :index="index" v-if="tool.showIcon" />
 			<i
@@ -14,10 +10,17 @@
 			<input
 				type="text"
 				class="tooltip"
-				:placeholder="`new ${tool.type}`"
+				placeholder="توضیح کوتاه خط"
 				:index="index"
 				@input="CHANGE_TOOLTIP"
 			/>
+			<button
+				class="editIcon"
+				@click="toolSwitch(index)"
+				:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+			>
+				<i class="fas fa-pencil-alt"></i>
+			</button>
 			<button @click="deleteTool(index)" class="delete_button">
 				<i class="far fa-trash-alt"></i>
 			</button>
@@ -31,22 +34,24 @@
 				<label for="addIcon">آیکن:</label>
 				<input
 					type="checkbox"
-					:index="index"
 					id="addIcon"
-					@input="CHANGE_POLYLINE_DECORATOR"
-					changeType="icon"
-					v-if="tool.type == 'Polyline'"
+					@input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'icon'})"
+				/>
+			</div>
+			<div class="isDashed">
+				<label for="isDashed">خط چین:</label>
+				<input
+					type="checkbox"
+					id="isDashed"
+					@input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'dashed' })"
 				/>
 			</div>
 			<div class="addArrow">
 				<label for="addArrow">فلش:</label>
 				<input
 					type="checkbox"
-					:index="index"
 					id="addArrow"
-					@input="CHANGE_POLYLINE_DECORATOR"
-					changeType="arrow"
-					v-if="tool.type == 'Polyline' "
+					@input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'arrow'})"
 				/>
 			</div>
 			<div class="lineIconsColor" v-if="tool.showIcon">
@@ -101,7 +106,7 @@ import colorPicker from "@/components/newDoc/colorPicker";
 import iconPicker from "@/components/newDoc/iconPicker";
 import { mapActions, mapMutations } from "vuex";
 export default {
-	name: "newPolygon",
+	name: "newPolyline",
 	props: ["tool", "index"],
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),

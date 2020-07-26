@@ -1,18 +1,21 @@
 <template>
-	<div
-		class="newPoint"
-		@click="toolSwitch(index)"
-		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
-	>
+	<div class="newPoint">
 		<div class="tool_header">
 			<icon-picker :index="index" />
 			<input
 				type="text"
 				class="tooltip"
-				:placeholder="`new ${tool.type}`"
+				placeholder="توضیح کوتاه آیکن"
 				:index="index"
 				@input="CHANGE_TOOLTIP"
 			/>
+			<button
+				class="editIcon"
+				@click="toolSwitch(index)"
+				:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+			>
+				<i class="fas fa-pencil-alt"></i>
+			</button>
 			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
 				<i class="far fa-trash-alt"></i>
 			</button>
