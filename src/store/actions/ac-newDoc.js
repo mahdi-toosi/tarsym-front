@@ -52,12 +52,15 @@ export default {
             sendinfoToast('info', "ابتدا تغییر مختصات قبلی را ذخیره کنید");
             return;
         }
-        const fake_id = new Date().getTime(),
-            thisDoc = state.newDocs[state.newDocProp.index];
+        const fake_id = new Date().getTime();
         if (!root) {
+            const thisDoc = state.newDocs[state.newDocProp.index];
             thisDoc.childs_id.push(fake_id);
         }
-        await commit('SET_NEW_DOCUMENT', fake_id)
+        await commit('SET_NEW_DOCUMENT', {
+            fake_id,
+            root
+        })
 
         const path = `/create/doc/${getters.lastAddedDocID}`;
         await router.push(path);
@@ -73,17 +76,19 @@ export default {
             description = thisDoc.description.length > 20,
             tools = thisDoc.tools.length > 0,
             date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
-            tags = thisDoc.tags.length > 0,
             // * later => auto swich off the tool
             is_any_tool_on = state.newDocProp.OnTool.condition;
 
         if (!title) errors.push('تیتر کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
-        if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
         // * later => auto swich off the tool
         if (is_any_tool_on) errors.push('در حال استفاده از ابزاری هستید')
+        if (thisDoc.tags) {
+            const tags = thisDoc.tags.length > 0;
+            if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
+        }
 
         if (errors.length == 0) return true
         else {

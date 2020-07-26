@@ -30,19 +30,20 @@
 					taggable
 					push-tags
 					class="tags"
+					v-if="newDocLayer.tags"
 				/>
 				<date-picker class="datepicker" :docLayer="newDocProp.index" />
 			</section>
 			<section class="tools shadow">
 				<br />
 				<div class="tabs">
-					<span @click="tabContent = 'layers'" :class="tabContent == 'layers' ? 'activeTab' : ''">layers</span>
-					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">tools</span>
+					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">ابزار ها</span>
+					<span @click="tabContent = 'layers'" :class="tabContent == 'layers' ? 'activeTab' : ''">لایه ها</span>
 				</div>
 				<div class="content">
 					<div class="tools-content" v-show="tabContent == 'tools'">
 						<ul class="tools">
-							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
+							<li class="tool" v-for="(tool, index) in newDocLayer.tools" :key="index">
 								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" />
 								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" />
 								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" />
@@ -65,7 +66,7 @@
 								</button>
 							</li>
 						</ul>
-						<button @click="addNewDoc(false)" class="btn btn-blue">add child</button>
+						<button @click="addNewDoc(false) , tabContent = 'tools'" class="btn btn-blue addNewLayer">+</button>
 					</div>
 				</div>
 			</section>
@@ -96,10 +97,10 @@ export default {
 				{ background: [] },
 				{ color: [] },
 				{ align: [] },
-				{ direction: "rtl" }
+				{ direction: "rtl" },
 			],
 			[{ header: [2, 3, false] }],
-			["clean"]
+			["clean"],
 		];
 		return {
 			mahdi: false,
@@ -107,9 +108,9 @@ export default {
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
 				theme: "snow",
-				placeholder: "توضیحات ..."
+				placeholder: "توضیحات ...",
 			},
-			defaultColor: "#FF0000"
+			defaultColor: "#FF0000",
 		};
 	},
 	methods: {
@@ -121,8 +122,8 @@ export default {
 			"goToChild",
 			"Delete_this_Document",
 			"update_this_doc",
-			"get_childs"
-		])
+			"get_childs",
+		]),
 
 		// keyPressed(e) {
 		// 	const OnTool = this.newDocProp.OnTool;
@@ -138,7 +139,7 @@ export default {
 			"newDocLayer",
 			"lastAddedDocID",
 			"newDocChilds",
-			"chosenTags"
+			"chosenTags",
 		]),
 		newPointTitle: {
 			get() {
@@ -146,7 +147,7 @@ export default {
 			},
 			set(val) {
 				return (this.newDocLayer.title = val);
-			}
+			},
 		},
 		newPointDescription: {
 			get() {
@@ -154,8 +155,8 @@ export default {
 			},
 			set(val) {
 				return (this.newDocLayer.description = val);
-			}
-		}
+			},
+		},
 	},
 	async created() {
 		const routeName = this.$route.name;
@@ -176,20 +177,13 @@ export default {
 		gooeyMenu,
 		newPoint,
 		newPolygon,
-		newPolyline
-	}
+		newPolyline,
+	},
 };
 </script>
 
 <style scoped lang="stylus">
 .tools {
 	padding: 0px;
-
-	li {
-		border-top: 1px solid gray;
-		border-bottom: 1px solid gray;
-		padding: 5px;
-		list-style-type: none;
-	}
 }
 </style>

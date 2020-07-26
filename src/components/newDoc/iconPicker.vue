@@ -1,7 +1,7 @@
 <template>
 	<div class="icons_box_wrapper" ref="iconpicker">
 		<i
-			:class=" logo ? logo : 'fas fa-map-marker-alt' "
+			:class=" logo || 'fas fa-map-marker-alt' "
 			:style="{color: logoColor}"
 			@click="togglePicker()"
 		/>
@@ -27,12 +27,12 @@ export default {
 		return {
 			displayPicker: false,
 			icons,
-			search: ""
+			search: "",
 		};
 	},
 	computed: {
 		filteredicons() {
-			const filteredIcons = this.icons.filter(name => {
+			const filteredIcons = this.icons.filter((name) => {
 				const icon = name.toLowerCase();
 				const char = this.search.toLowerCase();
 				return icon.includes(char);
@@ -49,14 +49,16 @@ export default {
 			const thisDocLayer = this.$store.state.newDocProp.index;
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
-			return thisTool.secondaryColor;
-		}
+			if (this.logo) {
+				return thisTool.secondaryColor;
+			} else return "#277696";
+		},
 	},
 	methods: {
 		ADD_ICON(name) {
 			const data = {
 				iconName: name,
-				index: this.index
+				index: this.index,
 			};
 			this.$store.commit("ADD_ICON", data);
 			this.hidePicker();
@@ -78,7 +80,7 @@ export default {
 			if (el !== target && !el.contains(target)) {
 				this.hidePicker();
 			}
-		}
-	}
+		},
+	},
 };
 </script>

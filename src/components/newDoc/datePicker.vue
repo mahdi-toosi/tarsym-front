@@ -3,7 +3,7 @@
 		<button
 			@click="showPicker()"
 			:class="[ picked.year && picked.month ? '' : 'btn-red' ]"
-		>{{ picked.month && picked.year ? `${picked.day} / ${picked.month} / ${picked.year}` : 'pick a Date' }}</button>
+		>{{ picked.month && picked.year ? `${picked.day} / ${picked.month} / ${picked.year}` : 'تاریخ' }}</button>
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>
 				<ul class="pages">

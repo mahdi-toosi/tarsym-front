@@ -9,32 +9,44 @@
 				:index="index"
 				@input="CHANGE_TOOLTIP"
 			/>
-			<pre v-if="tool.searchable">searchable</pre>
 			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
 				<i class="far fa-trash-alt"></i>
 			</button>
+			<button class="changeButoon" @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
+			<button class="btn-green changeButoon" @click="toolSwitch(index , 'off')" v-if="tool.isOn">ثبت</button>
 		</div>
-		<color-picker :value="tool.color" :index="index" :secondaryColor="true" />
-		<input
-			dir="ltr"
-			type="range"
-			:index="index"
-			min="10"
-			max="45"
-			value="35"
-			v-on:input="CHANGE_ICON({ $event , type: 'size' })"
-		/>
-		<input
-			dir="ltr"
-			type="range"
-			:index="index"
-			min="0"
-			max="360"
-			value="0"
-			@input="CHANGE_ICON({ $event, type:'angle' })"
-		/>
-		<button @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-		<button @click="toolSwitch(index , 'off')" class="btn-green" v-if="tool.isOn">ثبت</button>
+		<div class="iconColor" v-if="logo">
+			<label for="iconColor">رنگ آیکن:</label>
+			<color-picker id="iconColor" :value="tool.color" :index="index" :secondaryColor="true" />
+		</div>
+		<div class="tool_body">
+			<div class="iconSize" v-if="logo">
+				<label for="iconSize">سایز آیکن:</label>
+				<input
+					dir="ltr"
+					id="iconSize"
+					type="range"
+					:index="index"
+					min="10"
+					max="45"
+					value="35"
+					v-on:input="CHANGE_ICON({ $event , type: 'size' })"
+				/>
+			</div>
+			<div class="iconDegree" v-if="logo">
+				<label for="iconDegree">چرخش آیکن:</label>
+				<input
+					dir="ltr"
+					id="iconDegree"
+					type="range"
+					:index="index"
+					min="0"
+					max="360"
+					value="0"
+					@input="CHANGE_ICON({ $event, type:'angle' })"
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -48,12 +60,20 @@ export default {
 	props: ["tool", "index"],
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-		...mapMutations(["CHANGE_ICON", "CHANGE_TOOLTIP"])
+		...mapMutations(["CHANGE_ICON", "CHANGE_TOOLTIP"]),
+	},
+	computed: {
+		logo() {
+			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDoc = this.$store.state.newDocs[thisDocLayer];
+			const thisTool = thisDoc.tools[this.index];
+			return thisTool.iconName;
+		},
 	},
 	components: {
 		iconPicker,
-		colorPicker
-	}
+		colorPicker,
+	},
 };
 </script>
 

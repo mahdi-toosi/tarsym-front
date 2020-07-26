@@ -173,12 +173,14 @@ export default {
         state.newDocProp.index = index
         state.newDocProp.id = Docs[index]._id ? Docs[index]._id : Docs[index].id
     },
-    SET_NEW_DOCUMENT(state, fake_id) {
+    SET_NEW_DOCUMENT(state, {
+        fake_id,
+        root
+    }) {
         const newDocObj = {
             id: fake_id,
             title: "",
             description: "",
-            tags: [],
             tools: [],
             date_props: {
                 century: null,
@@ -188,6 +190,7 @@ export default {
             },
             childs_id: [],
         };
+        if (root) newDocObj.tags = []
         state.newDocs.push(newDocObj)
     },
     ADD_NEW_ID(state, {
