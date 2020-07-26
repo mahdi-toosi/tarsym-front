@@ -1,15 +1,15 @@
 import Vue from "vue";
 import router from "../../router";
 
-function sendinfoToast(type, text) {
-    Vue.toasted[type](text, {
-        position: "bottom-left",
-        duration: 5 * 1000,
-        keepOnHover: true,
-        iconPack: "fontawesome",
-        icon: "fa-close",
-    });
-}
+// function sendinfoToast(type, text) {
+//     Vue.toasted[type](text, {
+//         position: "bottom-left",
+//         duration: 5 * 1000,
+//         keepOnHover: true,
+//         iconPack: "fontawesome",
+//         icon: "fa-close",
+//     });
+// }
 
 function thisDoc(state) {
     return state.newDocs[state.newDocProp.index]
@@ -17,41 +17,22 @@ function thisDoc(state) {
 
 export default {
     async setTool({
-        commit,
-        state
+        commit
     }, type) {
-        const all_tools_is_off = !state.newDocProp.OnTool.condition;
-        if (all_tools_is_off) {
-            await commit('SET_TOOL', type);
-            await commit('UPDATE_ON_TOOL');
-            return;
-        } else {
-            sendinfoToast('info', "درحال استفاده از ابزاری هستید");
-        }
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+        await commit('SET_TOOL', type);
+        await commit('UPDATE_ON_TOOL');
     },
-    // async addChild({
-    //     state,
-    //     dispatch
-    // }) {
-    //     const thisDoc = state.newDocs[state.newDocProp.index],
-    //         new_id = await dispatch('Create_this_Document', thisDoc);
-    //     if (new_id) {
-    //         await dispatch('addNewDoc', new_id);
-    //         await dispatch('Update_father_Document_for_this_child', new_id);
-    //     }
-    // },
     async addNewDoc({
         commit,
         getters,
         state,
         dispatch
     }, root = true) {
-        const is_any_tool_on = state.newDocProp.OnTool.condition
-        if (is_any_tool_on) {
-            // TODO => auto swich off the tool
-            sendinfoToast('info', "ابتدا تغییر مختصات قبلی را ذخیره کنید");
-            return;
-        }
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
         const fake_id = new Date().getTime();
         if (!root) {
             const thisDoc = state.newDocs[state.newDocProp.index];
@@ -115,30 +96,27 @@ export default {
     },
     async goBack({
         state,
+        commit
     }) {
-        const all_tools_is_off = !state.newDocProp.OnTool.condition;
-        if (all_tools_is_off) {
-            const doc_id = state.newDocProp.id;
-            const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
-            const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ father_id._id ? father_id._id : father_id.id }`;
-            await router.push(path);
-            return;
-        } else {
-            sendinfoToast('info', "ابتدا تغییر مختصات قبلی را ذخیره کنید");
-        }
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const doc_id = state.newDocProp.id;
+        const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
+        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ father_id._id ? father_id._id : father_id.id }`;
+        await router.push(path);
     },
     async goToChild({
-        state
+        commit
     }, id) {
-        const all_tools_is_off = !state.newDocProp.OnTool.condition;
-        if (all_tools_is_off) {
-            const routeName = router.currentRoute.name
-            const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${id}`;
-            await router.push(path);
-            return;
-        } else {
-            sendinfoToast('info', "ابتدا تغییر مختصات قبلی را ذخیره کنید");
-        }
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const routeName = router.currentRoute.name
+        const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${id}`;
+        await router.push(path);
+        return;
+
     },
     async deleteTool({
         commit
@@ -147,33 +125,30 @@ export default {
         await commit('UPDATE_TOOLTIPS')
         await commit('UPDATE_ON_TOOL')
     },
-    makeToolOn({
-        state,
-        commit
-    }, index) {
-        if (state.newDocProp.OnTool.condition) {
-            const msg = "ابتدا دیتا های وارد شده قبلی را ذخیره کنید";
-            sendinfoToast('error', msg);
-            return;
-        } else {
-            const thisTool = thisDoc(state).tools[index];
-            thisTool.isOn = true;
-            commit('UPDATE_ON_TOOL')
-        }
-    },
     async toolSwitch({
             state,
             commit,
             dispatch
         },
-        index, situation = "on") {
+        index) {
         const thisTool = thisDoc(state).tools[index];
-        if (thisTool.isOn || situation == "off") {
-            await commit('OFF_THIS_TOOL', thisTool)
+        if (thisTool.isOn) {
+            // if is on turned off
+            await commit('OFF_THE_ON_TOOL')
             await commit('UPDATE_ON_TOOL')
             return
         } else {
-            dispatch('makeToolOn', index)
+            //turned On
+            await dispatch('makeToolOn', index)
         }
+    },
+    async makeToolOn({
+        state,
+        commit
+    }, index) {
+        await commit('OFF_THE_ON_TOOL')
+        const thisTool = thisDoc(state).tools[index];
+        thisTool.isOn = true;
+        await commit('UPDATE_ON_TOOL')
     },
 }

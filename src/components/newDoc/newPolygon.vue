@@ -1,5 +1,9 @@
 <template>
-	<div class="newPolygon">
+	<div
+		class="newPolygon"
+		@click="toolSwitch(index)"
+		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+	>
 		<div class="tool_header">
 			<i class="fas fa-draw-polygon" style="font-size: 24px; padding: 3px 4px;"></i>
 			<input
@@ -12,8 +16,6 @@
 			<button @click="deleteTool(index)" class="delete_button">
 				<i class="far fa-trash-alt"></i>
 			</button>
-			<button class="changeButoon" @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-			<button class="btn-green changeButoon" @click="toolSwitch(index , 'off')" v-if="tool.isOn">ثبت</button>
 		</div>
 		<div class="tool_body">
 			<div class="polygonColor">

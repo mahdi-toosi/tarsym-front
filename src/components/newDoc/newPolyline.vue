@@ -1,5 +1,9 @@
 <template>
-	<div class="newPolyline">
+	<div
+		class="newPolyline"
+		@click="toolSwitch(index)"
+		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+	>
 		<div class="tool_header">
 			<icon-picker :index="index" v-if="tool.showIcon" />
 			<i
@@ -17,8 +21,6 @@
 			<button @click="deleteTool(index)" class="delete_button">
 				<i class="far fa-trash-alt"></i>
 			</button>
-			<button class="changeButoon" @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-			<button class="btn-green changeButoon" @click="toolSwitch(index , 'off')" v-if="tool.isOn">ثبت</button>
 		</div>
 		<div class="tool_body">
 			<div class="lineColor">

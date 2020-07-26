@@ -1,5 +1,9 @@
 <template>
-	<div class="newPoint">
+	<div
+		class="newPoint"
+		@click="toolSwitch(index)"
+		:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+	>
 		<div class="tool_header">
 			<icon-picker :index="index" />
 			<input
@@ -12,39 +16,39 @@
 			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
 				<i class="far fa-trash-alt"></i>
 			</button>
-			<button class="changeButoon" @click="makeToolOn(index)" v-if="!tool.isOn">تغییر</button>
-			<button class="btn-green changeButoon" @click="toolSwitch(index , 'off')" v-if="tool.isOn">ثبت</button>
 		</div>
-		<div class="iconColor" v-if="logo">
-			<label for="iconColor">رنگ آیکن:</label>
-			<color-picker id="iconColor" :value="tool.color" :index="index" :secondaryColor="true" />
-		</div>
-		<div class="tool_body">
-			<div class="iconSize" v-if="logo">
-				<label for="iconSize">سایز آیکن:</label>
-				<input
-					dir="ltr"
-					id="iconSize"
-					type="range"
-					:index="index"
-					min="10"
-					max="45"
-					value="35"
-					v-on:input="CHANGE_ICON({ $event , type: 'size' })"
-				/>
+		<div class="tool_body" v-if="logo">
+			<div class="iconColor">
+				<label for="iconColor">رنگ آیکن:</label>
+				<color-picker id="iconColor" :value="tool.color" :index="index" :secondaryColor="true" />
 			</div>
-			<div class="iconDegree" v-if="logo">
-				<label for="iconDegree">چرخش آیکن:</label>
-				<input
-					dir="ltr"
-					id="iconDegree"
-					type="range"
-					:index="index"
-					min="0"
-					max="360"
-					value="0"
-					@input="CHANGE_ICON({ $event, type:'angle' })"
-				/>
+			<div class="tool_body">
+				<div class="iconSize">
+					<label for="iconSize">سایز آیکن:</label>
+					<input
+						dir="ltr"
+						id="iconSize"
+						type="range"
+						:index="index"
+						min="10"
+						max="45"
+						value="35"
+						v-on:input="CHANGE_ICON({ $event , type: 'size' })"
+					/>
+				</div>
+				<div class="iconDegree">
+					<label for="iconDegree">چرخش آیکن:</label>
+					<input
+						dir="ltr"
+						id="iconDegree"
+						type="range"
+						:index="index"
+						min="0"
+						max="360"
+						value="0"
+						@input="CHANGE_ICON({ $event, type:'angle' })"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>

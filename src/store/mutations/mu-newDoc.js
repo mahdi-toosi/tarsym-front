@@ -44,9 +44,6 @@ export default {
         const val = tag.target.value;
         thisTool.tooltip = val;
     },
-    OFF_THIS_TOOL(state, thisTool) {
-        thisTool.isOn = false;
-    },
     DELETE_TOOL(state, index) {
         thisDoc(state).tools.splice(index, 1);
         const onTool = state.newDocProp.OnTool;
@@ -139,6 +136,12 @@ export default {
         }
         const thisLayer = state.newDocs[state.newDocProp.index]
         thisLayer.tools.push(obj);
+    },
+    OFF_THE_ON_TOOL(state) {
+        const onTool = state.newDocProp.OnTool
+        if (!onTool.condition) return
+        const OnToolinDoc = thisDoc(state).tools[onTool.index]
+        OnToolinDoc.isOn = false
     },
     UPDATE_ON_TOOL(state) {
         const Docs = state.newDocs

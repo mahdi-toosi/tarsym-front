@@ -43,10 +43,10 @@
 				<div class="content">
 					<div class="tools-content" v-show="tabContent == 'tools'">
 						<ul class="tools">
-							<li class="tool" v-for="(tool, index) in newDocLayer.tools" :key="index">
-								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" />
-								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" />
-								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" />
+							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
+								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" class="tool" />
+								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" class="tool" />
+								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" class="tool" />
 							</li>
 						</ul>
 						<gooey-menu />
