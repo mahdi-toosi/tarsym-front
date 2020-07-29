@@ -29,9 +29,15 @@
 			<!-- </l-marker>
 			</div>-->
 
-			<div v-if="docs_list.length > 0 && docLayer.tools.length > 0">
-				<!-- <div v-if="docLayer.tools.length > 0"> -->
-				<div v-for="(tool, index) in docLayer.tools" :key="index">
+			<div v-if="docs_list.length > 0 ">
+				<!-- <div v-if="newDocLayer.tools.length > 0"> -->
+				<div
+					v-for="(tool, index) in 
+							($route.name == 'my docs' || $route.name == 'all docs') 
+							? allDocPageTools 
+							: newDocLayer.tools "
+					:key="index"
+				>
 					<div v-if="tool.type == 'Polygon'">
 						<span v-if="newDocProp.OnTool.condition">
 							<l-polygon
@@ -148,7 +154,7 @@ import {
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 import polylineDecorator from "@/components/polyline-decorator";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 export default {
 	name: "leaflet-oprator-map",
 	data() {
@@ -182,22 +188,17 @@ export default {
 	},
 	computed: {
 		...mapState(["mapCenter", "newDocProp", "zoom", "MouseCoordinate"]),
-		docLayer() {
-			return this.$store.getters.newDocLayer;
-		},
-		docs_list() {
-			return this.$store.getters.docs_list;
-		},
+		...mapGetters(["newDocLayer", "docs_list", "allDocPageTools"]),
 		undoCondition() {
 			const onTool = this.newDocProp.OnTool;
 			if (!onTool.condition) return false;
-			const thisTool = this.docLayer.tools[onTool.index];
+			const thisTool = this.newDocLayer.tools[onTool.index];
 			if (thisTool.type !== "Point") return true;
 			else return false;
 		},
 		polygonOrPolylineSimolationCoordinates() {
 			const OnToolProp = this.newDocProp.OnTool;
-			const OnTool = this.docLayer.tools[OnToolProp.index];
+			const OnTool = this.newDocLayer.tools[OnToolProp.index];
 			const isPolygonOrPolylineOn =
 				OnTool.type == "Polygon" || OnTool.type == "Polyline";
 			if (!isPolygonOrPolylineOn && !this.MouseCoordinate) return [];
@@ -228,7 +229,7 @@ export default {
 		setClickCoordinates(c) {
 			const OnTool = this.newDocProp.OnTool;
 			if (!OnTool.condition) return;
-			const thisTool = this.docLayer.tools[OnTool.index];
+			const thisTool = this.newDocLayer.tools[OnTool.index];
 			if (thisTool.type == "Point") return;
 			thisTool.coordinates.push(c.latlng);
 		},
@@ -241,7 +242,7 @@ export default {
 		undoTools() {
 			const OnTool = this.newDocProp.OnTool;
 			if (OnTool.condition)
-				this.docLayer.tools[OnTool.index].coordinates.pop();
+				this.newDocLayer.tools[OnTool.index].coordinates.pop();
 		},
 	},
 	mounted() {
@@ -271,13 +272,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .map {
-	height: 80vh;
+	height: 100vh;
 	width: 60%;
 	position: relative;
 	overflow: hidden;
 	margin-right: auto;
 	outline: none;
-	border: red dashed 1px;
+	// border: red dashed 1px;
 	direction: ltr;
 }
 </style>

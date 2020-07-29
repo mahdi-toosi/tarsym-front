@@ -12,11 +12,11 @@ const routes = [
     //   name: "App",
     //   component: App
     // },
-    {
-        path: "/signup",
-        name: "Signup",
-        component: () => import("../components/just save/Signup.vue")
-    },
+    // {
+    //     path: "/signup",
+    //     name: "Signup",
+    //     component: () => import("../components/just save/Signup.vue")
+    // },
     // {
     //   path: "/login",
     //   name: "Login",
@@ -39,8 +39,7 @@ const routes = [
         path: "/update/doc/:id",
         name: "update doc",
         component: () => import("../views/newDoc.vue")
-    },
-    {
+    }, {
         path: "/my-docs",
         name: "my docs",
         component: () => import("../views/allDocs.vue")
@@ -50,8 +49,8 @@ const routes = [
         component: () => import("../views/readDoc.vue")
     }, {
         path: "*",
-        name: "read point",
-        component: () => import("../views/notFount.vue")
+        name: "404 page",
+        component: () => import("../views/notFound.vue")
     }
 ];
 

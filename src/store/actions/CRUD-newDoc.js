@@ -1,5 +1,7 @@
 import axios from 'axios';
 import Vue from "vue";
+// const domain = 'http://localhost:3030/';
+const domain = 'https://tarsym.ir/';
 
 function sendToast(type, text) {
     Vue.toasted[type](text, {
@@ -11,8 +13,6 @@ function sendToast(type, text) {
     });
 }
 
-const domain = 'http://localhost:3030';
-
 export default {
     async Create_this_Document({
         dispatch
@@ -20,7 +20,7 @@ export default {
         // const is_this_Doc_valid = await dispatch('is_this_Doc_valid', doc);
         // if (!is_this_Doc_valid) return false;
 
-        const url = `${ domain }/documents`,
+        const url = `${ domain }documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
         try {
@@ -46,7 +46,7 @@ export default {
     async Update_this_Document({
         dispatch,
     }, doc, ) {
-        const url = `${ domain }/documents/${doc._id}`,
+        const url = `${ domain }documents/${doc._id}`,
             ready_doc = await dispatch('ready_document_for_send', doc)
         try {
             const newID = await axios.put(url, ready_doc).then(async (res) => {
@@ -81,7 +81,7 @@ export default {
         }
         const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
         if (!remove_childs) return
-        const url = `${ domain }/documents/${id}`
+        const url = `${ domain }documents/${id}`
         try {
             const newID = await axios.delete(url).then(res => {
                 if (res.status == 200) {
@@ -129,7 +129,8 @@ export default {
         await dispatch('create_relationships', relationships_list);
 
         // get and add childs
-        // TODO show done  if work is successful
+        // TODO show done if work is successful
+        commit('CLEAR_NEW_DOC')
     },
     get_relationship_list({
         state
@@ -153,7 +154,7 @@ export default {
     },
     async create_relationships(state, list) {
         if (!list.length) return
-        const url = `${ domain }/create/documents/relationship`;
+        const url = `${ domain }create/documents/relationship`;
 
         try {
             const data = await axios.post(url, list).then((res) => {
@@ -179,8 +180,8 @@ export default {
     }) {
         const
             limit = 50,
-            url = `${domain}/tags?$limit=${limit}`,
-            allTags = JSON.parse(localStorage.getItem("allTags"))
+            url = `${domain}tags?$limit=${limit}`,
+            allTags = false // JSON.parse(localStorage.getItem("allTags"))
         if (allTags) {
             const
                 current = new Date(),

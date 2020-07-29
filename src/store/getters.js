@@ -1,12 +1,24 @@
-// import router from "../router";
-
 export default {
     docs_list: (state) => {
         const routeName = state.route.name
         if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs || []
         // else if (routeName == 'all docs') return state.allDocs.data
-        else if (routeName == 'my docs') return state.allDocs.data || []
+        else if (routeName == 'my docs' || routeName == 'all docs') return state.allDocs.data || []
         else return []
+    },
+    allDocPageTools: (state, getters) => {
+        const routeName = state.route.name
+        let tools = []
+        if (routeName == 'my docs' || routeName == 'all docs') {
+            getters.docs_list.forEach(doc => {
+                if (doc.root) {
+                    doc.tools.forEach(tool => {
+                        tools.push(tool)
+                    });
+                }
+            });
+        }
+        return tools
     },
     newDocLayer: (state, getters) => {
         return getters.docs_list[state.newDocProp.index]

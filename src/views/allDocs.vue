@@ -28,7 +28,7 @@
 					<i
 						class="logo"
 						:class=" doc.tools[0].iconName ? doc.tools[0].iconName : 'fas fa-map-marker-alt' "
-						:style="{ color : doc.tools[0].iconName ?  doc.tools[0].color : '#277696' }"
+						:style="{ color : doc.tools[0].iconName ?  doc.tools[0].secondaryColor : '#277696' }"
 						aria-hidden="true"
 					/>
 					<div class="nameandsituation">
@@ -77,14 +77,14 @@ export default {
 	data() {
 		return {
 			search: "",
-			delay: 500
+			delay: 500,
 		};
 	},
 	computed: {
 		...mapState(["allDocs"]),
 		docLayer() {
 			return this.$store.getters.docs_list;
-		}
+		},
 	},
 	methods: {
 		...mapActions(["getAllDocs", "addNewDoc", "Delete_this_Document"]),
@@ -95,11 +95,11 @@ export default {
 			this.$axios
 				.get(url)
 				// .then(response => (this.results = response.data))
-				.then(response => console.log(response.data))
-				.catch(error => {
+				.then((response) => console.log(response.data))
+				.catch((error) => {
 					console.log(error);
 				});
-		}
+		},
 	},
 	filters: {
 		date(val) {
@@ -107,25 +107,25 @@ export default {
 			const month = String(val).slice(-4, -2);
 			const year = String(val).slice(0, -4);
 			return `${year}/${month}/${day}`;
-		}
+		},
 	},
 	async created() {
 		// await this.getAllPoints();
-		if (this.$route.name == "my docs") {
-			this.getAllDocs();
-		}
+		// if (this.$route.name == "my docs" ) {
+		this.getAllDocs();
+		// }
 	},
 	watch: {
 		search() {
 			if (this.search.length >= 3) {
 				this.fetchSearchResult();
 			}
-		}
+		},
 	},
 	mounted() {
 		this.docLayer;
 	},
-	components: {}
+	components: {},
 };
 </script>
 

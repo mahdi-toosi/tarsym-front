@@ -93,9 +93,9 @@ button
     position fixed
     right 0px
     top: 0px
-    padding: 20px 20px
-    width: 37%
-    max-width: 506px;
+    padding: 9px;
+    width: 100%;
+    max-width: 530px;
     height: 100vh;
     background: #f4f3fb;
     header
@@ -111,13 +111,13 @@ button
         display flex
         align-items: center;
         .searchInput
-            width: 60%
+            width: 100%
             input 
                 width: 92%;
                 line-height: 2
                 border 0 
                 padding: 10px 20px
-                width: 180px;
+                // width: 180px;
         .v-select 
             width: 40%;
             .vs__clear
@@ -181,12 +181,11 @@ button
         
     .points
         margin-top: 4px
-        overflow: hidden;
         overflow-y: auto;
-        height: calc(100vh - 170px) ;
+        height: calc(100vh - 145px) ;
         direction: ltr
         padding-right: 1rem;
-        margin-right: -1rem;
+        // margin-right: -1rem;
     .point
         direction: rtl
         transition: all 0.5s ease
@@ -227,8 +226,9 @@ button
             line-height: 1.7;
             font-size: 92%;
         &:hover
-            background: linear-gradient(to right, #48c6efc2 0%, #6f86d6c4 100%);
-            color: white
+            // background: linear-gradient(to right, #48c6efc2 0%, #6f86d6c4 100%);
+            // color: white
+            transform: translateX(-6px)
             .nameandsituation
                 a
                     color: #fff

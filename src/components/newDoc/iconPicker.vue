@@ -6,13 +6,18 @@
 			@click="togglePicker()"
 		/>
 		<div class="icons_box" :class="displayPicker ? 'show' : '' ">
-			<i class="fa fa-search" aria-hidden="true" />
+			<i class="fa fa-search" aria-hidden="true" style=" position: relative; left: -16px;" />
 			<input type="text" v-model.lazy="search" placeholder="search in icons" v-debounce="500" />
-			<transition-group name="flip-list" tag="ul">
+			<ul>
+				<li @click="REMOVE_ICON()">
+					<i class="fas fa-map-marker-alt" style="color: #277696"></i>
+				</li>
+				<!-- <transition-group name="flip-list"> -->
 				<li v-for="icon in filteredicons" :key="icon" @click="ADD_ICON(icon)">
 					<i :class="icon" />
 				</li>
-			</transition-group>
+				<!-- </transition-group> -->
+			</ul>
 		</div>
 	</div>
 </template>
@@ -62,6 +67,9 @@ export default {
 			};
 			this.$store.commit("ADD_ICON", data);
 			this.hidePicker();
+		},
+		REMOVE_ICON() {
+			this.$store.commit("REMOVE_ICON", this.index);
 		},
 		showPicker() {
 			document.addEventListener("click", this.documentClick);

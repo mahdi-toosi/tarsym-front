@@ -94,6 +94,10 @@ export default {
         month ? thisDoc(state).date_props.month = month : ''
         day ? thisDoc(state).date_props.day = day : ''
     },
+    REMOVE_ICON(state, index) {
+        const thisTool = thisDoc(state).tools[index]
+        thisTool.iconName = null
+    },
     ADD_ICON(state, {
         iconName,
         index
@@ -213,10 +217,8 @@ export default {
         });
         if (state.newDocProp.id == fakeID) state.newDocProp.id = id
     },
-    CANSEL_CREATE_DOCUMENTS(state) {
-        router.push({
-            name: 'all docs'
-        })
+    CLEAR_NEW_DOC(state) {
+        router.push('/my-docs')
         state.newDocs = []
         state.newDocProp = {
             index: 0,

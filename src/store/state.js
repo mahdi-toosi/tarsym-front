@@ -13,9 +13,9 @@ export default {
         name: 'tarsym'
     }],
     allDocs: [],
-    zoom: 13,
+    zoom: 5,
     MouseCoordinate: null,
-    mapCenter: ["36.21193841525171", "57.680192944186096"],
+    mapCenter: ["32.879587173066305", "54.01105444025955"],
     readPoint: null,
     situations: {
         loading: true,

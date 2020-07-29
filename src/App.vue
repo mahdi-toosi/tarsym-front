@@ -5,7 +5,7 @@
 	</div>
 </template>
 <script>
-import leafletOpratorMap from "@/components/oprator map";
+import leafletOpratorMap from "@/components/map";
 import sidebar from "@/components/sidebar";
 // import feathersClient from "@/store/feathers-client/feathers-client.js";
 
@@ -13,7 +13,7 @@ export default {
 	name: "app",
 	components: {
 		leafletOpratorMap,
-		sidebar
+		sidebar,
 	},
 	computed: {
 		// sockedDisonnected() {
@@ -40,7 +40,7 @@ export default {
 		// setInterval(() => {
 		// 	this.sendToast();
 		// }, 8 * 1000);
-	}
+	},
 };
 </script>
 

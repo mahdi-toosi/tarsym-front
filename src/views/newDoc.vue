@@ -1,7 +1,7 @@
 <template>
 	<div class="newpoint">
 		<header>
-			<button class="btn btn-red ml1" @click="CANSEL_CREATE_DOCUMENTS()">
+			<button class="btn btn-red ml1" @click="CLEAR_NEW_DOC()">
 				منصرف شدم
 				<i class="fas fa-times"></i>
 			</button>
@@ -114,7 +114,7 @@ export default {
 		};
 	},
 	methods: {
-		...mapMutations(["CANSEL_CREATE_DOCUMENTS", "SET_CHOSEN_TAG"]),
+		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAG"]),
 		...mapActions([
 			"Create_or_Update_Documents",
 			"addNewDoc",
@@ -171,6 +171,13 @@ export default {
 		}
 		// document.addEventListener("keyup", this.keyPressed);
 	},
+	// mounted() {
+	// const quillButtons = document.querySelectorAll(".ql-toolbar button");
+	// quillButtons.forEach((element) => {
+	// 	console.log(element);
+	// 	element.setAttribute("tabindex", "-1");
+	// });
+	// },
 	components: {
 		datePicker,
 		quillEditor,
