@@ -4,9 +4,6 @@ import router from "../../router";
 import newDoc from "./ac-newDoc"
 import crudNewDoc from "./CRUD-newDoc"
 
-// const domain = 'http://localhost:3030/';
-const domain = 'https://tarsym.ir/';
-
 function sendToast(type, text) {
     Vue.toasted[type](text, {
         position: "bottom-left",
@@ -126,9 +123,10 @@ export default {
     },
 
     async getAllDocs({
+        state,
         commit
     }) {
-        const url = `${domain}documents`;
+        const url = `${ state.domain }documents`;
         const params = {
             params: {
                 root: true,
@@ -166,7 +164,7 @@ export default {
                 await commit('UPDATE_THIS_DOC', doc)
                 return
             }
-            const url = `${domain}documents/${doc_id}`
+            const url = `${ state.domain }documents/${doc_id}`
             const doc2 = await axios.get(url).then(res => {
                 if (res.status == 200) return res.data
                 // TODO => show errors 
@@ -203,7 +201,7 @@ export default {
 
     },
     async get_this_docs(state, doc_ids) {
-        let url = `${domain}documents/`
+        let url = `${ state.domain }documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`
         });
