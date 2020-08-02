@@ -8,8 +8,8 @@ import {
 } from 'feathers-hooks-common'
 import feathersVuex from 'feathers-vuex'
 
-const domain = 'http://localhost:3030'
-// const domain = 'https://tarsym.ir'
+// const domain = 'http://localhost:3030'
+const domain = 'https://tarsym.ir'
 
 const socket = io(domain, {
     transports: ['websocket']

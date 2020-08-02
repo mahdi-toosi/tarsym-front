@@ -21,6 +21,6 @@ export default {
         loading: true,
         thereIsNoPoint: false
     },
-    domain: 'http://localhost:3030/',
+    domain: 'http://localhost:2342/',
     // domain: 'https://tarsym.ir/'
 };
