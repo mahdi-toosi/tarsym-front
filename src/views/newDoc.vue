@@ -123,6 +123,7 @@ export default {
 			"Delete_this_Document",
 			"update_this_doc",
 			"get_childs",
+			"get_All_Tag",
 		]),
 
 		// keyPressed(e) {
@@ -171,13 +172,14 @@ export default {
 		}
 		// document.addEventListener("keyup", this.keyPressed);
 	},
-	// mounted() {
-	// const quillButtons = document.querySelectorAll(".ql-toolbar button");
-	// quillButtons.forEach((element) => {
-	// 	console.log(element);
-	// 	element.setAttribute("tabindex", "-1");
-	// });
-	// },
+	mounted() {
+		// const quillButtons = document.querySelectorAll(".ql-toolbar button");
+		// quillButtons.forEach((element) => {
+		// 	console.log(element);
+		// 	element.setAttribute("tabindex", "-1");
+		// });
+		this.get_All_Tag();
+	},
 	components: {
 		datePicker,
 		quillEditor,

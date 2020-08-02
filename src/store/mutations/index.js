@@ -9,7 +9,8 @@ export default {
         if (state.user) state.user.accessToken = token
     },
     SET_ALL_TAGS(state, tags) {
-        state.allTags = tags.data
+        if (tags.data.length)
+            state.allTags = tags.data
     },
     UPDATE_THIS_DOC(state, doc) {
         state.newDocs = doc

@@ -16,9 +16,7 @@ export default {
 	},
 	computed: {},
 	methods: {},
-	mounted() {
-		this.$store.dispatch("get_All_Tag");
-	},
+	mounted() {},
 };
 </script>
 

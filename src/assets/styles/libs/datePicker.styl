@@ -78,11 +78,14 @@ $scroll-width = 8px
 .years li, .centurys li 
 	width (($width - $scroll-width) / 5)
 	height: 25px;
+	line-height: 25px;
+	border-radius: 3px;
 
 .months li 
 	width (($width - $scroll-width) / 3)
 	height 40px
 	line-height 40px
+	border-radius: 3px;
 
 .days li 
 	width (($width - $scroll-width) / 7)
@@ -90,6 +93,7 @@ $scroll-width = 8px
 	line-height 32px
 	transition 0.2s
 	border-radius 999px
+	border-radius: 3px;	
 
 	&::hover 
 		font-weight bold

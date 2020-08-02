@@ -144,6 +144,7 @@ export default {
 		picked() {
 			return this.$store.state.newDocs[this.docLayer].date_props;
 		},
+
 		curentMonthName() {
 			const pickedMonth = Number(this.picked.month - 1);
 			const calendarCurentType = this.calendar.curentType;
@@ -238,9 +239,12 @@ export default {
 			this.$store.commit("ADD_DATE", { month: this.zeroCheck(num) });
 			this.changePage("days");
 		},
-		pickDay(day) {
+		async pickDay(day) {
 			this.$store.commit("ADD_DATE", { day: this.zeroCheck(day) });
 			this.hidePicker();
+			setTimeout(() => {
+				this.changePage("centurys");
+			}, 1000);
 		},
 		showPicker() {
 			document.addEventListener("click", this.documentClick);

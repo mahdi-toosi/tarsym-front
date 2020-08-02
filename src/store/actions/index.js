@@ -160,21 +160,22 @@ export default {
     }, doc_id) {
         if (state.allDocs.data) {
             const doc = state.allDocs.data.filter(el => el._id == doc_id)
-            if (doc) {
+            if (doc.length) {
                 await commit('UPDATE_THIS_DOC', doc)
                 return
+            } else {
+                const url = `${ state.domain }documents/${doc_id}`
+                const doc2 = await axios.get(url).then(res => {
+                    if (res.status == 200) return res.data
+                    // TODO => show errors 
+                })
+                if (!doc2) return
+                await commit('SET_DOCS_TO', {
+                    docs: [doc2],
+                    list: 'newDocs',
+                    merge: false
+                })
             }
-            const url = `${ state.domain }documents/${doc_id}`
-            const doc2 = await axios.get(url).then(res => {
-                if (res.status == 200) return res.data
-                // TODO => show errors 
-            })
-            if (!doc2) return
-            await commit('SET_DOCS_TO', {
-                docs: [doc2],
-                list: 'newDocs',
-                merge: false
-            })
             // await commit('UPDATE_NEW_DOC_INDEX')
         }
         router.push('/my-docs')
@@ -200,7 +201,9 @@ export default {
 
 
     },
-    async get_this_docs(state, doc_ids) {
+    async get_this_docs({
+        state
+    }, doc_ids) {
         let url = `${ state.domain }documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`

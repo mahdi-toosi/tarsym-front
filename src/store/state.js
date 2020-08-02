@@ -9,8 +9,7 @@ export default {
         },
     },
     allTags: [{
-        _id: '5f0a6f41327b9a32f07b7f35',
-        name: 'tarsym'
+        name: 'تگ اول'
     }],
     allDocs: [],
     zoom: 5,
@@ -21,6 +20,6 @@ export default {
         loading: true,
         thereIsNoPoint: false
     },
-    domain: 'http://localhost:2342/'
-    // domain: 'https://tarsym.ir/'
+    // domain: 'http://localhost:2342/'
+    domain: 'https://tarsym.ir/'
 };

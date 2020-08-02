@@ -152,7 +152,9 @@ export default {
         });
         return list
     },
-    async create_relationships(state, list) {
+    async create_relationships({
+        state
+    }, list) {
         if (!list.length) return
         const url = `${ state.domain }create/documents/relationship`;
 

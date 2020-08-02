@@ -16,7 +16,7 @@ export default {
         let doc_index = await Docs.findIndex(doc => (doc._id || doc.id) == id)
         // if (doc_index < 0) return
 
-        const doc = Docs[doc_index]
+        const doc = Docs[doc_index];
         if (!doc.childs_id.length) {
             Docs.splice(doc_index, 1)
             return
