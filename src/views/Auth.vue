@@ -6,7 +6,7 @@
 				<form @submit.prevent="login" class="registrationForm">
 					<input type="email" placeholder="email" v-model="user.email" />
 					<input type="password" placeholder="password" v-model="user.password" />
-					<input class="btn btn-green" type="submit" value="ورود" :disabled="!validateLoginForm" />
+					<input class="btn btn-green" type="submit" value="ورود" />
 				</form>
 				<button @click="loginPage = false ">ثبت نام</button>
 			</div>
@@ -18,7 +18,7 @@
 					<!-- <input type="text" placeholder="imgURL" v-model="user.imgURL" /> -->
 					<input type="password" placeholder="password" v-model="user.password" />
 					<input type="password" placeholder="repeat password" v-model="user.rpassword" />
-					<input class="btn btn-blue" type="submit" value="ثبت نام" :disabled="!validateSignupForm" />
+					<input class="btn btn-blue" type="submit" value="ثبت نام" />
 				</form>
 				<button @click="loginPage = true ">قبلا ثبت نام کردم</button>
 			</div>
@@ -32,57 +32,63 @@ export default {
 	data() {
 		return {
 			user: {
-				email: "mahdi@toosi.com",
-				password: "2647187",
-				rpassword: "2647187",
+				email: null,
+				password: null,
+				rpassword: null,
 			},
 			loginPage: true,
 		};
 	},
 	methods: {
-		signup() {
-			if (this.validateSignupForm) {
-				const { User } = this.$FeathersVuex.api;
-				const user = new User(this.user);
-				user.save().then(() => {
-					this.login();
+		async signup() {
+			if (!this.validateSignupForm()) return;
+			let url = `${this.$store.state.domain}users`;
+			await this.$axios
+				.post(url, this.user)
+				.then(async () => {
+					await this.login();
+				})
+				.catch((error) => {
+					this.handleError(error);
 				});
-			}
 		},
 		async login() {
-			if (this.validateLoginForm) {
-				const data = {
+			if (!this.validateLoginForm()) return;
+			const data = {
 					strategy: "local",
 					...this.user,
-				};
-				try {
-					await this.$store
-						.dispatch("auth/authenticate", data)
-						.then(async (res) => {
-							const day = 60 * 60 * 24;
-							res.expire = new Date().getTime() + day;
-							localStorage.setItem(
-								"userData",
-								JSON.stringify(res)
-							);
-							await this.$router.push("/");
-						});
-				} catch (error) {
-					let msg;
-					if (error.code == 401) {
-						msg = "ایمیل یا رمز عبور اشتباه است";
-					} else {
-						msg = "خطا در اتصال به سرور";
-					}
-					this.$toasted.error(msg, {
-						position: "bottom-left",
-						duration: 5 * 1000,
-						keepOnHover: true,
-						iconPack: "fontawesome",
-						icon: "fa-close",
-					});
-				}
+				},
+				url = `${this.$store.state.domain}authentication`;
+			try {
+				await this.$axios.post(url, data).then(async (res) => {
+					const day = 60 * 60 * 1000 * 24;
+					res.data.expire = new Date().getTime() + day;
+					localStorage.setItem("userData", JSON.stringify(res.data));
+					await this.$router.push("/");
+				});
+			} catch (error) {
+				this.handleError(error);
 			}
+		},
+		handleError(error) {
+			let msg;
+			if (error == "Error: Network Error")
+				msg = "مشکل در برقراری ارتباط با سرور";
+			else if (error == "Error: Request failed with status code 409")
+				msg = "ایمیل قبلا به ثبت رسیده است";
+			else if (error == "Error: Request failed with status code 401")
+				msg = "ایمیل یا رمز عبور اشتباه است";
+			else msg = error;
+			this.sendError(msg);
+		},
+		sendError(msg) {
+			this.$toasted.error(msg, {
+				position: "bottom-left",
+				duration: 5 * 1000,
+				keepOnHover: true,
+				iconPack: "fontawesome",
+				icon: "fa-close",
+			});
 		},
 		validEmail: function (email) {
 			var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -93,27 +99,42 @@ export default {
 				return true;
 			}
 		},
-	},
-	computed: {
 		validateLoginForm() {
-			const u = this.user;
-			if (this.validEmail(u.email) && this.validLength(u.password))
-				return true;
-			return false;
+			const user = this.user;
+			let errors = [];
+			if (!this.validEmail(user.email))
+				errors.push("ایمیل معتبر نمیباشد");
+			if (!this.validLength(user.password))
+				errors.push("پسورد به اندازه کافی قوی نیست");
+			if (!errors.length) return true;
+			else {
+				errors.forEach((error) => {
+					this.sendError(error);
+				});
+				return false;
+			}
 		},
 		validateSignupForm() {
-			const u = this.user;
-			if (
-				// this.validLength(u.name) &&
-				// u.imgURL &&
-				this.validEmail(u.email) &&
-				this.validLength(u.password) &&
-				u.password === u.rpassword
-			)
-				return true;
-			return false;
+			const user = this.user;
+			let errors = [];
+			if (!this.validEmail(user.email))
+				errors.push("ایمیل معتبر نمیباشد");
+			if (!this.validLength(user.password))
+				errors.push("پسورد به اندازه کافی قوی نیست");
+			if (user.password !== user.rpassword)
+				errors.push("فیلد های پسورد یکسان نیستند");
+			// this.validLength(user.name) &&
+			// user.imgURL &&
+			if (!errors.length) return true;
+			else {
+				errors.forEach((error) => {
+					this.sendError(error);
+				});
+				return false;
+			}
 		},
 	},
+	computed: {},
 	mounted() {},
 };
 </script>

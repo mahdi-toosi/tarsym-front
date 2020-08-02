@@ -44,5 +44,8 @@ export default {
     chosenTags: (state, getters) => {
         const thisDoc = getters.newDocLayer
         return thisDoc.tags
+    },
+    isAuthenticated: (state) => {
+        return state.user
     }
 }

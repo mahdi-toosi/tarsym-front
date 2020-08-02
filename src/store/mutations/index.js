@@ -2,6 +2,12 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
+    SET_USER(state, user) {
+        state.user = user
+    },
+    SET_USER_ACCESS_TOKEN(state, token) {
+        if (state.user) state.user.accessToken = token
+    },
     SET_ALL_TAGS(state, tags) {
         state.allTags = tags.data
     },

@@ -2,8 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from '../store/';
 
-// import App from "../App.vue";
-
 Vue.use(VueRouter);
 
 const routes = [{
@@ -61,23 +59,16 @@ const routes = [{
 
 const router = new VueRouter({
     mode: "history",
-    base: process.env.BASE_URL,
+    base: process.env.VUE_APP_ROUTER_URL,
     routes
 });
 
 router.beforeEach(async (to, from, next) => {
-    const userData = JSON.parse(localStorage.getItem('userData'))
-    if (userData) {
-        const now = new Date().getTime()
-        console.log(userData.expire, now, userData.expire < now);
-        if (userData.expire < now) {
-            store.commit('auth/setAccessToken', userData.accessToken)
-            store.commit('users/addItem', userData.user)
-            store.commit('auth/setUser', userData.user)
-        }
-    }
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-        if (store.getters['auth/isAuthenticated']) {
+        if (await store.getters.isAuthenticated) {
+            next()
+            return
+        } else if (await set_user_if_exist()) {
             next()
             return
         }
@@ -95,5 +86,17 @@ router.afterEach(async (to) => {
         if (store.state.newDocs.length > 0) store.commit('UPDATE_NEW_DOC_INDEX');
     }
 });
+
+async function set_user_if_exist() {
+    const userData = JSON.parse(localStorage.getItem('userData'))
+    if (userData) {
+        const now = new Date().getTime()
+        if (userData.expire < now) {
+            await store.commit('SET_USER', userData.user)
+            await store.commit('SET_USER_ACCESS_TOKEN', userData.accessToken)
+        }
+        return true
+    } else return false
+}
 
 export default router;
