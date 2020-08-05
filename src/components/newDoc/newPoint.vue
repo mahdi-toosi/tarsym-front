@@ -36,7 +36,7 @@
 						min="10"
 						max="45"
 						value="35"
-						v-on:input="CHANGE_ICON({ $event , type: 'size' })"
+						v-on:input="CHANGE_RANG_INPUT({ $event , type: 'iconSize' })"
 					/>
 				</div>
 				<div class="iconDegree">
@@ -49,7 +49,7 @@
 						min="0"
 						max="360"
 						value="0"
-						@input="CHANGE_ICON({ $event, type:'angle' })"
+						@input="CHANGE_RANG_INPUT({ $event, type:'rotate' })"
 					/>
 				</div>
 			</div>
@@ -67,7 +67,7 @@ export default {
 	props: ["tool", "index"],
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-		...mapMutations(["CHANGE_ICON", "CHANGE_TOOLTIP"]),
+		...mapMutations(["CHANGE_RANG_INPUT", "CHANGE_TOOLTIP"]),
 	},
 	computed: {
 		logo() {

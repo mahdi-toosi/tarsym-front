@@ -16,6 +16,9 @@
 			<a href="#" class="menu-item" @click="setTool('Polyline')">
 				<i class="fas fa-long-arrow-alt-up"></i>
 			</a>
+			<a href="#" class="menu-item" @click="setTool('Textbox')">
+				<i class="far fa-comment-alt"></i>
+			</a>
 		</nav>
 		<!-- filters -->
 		<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -60,8 +63,8 @@ export default {
 		async setTool(tool) {
 			await this.$store.dispatch("setTool", tool);
 			document.getElementById("menu-open").checked = false;
-		}
-	}
+		},
+	},
 };
 </script>
 

@@ -13,9 +13,12 @@ Vue.component('v-select', vSelect);
 // * axios
 import axios from "axios";
 Vue.prototype.$axios = axios;
+
 // * vue toasted
 import Toasted from 'vue-toasted';
 Vue.use(Toasted)
+
+import './registerServiceWorker'
 
 Vue.config.productionTip = false;
 

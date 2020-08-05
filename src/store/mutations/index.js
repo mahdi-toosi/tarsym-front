@@ -2,6 +2,12 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
+    passToolsToMap(state, doc) {
+        // doc.tools.forEach(tool => {
+        //     state.mapTools.push(tool)
+        // });
+        state.mapTools = doc.tools
+    },
     SET_USER(state, user) {
         state.user = user
     },

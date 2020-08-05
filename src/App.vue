@@ -1,22 +1,19 @@
 <template>
 	<div id="app">
-		<leaflet-oprator-map />
+		<tarsym-map />
 		<sidebar />
 	</div>
 </template>
 <script>
-import leafletOpratorMap from "@/components/map";
+import tarsymMap from "@/components/map";
 import sidebar from "@/components/sidebar";
 
 export default {
 	name: "app",
 	components: {
-		leafletOpratorMap,
+		tarsymMap,
 		sidebar,
 	},
-	computed: {},
-	methods: {},
-	mounted() {},
 };
 </script>
 

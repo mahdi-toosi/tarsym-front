@@ -22,7 +22,13 @@
 			</div>
 		</section>
 		<section class="points">
-			<div class="point shadow" v-for="doc in allDocs.data " :key="doc._id">
+			<div
+				class="point shadow"
+				v-for="doc in allDocs.data "
+				:key="doc._id"
+				@click="passToolsToMap(doc)"
+				style="cursor: pointer"
+			>
 				<!-- @click="readThisPoint(doc.coordinates)" -->
 				<header>
 					<i
@@ -82,13 +88,10 @@ export default {
 	},
 	computed: {
 		...mapState(["allDocs"]),
-		docLayer() {
-			return this.$store.getters.docs_list;
-		},
 	},
 	methods: {
 		...mapActions(["getAllDocs", "addNewDoc", "Delete_this_Document"]),
-		...mapMutations(["readThisPoint"]),
+		...mapMutations(["readThisPoint", "passToolsToMap"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);
 			const url = "/point/search/" + this.search;
@@ -122,10 +125,6 @@ export default {
 			}
 		},
 	},
-	mounted() {
-		this.docLayer;
-	},
-	components: {},
 };
 </script>
 

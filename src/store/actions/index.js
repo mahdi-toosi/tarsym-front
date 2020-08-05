@@ -17,28 +17,6 @@ function sendToast(type, text) {
 export default {
     ...newDoc,
     ...crudNewDoc,
-    async setCategory({
-        // state,
-        commit
-    }, category) {
-        await commit('setCategory', category)
-
-        // * just for see all points select below! :D
-        // if (state.situations.allPoints || state.situations.thereIsNoPoint) {
-        //     situations(state.situations, 'loading')
-        //     // * get the all points with this category
-        //     const url = '/point/' + category._id
-        //     try {
-        //         await this.$axios.get(url).then((res) => {
-        //             if (res.status == 200) {
-        //                 commit('setAllPoints', res.data)
-        //             }
-        //         })
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-    },
     ready_document_for_send({
         state
     }, thisDoc) {
@@ -126,7 +104,7 @@ export default {
         state,
         commit
     }) {
-        const url = `${ state.domain }documents`;
+        const url = `${ state.domain }/documents`;
         const params = {
             params: {
                 root: true,
@@ -164,7 +142,7 @@ export default {
                 await commit('UPDATE_THIS_DOC', doc)
                 return
             } else {
-                const url = `${ state.domain }documents/${doc_id}`
+                const url = `${ state.domain }/documents/${doc_id}`
                 const doc2 = await axios.get(url).then(res => {
                     if (res.status == 200) return res.data
                     // TODO => show errors 
@@ -204,7 +182,7 @@ export default {
     async get_this_docs({
         state
     }, doc_ids) {
-        let url = `${ state.domain }documents/`
+        let url = `${ state.domain }/documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`
         });

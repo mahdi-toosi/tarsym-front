@@ -58,6 +58,7 @@
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polygon>
 					</div>
+					<!-- end Polygon -->
 					<div v-if="tool.type == 'Polyline'">
 						<span v-if="newDocProp.OnTool.condition">
 							<l-polyline
@@ -88,14 +89,14 @@
 							:icon-size="tool.iconSize"
 							:icon-name="tool.iconName"
 							:icon-color="tool.secondaryColor"
-							:icon-rotate="tool.iconRotate"
+							:icon-rotate="tool.angle"
 							:icon-repeat="tool.iconRepeat"
 							:arrow-color="tool.color"
 							:show-icon="tool.showIcon"
 							:show-arrow="tool.showArrow"
 						/>
-						<!-- :icon="{ name: 'fa fa-plane', size: 35, rotate: 270, repeat: 30 }" -->
 					</div>
+					<!-- end Polyline -->
 					<div v-if="tool.type == 'Point'">
 						<l-marker
 							:lat-lng="tool.coordinates"
@@ -112,13 +113,41 @@
 									:class="tool.iconName"
 									:style="{ fontSize: tool.iconSize + 'px', 
 												color: tool.secondaryColor , 
-												transform: 'rotate('+tool.iconRotate+ 'deg)' 
+												transform: 'rotate('+tool.angle+ 'deg)' 
 												}"
 								/>
 							</l-icon>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-marker>
 					</div>
+					<!-- end Point -->
+					<div v-if="tool.type == 'Textbox'">
+						<l-marker
+							:lat-lng="tool.coordinates"
+							:draggable="tool.isOn"
+							:icon="defaultIcon"
+							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+						>
+							<l-icon
+								v-if="tool.tooltip"
+								:icon-size="[ tool.width, tool.height ]"
+								:icon-anchor="[ tool.width/2, tool.height/2 ]"
+							>
+								<div
+									class="bubble"
+									v-if="tool.tooltip"
+									:style="{ width: tool.width + 'px',
+												height: tool.height + 'px',
+												background: tool.color, 
+												fontSize: tool.fontSize + 'px',
+												color: tool.secondaryColor
+												}"
+								>{{ tool.tooltip }}</div>
+								<!-- <div class="pointer"></div> -->
+							</l-icon>
+						</l-marker>
+					</div>
+					<!-- end Textbox  -->
 				</div>
 				<!-- </div> -->
 			</div>

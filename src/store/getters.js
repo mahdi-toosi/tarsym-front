@@ -6,19 +6,22 @@ export default {
         else if (routeName == 'my docs' || routeName == 'all docs') return state.allDocs.data || []
         else return []
     },
-    allDocPageTools: (state, getters) => {
-        const routeName = state.route.name
-        let tools = []
-        if (routeName == 'my docs' || routeName == 'all docs') {
-            getters.docs_list.forEach(doc => {
-                if (doc.root) {
-                    doc.tools.forEach(tool => {
-                        tools.push(tool)
-                    });
-                }
-            });
-        }
-        return tools
+    allDocPageTools: (state
+        // , getters
+    ) => {
+        // const routeName = state.route.name
+        // let tools = []
+        // if (routeName == 'my docs' || routeName == 'all docs') {
+        //     getters.docs_list.forEach(doc => {
+        //         if (doc.root) {
+        //             doc.tools.forEach(tool => {
+        //                 tools.push(tool)
+        //             });
+        //         }
+        //     });
+        // }
+        // return tools
+        return state.mapTools
     },
     newDocLayer: (state, getters) => {
         return getters.docs_list[state.newDocProp.index]

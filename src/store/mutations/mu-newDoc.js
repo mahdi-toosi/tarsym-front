@@ -61,23 +61,11 @@ export default {
             thisInput.value = element.tooltip;
         });
     },
-    CHANGE_ICON(state, obj) {
+    CHANGE_RANG_INPUT(state, obj) {
         const index = obj.$event.target.attributes.index.value;
         const val = Number(obj.$event.target.value);
         const thisTool = thisDoc(state).tools[index]
-        switch (obj.type) {
-            case 'angle':
-                thisTool.iconRotate = val;
-                break;
-            case 'size':
-                thisTool.iconSize = val;
-                break;
-            case 'repeat':
-                thisTool.iconRepeat = val;
-                break;
-            default:
-                break;
-        }
+        thisTool[obj.type] = val
     },
     SET_CHOSEN_TAG(state, tags) {
         // console.log(tags);
@@ -105,17 +93,11 @@ export default {
         const thisTool = thisDoc(state).tools[index]
         thisTool.iconName = iconName
     },
-    ADD_COLOR(state, {
-        color,
-        index,
-        secondaryColor
-    }) {
-        const thisTool = thisDoc(state).tools[index]
-        if (!secondaryColor) {
-            thisTool.color = color;
-            return
-        }
-        thisTool.secondaryColor = color
+    ADD_COLOR(state, obj) {
+        const thisTool = thisDoc(state).tools[obj.index]
+        if (obj.secondaryColor) {
+            thisTool.secondaryColor = obj.color
+        } else thisTool.color = obj.color;
     },
     SET_TOOL(state, type) {
         const obj = {
@@ -127,20 +109,28 @@ export default {
             colorpicker: false,
             secondaryColor: "blue",
         }
-        const is_searchable_point = thisDoc(state).tools.length < 1
         if (type == "Point") {
             obj.iconName = null
             obj.coordinates = state.mapCenter
-            obj.iconRotate = 0
+            obj.angle = 0
             obj.iconSize = 35
+            const is_searchable_point = thisDoc(state).tools.length < 1
             if (is_searchable_point) obj.searchable = true
+        }
+        if (type == "Textbox") {
+            obj.coordinates = state.mapCenter
+            obj.width = 200
+            obj.height = 100
+            obj.fontSize = 16
+            obj.color = "#E6E6E6FF"
+            obj.secondaryColor = "#4C4C4CFF"
         }
         if (type == "Polyline") {
             obj.showIcon = false
             obj.showArrow = false
             obj.iconName = "fa fa-plane"
             obj.iconSize = 35
-            obj.iconRotate = 0
+            obj.angle = 0
             obj.iconRepeat = 30
         }
         const thisLayer = state.newDocs[state.newDocProp.index]

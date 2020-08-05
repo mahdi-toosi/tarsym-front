@@ -19,7 +19,7 @@ export default {
         // const is_this_Doc_valid = await dispatch('is_this_Doc_valid', doc);
         // if (!is_this_Doc_valid) return false;
 
-        const url = `${ state.domain }documents`,
+        const url = `${ state.domain }/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
         try {
@@ -46,7 +46,7 @@ export default {
         state,
         dispatch,
     }, doc, ) {
-        const url = `${ state.domain }documents/${doc._id}`,
+        const url = `${ state.domain }/documents/${doc._id}`,
             ready_doc = await dispatch('ready_document_for_send', doc)
         try {
             const newID = await axios.put(url, ready_doc).then(async (res) => {
@@ -81,7 +81,7 @@ export default {
         }
         const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
         if (!remove_childs) return
-        const url = `${ state.domain }documents/${id}`
+        const url = `${ state.domain }/documents/${id}`
         try {
             const newID = await axios.delete(url).then(res => {
                 if (res.status == 200) {
@@ -156,7 +156,7 @@ export default {
         state
     }, list) {
         if (!list.length) return
-        const url = `${ state.domain }create/documents/relationship`;
+        const url = `${ state.domain }/create/documents/relationship`;
 
         try {
             const data = await axios.post(url, list).then((res) => {
@@ -183,7 +183,7 @@ export default {
     }) {
         const
             limit = 50,
-            url = `${ state.domain }tags?$limit=${limit}`,
+            url = `${ state.domain }/tags?$limit=${limit}`,
             allTags = false // JSON.parse(localStorage.getItem("allTags"))
         if (allTags) {
             const

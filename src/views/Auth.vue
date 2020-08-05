@@ -42,7 +42,7 @@ export default {
 	methods: {
 		async signup() {
 			if (!this.validateSignupForm()) return;
-			let url = `${this.$store.state.domain}users`;
+			let url = `${this.$store.state.domain}/users`;
 			await this.$axios
 				.post(url, this.user)
 				.then(async () => {
@@ -58,7 +58,7 @@ export default {
 					strategy: "local",
 					...this.user,
 				},
-				url = `${this.$store.state.domain}authentication`;
+				url = `${this.$store.state.domain}/authentication`;
 			try {
 				await this.$axios.post(url, data).then(async (res) => {
 					const day = 60 * 60 * 1000 * 24;

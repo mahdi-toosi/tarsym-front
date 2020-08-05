@@ -68,7 +68,7 @@
 					min="10"
 					max="45"
 					value="35"
-					@input="CHANGE_ICON({ $event , type: 'size' })"
+					@input="CHANGE_RANG_INPUT({ $event , type: 'iconSize' })"
 				/>
 			</div>
 			<div class="lineIconRepeat" v-if="tool.showIcon ">
@@ -81,7 +81,7 @@
 					min="2"
 					max="100"
 					value="30"
-					@input="CHANGE_ICON({ $event, type: 'repeat' })"
+					@input="CHANGE_RANG_INPUT({ $event, type: 'iconRepeat' })"
 				/>
 			</div>
 			<div class="lineIconDegree" v-if="tool.showIcon ">
@@ -94,7 +94,7 @@
 					min="0"
 					max="360"
 					value="0"
-					@input="CHANGE_ICON({ $event, type:'angle' })"
+					@input="CHANGE_RANG_INPUT({ $event, type:'rotate' })"
 				/>
 			</div>
 		</div>
@@ -112,7 +112,7 @@ export default {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
 		...mapMutations([
 			"CHANGE_TOOLTIP",
-			"CHANGE_ICON",
+			"CHANGE_RANG_INPUT",
 			"CHANGE_POLYLINE_DECORATOR",
 		]),
 	},

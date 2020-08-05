@@ -47,6 +47,7 @@
 								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" class="tool" />
 								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" class="tool" />
 								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" class="tool" />
+								<new-text-box :tool="tool" :index="index" v-if="tool.type == 'Textbox'" class="tool" />
 							</li>
 						</ul>
 						<gooey-menu />
@@ -85,6 +86,7 @@ import gooeyMenu from "@/components/newDoc/gooeyMenu";
 import newPoint from "@/components/newDoc/newPoint";
 import newPolygon from "@/components/newDoc/newPolygon";
 import newPolyline from "@/components/newDoc/newPolyline";
+import newTextBox from "@/components/newDoc/newTextBox";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -187,6 +189,7 @@ export default {
 		newPoint,
 		newPolygon,
 		newPolyline,
+		newTextBox,
 	},
 };
 </script>

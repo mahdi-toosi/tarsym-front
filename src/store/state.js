@@ -20,6 +20,7 @@ export default {
         loading: true,
         thereIsNoPoint: false
     },
+    mapTools: [],
     // domain: 'http://localhost:2342/'
-    domain: 'https://tarsym.ir/'
+    domain: 'https://tarsym.ir'
 };

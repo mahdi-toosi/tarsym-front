@@ -5,38 +5,65 @@
 @import 'libs/gooeyMenu'
 @import 'newPoint'
 
+
+
+//  Text box
+.bubble 
+    overflow hidden
+    border-radius: 10px
+    text-align: right
+    padding: 8px
+    position relative
+    z-index 2
+    font-family: iranSans
+    box-shadow: #747474 0 0 17px -6px;
+// .pointer 
+//     height: 30px
+//     width: 30px
+//     background: ivory
+//     margin: 0 auto
+//     transform: rotate(45deg)
+//     border-radius: 0 0 5px 0
+//     margin-top: -20px
+//     position: relative
+//     z-index 1
+//     left 50px
+
+
+
+
 .changeButoon
-    height: 30px;
-    margin: auto 10px;
+    height: 30px
+    margin: auto 10px
 // navigator i think
 .vs--single.vs--open .vs__selected 
-    position: relative !important;
+    position: relative !important
 
 //  map
 .leaflet-control.mapmaker
     a
         cursor pointer
         font-size: 140%
-        background-color: #fff;
-        border-bottom: 1px solid #ccc;
-        width: 26px;
-        height: 26px;
-        line-height: 30px;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-        color: #676767;
+        background-color: #fff
+        border-bottom: 1px solid #ccc
+        width: 26px
+        height: 26px
+        line-height: 30px
+        display: block
+        text-align: center
+        text-decoration: none
+        color: #676767
         border-radius: 4px
         box-shadow: 0 2px 4px -1px rgba(0,0,0,0.65)
         color black
         &:hover
-            background-color: #e8e8e8;
+            background-color: #e8e8e8
     a.deactiveAddMarker
-        background-color: #e8e8e8;
+        background-color: #e8e8e8
         cursor default
 
 .leaflet-tooltip
-    font-family: iranSans;
+    font-family: iranSans
 
 
 // quill editor
@@ -44,9 +71,9 @@
     direction: rtl
     text-align: right
     font-family: 'iranSans'
-    color: #0b0b0b;
-    font-size: 15px;
-    min-height: 100px;
+    color: #0b0b0b
+    font-size: 15px
+    min-height: 100px
 .ql-toolbar
     text-align: center 
 .ql-formats
@@ -59,28 +86,28 @@
 .leaflet-control-easyPrint-button-export
     display none !important
 .leaflet-control-easyPrint
-    width: 26px;
-    height: 26px;
+    width: 26px
+    height: 26px
 .easyPrintHolder
     display block !important
-    margin-top: 0px !important;
-    margin-bottom: 0px !important; 
-    margin-left: 0px !important; 
-    padding-left: 0px !important;
-    display: none;
+    margin-top: 0px !important
+    margin-bottom: 0px !important 
+    margin-left: 0px !important 
+    padding-left: 0px !important
+    display: none
     .CurrentSize
         border-radius: 4px !important
-        background-color: #fff !important;
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACYUlEQVRYhe2WPWhTURTHf+fmpWiQkL6bYoeCFUSok4tCXaRQQSSIgyC4iFsnJ4d2EJz8AN3EUejQQXEqWBBaF78oWCguKkQooiDkfdBSGoPJPQ4mkMbEGvtCl/y2xz3n/P/33nMfB/r0FtlTdd/aZWvtHJDqFGN66kDkicJla+1sz7U6MWjttG+t+tY+os2VdDyapPhRLr/al8lUBK5nMpmD5XL5WfN64k2Sy+UOieedFdUzqB5BZBjwgXRd8E4YhjONeC8pYWvtSeCGQgFVgC8i8l5h5bcuV4FNVZ1vzvvDwMjIyP7NSuWEp9q2aZxzxSiKvja+h4aGDtSce6BwBQhRvSkij8Mw/AiQzWb9dDq9qLClxpyLS6W3HQ3kcrncVrlcNGBdp62KLAGT9V2PVZ2bFziscMsz5napVNpshDaJjwkUolLpZWu5bQaMMZOAVZEpo/q5nb6qfgLI5/NHneoLAdS503Ecv26NTaXTT4FjqF4Io2ipXb1tBtQYT1RRkeUwCFY7HUI2m/Wd6iIgAhNRHH9oFyciC+rc3SiKnneq9V9N6A0MPER12IiMB0HQVhwgCoJ7O9bqVnwwny+geklhOgiClW7zW+n69yiqM8BaHIY77q6Bb+0b3/cv7tpA/a2fErgP1P4xzQPGVeT4rg04OA+4arU6103e3+jKgMAE8G59fT1OykBXTWhErv1MpRIT79pAEl3fyt4MCX0DfQNNbH8FIhuoYmq1KT+f/56QhqlPSBvtFltnwrRv7QL1gSMxVFdFpBCG4bedDDQYGB0dTeR61jxPKRYrSdTq0xN+Ab6Q1RwypG7DAAAAAElFTkSuQmCC') !important
-        background-size: contain;
-        border-bottom: 1px solid #ccc !important;
-        width: 26px !important;
-        height: 26px !important;
-        line-height: 26px !important;
-        display: block !important;
-        text-align: center !important;
-        text-decoration: none !important;
-        color: black !important;
+        background-color: #fff !important
+        background-image: url('data:image/pngbase64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACYUlEQVRYhe2WPWhTURTHf+fmpWiQkL6bYoeCFUSok4tCXaRQQSSIgyC4iFsnJ4d2EJz8AN3EUejQQXEqWBBaF78oWCguKkQooiDkfdBSGoPJPQ4mkMbEGvtCl/y2xz3n/P/33nMfB/r0FtlTdd/aZWvtHJDqFGN66kDkicJla+1sz7U6MWjttG+t+tY+os2VdDyapPhRLr/al8lUBK5nMpmD5XL5WfN64k2Sy+UOieedFdUzqB5BZBjwgXRd8E4YhjONeC8pYWvtSeCGQgFVgC8i8l5h5bcuV4FNVZ1vzvvDwMjIyP7NSuWEp9q2aZxzxSiKvja+h4aGDtSce6BwBQhRvSkij8Mw/AiQzWb9dDq9qLClxpyLS6W3HQ3kcrncVrlcNGBdp62KLAGT9V2PVZ2bFziscMsz5napVNpshDaJjwkUolLpZWu5bQaMMZOAVZEpo/q5nb6qfgLI5/NHneoLAdS503Ecv26NTaXTT4FjqF4Io2ipXb1tBtQYT1RRkeUwCFY7HUI2m/Wd6iIgAhNRHH9oFyciC+rc3SiKnneq9V9N6A0MPER12IiMB0HQVhwgCoJ7O9bqVnwwny+geklhOgiClW7zW+n69yiqM8BaHIY77q6Bb+0b3/cv7tpA/a2fErgP1P4xzQPGVeT4rg04OA+4arU6103e3+jKgMAE8G59fT1OykBXTWhErv1MpRIT79pAEl3fyt4MCX0DfQNNbH8FIhuoYmq1KT+f/56QhqlPSBvtFltnwrRv7QL1gSMxVFdFpBCG4bedDDQYGB0dTeR61jxPKRYrSdTq0xN+Ab6Q1RwypG7DAAAAAElFTkSuQmCC') !important
+        background-size: contain
+        border-bottom: 1px solid #ccc !important
+        width: 26px !important
+        height: 26px !important
+        line-height: 26px !important
+        display: block !important
+        text-align: center !important
+        text-decoration: none !important
+        color: black !important
 
 
 //  Tinymce
