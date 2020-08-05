@@ -21,6 +21,6 @@ export default {
         thereIsNoPoint: false
     },
     mapTools: [],
-    // domain: 'http://localhost:2342/'
-    domain: 'https://tarsym.ir'
+    domain: 'http://localhost:2345'
+    // domain: 'https://tarsym.ir'
 };

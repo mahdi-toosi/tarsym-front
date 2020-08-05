@@ -1,16 +1,6 @@
 import Vue from "vue";
 import router from "../../router";
 
-// function sendinfoToast(type, text) {
-//     Vue.toasted[type](text, {
-//         position: "bottom-left",
-//         duration: 5 * 1000,
-//         keepOnHover: true,
-//         iconPack: "fontawesome",
-//         icon: "fa-close",
-//     });
-// }
-
 function thisDoc(state) {
     return state.newDocs[state.newDocProp.index]
 }
@@ -59,7 +49,8 @@ export default {
         const title = thisDoc.title.length > 5,
             description = thisDoc.description.length > 20,
             tools = thisDoc.tools.length > 0,
-            date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day
+            date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
+            currentRoute = router.currentRoute;
 
         if (!title) errors.push('تیتر کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
@@ -75,7 +66,8 @@ export default {
             const action = [{
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
-                    const path = `/create/doc/${thisDoc.id}`;
+                    const routeName = currentRoute.name
+                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${ (thisDoc._id || thisDoc.id) }`;
                     await router.push(path);
                     toastObject.goAway(0);
                 }
@@ -87,7 +79,7 @@ export default {
                     keepOnHover: true,
                     iconPack: "fontawesome",
                     icon: "fa-close",
-                    action: router.currentRoute.params.id == thisDoc.id ? false : action
+                    action: currentRoute.params.id == (thisDoc._id || thisDoc.id) ? false : action
                 });
             });
             return false
@@ -137,7 +129,6 @@ export default {
             await commit('UPDATE_ON_TOOL')
             return
         } else {
-            //turned On
             await dispatch('makeToolOn', index)
         }
     },
@@ -149,5 +140,23 @@ export default {
         const thisTool = thisDoc(state).tools[index];
         thisTool.isOn = true;
         await commit('UPDATE_ON_TOOL')
+    },
+    handleAxiosError(store, error) {
+        let msg;
+        if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
+        else if (error == "Error: Request failed with status code 409") msg = "ایمیل قبلا به ثبت رسیده است";
+        else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
+        else {
+            msg = error;
+            // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
+            console.log("error => ", msg);
+        }
+        Vue.toasted.error(msg, {
+            position: "bottom-left",
+            duration: 40 * 1000,
+            keepOnHover: true,
+            iconPack: "fontawesome",
+            icon: "fa-times-circle",
+        });
     },
 }

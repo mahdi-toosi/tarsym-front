@@ -49,7 +49,7 @@ export default {
 					await this.login();
 				})
 				.catch((error) => {
-					this.handleError(error);
+					this.$store.dispatch("handleAxiosError", error);
 				});
 		},
 		async login() {
@@ -59,28 +59,21 @@ export default {
 					...this.user,
 				},
 				url = `${this.$store.state.domain}/authentication`;
-			try {
-				await this.$axios.post(url, data).then(async (res) => {
+
+			await this.$axios
+				.post(url, data)
+				.then(async (res) => {
 					const day = 60 * 60 * 1000 * 24;
 					res.data.expire = new Date().getTime() + day;
-					localStorage.setItem("userData", JSON.stringify(res.data));
+					const encryptUser = btoa(JSON.stringify(res.data));
+					localStorage.setItem("userData", encryptUser);
 					await this.$router.push("/");
+				})
+				.catch((error) => {
+					this.$store.dispatch("handleAxiosError", error);
 				});
-			} catch (error) {
-				this.handleError(error);
-			}
 		},
-		handleError(error) {
-			let msg;
-			if (error == "Error: Network Error")
-				msg = "مشکل در برقراری ارتباط با سرور";
-			else if (error == "Error: Request failed with status code 409")
-				msg = "ایمیل قبلا به ثبت رسیده است";
-			else if (error == "Error: Request failed with status code 401")
-				msg = "ایمیل یا رمز عبور اشتباه است";
-			else msg = error;
-			this.sendError(msg);
-		},
+
 		sendError(msg) {
 			this.$toasted.error(msg, {
 				position: "bottom-left",
@@ -91,8 +84,8 @@ export default {
 			});
 		},
 		validEmail: function (email) {
-			var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			return re.test(email);
+			var regx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return regx.test(email);
 		},
 		validLength(L) {
 			if (L.length >= 3) {
@@ -134,8 +127,6 @@ export default {
 			}
 		},
 	},
-	computed: {},
-	mounted() {},
 };
 </script>
 

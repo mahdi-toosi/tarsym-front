@@ -1,18 +1,7 @@
-import Vue from "vue";
 import axios from 'axios';
 import router from "../../router";
 import newDoc from "./ac-newDoc"
 import crudNewDoc from "./CRUD-newDoc"
-
-function sendToast(type, text) {
-    Vue.toasted[type](text, {
-        position: "bottom-left",
-        duration: 5 * 1000,
-        keepOnHover: true,
-        iconPack: "fontawesome",
-        icon: "fa-close",
-    });
-}
 
 export default {
     ...newDoc,
@@ -24,6 +13,8 @@ export default {
             ...thisDoc,
             junk: {}
         }
+        doc.title = doc.title.trim()
+        doc.description = doc.description.trim()
 
         const is_this_doc_root = doc._id ? state.newDocs[0]._id == doc._id : state.newDocs[0].id == doc.id
         if (is_this_doc_root) {
@@ -63,46 +54,10 @@ export default {
         // const data_striggify = JSON.stringify(doc)
         return doc;
     },
-    async getAllCategories({
-        commit
-    }) {
-        const url = '/category/'
-        try {
-            const categories = await this.$axios.get(url)
-            commit('setAllCategories', categories.data)
-        } catch (error) {
-            console.log(error);
-        }
-    },
-
-    async getTheCurrentUser({
-        commit
-    }) {
-        const url = '/currentUser/'
-        try {
-            const user = await this.$axios.get(url);
-            if (user.data == 401) {
-                console.log('you should login');
-            } else {
-                commit('setTheCurrentUser', user.data)
-            }
-            // switch (user.data) {
-            //     case 401:
-            //         console.log('you should login');
-            //         break;
-            //     default:
-            //         commit('setTheCurrentUser', user.data)
-            //         break;
-            // }
-        } catch (error) {
-            console.log(error);
-        }
-
-    },
-
     async getAllDocs({
         state,
-        commit
+        commit,
+        dispatch
     }) {
         const url = `${ state.domain }/documents`;
         const params = {
@@ -111,30 +66,24 @@ export default {
                 $skip: 0
             }
         }
-        try {
-            const docs = await axios.get(url, params).then((res) => {
-                if (res.status == 200) return res.data
-                else if (res.code >= 500) {
-                    sendToast('error', 'مشکلی در سرور بوجود آمده')
-                } else if (res.code >= 400) {
-                    sendToast('error', 'مشکلی بوجود آمده')
-                }
-            });
-            if (!docs) return
-            await commit('SET_DOCS_TO', {
-                docs: docs,
-                list: 'allDocs',
-                merge: false
-            })
-        } catch (error) {
-            console.log(error);
-        }
+        const docs = await axios.get(url, params).then((res) => {
+            if (res.status == 200) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
+        });
+        if (!docs) return
 
+        await commit('SET_DOCS_TO', {
+            docs: docs,
+            list: 'allDocs',
+            merge: false
+        })
 
     },
     async update_this_doc({
         state,
         commit,
+        dispatch
     }, doc_id) {
         if (state.allDocs.data) {
             const doc = state.allDocs.data.filter(el => el._id == doc_id)
@@ -145,9 +94,11 @@ export default {
                 const url = `${ state.domain }/documents/${doc_id}`
                 const doc2 = await axios.get(url).then(res => {
                     if (res.status == 200) return res.data
-                    // TODO => show errors 
-                })
+                }).catch(error => {
+                    dispatch('handleAxiosError', error)
+                });
                 if (!doc2) return
+
                 await commit('SET_DOCS_TO', {
                     docs: [doc2],
                     list: 'newDocs',
@@ -180,15 +131,16 @@ export default {
 
     },
     async get_this_docs({
-        state
+        state,
+        dispatch
     }, doc_ids) {
         let url = `${ state.domain }/documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`
         });
-        const docs = await axios.get(url).then(async res => res.data)
+        const docs = await axios.get(url).then(async res => res.data).catch(error => {
+            dispatch('handleAxiosError', error)
+        });
         return docs
-        // TODO => show errors for get method
-        // console.log('doc', docs);
     }
 }

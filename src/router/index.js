@@ -87,7 +87,8 @@ router.afterEach(async (to) => {
 });
 
 async function set_user_if_exist() {
-    const userData = JSON.parse(localStorage.getItem('userData'))
+    const decrypt = atob(localStorage.getItem('userData'))
+    const userData = JSON.parse(decrypt)
     if (userData) {
         const now = new Date().getTime()
         if (userData.expire < now) {

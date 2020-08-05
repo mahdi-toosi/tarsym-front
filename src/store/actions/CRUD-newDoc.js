@@ -1,46 +1,20 @@
 import axios from 'axios';
-import Vue from "vue";
-
-function sendToast(type, text) {
-    Vue.toasted[type](text, {
-        position: "bottom-left",
-        duration: 5 * 1000,
-        keepOnHover: true,
-        iconPack: "fontawesome",
-        icon: "fa-close",
-    });
-}
 
 export default {
     async Create_this_Document({
         state,
         dispatch
     }, doc, ) {
-        // const is_this_Doc_valid = await dispatch('is_this_Doc_valid', doc);
-        // if (!is_this_Doc_valid) return false;
-
         const url = `${ state.domain }/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
-        try {
-            const newID = await axios.post(url, ready_doc).then((res) => {
-                if (res.status == 201) {
-
-                    return res.data
-                    // await dispatch('Update_father_Document_for_this_child', res.data._id);
-                    // commit('setNewPointWithoutRefresh', data)
-                } else if (res.code == 500) {
-                    sendToast('error', `Create_this_Document => ${res.message}`);
-                }
-                // console.log('res create =>', res.data.childs_id);
-            })
-            return newID
-        } catch (error) {
-            // TODO => how to show error mesaage
-            sendToast('error', `مشکلی در سرور بوجود آمده ${error}`);
+        const newID = await axios.post(url, ready_doc).then((res) => {
+            if (res.status == 201) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
             return false
-        }
-
+        })
+        return newID
     },
     async Update_this_Document({
         state,
@@ -48,25 +22,19 @@ export default {
     }, doc, ) {
         const url = `${ state.domain }/documents/${doc._id}`,
             ready_doc = await dispatch('ready_document_for_send', doc)
-        try {
-            const newID = await axios.put(url, ready_doc).then(async (res) => {
-                if (res.status == 200) {
-                    // console.log('UPDATED => ', res.data);
-                    return res.data
-                } else if (res.status == 500) {
-                    sendToast('error', `Update_this_Document => ${res.message}`);
-                }
-            })
-            return newID
-        } catch (error) {
-            sendToast('error', `مشکلی در سرور بوجود آمده ${error}`);
-            return false
-        }
 
+        const newID = await axios.put(url, ready_doc).then(async (res) => {
+            if (res.status == 200) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
+            return false
+        })
+        return newID
     },
     async Delete_this_Document({
         state,
-        commit
+        commit,
+        dispatch
     }, id, ) {
         if (typeof (id) == 'number') {
             const doc = state.newDocs.filter(el => el.id == id)[0]
@@ -81,19 +49,19 @@ export default {
         }
         const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
         if (!remove_childs) return
+
         const url = `${ state.domain }/documents/${id}`
-        try {
-            const newID = await axios.delete(url).then(res => {
-                if (res.status == 200) {
-                    commit('REMOVE_THIS_DOC', id)
-                }
-                return res // remember this set value for newID
-            })
-            return newID
-        } catch (error) {
-            sendToast('error', `مشکلی در سرور بوجود آمده ${error}`);
+        const newID = await axios.delete(url).then(res => {
+            if (res.status == 200) {
+                commit('REMOVE_THIS_DOC', id)
+            }
+            return res // remember this set value for newID
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
             return false
-        }
+        })
+        return newID
+
     },
 
     // ! CREATE Document 
@@ -153,38 +121,29 @@ export default {
         return list
     },
     async create_relationships({
-        state
+        state,
+        dispatch
     }, list) {
         if (!list.length) return
         const url = `${ state.domain }/create/documents/relationship`;
 
-        try {
-            const data = await axios.post(url, list).then((res) => {
-                if (res.status == 201) {
-                    return res.data
-                    // await dispatch('Update_father_Document_for_this_child', res.data._id);
-                    // commit('setNewPointWithoutRefresh', data)
-                } else if (res.code == 500) {
-                    sendToast('error', `create_relationships => ${res.message}`);
-                }
-                // console.log('res create =>', res.data.childs_id);
-            })
-            return data
-        } catch (error) {
-            // TODO => how to show error mesaage
-            sendToast('error', `مشکلی در سرور بوجود آمده ${error}`);
+        const data = await axios.post(url, list).then((res) => {
+            if (res.status == 201) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
             return false
-        }
-
+        })
+        return data
     },
     get_All_Tag({
         state,
-        commit
+        commit,
+        dispatch
     }) {
         const
             limit = 50,
             url = `${ state.domain }/tags?$limit=${limit}`,
-            allTags = false // JSON.parse(localStorage.getItem("allTags"))
+            allTags = false; // JSON.parse(localStorage.getItem("allTags"))
         if (allTags) {
             const
                 current = new Date(),
@@ -196,16 +155,14 @@ export default {
                 return
             }
         }
-        try {
-            axios.get(url).then(res => {
-                if (res.status == 200) {
-                    res.data.date = new Date()
-                    localStorage.setItem("allTags", JSON.stringify(res.data));
-                    commit('SET_ALL_TAGS', res.data)
-                }
-            })
-        } catch (error) {
-            console.log(error);
-        }
+        axios.get(url).then(res => {
+            if (res.status == 200) {
+                res.data.date = new Date()
+                localStorage.setItem("allTags", JSON.stringify(res.data));
+                commit('SET_ALL_TAGS', res.data)
+            }
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
+        })
     }
 }
