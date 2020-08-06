@@ -153,7 +153,7 @@ export default {
         }
         Vue.toasted.error(msg, {
             position: "bottom-left",
-            duration: 40 * 1000,
+            duration: 5 * 1000,
             keepOnHover: true,
             iconPack: "fontawesome",
             icon: "fa-times-circle",

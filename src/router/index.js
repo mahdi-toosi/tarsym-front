@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from '../store/';
 
+
 Vue.use(VueRouter);
 
 const routes = [{
@@ -64,10 +65,10 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-        if (await store.getters.isAuthenticated) {
+        if (store.getters.isAuthenticated) {
             next()
             return
-        } else if (await set_user_if_exist()) {
+        } else if (set_user_if_exist()) {
             next()
             return
         }
@@ -77,6 +78,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach(async (to) => {
+
     if (to.fullPath == "/create/doc/") {
         await router.push('/create/doc/forward')
         return
@@ -86,17 +88,20 @@ router.afterEach(async (to) => {
     }
 });
 
-async function set_user_if_exist() {
-    const decrypt = atob(localStorage.getItem('userData'))
+function set_user_if_exist() {
+    const userInLocalStorage = localStorage.getItem('userData')
+    if (!userInLocalStorage) return false
+    const decrypt = atob(userInLocalStorage)
     const userData = JSON.parse(decrypt)
     if (userData) {
         const now = new Date().getTime()
-        if (userData.expire < now) {
-            await store.commit('SET_USER', userData.user)
-            await store.commit('SET_USER_ACCESS_TOKEN', userData.accessToken)
+        if (userData.expire > now) {
+            store.commit('SET_USER', userData.user)
+            store.commit('SET_USER_ACCESS_TOKEN', userData.accessToken)
+            return true
         }
-        return true
-    } else return false
+    }
+    return false
 }
 
 export default router;

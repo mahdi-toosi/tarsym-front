@@ -42,7 +42,7 @@ export default {
 	methods: {
 		async signup() {
 			if (!this.validateSignupForm()) return;
-			let url = `${this.$store.state.domain}/users`;
+			let url = `/users`;
 			await this.$axios
 				.post(url, this.user)
 				.then(async () => {
@@ -58,7 +58,7 @@ export default {
 					strategy: "local",
 					...this.user,
 				},
-				url = `${this.$store.state.domain}/authentication`;
+				url = `/authentication`;
 
 			await this.$axios
 				.post(url, data)
@@ -67,6 +67,10 @@ export default {
 					res.data.expire = new Date().getTime() + day;
 					const encryptUser = btoa(JSON.stringify(res.data));
 					localStorage.setItem("userData", encryptUser);
+					localStorage.setItem("accessToken", res.data.accessToken);
+					this.$axios.defaults.headers.common[
+						"Authorization"
+					] = `Bearer ${localStorage.getItem("accessToken")}`;
 					await this.$router.push("/");
 				})
 				.catch((error) => {

@@ -2,10 +2,9 @@ import axios from 'axios';
 
 export default {
     async Create_this_Document({
-        state,
         dispatch
     }, doc, ) {
-        const url = `${ state.domain }/documents`,
+        const url = `/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
         const newID = await axios.post(url, ready_doc).then((res) => {
@@ -17,10 +16,9 @@ export default {
         return newID
     },
     async Update_this_Document({
-        state,
         dispatch,
     }, doc, ) {
-        const url = `${ state.domain }/documents/${doc._id}`,
+        const url = `/documents/${doc._id}`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
         const newID = await axios.put(url, ready_doc).then(async (res) => {
@@ -50,7 +48,7 @@ export default {
         const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
         if (!remove_childs) return
 
-        const url = `${ state.domain }/documents/${id}`
+        const url = `/documents/${id}`
         const newID = await axios.delete(url).then(res => {
             if (res.status == 200) {
                 commit('REMOVE_THIS_DOC', id)
@@ -121,11 +119,10 @@ export default {
         return list
     },
     async create_relationships({
-        state,
         dispatch
     }, list) {
         if (!list.length) return
-        const url = `${ state.domain }/create/documents/relationship`;
+        const url = `/create/documents/relationship`;
 
         const data = await axios.post(url, list).then((res) => {
             if (res.status == 201) return res.data
@@ -136,13 +133,12 @@ export default {
         return data
     },
     get_All_Tag({
-        state,
         commit,
         dispatch
     }) {
         const
             limit = 50,
-            url = `${ state.domain }/tags?$limit=${limit}`,
+            url = `/tags?$limit=${limit}`,
             allTags = false; // JSON.parse(localStorage.getItem("allTags"))
         if (allTags) {
             const

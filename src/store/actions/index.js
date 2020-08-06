@@ -55,11 +55,10 @@ export default {
         return doc;
     },
     async getAllDocs({
-        state,
         commit,
         dispatch
     }) {
-        const url = `${ state.domain }/documents`;
+        const url = `/documents`;
         const params = {
             params: {
                 root: true,
@@ -91,7 +90,7 @@ export default {
                 await commit('UPDATE_THIS_DOC', doc)
                 return
             } else {
-                const url = `${ state.domain }/documents/${doc_id}`
+                const url = `/documents/${doc_id}`
                 const doc2 = await axios.get(url).then(res => {
                     if (res.status == 200) return res.data
                 }).catch(error => {
@@ -131,10 +130,9 @@ export default {
 
     },
     async get_this_docs({
-        state,
         dispatch
     }, doc_ids) {
-        let url = `${ state.domain }/documents/`
+        let url = `/documents/`
         doc_ids.forEach(id => {
             url = url + `?_id[$in]=${id}&`
         });

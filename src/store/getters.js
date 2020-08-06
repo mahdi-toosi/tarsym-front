@@ -49,6 +49,6 @@ export default {
         return thisDoc.tags
     },
     isAuthenticated: (state) => {
-        return state.user
+        return state.user.email
     }
 }
