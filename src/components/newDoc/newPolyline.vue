@@ -94,7 +94,7 @@
 					min="0"
 					max="360"
 					value="0"
-					@input="CHANGE_RANG_INPUT({ $event, type:'rotate' })"
+					@input="CHANGE_RANG_INPUT({ $event, type:'angle' })"
 				/>
 			</div>
 		</div>

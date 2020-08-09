@@ -57,7 +57,7 @@ export default {
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
         if (thisDoc.tags) {
-            const tags = thisDoc.tags.length > 0;
+            const tags = thisDoc.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
         }
 
@@ -78,7 +78,7 @@ export default {
                     duration: 5 * 1000,
                     keepOnHover: true,
                     iconPack: "fontawesome",
-                    icon: "fa-close",
+                    icon: "fa-times-circle",
                     action: currentRoute.params.id == (thisDoc._id || thisDoc.id) ? false : action
                 });
             });

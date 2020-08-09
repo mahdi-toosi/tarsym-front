@@ -2,14 +2,14 @@
 	<div class="color-picker" ref="colorpicker" dir="ltr">
 		<span class="color-picker-container">
 			<span class="current-color" :style="'background-color: ' + colors.hex8" @click="togglePicker()"></span>
-			<div class="vc-chrome" v-if="displayPicker">
+			<!-- bottom line ---- @click can be mouseover-->
+			<div class="vc-chrome" v-if="displayPicker" @click="ADD_COLOR(colors)">
 				<div class="vc-chrome-saturation-wrap">
 					<saturation v-model="colors" @change="childChange" />
 				</div>
 				<div class="vc-chrome-body">
 					<div class="vc-chrome-controls">
 						<div class="vc-chrome-color-wrap">
-							<div class="vc-chrome-active-color" :style="{background: colors.hex8}"></div>
 							<checkboard />
 						</div>
 						<div class="vc-chrome-sliders">
@@ -51,13 +51,6 @@ export default {
 		return {
 			displayPicker: false,
 		};
-	},
-	watch: {
-		colors() {
-			const color = this.colors.hex8;
-			this.ADD_COLOR(color);
-			return color;
-		},
 	},
 	methods: {
 		ADD_COLOR(color) {
@@ -101,8 +94,8 @@ export default {
 		},
 	},
 	mounted() {
-		const color = this.colors.hex8;
-		this.ADD_COLOR(color);
+		// const color = this.colors.hex8;
+		this.ADD_COLOR(this.colors);
 	},
 };
 </script>

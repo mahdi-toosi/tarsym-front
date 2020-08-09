@@ -34,7 +34,13 @@
 					<i
 						class="logo"
 						:class=" doc.tools[0].iconName ? doc.tools[0].iconName : 'fas fa-map-marker-alt' "
-						:style="{ color : doc.tools[0].iconName ?  doc.tools[0].secondaryColor : '#277696' }"
+						:style="{ color : 
+										doc.tools[0].iconName 
+										?  
+										doc.tools[0].secondaryColor.hex8 ? doc.tools[0].secondaryColor.hex8 : doc.tools[0].secondaryColor 
+										: 
+										'#277696' 
+									}"
 						aria-hidden="true"
 					/>
 					<div class="nameandsituation">

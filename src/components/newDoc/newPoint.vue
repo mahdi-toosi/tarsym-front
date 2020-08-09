@@ -23,7 +23,12 @@
 		<div class="tool_body" v-if="logo">
 			<div class="iconColor">
 				<label for="iconColor">رنگ آیکن:</label>
-				<color-picker id="iconColor" :value="tool.color" :index="index" :secondaryColor="true" />
+				<color-picker
+					id="iconColor"
+					:value="tool.secondaryColor"
+					:index="index"
+					:secondaryColor="true"
+				/>
 			</div>
 			<div class="tool_body">
 				<div class="iconSize">
@@ -49,7 +54,7 @@
 						min="0"
 						max="360"
 						value="0"
-						@input="CHANGE_RANG_INPUT({ $event, type:'rotate' })"
+						@input="CHANGE_RANG_INPUT({ $event, type:'angle' })"
 					/>
 				</div>
 			</div>

@@ -26,6 +26,12 @@ export default {
             }
             doc.root = true
         }
+
+        doc.tools.forEach(tool => {
+            if (tool.color.hex8) tool.color = tool.color.hex8
+            if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8
+        });
+
         const imgs = doc.description.match(/<img/gm);
         doc.imgsCount = (imgs || []).length
 

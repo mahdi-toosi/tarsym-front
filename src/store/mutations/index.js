@@ -31,13 +31,17 @@ export default {
         Docs.forEach(doc => {
             const junk = JSON.parse(doc.junk)
             delete doc.junk
-            const m = {
+            const d = {
                 ...doc,
                 ...junk
             }
-            newData.push(m)
+            d.date = d.date - 2000000
+            newData.push(d)
         });
-        docs.data ? docs.data = newData : docs = newData
+
+        if (docs.data) docs.data = newData
+        else docs = newData
+
         if (list == 'allDocs') {
             if (merge) {
                 state[list].data = [...state[list].data, ...docs.data]

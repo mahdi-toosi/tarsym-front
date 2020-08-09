@@ -55,7 +55,7 @@ export default {
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			if (this.logo) {
-				return thisTool.secondaryColor;
+				return thisTool.secondaryColor.hex8;
 			} else return "#277696";
 		},
 	},

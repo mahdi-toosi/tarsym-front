@@ -14,7 +14,7 @@ const routes = [{
         },
     },
     {
-        path: "/authentication",
+        path: "/Auth",
         name: "Authentication",
         component: () => import("../views/Auth.vue")
     },
@@ -72,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
             next()
             return
         }
-        next('/authentication')
+        next('/Auth')
     }
     next()
 });

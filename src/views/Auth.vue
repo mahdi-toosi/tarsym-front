@@ -84,7 +84,7 @@ export default {
 				duration: 5 * 1000,
 				keepOnHover: true,
 				iconPack: "fontawesome",
-				icon: "fa-close",
+				icon: "fa-times-circle",
 			});
 		},
 		validEmail: function (email) {

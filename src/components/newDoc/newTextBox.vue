@@ -30,17 +30,17 @@
 				/>
 			</div>
 
-			<div class="widthOfBox">
-				<label for="widthOfBox">طول باکس:</label>
+			<div class="fontSize">
+				<label for="fontSize">سایز فونت:</label>
 				<input
 					dir="ltr"
-					id="widthOfBox"
+					id="fontSize"
 					type="range"
 					:index="index"
-					min="100"
-					max="350"
-					value="200"
-					v-on:input="CHANGE_RANG_INPUT({ $event , type: 'width' })"
+					min="14"
+					max="30"
+					value="16"
+					@input="CHANGE_RANG_INPUT({ $event, type:'fontSize' })"
 				/>
 			</div>
 
@@ -58,17 +58,17 @@
 				/>
 			</div>
 
-			<div class="fontSize">
-				<label for="fontSize">سایز فونت:</label>
+			<div class="widthOfBox">
+				<label for="widthOfBox">طول باکس:</label>
 				<input
 					dir="ltr"
-					id="fontSize"
+					id="widthOfBox"
 					type="range"
 					:index="index"
-					min="14"
-					max="30"
-					value="16"
-					@input="CHANGE_RANG_INPUT({ $event, type:'fontSize' })"
+					min="100"
+					max="350"
+					value="200"
+					v-on:input="CHANGE_RANG_INPUT({ $event , type: 'width' })"
 				/>
 			</div>
 		</div>

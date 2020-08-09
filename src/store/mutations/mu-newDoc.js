@@ -3,7 +3,31 @@ import router from "../../router";
 function thisDoc(state) {
     return state.newDocs[state.newDocProp.index]
 }
-
+// const default_color = {
+//     "hsl": {
+//         "h": 212.827380952381,
+//         "s": 0.8258000000000001,
+//         "l": 0.5312,
+//         "a": 1
+//     },
+//     "hex": "#257EEA",
+//     "hex8": "#257EEAFF",
+//     "rgba": {
+//         "r": 37,
+//         "g": 126,
+//         "b": 234,
+//         "a": 1
+//     },
+//     "hsv": {
+//         "h": 212.827380952381,
+//         "s": 0.8431237470803684,
+//         "v": 0.91833504,
+//         "a": 1
+//     },
+//     "oldHue": 212.827380952381,
+//     "source": "hsva",
+//     "a": 1
+// };
 export default {
     async REMOVE_THIS_DOC(state, id) {
         if (state.allDocs.data) {
@@ -105,9 +129,9 @@ export default {
             type: type,
             tooltip: null,
             coordinates: [],
-            color: "#194d33",
+            color: "#23A9AEFF",
             colorpicker: false,
-            secondaryColor: "blue",
+            secondaryColor: "#23A9AEFF",
         }
         if (type == "Point") {
             obj.iconName = null
