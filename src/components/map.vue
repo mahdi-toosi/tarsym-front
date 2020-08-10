@@ -14,23 +14,7 @@
 			ref="myMap"
 		>
 			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
-
-			<!-- <div v-if="allPoints.length">
-				<l-marker
-					:key="marker._id"
-					@click="readThisPoint"
-					v-for="marker in allPoints"
-					:lat-lng="{
-						lat: marker.location.coordinates[1],
-						lng: marker.location.coordinates[0],
-					}"
-			>-->
-			<!-- <l-tooltip v-if="marker.tooltip ">{{ //marker.tooltip }}</l-tooltip> -->
-			<!-- </l-marker>
-			</div>-->
-
 			<div v-if="docs_list.length > 0 ">
-				<!-- <div v-if="newDocLayer.tools.length > 0"> -->
 				<div
 					v-for="(tool, index) in 
 							($route.name == 'my docs' || $route.name == 'all docs') 
@@ -149,7 +133,6 @@
 					</div>
 					<!-- end Textbox  -->
 				</div>
-				<!-- </div> -->
 			</div>
 
 			<l-control-zoom position="bottomright"></l-control-zoom>
@@ -202,13 +185,13 @@ export default {
 		});
 		let defaultIcon = L.icon({
 			iconUrl:
-				"https://s3-eu-west-1.amazonaws.com/ct-documents/emails/A-static.png",
+				// "https://s3-eu-west-1.amazonaws.com/ct-documents/emails/A-static.png",
+				"data:image/png;base64,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",
 			iconSize: [21, 31],
 			iconAnchor: [10.5, 31],
 			popupAnchor: [4, -25],
 		});
 		return {
-			// bingApiKey: "1mNX1ryO2Ny_3kzHceofAUIfZFIk8LEjB37y43NYPBzk-jgBLvPxc",
 			openStreetTileURL:
 				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			CircleIcon,

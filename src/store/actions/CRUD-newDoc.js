@@ -6,7 +6,7 @@ export default {
     }, doc, ) {
         const url = `/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
-
+        if (url) return
         const newID = await axios.post(url, ready_doc).then((res) => {
             if (res.status == 201) return res.data
         }).catch(error => {

@@ -33,7 +33,7 @@ export default {
             root
         })
 
-        const path = `/create/doc/${getters.lastAddedDocID}`;
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${getters.lastAddedDocID}`;
         await router.push(path);
 
         if (root) await dispatch('setTool', 'Point')
@@ -56,7 +56,7 @@ export default {
         if (!description) errors.push('توضیحات کافی نیست')
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
-        if (thisDoc.tags) {
+        if (thisDoc.root) {
             const tags = thisDoc.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
         }
