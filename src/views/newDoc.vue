@@ -30,7 +30,7 @@
 					taggable
 					push-tags
 					class="tags"
-					v-if="newDocLayer.tags"
+					v-if="newDocLayer.root"
 				/>
 				<date-picker class="datepicker" :docLayer="newDocProp.index" />
 			</section>
@@ -163,13 +163,13 @@ export default {
 	},
 	async created() {
 		const routeName = this.$route.name;
-		const routeID = this.$route.params.id;
+		const route_id = this.$route.params.id;
 		const lastAddedDocID = this.lastAddedDocID;
 		if (routeName == "create doc") {
-			if (Number(routeID) !== lastAddedDocID)
+			if (Number(route_id) !== lastAddedDocID)
 				return await this.addNewDoc();
 		} else if (routeName == "update doc") {
-			await this.update_this_doc(routeID);
+			await this.update_this_doc(route_id);
 			await this.get_childs(this.newDocLayer);
 		}
 		// document.addEventListener("keyup", this.keyPressed);

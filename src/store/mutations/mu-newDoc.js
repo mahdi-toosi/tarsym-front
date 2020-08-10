@@ -216,7 +216,10 @@ export default {
             },
             childs_id: [],
         };
-        if (root) newDocObj.tags = []
+        if (root) {
+            newDocObj.tags = []
+            newDocObj.root = true
+        }
         state.newDocs.push(newDocObj)
     },
     ADD_NEW_ID(state, {

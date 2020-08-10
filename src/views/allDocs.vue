@@ -64,7 +64,7 @@
 						<i class="far fa-trash-alt"></i>
 					</button>
 				</header>
-				<main v-html="doc.description"></main>
+				<main v-html="doc.ecxerpt"></main>
 				<footer>
 					<ul>
 						<li v-if="doc.imgsCount">
