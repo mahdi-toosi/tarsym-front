@@ -2,13 +2,7 @@
 	<div class="newPolygon">
 		<div class="tool_header">
 			<i class="fas fa-draw-polygon" style="font-size: 24px; padding: 3px 4px;"></i>
-			<input
-				type="text"
-				class="tooltip"
-				placeholder="توضیح کوتاه چند ضلعی"
-				:index="index"
-				@input="CHANGE_TOOLTIP"
-			/>
+			<input type="text" class="tooltip" placeholder="توضیح کوتاه چند ضلعی" v-model="toolTipModel" />
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
@@ -47,6 +41,17 @@ export default {
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
 		...mapMutations(["CHANGE_TOOLTIP"]),
+	},
+	computed: {
+		toolTipModel: {
+			get() {
+				return this.$store.getters.tooltipData(this.index);
+			},
+			set(val) {
+				const index = this.index;
+				this.CHANGE_TOOLTIP({ index, val });
+			},
+		},
 	},
 	components: {
 		colorPicker,

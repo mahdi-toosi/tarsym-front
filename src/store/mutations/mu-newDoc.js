@@ -67,10 +67,11 @@ export default {
         if (type == "icon") thisTool.showIcon = val;
         if (type == "dashed") thisTool.dashed = val;
     },
-    CHANGE_TOOLTIP(state, tag) {
-        const index = tag.target.attributes.index.value;
+    CHANGE_TOOLTIP(state, {
+        index,
+        val
+    }) {
         const thisTool = thisDoc(state).tools[index];
-        const val = tag.target.value;
         thisTool.tooltip = val;
     },
     DELETE_TOOL(state, index) {

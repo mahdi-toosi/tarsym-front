@@ -48,6 +48,10 @@ export default {
         const thisDoc = getters.newDocLayer
         return thisDoc.tags
     },
+    tooltipData: (state, getters) => index => {
+        const thisTool = getters.newDocLayer.tools[index];
+        return thisTool.tooltip
+    },
     isAuthenticated: (state) => {
         return state.user.email
     }

@@ -2,7 +2,7 @@
 	<div class="newPoint">
 		<div class="tool_header">
 			<i class="far fa-comment-alt" style="font-size: 25px; padding: 3px 5px;" />
-			<textarea class="tooltip" placeholder="تکست باکس" :index="index" @input="CHANGE_TOOLTIP" />
+			<textarea class="tooltip" placeholder="تکست باکس" v-model="toolTipModel" />
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
@@ -92,6 +92,15 @@ export default {
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			return thisTool.iconName;
+		},
+		toolTipModel: {
+			get() {
+				return this.$store.getters.tooltipData(this.index);
+			},
+			set(val) {
+				const index = this.index;
+				this.CHANGE_TOOLTIP({ index, val });
+			},
 		},
 	},
 	components: {

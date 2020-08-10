@@ -7,13 +7,7 @@
 				style="font-size: 25px; padding: 3px 5px;"
 				v-if="!tool.showIcon"
 			/>
-			<input
-				type="text"
-				class="tooltip"
-				placeholder="توضیح کوتاه خط"
-				:index="index"
-				@input="CHANGE_TOOLTIP"
-			/>
+			<input type="text" class="tooltip" placeholder="توضیح کوتاه خط" v-model="toolTipModel" />
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
@@ -115,6 +109,17 @@ export default {
 			"CHANGE_RANG_INPUT",
 			"CHANGE_POLYLINE_DECORATOR",
 		]),
+	},
+	computed: {
+		toolTipModel: {
+			get() {
+				return this.$store.getters.tooltipData(this.index);
+			},
+			set(val) {
+				const index = this.index;
+				this.CHANGE_TOOLTIP({ index, val });
+			},
+		},
 	},
 	components: {
 		colorPicker,

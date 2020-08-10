@@ -2,13 +2,7 @@
 	<div class="newPoint">
 		<div class="tool_header">
 			<icon-picker :index="index" />
-			<input
-				type="text"
-				class="tooltip"
-				placeholder="توضیح کوتاه آیکن"
-				:index="index"
-				@input="CHANGE_TOOLTIP"
-			/>
+			<input type="text" class="tooltip" placeholder="توضیح کوتاه آیکن" v-model="toolTipModel" />
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
@@ -80,6 +74,15 @@ export default {
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			return thisTool.iconName;
+		},
+		toolTipModel: {
+			get() {
+				return this.$store.getters.tooltipData(this.index);
+			},
+			set(val) {
+				const index = this.index;
+				this.CHANGE_TOOLTIP({ index, val });
+			},
 		},
 	},
 	components: {
