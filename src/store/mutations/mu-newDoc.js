@@ -74,10 +74,11 @@ export default {
         month,
         day
     }) {
-        century ? thisDoc(state).date_props.century = century : ''
-        year ? thisDoc(state).date_props.year = year : ''
-        month ? thisDoc(state).date_props.month = month : ''
-        day ? thisDoc(state).date_props.day = day : ''
+        const doc_dateProps = thisDoc(state).date_props
+        if (century) doc_dateProps.century = century
+        if (year) doc_dateProps.year = year
+        if (month) doc_dateProps.month = month
+        if (day) doc_dateProps.day = day
     },
     REMOVE_ICON(state, index) {
         const thisTool = thisDoc(state).tools[index]
@@ -166,10 +167,10 @@ export default {
     UPDATE_NEW_DOC_INDEX(state) {
         const docID = router.currentRoute.params.id
         const Docs = state.newDocs
-        const thisObject = (obj) => (obj._id ? obj._id : obj.id) == docID
+        const thisObject = (obj) => (obj._id || obj.id) == docID
         const index = Docs.findIndex(thisObject);
         state.newDocProp.index = index
-        state.newDocProp.id = Docs[index]._id ? Docs[index]._id : Docs[index].id
+        state.newDocProp.id = (Docs[index]._id || Docs[index].id)
     },
     SET_NEW_DOCUMENT(state, {
         fake_id,

@@ -7,18 +7,18 @@
 					<i class="fa fa-plus"></i>
 				</a>
 			</label>
-			<a href="#" class="menu-item" @click="setTool('Point')">
+			<button class="menu-item" @click="setTool('Point')">
 				<i class="fas fa-map-marker-alt"></i>
-			</a>
-			<a href="#" class="menu-item" @click="setTool('Polygon')">
+			</button>
+			<button class="menu-item" @click="setTool('Polygon')">
 				<i class="fas fa-draw-polygon"></i>
-			</a>
-			<a href="#" class="menu-item" @click="setTool('Polyline')">
+			</button>
+			<button class="menu-item" @click="setTool('Polyline')">
 				<i class="fas fa-long-arrow-alt-up"></i>
-			</a>
-			<a href="#" class="menu-item" @click="setTool('Textbox')">
+			</button>
+			<button class="menu-item" @click="setTool('Textbox')">
 				<i class="far fa-comment-alt"></i>
-			</a>
+			</button>
 		</nav>
 		<!-- filters -->
 		<svg xmlns="http://www.w3.org/2000/svg" version="1.1">

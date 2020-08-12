@@ -23,14 +23,14 @@
 								v-if=" tool.isOn"
 								:dashArray="'10,10'"
 								:opacity="0.5"
-								:color="tool.color.hex8 ? tool.color.hex8 : tool.color"
+								:color="( tool.color.hex8 || tool.color )"
 								:fill="false"
 							/>
 						</span>
 						<l-polygon
 							:fillOpacity="0.4"
-							:fillColor="tool.secondaryColor.hex8 ? tool.secondaryColor.hex8 : tool.secondaryColor"
-							:color="tool.color.hex8 ? tool.color.hex8 : tool.color"
+							:fillColor="( tool.secondaryColor.hex8 || tool.secondaryColor )"
+							:color="( tool.color.hex8 || tool.color )"
 							:lat-lngs="tool.coordinates"
 						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
@@ -41,7 +41,7 @@
 						<span v-if="newDocProp.OnTool.condition">
 							<l-polyline
 								:lat-lngs="polygonOrPolylineSimolationCoordinates"
-								:color="tool.color.hex8 ? tool.color.hex8 : tool.color"
+								:color="(tool.color.hex8 || tool.color)"
 								v-if="tool.isOn"
 								:dashArray="'10,10'"
 								:opacity="0.5"
@@ -56,7 +56,7 @@
 						/>-->
 						<l-polyline
 							:lat-lngs="tool.coordinates"
-							:color="tool.color.hex8 ? tool.color.hex8 : tool.color"
+							:color="(tool.color.hex8 || tool.color)"
 							:dashArray=" tool.dashed ? '10,10' : '' "
 							@click="mahdi(tool)"
 						>
@@ -66,10 +66,10 @@
 							:lat-lngs="tool.coordinates"
 							:icon-size="tool.iconSize"
 							:icon-name="tool.iconName"
-							:icon-color="tool.secondaryColor.hex8 ? tool.secondaryColor.hex8 : tool.secondaryColor"
+							:icon-color="( tool.secondaryColor.hex8 || tool.secondaryColor )"
 							:icon-rotate="tool.angle"
 							:icon-repeat="tool.iconRepeat"
-							:arrow-color="tool.color.hex8 ? tool.color.hex8 : tool.color"
+							:arrow-color="( tool.color.hex8 || tool.color )"
 							:show-icon="tool.showIcon"
 							:show-arrow="tool.showArrow"
 						/>
@@ -90,7 +90,7 @@
 								<i
 									:class="tool.iconName"
 									:style="{ fontSize: tool.iconSize + 'px', 
-												color: tool.secondaryColor.hex8 ? tool.secondaryColor.hex8 : tool.secondaryColor, 
+												color:  ( tool.secondaryColor.hex8 || tool.secondaryColor ), 
 												transform: 'rotate('+tool.angle+ 'deg)' 
 												}"
 								/>
@@ -116,9 +116,9 @@
 									v-if="tool.tooltip"
 									:style="{ width: tool.width + 'px',
 												height: tool.height + 'px',
-												background: tool.color.hex8 ? tool.color.hex8 : tool.color, 
+												background: ( tool.color.hex8 || tool.color ), 
 												fontSize: tool.fontSize + 'px',
-												color: tool.secondaryColor.hex8 ? tool.secondaryColor.hex8 : tool.secondaryColor
+												color: ( tool.secondaryColor.hex8 || tool.secondaryColor )
 												}"
 								>{{ tool.tooltip }}</div>
 								<!-- <div class="pointer"></div> -->

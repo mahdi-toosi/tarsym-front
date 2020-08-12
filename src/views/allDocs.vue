@@ -33,11 +33,11 @@
 				<header>
 					<i
 						class="logo"
-						:class=" doc.tools[0].iconName ? doc.tools[0].iconName : 'fas fa-map-marker-alt' "
+						:class=" (doc.tools[0].iconName || 'fas fa-map-marker-alt') "
 						:style="{ color : 
 										doc.tools[0].iconName 
 										?  
-										doc.tools[0].secondaryColor.hex8 ? doc.tools[0].secondaryColor.hex8 : doc.tools[0].secondaryColor 
+										(doc.tools[0].secondaryColor.hex8 || doc.tools[0].secondaryColor) 
 										: 
 										'#277696' 
 									}"
