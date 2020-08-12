@@ -12,14 +12,16 @@ export default {
         name: 'تگ اول'
     }],
     allDocs: [],
-    zoom: 5,
-    MouseCoordinate: null,
-    mapCenter: ["32.879587173066305", "54.01105444025955"],
+    map: {
+        zoom: 5,
+        MouseCoordinate: null,
+        center: ["32.879587173066305", "54.01105444025955"],
+        tools: []
+    },
     readPoint: null,
     situations: {
         loading: true,
         thereIsNoPoint: false
     },
-    mapTools: [],
     user: {},
 };

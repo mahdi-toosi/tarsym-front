@@ -3,31 +3,7 @@ import router from "../../router";
 function thisDoc(state) {
     return state.newDocs[state.newDocProp.index]
 }
-// const default_color = {
-//     "hsl": {
-//         "h": 212.827380952381,
-//         "s": 0.8258000000000001,
-//         "l": 0.5312,
-//         "a": 1
-//     },
-//     "hex": "#257EEA",
-//     "hex8": "#257EEAFF",
-//     "rgba": {
-//         "r": 37,
-//         "g": 126,
-//         "b": 234,
-//         "a": 1
-//     },
-//     "hsv": {
-//         "h": 212.827380952381,
-//         "s": 0.8431237470803684,
-//         "v": 0.91833504,
-//         "a": 1
-//     },
-//     "oldHue": 212.827380952381,
-//     "source": "hsva",
-//     "a": 1
-// };
+
 export default {
     async REMOVE_THIS_DOC(state, id) {
         if (state.allDocs.data) {
@@ -67,6 +43,9 @@ export default {
         if (type == "icon") thisTool.showIcon = val;
         if (type == "dashed") thisTool.dashed = val;
     },
+    SET_ZOOM_LEVEL(state, val) {
+        state.newDocs[0].zoomLevel = val;
+    },
     CHANGE_TOOLTIP(state, {
         index,
         val
@@ -78,13 +57,6 @@ export default {
         const onTool = state.newDocProp.OnTool;
         onTool.condition = false;
         thisDoc(state).tools.splice(index, 1);
-    },
-    UPDATE_TOOLTIPS(state) {
-        thisDoc(state).tools.forEach((element, index) => {
-            const input = `input[index="${index}"]`;
-            const thisInput = document.querySelector(input);
-            thisInput.value = element.tooltip;
-        });
     },
     CHANGE_RANG_INPUT(state, obj) {
         const index = obj.$event.target.attributes.index.value;
@@ -136,14 +108,14 @@ export default {
         }
         if (type == "Point") {
             obj.iconName = null
-            obj.coordinates = state.mapCenter
+            obj.coordinates = state.map.center
             obj.angle = 0
             obj.iconSize = 35
             const is_searchable_point = thisDoc(state).tools.length < 1
             if (is_searchable_point) obj.searchable = true
         }
         if (type == "Textbox") {
-            obj.coordinates = state.mapCenter
+            obj.coordinates = state.map.center
             obj.width = 200
             obj.height = 100
             obj.fontSize = 16
@@ -219,6 +191,7 @@ export default {
         if (root) {
             newDocObj.tags = []
             newDocObj.root = true
+            newDocObj.zoom = 4
         }
         state.newDocs.push(newDocObj)
     },

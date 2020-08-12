@@ -3,6 +3,7 @@
 		<div class="tool_header">
 			<icon-picker :index="index" />
 			<input type="text" class="tooltip" placeholder="توضیح کوتاه آیکن" v-model="toolTipModel" />
+
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
@@ -10,6 +11,20 @@
 			>
 				<i class="fas fa-pencil-alt"></i>
 			</button>
+
+			<label for="zoomLevel" style="top: 4px">لول زوم:</label>
+			<select
+				id="zoomLevel"
+				v-if="tool.searchable"
+				v-model="zoomLevel"
+				title="لول زوم 4 بیشترین مقدار زوم است"
+			>
+				<option :value="4">1</option>
+				<option :value="8">2</option>
+				<option :value="11">3</option>
+				<option :value="15">4</option>
+			</select>
+
 			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
 				<i class="far fa-trash-alt"></i>
 			</button>
@@ -66,7 +81,11 @@ export default {
 	props: ["tool", "index"],
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-		...mapMutations(["CHANGE_RANG_INPUT", "CHANGE_TOOLTIP"]),
+		...mapMutations([
+			"CHANGE_RANG_INPUT",
+			"CHANGE_TOOLTIP",
+			"SET_ZOOM_LEVEL",
+		]),
 	},
 	computed: {
 		logo() {
@@ -80,8 +99,15 @@ export default {
 				return this.$store.getters.tooltipData(this.index);
 			},
 			set(val) {
-				const index = this.index;
-				this.CHANGE_TOOLTIP({ index, val });
+				this.CHANGE_TOOLTIP({ index: this.index, val });
+			},
+		},
+		zoomLevel: {
+			get() {
+				return this.$store.state.newDocs[0].zoom;
+			},
+			set(val) {
+				this.SET_ZOOM_LEVEL(val);
 			},
 		},
 	},
@@ -93,4 +119,7 @@ export default {
 </script>
 
 <style>
+#zoomLevel {
+	cursor: pointer;
+}
 </style>

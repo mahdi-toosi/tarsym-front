@@ -6,22 +6,47 @@ export default {
         else if (routeName == 'my docs' || routeName == 'all docs') return state.allDocs.data || []
         else return []
     },
-    allDocPageTools: (state
-        // , getters
-    ) => {
-        // const routeName = state.route.name
-        // let tools = []
-        // if (routeName == 'my docs' || routeName == 'all docs') {
-        //     getters.docs_list.forEach(doc => {
-        //         if (doc.root) {
-        //             doc.tools.forEach(tool => {
-        //                 tools.push(tool)
-        //             });
-        //         }
-        //     });
-        // }
-        // return tools
-        return state.mapTools
+    DocWithChildsTools: (state, getters) => {
+        const routeName = state.route.name,
+            editMode = routeName == 'update doc' || routeName == 'create doc',
+            showMode = routeName == 'my docs' || routeName == 'all docs',
+            map_ZL = state.map.zoom;
+        let tools = []
+        if (showMode) {
+            getters.docs_list.forEach(doc => {
+                const doc_ZL = doc.zoom
+                if (doc.root && doc_ZL <= map_ZL) {
+                    doc.tools.forEach(tool => {
+                        tools.push(tool)
+                    });
+                }
+            });
+            return tools
+        } else if (editMode) {
+            const docLayer = getters.newDocLayer
+            const doc_ZL = docLayer.zoom
+            if (docLayer.root ? doc_ZL <= map_ZL : true)
+                docLayer.tools.forEach(tool => {
+                    tools.push(tool)
+                });
+            if (!docLayer.childs_id.length) return tools
+            // * add childs tools to map
+            const newDocs = state.newDocs
+            let childs_indexes = []
+            docLayer.childs_id.forEach(child_id => {
+                const thisObject = (doc) => (doc._id || doc.id) == child_id
+                const index = newDocs.findIndex(thisObject);
+                childs_indexes.push(index)
+            });
+            childs_indexes.forEach(child_index => {
+                const child_doc = newDocs[child_index]
+                child_doc.tools.forEach(tool => {
+                    tools.push(tool)
+                });
+            });
+        }
+        return tools
+        // return state.map.tools
     },
     newDocLayer: (state, getters) => {
         return getters.docs_list[state.newDocProp.index]
@@ -38,7 +63,7 @@ export default {
         const childsID = Docs[state.newDocProp.index].childs_id
         const childs = []
         childsID.forEach(id => {
-            const thisObject = (doc) => (doc._id ? doc._id : doc.id) == id
+            const thisObject = (doc) => (doc._id || doc.id) == id
             const index = Docs.findIndex(thisObject);
             if (Docs[index]) childs.push(Docs[index])
         });

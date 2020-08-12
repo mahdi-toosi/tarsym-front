@@ -66,11 +66,11 @@ export default {
 					const day = 60 * 60 * 1000 * 24;
 					res.data.expire = new Date().getTime() + day;
 					const encryptUser = btoa(JSON.stringify(res.data));
-					localStorage.setItem("userData", encryptUser);
-					localStorage.setItem("accessToken", res.data.accessToken);
+					localStorage.setItem("sjufNEbjDmE", encryptUser); // sjufNEbjDmE = userData
+					localStorage.setItem("kemskDJobjgR", res.data.accessToken); // kemskDJobjgR = access key
 					this.$axios.defaults.headers.common[
 						"Authorization"
-					] = `Bearer ${localStorage.getItem("accessToken")}`;
+					] = `Bearer ${localStorage.getItem("kemskDJobjgR")}`; // kemskDJobjgR = access key
 					await this.$router.push("/");
 				})
 				.catch((error) => {

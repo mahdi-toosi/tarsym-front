@@ -50,9 +50,7 @@ export default {
 
         const url = `/documents/${id}`
         const newID = await axios.delete(url).then(res => {
-            if (res.status == 200) {
-                commit('REMOVE_THIS_DOC', id)
-            }
+            if (res.status == 200) commit('REMOVE_THIS_DOC', id)
             return res // remember this set value for newID
         }).catch(error => {
             dispatch('handleAxiosError', error)

@@ -89,7 +89,7 @@ router.afterEach(async (to) => {
 });
 
 function set_user_if_exist() {
-    const userInLocalStorage = localStorage.getItem('userData')
+    const userInLocalStorage = localStorage.getItem('sjufNEbjDmE') // sjufNEbjDmE = userData
     if (!userInLocalStorage) return false
     const decrypt = atob(userInLocalStorage)
     const userData = JSON.parse(decrypt)

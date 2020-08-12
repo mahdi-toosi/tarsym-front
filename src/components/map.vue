@@ -3,25 +3,19 @@
 		<l-map
 			:icon="defaultIcon"
 			class="map"
-			:zoom="zoom"
-			:center="mapCenter"
+			:zoom="map.zoom"
+			:center="map.center"
 			@click="setClickCoordinates"
 			@update:zoom="zoomUpdated"
 			:options="{ zoomControl: false }"
 			@update:center="mapCenterUpdated"
 			@mousemove="setMouseCoordinate"
 			:minZoom="4"
-			ref="myMap"
+			ref="LeafletMap"
 		>
 			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
-			<div v-if="docs_list.length > 0 ">
-				<div
-					v-for="(tool, index) in 
-							($route.name == 'my docs' || $route.name == 'all docs') 
-							? allDocPageTools 
-							: newDocLayer.tools "
-					:key="index"
-				>
+			<div v-if="docs_list.length">
+				<div v-for="(tool, index) in DocWithChildsTools " :key="index">
 					<div v-if="tool.type == 'Polygon'">
 						<span v-if="newDocProp.OnTool.condition">
 							<l-polygon
@@ -109,7 +103,7 @@
 						<l-marker
 							:lat-lng="tool.coordinates"
 							:draggable="tool.isOn"
-							:icon="defaultIcon"
+							:icon="CircleIcon"
 							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 						>
 							<l-icon
@@ -199,39 +193,36 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(["mapCenter", "newDocProp", "zoom", "MouseCoordinate"]),
-		...mapGetters(["newDocLayer", "docs_list", "allDocPageTools"]),
+		...mapState(["map", "newDocProp"]),
+		...mapGetters(["newDocLayer", "docs_list", "DocWithChildsTools"]),
 		undoCondition() {
 			const onTool = this.newDocProp.OnTool;
 			if (!onTool.condition) return false;
 			const thisTool = this.newDocLayer.tools[onTool.index];
-			if (thisTool.type !== "Point") return true;
+			if (thisTool.type !== "Point" && thisTool.type !== "Textbox")
+				return true;
 			else return false;
 		},
 		polygonOrPolylineSimolationCoordinates() {
-			const OnToolProp = this.newDocProp.OnTool;
-			const OnTool = this.newDocLayer.tools[OnToolProp.index];
-			const isPolygonOrPolylineOn =
-				OnTool.type == "Polygon" || OnTool.type == "Polyline";
-			if (!isPolygonOrPolylineOn && !this.MouseCoordinate) return [];
+			const OnToolProp = this.newDocProp.OnTool,
+				OnTool = this.newDocLayer.tools[OnToolProp.index],
+				isPolygonOrPolylineOn =
+					OnTool.type == "Polygon" || OnTool.type == "Polyline",
+				MouseCoordinate = this.map.MouseCoordinate;
+			if (!isPolygonOrPolylineOn && !MouseCoordinate) return [];
 			if (OnTool.coordinates.length < 1) return [];
 			const coordinates = [
 				...OnTool.coordinates,
 				{
-					lat: this.MouseCoordinate.lat,
-					lng: this.MouseCoordinate.lng,
+					lat: MouseCoordinate.lat,
+					lng: MouseCoordinate.lng,
 				},
 			];
 			return coordinates;
 		},
 	},
 	methods: {
-		...mapMutations([
-			"newPointMarker",
-			"mapCenterUpdated",
-			"readThisPoint",
-			"UPDATE_THIS_POINT_COORDINATE",
-		]),
+		...mapMutations(["mapCenterUpdated", "UPDATE_THIS_POINT_COORDINATE"]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
 		},
@@ -242,14 +233,14 @@ export default {
 			const OnTool = this.newDocProp.OnTool;
 			if (!OnTool.condition) return;
 			const thisTool = this.newDocLayer.tools[OnTool.index];
-			if (thisTool.type == "Point") return;
+			if (thisTool.type == "Point" || thisTool.type == "Textbox") return;
 			thisTool.coordinates.push(c.latlng);
 		},
 		setMouseCoordinate(m) {
-			this.$store.state.MouseCoordinate = m.latlng;
+			this.map.MouseCoordinate = m.latlng;
 		},
-		zoomUpdated(z) {
-			this.$store.state.zoom = z;
+		zoomUpdated(zoomLevel) {
+			this.map.zoom = zoomLevel;
 		},
 		undoTools() {
 			const OnTool = this.newDocProp.OnTool;
@@ -263,7 +254,7 @@ export default {
 			sizeModes: ["Current"],
 			exportOnly: true,
 			filename: "tarsym",
-		}).addTo(this.$refs.myMap.mapObject);
+		}).addTo(this.$refs.LeafletMap.mapObject);
 	},
 	components: {
 		LMap,

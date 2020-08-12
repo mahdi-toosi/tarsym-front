@@ -2,11 +2,11 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
-    passToolsToMap(state, doc) {
+    SET_THIS_DOC_TOOLS_TO_MAP(state, doc) {
         // doc.tools.forEach(tool => {
-        //     state.mapTools.push(tool)
+        //     state.map.tools.push(tool)
         // });
-        state.mapTools = doc.tools
+        state.map.tools = doc.tools
     },
     SET_USER(state, user) {
         state.user = user
@@ -52,7 +52,7 @@ export default {
             } else state[list] = docs
         }
     },
-    mapCenterUpdated(state, center) {
-        state.mapCenter = center;
+    mapCenterUpdated(state, coordinates) {
+        state.map.center = coordinates;
     },
 }

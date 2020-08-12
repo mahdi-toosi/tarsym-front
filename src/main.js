@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css';
 // * add axios and configs
 import axios from "axios";
 axios.defaults.baseURL = process.env.VUE_APP_DOMAIN
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('kemskDJobjgR')}` // kemskDJobjgR = access key
 axios.interceptors.request.use(config => {
   NProgress.start()
   return config

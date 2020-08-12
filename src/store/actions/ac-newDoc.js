@@ -1,9 +1,7 @@
 import Vue from "vue";
 import router from "../../router";
 
-function thisDoc(state) {
-    return state.newDocs[state.newDocProp.index]
-}
+const thisDoc = (state) => state.newDocs[state.newDocProp.index]
 
 export default {
     async setTool({
@@ -93,8 +91,8 @@ export default {
         await commit('UPDATE_ON_TOOL');
 
         const doc_id = state.newDocProp.id;
-        const father_id = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
-        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ father_id._id ? father_id._id : father_id.id }`;
+        const father = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
+        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ ( father._id || father.id ) }`;
         await router.push(path);
     },
     async goToChild({
@@ -114,7 +112,6 @@ export default {
     }, index) {
         await commit('DELETE_TOOL', index)
         await commit('UPDATE_ON_TOOL')
-        await commit('UPDATE_TOOLTIPS')
     },
     async toolSwitch({
             state,
@@ -146,6 +143,7 @@ export default {
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 409") msg = "ایمیل قبلا به ثبت رسیده است";
         else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
+        else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
         else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";

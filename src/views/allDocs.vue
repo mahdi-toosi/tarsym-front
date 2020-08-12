@@ -26,7 +26,7 @@
 				class="point shadow"
 				v-for="doc in allDocs.data "
 				:key="doc._id"
-				@click="passToolsToMap(doc)"
+				@click="SET_THIS_DOC_TOOLS_TO_MAP(doc)"
 				style="cursor: pointer"
 			>
 				<!-- @click="readThisPoint(doc.coordinates)" -->
@@ -97,7 +97,7 @@ export default {
 	},
 	methods: {
 		...mapActions(["getAllDocs", "addNewDoc", "Delete_this_Document"]),
-		...mapMutations(["readThisPoint", "passToolsToMap"]),
+		...mapMutations(["readThisPoint", "SET_THIS_DOC_TOOLS_TO_MAP"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);
 			const url = "/point/search/" + this.search;
