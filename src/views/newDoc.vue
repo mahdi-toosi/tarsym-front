@@ -22,7 +22,7 @@
 			<section class="tag_date_section">
 				<v-select
 					:options="allTags"
-					:value="chosenTags"
+					:value="newDocLayer.tags"
 					@input="SET_CHOSEN_TAG"
 					label="name"
 					placeholder="تگ ..."
@@ -30,8 +30,9 @@
 					taggable
 					push-tags
 					class="tags"
+					dir="rtl"
 					v-if="newDocLayer.root"
-				/>
+				></v-select>
 				<date-picker class="datepicker" :docLayer="newDocProp.index" />
 			</section>
 			<section class="tools shadow">
@@ -64,7 +65,30 @@
 								</button>
 							</li>
 						</ul>
-						<button @click="addNewDoc(false) , tabContent = 'tools'" class="btn btn-blue addNewLayer">+</button>
+						<div class="addNewLayerBox">
+							<v-select
+								:options="searchBoxOptions"
+								@search="onSearch"
+								v-model="searchedDoc"
+								:filterable="false"
+								label="title"
+								placeholder="جستجو ..."
+								autocomplete="on"
+								dir="rtl"
+								class="seachBoxForLayer"
+								ref="select"
+							>
+								<template slot="no-options">داکیومنتی با این عنوان به ثبت نرسیده...</template>
+								<template slot="option" slot-scope="option">
+									<div class="seachBoxForLayerOption">
+										<h4>{{ option.title }}</h4>
+										<!-- TODO this if should deleted ? -->
+										<p v-if="option.excerpt">{{ option.excerpt }}</p>
+									</div>
+								</template>
+							</v-select>
+							<button @click="addChild()" class="btn btn-blue addNewLayer">+</button>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -102,7 +126,8 @@ export default {
 			["clean"],
 		];
 		return {
-			mahdi: false,
+			searchBoxOptions: [],
+			searchedDoc: {},
 			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
@@ -123,8 +148,43 @@ export default {
 			"update_this_doc",
 			"get_childs",
 			"get_All_Tag",
+			"addExistingDoc",
 		]),
-
+		async addChild() {
+			if (this.searchedDoc._id) {
+				await this.addExistingDoc(this.searchedDoc._id);
+			} else {
+				await this.addNewDoc(false);
+			}
+			this.tabContent = "tools";
+		},
+		async onSearch(search, loading) {
+			if (!search) return;
+			loading(true);
+			this.searchRequest(search, loading, this);
+		},
+		searchRequest: debounce(async (search, loading, vm) => {
+			const url = `/search/${search}`,
+				params = { params: { forLayers: true } };
+			await vm.$axios
+				.get(url, params)
+				.then((res) => {
+					vm.searchBoxOptions = res.data;
+					loading(false);
+				})
+				.catch((error) => {
+					vm.$store.dispatch("handleAxiosError", error);
+					loading(false);
+				});
+		}, 1500),
+		lastAddedDocID() {
+			const Docs = this.$store.state.newDocs;
+			if (Docs.length > 0) {
+				const lastDoc = Docs[Docs.length - 1];
+				return lastDoc._id || lastDoc.id;
+			}
+			return false;
+		},
 		// keyPressed(e) {
 		// 	const OnTool = this.newDocProp.OnTool;
 		// 	if (e.keyCode === 27 && OnTool.condition) {
@@ -135,12 +195,7 @@ export default {
 	},
 	computed: {
 		...mapState(["newDocs", "newDocProp", "allTags"]),
-		...mapGetters([
-			"newDocLayer",
-			"lastAddedDocID",
-			"newDocChilds",
-			"chosenTags",
-		]),
+		...mapGetters(["newDocLayer", "newDocChilds"]),
 		newPointTitle: {
 			get() {
 				return this.newDocLayer.title;
@@ -161,14 +216,14 @@ export default {
 	async created() {
 		const routeName = this.$route.name;
 		const route_id = this.$route.params.id;
-		const lastAddedDocID = this.lastAddedDocID;
+		const lastAddedDocID = this.lastAddedDocID();
 		if (routeName == "create doc") {
 			if (Number(route_id) !== lastAddedDocID)
 				return await this.addNewDoc();
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
-			await this.get_childs(this.newDocLayer);
 		}
+		await this.get_childs(this.newDocLayer);
 		// document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {
@@ -189,10 +244,34 @@ export default {
 		newTextBox,
 	},
 };
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function () {
+		var context = this,
+			args = arguments;
+		var later = function () {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+}
 </script>
 
 <style scoped lang="stylus">
 .tools {
 	padding: 0px;
+}
+
+.addNewLayerBox {
+	display: flex;
+
+	.seachBoxForLayer {
+		width: 70%;
+		margin: auto;
+	}
 }
 </style>

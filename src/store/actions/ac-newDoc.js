@@ -14,7 +14,7 @@ export default {
     },
     async addNewDoc({
         commit,
-        getters,
+        // getters,
         state,
         dispatch
     }, root = true) {
@@ -31,11 +31,73 @@ export default {
             root
         })
 
-        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${getters.lastAddedDocID}`;
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${fake_id}`;
         await router.push(path);
 
         if (root) await dispatch('setTool', 'Point')
     },
+    async addExistingDoc({
+        commit,
+        state,
+        dispatch
+    }, _id) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const existingDoc = await dispatch('get_this_docs', [_id])
+        if (!existingDoc) return false
+
+        const thisDoc = state.newDocs[state.newDocProp.index];
+        thisDoc.childs_id.push(_id);
+
+        await commit('SET_DOCS_TO', {
+            docs: existingDoc,
+            list: 'newDocs',
+            merge: true,
+            deleteRoot: true
+        })
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${_id}`;
+        await router.push(path);
+    },
+    // async addNewDoc({
+    //     commit,
+    //     // getters,
+    //     state,
+    //     dispatch
+    // }, {
+    //     root,
+    //     _id
+    // }) {
+    //     await commit('OFF_THE_ON_TOOL')
+    //     await commit('UPDATE_ON_TOOL');
+
+    //     const ID = (_id || new Date().getTime());
+    //     if (!root) {
+    //         const thisDoc = state.newDocs[state.newDocProp.index];
+    //         thisDoc.childs_id.push(ID);
+    //     }
+    //     if (!_id) {
+
+    //         await commit('SET_NEW_DOCUMENT', {
+    //             ID,
+    //             root
+    //         })
+    //     } else {
+    //         const existingDoc = await dispatch('get_this_docs', [_id])
+    //         if (!existingDoc) return false
+
+    //         await commit('SET_DOCS_TO', {
+    //             docs: existingDoc,
+    //             list: 'newDocs',
+    //             merge: true,
+    //             deleteRoot: true
+    //         })
+    //     }
+    //     const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${ID}`;
+    //     await router.push(path);
+
+    //     if (root) await dispatch('setTool', 'Point')
+    // },
     async is_this_Doc_valid({
         commit
     }, thisDoc) {
@@ -144,10 +206,11 @@ export default {
         else if (error == "Error: Request failed with status code 409") msg = "ایمیل قبلا به ثبت رسیده است";
         else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
         else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
+        else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد"
         else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
-            console.log("error => ", msg);
+            console.log("request get error => ", msg);
         }
         Vue.toasted.error(msg, {
             position: "bottom-left",

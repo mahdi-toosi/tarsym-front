@@ -86,7 +86,7 @@ export default {
         if (!docs) return
 
         await commit('SET_DOCS_TO', {
-            docs: docs,
+            docs,
             list: 'allDocs',
             merge: false
         })
@@ -126,35 +126,48 @@ export default {
 
     },
     async get_childs({
+        state,
         dispatch,
         commit
     }, doc) {
-        if (!doc) return
-        if (!doc.childs_id.length) return
-        const can_be_num = Number(doc.childs_id[0])
-        if (!can_be_num) {
-            const childs = await dispatch('get_this_docs', doc.childs_id);
-            childs.data.forEach(child => {
-                child.father_id = doc._id
-            });
-            await commit('SET_DOCS_TO', {
-                docs: childs,
-                list: 'newDocs',
-                merge: true
-            })
-        } else return
+        if (!doc || !doc._id || !doc.childs_id.length) return
+        let valid_childs_id = []
+        for (let index = 0; index < doc.childs_id.length; index++) {
+            const child_id = doc.childs_id[index];
+            const is_it_number = typeof child_id == 'number'
+            if (is_it_number) continue
+            const thisObject = (doc) => doc._id == child_id
+            const is_already_exist = state.newDocs.findIndex(thisObject)
+            if (!is_already_exist) continue
+            valid_childs_id.push(child_id)
+        }
+        if (!valid_childs_id.length) return
+
+        const childs = await dispatch('get_this_docs', valid_childs_id);
+
+        await commit('SET_DOCS_TO', {
+            docs: childs,
+            list: 'newDocs',
+            merge: true
+        })
 
 
     },
     async get_this_docs({
         dispatch
     }, doc_ids) {
-        let url = `/documents/`
-        doc_ids.forEach(id => {
-            url = url + `?_id[$in]=${id}&`
-        });
-        const docs = await axios.get(url).then(async res => res.data).catch(error => {
+        let url = `/documents/`,
+            params = {
+                params: {
+                    '_id[$in]': doc_ids
+                }
+            }
+        // doc_ids.forEach(_id => {
+        //     url += `?_id[$in]=${ _id }&`
+        // });
+        const docs = await axios.get(url, params).then(async res => res.data).catch(error => {
             dispatch('handleAxiosError', error)
+            return false
         });
         return docs
     }

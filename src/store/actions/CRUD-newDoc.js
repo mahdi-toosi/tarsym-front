@@ -6,7 +6,6 @@ export default {
     }, doc, ) {
         const url = `/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
-        if (url) return
         const newID = await axios.post(url, ready_doc).then((res) => {
             if (res.status == 201) return res.data
         }).catch(error => {
@@ -79,10 +78,10 @@ export default {
             const doc = Docs[index]
             if (doc._id) {
                 const updated_doc = await dispatch('Update_this_Document', doc)
-                if (updated_doc == false) return false
+                if (!updated_doc) return false
             } else {
                 const created_doc = await dispatch('Create_this_Document', doc)
-                if (created_doc == false) return false
+                if (!created_doc) return false
                 await commit('ADD_NEW_ID', {
                     doc,
                     id: created_doc._id
@@ -134,10 +133,7 @@ export default {
         commit,
         dispatch
     }) {
-        const
-            limit = 50,
-            url = `/tags?$limit=${limit}`,
-            allTags = false; // JSON.parse(localStorage.getItem("allTags"))
+        const allTags = false; // JSON.parse(localStorage.getItem("allTags"))
         if (allTags) {
             const
                 current = new Date(),
@@ -149,7 +145,14 @@ export default {
                 return
             }
         }
-        axios.get(url).then(res => {
+        const url = `/tags`,
+            params = {
+                params: {
+                    $limit: 50,
+                    $select: ['_id', 'name']
+                }
+            };
+        axios.get(url, params).then(res => {
             if (res.status == 200) {
                 res.data.date = new Date()
                 localStorage.setItem("allTags", JSON.stringify(res.data));

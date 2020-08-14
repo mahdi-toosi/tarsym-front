@@ -161,7 +161,6 @@ export default {
         const index = state.newDocProp.OnTool.index
         const thisLayer = state.newDocs[state.newDocProp.index]
         const thisPoint = thisLayer.tools[index];
-        // console.log(thisPoint);
         thisPoint.coordinates = coordinates;
     },
     UPDATE_NEW_DOC_INDEX(state) {

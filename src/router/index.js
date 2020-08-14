@@ -84,7 +84,7 @@ router.afterEach(async (to) => {
         return
     }
     if (to.name == "create doc" || to.name == "update doc") {
-        if (store.state.newDocs.length > 0) store.commit('UPDATE_NEW_DOC_INDEX');
+        if (store.state.newDocs.length) store.commit('UPDATE_NEW_DOC_INDEX');
     }
 });
 

@@ -24,7 +24,8 @@ export default {
     SET_DOCS_TO(state, {
         docs,
         list,
-        merge
+        merge,
+        deleteRoot
     }) {
         const newData = []
         const Docs = docs.data || docs
@@ -36,6 +37,7 @@ export default {
                 ...junk
             }
             d.date = d.date - 2000000
+            if (deleteRoot && d.root) delete d.root
             newData.push(d)
         });
 
@@ -44,12 +46,12 @@ export default {
 
         if (list == 'allDocs') {
             if (merge) {
-                state[list].data = [...state[list].data, ...docs.data]
-            } else state[list] = docs
+                state.allDocs.data = [...state.allDocs.data, ...docs.data]
+            } else state.allDocs = docs
         } else if (list == 'newDocs') {
             if (merge) {
-                state[list] = [...state[list], ...docs.data]
-            } else state[list] = docs
+                state.newDocs = [...state.newDocs, ...docs.data]
+            } else state.newDocs = docs
         }
     },
     mapCenterUpdated(state, coordinates) {

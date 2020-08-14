@@ -40,23 +40,14 @@ export default {
             });
             childs_indexes.forEach(child_index => {
                 const child_doc = newDocs[child_index]
-                child_doc.tools.forEach(tool => {
-                    tools.push(tool)
-                });
+                if (child_doc)
+                    child_doc.tools.forEach(tool => {
+                        tools.push(tool)
+                    });
             });
         }
         return tools
         // return state.map.tools
-    },
-    newDocLayer: (state, getters) => {
-        return getters.docs_list[state.newDocProp.index]
-    },
-    lastAddedDocID: state => {
-        const Docs = state.newDocs
-        if (Docs.length > 0) {
-            return Docs[Docs.length - 1].id
-        }
-        return false
     },
     newDocChilds: state => {
         const Docs = state.newDocs
@@ -69,15 +60,12 @@ export default {
         });
         return childs
     },
-    chosenTags: (state, getters) => {
-        const thisDoc = getters.newDocLayer
-        return thisDoc.tags
-    },
     tooltipData: (state, getters) => index => {
         const thisTool = getters.newDocLayer.tools[index];
         return thisTool.tooltip
     },
     isAuthenticated: (state) => {
         return state.user.email
-    }
+    },
+    newDocLayer: (state, getters) => getters.docs_list[state.newDocProp.index],
 }
