@@ -118,12 +118,16 @@ export default {
 			return `${year}/${month}/${day}`;
 		},
 	},
-	async created() {
-		// await this.getAllPoints();
-		// if (this.$route.name == "my docs" ) {
-		this.getAllDocs();
-		// }
+	beforeRouteEnter(to, from, next) {
+		next((vm) => {
+			const condition =
+				from.name == "create doc" ||
+				from.name == "update doc" ||
+				from.path == "/";
+			if (condition) vm.getAllDocs();
+		});
 	},
+	async created() {},
 	watch: {
 		search() {
 			if (this.search.length >= 3) {

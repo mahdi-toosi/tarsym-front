@@ -14,14 +14,11 @@ export default {
         doc.title = doc.title.trim()
 
         // * create excerpt
-        const text = doc.description.replace(/<[^>]+>/g, '')
-        const splitstr = text.split(' ')
-        let excerpt = ''
-        for (let index = 0; index < 50; index++) {
-            const word = splitstr[index];
-            if (!word) continue
-            excerpt += ` ${word}`
-        }
+        let excerpt = doc.description.replace(/<[^>]+>/g, '')
+        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ")
+        let fakeElement = document.createElement("textarea");
+        fakeElement.innerHTML = excerpt;
+        excerpt = fakeElement.value
         excerpt += ' ...'
         doc.excerpt = excerpt
 
@@ -108,22 +105,7 @@ export default {
             return
         } else {
             router.push('/my-docs')
-            // const url = `/documents/${doc_id}`
-            // const doc2 = await axios.get(url).then(res => {
-            //     if (res.status == 200) return res.data
-            // }).catch(error => {
-            //     dispatch('handleAxiosError', error)
-            // });
-            // if (!doc2) return
-
-            // await commit('SET_DOCS_TO', {
-            //     docs: [doc2],
-            //     list: 'newDocs',
-            //     merge: false
-            // })
         }
-        // await commit('UPDATE_NEW_DOC_INDEX')
-
     },
     async get_childs({
         state,
@@ -162,9 +144,6 @@ export default {
                     '_id[$in]': doc_ids
                 }
             }
-        // doc_ids.forEach(_id => {
-        //     url += `?_id[$in]=${ _id }&`
-        // });
         const docs = await axios.get(url, params).then(async res => res.data).catch(error => {
             dispatch('handleAxiosError', error)
             return false

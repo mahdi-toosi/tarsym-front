@@ -14,7 +14,7 @@ export default {
 
         let Docs = state.newDocs
         let doc_index = await Docs.findIndex(doc => (doc._id || doc.id) == id)
-        // if (doc_index < 0) return
+        if (doc_index < 0) return
 
         const doc = Docs[doc_index];
         if (!doc.childs_id.length) {
@@ -159,6 +159,7 @@ export default {
     UPDATE_THIS_POINT_COORDINATE(state, c) {
         const coordinates = [c.lat, c.lng];
         const index = state.newDocProp.OnTool.index
+        if (index < 0) return
         const thisLayer = state.newDocs[state.newDocProp.index]
         const thisPoint = thisLayer.tools[index];
         thisPoint.coordinates = coordinates;

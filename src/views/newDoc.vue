@@ -159,7 +159,7 @@ export default {
 			this.tabContent = "tools";
 		},
 		async onSearch(search, loading) {
-			if (!search) return;
+			if (!search.trim()) return;
 			loading(true);
 			this.searchRequest(search, loading, this);
 		},
@@ -168,8 +168,9 @@ export default {
 				params = { params: { forLayers: true } };
 			await vm.$axios
 				.get(url, params)
-				.then((res) => {
-					vm.searchBoxOptions = res.data;
+				.then(async (res) => {
+					const filteredData = await vm.filterSearchedData(res.data);
+					vm.searchBoxOptions = filteredData;
 					loading(false);
 				})
 				.catch((error) => {
@@ -177,6 +178,17 @@ export default {
 					loading(false);
 				});
 		}, 1500),
+		async filterSearchedData(searchedData) {
+			let filteredData = [];
+			await searchedData.forEach((data) => {
+				const newDocs = this.$store.state.newDocs;
+				const alreadyThere = newDocs.filter(
+					(doc) => doc._id == data._id
+				);
+				if (!alreadyThere.length) filteredData.push(data);
+			});
+			return filteredData;
+		},
 		lastAddedDocID() {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
