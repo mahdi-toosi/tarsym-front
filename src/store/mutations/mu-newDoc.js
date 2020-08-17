@@ -1,8 +1,6 @@
 import router from "../../router";
 
-function thisDoc(state) {
-    return state.newDocs[state.newDocProp.index]
-}
+const thisDoc = (state) => state.newDocs[state.newDocProp.index]
 
 export default {
     async REMOVE_THIS_DOC(state, id) {
@@ -156,8 +154,8 @@ export default {
             }
         }
     },
-    UPDATE_THIS_POINT_COORDINATE(state, c) {
-        const coordinates = [c.lat, c.lng];
+    UPDATE_THIS_POINT_COORDINATE(state, clicked) {
+        const coordinates = [clicked.lat, clicked.lng];
         const index = state.newDocProp.OnTool.index
         if (index < 0) return
         const thisLayer = state.newDocs[state.newDocProp.index]

@@ -64,8 +64,6 @@ export default {
         const thisTool = getters.newDocLayer.tools[index];
         return thisTool.tooltip
     },
-    isAuthenticated: (state) => {
-        return state.user.email
-    },
+    isAuthenticated: (state) => state.user.email,
     newDocLayer: (state, getters) => getters.docs_list[state.newDocProp.index],
 }

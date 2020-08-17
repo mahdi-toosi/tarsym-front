@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from '../store/';
 
-
 Vue.use(VueRouter);
 
 const routes = [{
@@ -26,14 +25,14 @@ const routes = [{
     {
         path: "/create/doc/:id",
         name: "create doc",
-        component: () => import("../views/newDoc.vue"),
+        component: () => import("../views/CU-Doc.vue"),
         meta: {
             requiresAuth: true,
         },
     }, {
         path: "/update/doc/:id",
         name: "update doc",
-        component: () => import("../views/newDoc.vue"),
+        component: () => import("../views/CU-Doc.vue"),
         meta: {
             requiresAuth: true,
         },
@@ -45,16 +44,16 @@ const routes = [{
             requiresAuth: true,
         },
     }, {
-        path: "/read-point",
-        name: "read point",
-        component: () => import("../views/readDoc.vue"),
+        path: "/read/:id",
+        name: "read doc",
+        component: () => import("../views/R-Doc.vue"),
         meta: {
             requiresAuth: true,
         },
     }, {
         path: "*",
         name: "404 page",
-        component: () => import("../views/notFound.vue")
+        component: () => import("../views/404.vue")
     }
 ];
 

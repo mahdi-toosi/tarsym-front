@@ -1,112 +1,10 @@
-import axios from 'axios';
+import requests from "./requests and handlers"
 import router from "../../router";
-import newDoc from "./ac-newDoc"
-import crudNewDoc from "./CRUD-newDoc"
+
+const thisDoc = (state) => state.newDocs[state.newDocProp.index]
 
 export default {
-    ...newDoc,
-    ...crudNewDoc,
-    ready_document_for_send(store, thisDoc) {
-        let doc = {
-            ...thisDoc,
-            junk: {}
-        }
-        doc.title = doc.title.trim()
-
-        // * create excerpt
-        let excerpt = doc.description.replace(/<[^>]+>/g, '')
-        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ")
-        let fakeElement = document.createElement("textarea");
-        fakeElement.innerHTML = excerpt;
-        excerpt = fakeElement.value
-        excerpt += ' ...'
-        doc.excerpt = excerpt
-
-        // * create searcheable coordinate
-        if (doc.root) {
-            const this_tool = obj => obj.searchable == true
-            const searchable_tool_index = doc.tools.findIndex(this_tool)
-            doc.coordinates = {
-                type: "Point",
-                coordinates: doc.tools[searchable_tool_index].coordinates
-            }
-        }
-
-        // * remove unnecessary items form tools color obj
-        doc.tools.forEach(tool => {
-            if (tool.color.hex8) tool.color = tool.color.hex8
-            if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8
-        });
-
-        // * count imgs in description
-        const imgs = doc.description.match(/<img/gm);
-        doc.imgsCount = (imgs || []).length
-
-        // * make valid date for database
-        const year = doc.date_props.year,
-            month = doc.date_props.month,
-            day = doc.date_props.day;
-        doc.date = year + month + day
-        doc.date = Number(doc.date) + 2 * 1000 * 1000
-
-        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'dashed', 'description']
-        clear_this_items.forEach(element => {
-            if (doc[element]) {
-                doc.junk[element] = doc[element];
-                delete doc[element];
-            }
-        });
-        delete doc.childs_id;
-
-        // const videos = doc.description.match(/<iframe/gm);
-        // console.log('videos', (videos || []).length);
-
-        doc.junk = JSON.stringify(doc.junk);
-        return doc;
-    },
-    async getAllDocs({
-        commit,
-        dispatch
-    }) {
-        const url = `/documents`;
-        const params = {
-            params: {
-                root: true,
-                $skip: 0
-            }
-        }
-        const docs = await axios.get(url, params).then((res) => {
-            if (res.status == 200) return res.data
-        }).catch(error => {
-            dispatch('handleAxiosError', error)
-        });
-        if (!docs) return
-
-        await commit('SET_DOCS_TO', {
-            docs,
-            list: 'allDocs',
-            merge: false
-        })
-
-    },
-    async update_this_doc({
-        state,
-        commit,
-        // dispatch
-    }, doc_id) {
-        if (!state.allDocs.data) {
-            router.push('/my-docs')
-            return
-        }
-
-        const doc = state.allDocs.data.filter(el => el._id == doc_id)
-        if (doc.length) {
-            await commit('UPDATE_THIS_DOC', doc)
-            return
-        } else {
-            router.push('/my-docs')
-        }
-    },
+    ...requests,
     async get_childs({
         state,
         dispatch,
@@ -132,22 +30,145 @@ export default {
             list: 'newDocs',
             merge: true
         })
+    },
+    async deleteTool(store, index) {
+        await store.commit('DELETE_TOOL', index)
+        await store.commit('UPDATE_ON_TOOL')
+    },
+    async toolSwitch(store, index) {
+        const thisTool = thisDoc(store.state).tools[index];
+        if (thisTool.isOn) {
+            // if is on turned off
+            await store.commit('OFF_THE_ON_TOOL')
+            await store.commit('UPDATE_ON_TOOL')
+            return
+        } else {
+            await store.dispatch('makeToolOn', index)
+        }
+    },
+    async makeToolOn(store, index) {
+        await store.commit('OFF_THE_ON_TOOL')
+        const thisTool = thisDoc(store.state).tools[index];
+        thisTool.isOn = true;
+        await store.commit('UPDATE_ON_TOOL')
+    },
+    async setTool({
+        commit
+    }, type) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+        await commit('SET_TOOL', type);
+        await commit('UPDATE_ON_TOOL');
+    },
+    async addNewDoc({
+        commit,
+        state,
+        dispatch
+    }, root = true) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
 
+        const fake_id = new Date().getTime();
+        if (!root) {
+            const thisDoc = state.newDocs[state.newDocProp.index];
+            thisDoc.childs_id.push(fake_id);
+        }
+        await commit('SET_NEW_DOCUMENT', {
+            fake_id,
+            root
+        })
+
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${fake_id}`;
+        await router.push(path);
+
+        if (root) await dispatch('setTool', 'Point')
+    },
+    async addExistingDoc({
+        commit,
+        state,
+        dispatch
+    }, _id) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const existingDoc = await dispatch('get_this_docs', [_id])
+        if (!existingDoc) return false
+
+        const thisDoc = state.newDocs[state.newDocProp.index];
+        thisDoc.childs_id.push(_id);
+
+        await commit('SET_DOCS_TO', {
+            docs: existingDoc,
+            list: 'newDocs',
+            merge: true,
+            deleteRoot: true
+        })
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${_id}`;
+        await router.push(path);
+    },
+    // async addNewDoc({
+    //     commit,
+    //     // getters,
+    //     state,
+    //     dispatch
+    // }, {
+    //     root,
+    //     _id
+    // }) {
+    //     await commit('OFF_THE_ON_TOOL')
+    //     await commit('UPDATE_ON_TOOL');
+
+    //     const ID = (_id || new Date().getTime());
+    //     if (!root) {
+    //         const thisDoc = state.newDocs[state.newDocProp.index];
+    //         thisDoc.childs_id.push(ID);
+    //     }
+    //     if (!_id) {
+
+    //         await commit('SET_NEW_DOCUMENT', {
+    //             ID,
+    //             root
+    //         })
+    //     } else {
+    //         const existingDoc = await dispatch('get_this_docs', [_id])
+    //         if (!existingDoc) return false
+
+    //         await commit('SET_DOCS_TO', {
+    //             docs: existingDoc,
+    //             list: 'newDocs',
+    //             merge: true,
+    //             deleteRoot: true
+    //         })
+    //     }
+    //     const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${ID}`;
+    //     await router.push(path);
+
+    //     if (root) await dispatch('setTool', 'Point')
+    // },
+
+    async goBack({
+        state,
+        commit
+    }) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const doc_id = state.newDocProp.id;
+        const father = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
+        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ ( father._id || father.id ) }`;
+        await router.push(path);
+    },
+    async goToChild({
+        commit
+    }, id) {
+        await commit('OFF_THE_ON_TOOL')
+        await commit('UPDATE_ON_TOOL');
+
+        const routeName = router.currentRoute.name
+        const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${id}`;
+        await router.push(path);
+        return;
 
     },
-    async get_this_docs({
-        dispatch
-    }, doc_ids) {
-        let url = `/documents/`,
-            params = {
-                params: {
-                    '_id[$in]': doc_ids
-                }
-            }
-        const docs = await axios.get(url, params).then(async res => res.data).catch(error => {
-            dispatch('handleAxiosError', error)
-            return false
-        });
-        return docs
-    }
+
 }
