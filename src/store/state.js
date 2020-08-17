@@ -2,7 +2,7 @@ export default {
     newDocs: [],
     DocProp: {
         index: 0,
-        id: 0,
+        _id: 0,
         OnTool: {
             condition: false,
             index: -1

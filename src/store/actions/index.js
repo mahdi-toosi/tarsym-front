@@ -78,7 +78,7 @@ export default {
             root
         })
 
-        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${fake_id}`;
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${fake_id}`;
         await router.push(path);
 
         if (root) await dispatch('setTool', 'Point')
@@ -103,7 +103,7 @@ export default {
             merge: true,
             deleteRoot: true
         })
-        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${_id}`;
+        const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${_id}`;
         await router.push(path);
     },
     // async addNewDoc({
@@ -140,32 +140,32 @@ export default {
     //             deleteRoot: true
     //         })
     //     }
-    //     const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/doc/${ID}`;
+    //     const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${ID}`;
     //     await router.push(path);
 
     //     if (root) await dispatch('setTool', 'Point')
     // },
 
-    async goBack({
+    async goBackToParent({
         state,
         commit
     }) {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
-        const doc_id = state.DocProp.id;
+        const doc_id = state.DocProp._id;
         const father = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
-        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ ( father._id || father.id ) }`;
+        const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/${ father._id }`;
         await router.push(path);
     },
     async goToChild({
         commit
-    }, id) {
+    }, _id) {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
         const routeName = router.currentRoute.name
-        const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${id}`;
+        const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${_id}`;
         await router.push(path);
         return;
 

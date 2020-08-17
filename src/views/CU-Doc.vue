@@ -10,7 +10,7 @@
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
-			<button class="btn btn-back" @click="goBack()" v-if="DocProp.index !== 0 ">
+			<button class="btn btn-back" @click="goBackToParent()" v-if="DocProp.index !== 0 ">
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
@@ -55,12 +55,9 @@
 					</div>
 					<div class="layers-content" v-show="tabContent == 'layers'">
 						<ul>
-							<li v-for="(child, index) in newDocChilds" :key="index">
-								<button
-									@click="goToChild((child._id || child.id))"
-									class="child"
-								>{{ ( child.title || child.id ) }}</button>
-								<button @click="Delete_this_Document((child._id || child.id))" class="delete_button">
+							<li v-for="(child, index) in DocChilds" :key="index">
+								<button @click="goToChild( child._id )" class="child">{{ ( child.title || child._id ) }}</button>
+								<button @click="Delete_this_Document( child._id )" class="delete_button">
 									<i class="far fa-trash-alt"></i>
 								</button>
 							</li>
@@ -142,7 +139,7 @@ export default {
 		...mapActions([
 			"Create_or_Update_Documents",
 			"addNewDoc",
-			"goBack",
+			"goBackToParent",
 			"goToChild",
 			"Delete_this_Document",
 			"update_this_doc",
@@ -193,7 +190,7 @@ export default {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
 				const lastDoc = Docs[Docs.length - 1];
-				return lastDoc._id || lastDoc.id;
+				return lastDoc._id;
 			}
 			return false;
 		},
@@ -207,7 +204,7 @@ export default {
 	},
 	computed: {
 		...mapState(["newDocs", "DocProp", "allTags"]),
-		...mapGetters(["DocLayer", "newDocChilds"]),
+		...mapGetters(["DocLayer", "DocChilds"]),
 		newPointTitle: {
 			get() {
 				return this.DocLayer.title;
@@ -227,7 +224,7 @@ export default {
 	},
 	async created() {
 		const routeName = this.$route.name;
-		const route_id = this.$route.params.id;
+		const route_id = this.$route.params._id;
 		const lastAddedDocID = this.lastAddedDocID();
 		if (routeName == "create doc") {
 			if (Number(route_id) !== lastAddedDocID)
