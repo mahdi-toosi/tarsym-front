@@ -1,7 +1,7 @@
 import requests from "./requests and handlers"
 import router from "../../router";
 
-const thisDoc = (state) => state.newDocs[state.newDocProp.index]
+const thisDoc = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     ...requests,
@@ -70,7 +70,7 @@ export default {
 
         const fake_id = new Date().getTime();
         if (!root) {
-            const thisDoc = state.newDocs[state.newDocProp.index];
+            const thisDoc = state.newDocs[state.DocProp.index];
             thisDoc.childs_id.push(fake_id);
         }
         await commit('SET_NEW_DOCUMENT', {
@@ -91,10 +91,10 @@ export default {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
-        const existingDoc = await dispatch('get_this_docs', [_id])
+        const existingDoc = await dispatch('get_this_docs', _id)
         if (!existingDoc) return false
 
-        const thisDoc = state.newDocs[state.newDocProp.index];
+        const thisDoc = state.newDocs[state.DocProp.index];
         thisDoc.childs_id.push(_id);
 
         await commit('SET_DOCS_TO', {
@@ -120,7 +120,7 @@ export default {
 
     //     const ID = (_id || new Date().getTime());
     //     if (!root) {
-    //         const thisDoc = state.newDocs[state.newDocProp.index];
+    //         const thisDoc = state.newDocs[state.DocProp.index];
     //         thisDoc.childs_id.push(ID);
     //     }
     //     if (!_id) {
@@ -153,7 +153,7 @@ export default {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
-        const doc_id = state.newDocProp.id;
+        const doc_id = state.DocProp.id;
         const father = await state.newDocs.filter(el => el.childs_id.includes(doc_id))[0]
         const path = `/${ state.route.name == 'create doc' ? 'create' : 'update'}/doc/${ ( father._id || father.id ) }`;
         await router.push(path);

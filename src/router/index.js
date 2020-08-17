@@ -82,8 +82,8 @@ router.afterEach(async (to) => {
         await router.push('/create/doc/forward')
         return
     }
-    if (to.name == "create doc" || to.name == "update doc") {
-        if (store.state.newDocs.length) store.commit('UPDATE_NEW_DOC_INDEX');
+    if (to.name == "create doc" || to.name == "update doc" || to.name == "read doc") {
+        if (store.state.newDocs.length) store.commit('UPDATE_DOC_INDEX');
     }
 });
 

@@ -1,6 +1,6 @@
 import router from "../../router";
 
-const thisDoc = (state) => state.newDocs[state.newDocProp.index]
+const thisDoc = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     async REMOVE_THIS_DOC(state, id) {
@@ -52,7 +52,7 @@ export default {
         thisTool.tooltip = val;
     },
     DELETE_TOOL(state, index) {
-        const onTool = state.newDocProp.OnTool;
+        const onTool = state.DocProp.OnTool;
         onTool.condition = false;
         thisDoc(state).tools.splice(index, 1);
     },
@@ -129,18 +129,18 @@ export default {
             obj.angle = 0
             obj.iconRepeat = 30
         }
-        const thisLayer = state.newDocs[state.newDocProp.index]
+        const thisLayer = state.newDocs[state.DocProp.index]
         thisLayer.tools.push(obj);
     },
     OFF_THE_ON_TOOL(state) {
-        const onTool = state.newDocProp.OnTool
+        const onTool = state.DocProp.OnTool
         if (!onTool.condition) return
         const OnToolinDoc = thisDoc(state).tools[onTool.index]
         OnToolinDoc.isOn = false
     },
     UPDATE_ON_TOOL(state) {
         const Docs = state.newDocs
-        const onTool = state.newDocProp.OnTool;
+        const onTool = state.DocProp.OnTool;
         onTool.condition = false;
         onTool.index = -1;
         for (let i = 0; i < Docs.length; i++) {
@@ -156,19 +156,21 @@ export default {
     },
     UPDATE_THIS_POINT_COORDINATE(state, clicked) {
         const coordinates = [clicked.lat, clicked.lng];
-        const index = state.newDocProp.OnTool.index
+        const index = state.DocProp.OnTool.index
         if (index < 0) return
-        const thisLayer = state.newDocs[state.newDocProp.index]
+        const thisLayer = state.newDocs[state.DocProp.index]
         const thisPoint = thisLayer.tools[index];
         thisPoint.coordinates = coordinates;
     },
-    UPDATE_NEW_DOC_INDEX(state) {
+    UPDATE_DOC_INDEX(state) {
         const docID = router.currentRoute.params.id
+        const routeName = router.currentRoute.name
+        console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
         const Docs = state.newDocs
         const thisObject = (obj) => (obj._id || obj.id) == docID
         const index = Docs.findIndex(thisObject);
-        state.newDocProp.index = index
-        state.newDocProp.id = (Docs[index]._id || Docs[index].id)
+        state.DocProp.index = index
+        state.DocProp.id = (Docs[index]._id || Docs[index].id)
     },
     SET_NEW_DOCUMENT(state, {
         fake_id,
@@ -205,12 +207,12 @@ export default {
             if (index < 0) return
             doc.childs_id[index] = id
         });
-        if (state.newDocProp.id == fakeID) state.newDocProp.id = id
+        if (state.DocProp.id == fakeID) state.DocProp.id = id
     },
     CLEAR_NEW_DOC(state) {
         router.push('/my-docs')
         state.newDocs = []
-        state.newDocProp = {
+        state.DocProp = {
             index: 0,
             id: 0,
             OnTool: {

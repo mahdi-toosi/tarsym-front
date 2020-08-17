@@ -6,7 +6,7 @@
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
-				:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+				:class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
 			>
 				<i class="fas fa-pencil-alt"></i>
 			</button>

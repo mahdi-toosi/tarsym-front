@@ -10,7 +10,7 @@
 				<i class="fas fa-save"></i>
 			</button>
 			<!-- back button -->
-			<button class="btn btn-back" @click="goBack()" v-if="newDocProp.index !== 0">
+			<button class="btn btn-back" @click="goBack()" v-if="DocProp.index !== 0 ">
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
@@ -22,7 +22,7 @@
 			<section class="tag_date_section">
 				<v-select
 					:options="allTags"
-					:value="newDocLayer.tags"
+					:value="DocLayer.tags"
 					@input="SET_CHOSEN_TAG"
 					label="name"
 					placeholder="تگ ..."
@@ -31,9 +31,9 @@
 					push-tags
 					class="tags"
 					dir="rtl"
-					v-if="newDocLayer.root"
+					v-if="DocLayer.root"
 				></v-select>
-				<date-picker class="datepicker" :docLayer="newDocProp.index" />
+				<date-picker class="datepicker" :docLayer="DocProp.index" />
 			</section>
 			<section class="tools shadow">
 				<br />
@@ -44,7 +44,7 @@
 				<div class="content">
 					<div class="tools-content" v-show="tabContent == 'tools'">
 						<ul class="tools">
-							<li v-for="(tool, index) in newDocLayer.tools" :key="index">
+							<li v-for="(tool, index) in DocLayer.tools" :key="index">
 								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" class="tool" />
 								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" class="tool" />
 								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" class="tool" />
@@ -198,7 +198,7 @@ export default {
 			return false;
 		},
 		// keyPressed(e) {
-		// 	const OnTool = this.newDocProp.OnTool;
+		// 	const OnTool = this.DocProp.OnTool;
 		// 	if (e.keyCode === 27 && OnTool.condition) {
 		// 		this.toolSwitch(OnTool.index);
 		// 		return;
@@ -206,22 +206,22 @@ export default {
 		// },
 	},
 	computed: {
-		...mapState(["newDocs", "newDocProp", "allTags"]),
-		...mapGetters(["newDocLayer", "newDocChilds"]),
+		...mapState(["newDocs", "DocProp", "allTags"]),
+		...mapGetters(["DocLayer", "newDocChilds"]),
 		newPointTitle: {
 			get() {
-				return this.newDocLayer.title;
+				return this.DocLayer.title;
 			},
 			set(val) {
-				return (this.newDocLayer.title = val);
+				return (this.DocLayer.title = val);
 			},
 		},
 		newPointDescription: {
 			get() {
-				return this.newDocLayer.description;
+				return this.DocLayer.description;
 			},
 			set(val) {
-				return (this.newDocLayer.description = val);
+				return (this.DocLayer.description = val);
 			},
 		},
 	},
@@ -235,7 +235,7 @@ export default {
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
 		}
-		await this.get_childs(this.newDocLayer);
+		await this.get_childs(this.DocLayer);
 		// document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {

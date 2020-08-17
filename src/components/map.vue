@@ -17,7 +17,7 @@
 			<div v-if="docs_list.length">
 				<div v-for="(tool, index) in DocWithChildsTools " :key="index">
 					<div v-if="tool.type == 'Polygon'">
-						<span v-if="newDocProp.OnTool.condition">
+						<span v-if="DocProp.OnTool.condition">
 							<l-polygon
 								:lat-lngs="polygonOrPolylineSimolationCoordinates"
 								v-if=" tool.isOn"
@@ -38,7 +38,7 @@
 					</div>
 					<!-- end Polygon -->
 					<div v-if="tool.type == 'Polyline'">
-						<span v-if="newDocProp.OnTool.condition">
+						<span v-if="DocProp.OnTool.condition">
 							<l-polyline
 								:lat-lngs="polygonOrPolylineSimolationCoordinates"
 								:color="(tool.color.hex8 || tool.color)"
@@ -133,7 +133,7 @@
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
-				v-if="!newDocProp.OnTool.condition"
+				v-if="!DocProp.OnTool.condition"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
 				<a @click="undoTools" v-if="undoCondition">
@@ -193,19 +193,19 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(["map", "newDocProp"]),
-		...mapGetters(["newDocLayer", "docs_list", "DocWithChildsTools"]),
+		...mapState(["map", "DocProp"]),
+		...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
 		undoCondition() {
-			const onTool = this.newDocProp.OnTool;
+			const onTool = this.DocProp.OnTool;
 			if (!onTool.condition) return false;
-			const thisTool = this.newDocLayer.tools[onTool.index];
+			const thisTool = this.DocLayer.tools[onTool.index];
 			if (thisTool.type !== "Point" && thisTool.type !== "Textbox")
 				return true;
 			else return false;
 		},
 		polygonOrPolylineSimolationCoordinates() {
-			const OnToolProp = this.newDocProp.OnTool,
-				OnTool = this.newDocLayer.tools[OnToolProp.index],
+			const OnToolProp = this.DocProp.OnTool,
+				OnTool = this.DocLayer.tools[OnToolProp.index],
 				isPolygonOrPolylineOn =
 					OnTool.type == "Polygon" || OnTool.type == "Polyline",
 				MouseCoordinate = this.map.MouseCoordinate;
@@ -230,9 +230,9 @@ export default {
 			return [iconSize / 2, iconSize * 1.15];
 		},
 		setClickCoordinates(c) {
-			const OnTool = this.newDocProp.OnTool;
+			const OnTool = this.DocProp.OnTool;
 			if (!OnTool.condition) return;
-			const thisTool = this.newDocLayer.tools[OnTool.index];
+			const thisTool = this.DocLayer.tools[OnTool.index];
 			if (thisTool.type == "Point" || thisTool.type == "Textbox") return;
 			thisTool.coordinates.push(c.latlng);
 		},
@@ -243,9 +243,9 @@ export default {
 			this.map.zoom = zoomLevel;
 		},
 		undoTools() {
-			const OnTool = this.newDocProp.OnTool;
+			const OnTool = this.DocProp.OnTool;
 			if (OnTool.condition)
-				this.newDocLayer.tools[OnTool.index].coordinates.pop();
+				this.DocLayer.tools[OnTool.index].coordinates.pop();
 		},
 	},
 	mounted() {

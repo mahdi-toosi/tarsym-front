@@ -2,12 +2,6 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
-    SET_THIS_DOC_TOOLS_TO_MAP(state, doc) {
-        // doc.tools.forEach(tool => {
-        //     state.map.tools.push(tool)
-        // });
-        state.map.tools = doc.tools
-    },
     SET_USER(state, user) {
         state.user = user
     },
@@ -25,10 +19,15 @@ export default {
         docs,
         list,
         merge,
-        deleteRoot
+        deleteRoot,
+        whitoutDecode
     }) {
-        const newData = []
         const Docs = docs.data || docs
+        if (whitoutDecode) {
+            state[list] = Docs
+            return
+        }
+        const newData = []
         Docs.forEach(doc => {
             const junk = JSON.parse(doc.junk)
             delete doc.junk
@@ -44,15 +43,11 @@ export default {
         if (docs.data) docs.data = newData
         else docs = newData
 
-        if (list == 'allDocs') {
-            if (merge) {
-                state.allDocs.data = [...state.allDocs.data, ...docs.data]
-            } else state.allDocs = docs
-        } else if (list == 'newDocs') {
-            if (merge) {
-                state.newDocs = [...state.newDocs, ...docs.data]
-            } else state.newDocs = docs
-        }
+        if (merge) {
+            if (state[list].data) {
+                state[list].data = [...state[list].data, ...docs.data]
+            } else state[list] = [...state[list], ...docs.data]
+        } else state[list] = docs
     },
     mapCenterUpdated(state, coordinates) {
         state.map.center = coordinates;

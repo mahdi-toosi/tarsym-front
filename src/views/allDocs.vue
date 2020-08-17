@@ -26,7 +26,7 @@
 				class="point shadow"
 				v-for="doc in allDocs.data "
 				:key="doc._id"
-				@click="SET_THIS_DOC_TOOLS_TO_MAP(doc)"
+				@click="$route.name == 'all docs' ? $router.push(`/read/${doc._id}`) : ''"
 				style="cursor: pointer"
 			>
 				<!-- @click="readThisPoint(doc.coordinates)" -->
@@ -81,7 +81,7 @@
 
 <script>
 import debounce from "v-debounce";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 
 export default {
 	name: "all-Docs",
@@ -93,11 +93,18 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(["allDocs"]),
+		allDocs() {
+			return this.$store.state.allDocs;
+		},
 	},
 	methods: {
-		...mapActions(["getAllDocs", "addNewDoc", "Delete_this_Document"]),
-		...mapMutations(["readThisPoint", "SET_THIS_DOC_TOOLS_TO_MAP"]),
+		...mapActions([
+			"getAllDocs",
+			"addNewDoc",
+			"Delete_this_Document",
+			"read_this_doc",
+		]),
+		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
 			// console.log(this.search.length);
 			const url = "/point/search/" + this.search;
@@ -123,6 +130,7 @@ export default {
 			const condition =
 				from.name == "create doc" ||
 				from.name == "update doc" ||
+				from.name == "404 page" ||
 				from.path == "/";
 			if (condition) vm.getAllDocs();
 		});

@@ -45,13 +45,13 @@ export default {
 			return filteredIcons;
 		},
 		logo() {
-			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDocLayer = this.$store.state.DocProp.index;
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			return thisTool.iconName;
 		},
 		logoColor() {
-			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDocLayer = this.$store.state.DocProp.index;
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			if (this.logo) {

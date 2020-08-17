@@ -1,9 +1,9 @@
 export default {
     docs_list: (state) => {
         const routeName = state.route.name
-        if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs || []
-        // else if (routeName == 'all docs') return state.allDocs.data
-        else if (routeName == 'my docs' || routeName == 'all docs') return state.allDocs.data || []
+        if (routeName == 'my docs' || routeName == 'all docs') return state.allDocs.data || []
+        else if (routeName == 'read doc') return state.readDoc || []
+        else if (routeName == 'update doc' || routeName == 'create doc') return state.newDocs || []
         else return []
     },
     DocWithChildsTools: (state, getters) => {
@@ -16,19 +16,15 @@ export default {
             getters.docs_list.forEach(doc => {
                 const doc_ZL = doc.zoom
                 if (doc.root && doc_ZL <= map_ZL) {
-                    doc.tools.forEach(tool => {
-                        tools.push(tool)
-                    });
+                    doc.tools.forEach(tool => tools.push(tool));
                 }
             });
             return tools
         } else if (editMode) {
-            const docLayer = getters.newDocLayer
+            const docLayer = getters.DocLayer
             const doc_ZL = docLayer.zoom
             if (docLayer.root ? doc_ZL <= map_ZL : true)
-                docLayer.tools.forEach(tool => {
-                    tools.push(tool)
-                });
+                docLayer.tools.forEach(tool => tools.push(tool));
             if (!docLayer.childs_id.length) return tools
             // * add childs tools to map
             const newDocs = state.newDocs
@@ -47,11 +43,10 @@ export default {
             });
         }
         return tools
-        // return state.map.tools
     },
     newDocChilds: state => {
         const Docs = state.newDocs
-        const childsID = Docs[state.newDocProp.index].childs_id
+        const childsID = Docs[state.DocProp.index].childs_id
         const childs = []
         childsID.forEach(id => {
             const thisObject = (doc) => (doc._id || doc.id) == id
@@ -60,10 +55,7 @@ export default {
         });
         return childs
     },
-    tooltipData: (state, getters) => index => {
-        const thisTool = getters.newDocLayer.tools[index];
-        return thisTool.tooltip
-    },
+    tooltipData: (state, getters) => index => getters.DocLayer.tools[index].tooltip,
     isAuthenticated: (state) => state.user.email,
-    newDocLayer: (state, getters) => getters.docs_list[state.newDocProp.index],
+    DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],
 }

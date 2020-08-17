@@ -204,12 +204,14 @@ export default {
     async get_this_docs({
         dispatch
     }, doc_ids) {
-        let url = `/documents/`,
-            params = {
+        let is_doc_ids_array = Array.isArray(doc_ids),
+            url = `/documents/${ is_doc_ids_array ? '' : doc_ids }`,
+            obj = {
                 params: {
                     '_id[$in]': doc_ids
                 }
-            }
+            },
+            params = is_doc_ids_array ? obj : {};
         const docs = await axios.get(url, params).then(async res => res.data).catch(error => {
             dispatch('handleAxiosError', error)
             return false
@@ -363,4 +365,33 @@ export default {
             icon: "fa-times-circle",
         });
     },
+    // !  read_this_doc
+    async read_this_doc(store) {
+        const _id = router.currentRoute.params.id
+        let doc, whitoutDecode;
+        if (store.state.allDocs.data.length) {
+            doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]
+            whitoutDecode = true
+        } else {
+            doc = await store.dispatch('get_this_docs', _id);
+        }
+
+        if (!doc) return
+        await store.commit('SET_DOCS_TO', {
+            docs: [doc],
+            list: 'readDoc',
+            whitoutDecode: whitoutDecode
+        })
+
+        if (!doc.childs_id.length) return
+        const childs = await store.dispatch('get_this_docs', doc.childs_id);
+
+        if (!childs) return
+        await store.commit('SET_DOCS_TO', {
+            docs: childs,
+            list: 'readDoc',
+            merge: true,
+            deleteRoot: true
+        })
+    }
 }

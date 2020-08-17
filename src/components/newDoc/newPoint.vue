@@ -7,7 +7,7 @@
 			<button
 				class="editIcon"
 				@click="toolSwitch(index)"
-				:class="$store.state.newDocProp.OnTool.index == index ? 'tool_is_on' : '' "
+				:class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
 			>
 				<i class="fas fa-pencil-alt"></i>
 			</button>
@@ -89,7 +89,7 @@ export default {
 	},
 	computed: {
 		logo() {
-			const thisDocLayer = this.$store.state.newDocProp.index;
+			const thisDocLayer = this.$store.state.DocProp.index;
 			const thisDoc = this.$store.state.newDocs[thisDocLayer];
 			const thisTool = thisDoc.tools[this.index];
 			return thisTool.iconName;
