@@ -139,12 +139,6 @@ button
     .allpoints
         height 90%
         direction: rtl;
-    .loading
-        display flex
-        justify-content: center
-        align-items: center
-        flex-direction: column
-        height 80%
         h1
             font-size: 50px
             margin 0.27em 0
@@ -186,6 +180,12 @@ button
         direction: ltr
         padding-right: 1rem;
         // margin-right: -1rem;
+        .notingToShow
+            display: block;
+            margin-top: 30vh;
+            width: 100%;
+            text-align: center;
+            height: 50px;
     .point
         direction: rtl
         transition: all 0.5s ease
@@ -206,8 +206,8 @@ button
                 cursor pointer
             time
                 position: absolute;
-                right: 14%;
-                top: 90%;
+                right: 11%;
+                top: 101%;
                 font-size: 90%
             .nameandsituation
                 display inline-block
@@ -265,5 +265,23 @@ button
                 color: #00c305
                 span
                     background: #00c305;
+    .point.readPoint
+        &:hover
+            transform: none
+        header
+            display block
+            margin-bottom: 0px
+        main
+            margin-right: 0px
+        time
+            position unset
+        h1
+            font-size: 26px;
+            margin-bottom: 10px;
+
+
+
+
+
 
 @import './components'

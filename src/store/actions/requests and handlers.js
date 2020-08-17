@@ -42,24 +42,24 @@ export default {
         state,
         commit,
         dispatch
-    }, id, ) {
-        if (typeof (id) == 'number') {
-            const doc = state.newDocs.filter(el => el.id == id)[0]
+    }, _id, ) {
+        if (typeof _id == 'number') {
+            const doc = state.newDocs.filter(el => el._id == _id)[0]
             //  TODO => check for childs, if have child send toast for childs will delete ?
             if (doc.childs_id.length) {
                 const remove_childs = confirm('این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شود؟');
-                if (remove_childs) commit('REMOVE_THIS_DOC', id)
+                if (remove_childs) commit('REMOVE_THIS_DOC', _id)
             } else {
-                commit('REMOVE_THIS_DOC', id)
+                commit('REMOVE_THIS_DOC', _id)
             }
             return
         }
         const remove_childs = confirm('در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند');
         if (!remove_childs) return
 
-        const url = `/documents/${id}`
+        const url = `/documents/${_id}`
         const newID = await axios.delete(url).then(res => {
-            if (res.status == 200) commit('REMOVE_THIS_DOC', id)
+            if (res.status == 200) commit('REMOVE_THIS_DOC', _id)
             return res // remember this set value for newID
         }).catch(error => {
             dispatch('handleAxiosError', error)
@@ -81,20 +81,20 @@ export default {
             const is_this_Doc_valid = await dispatch('is_this_Doc_valid', Docs[index]);
             if (!is_this_Doc_valid) return false
         }
-        // create and add new id s
+        // create and add new _id s
         for (let index = 0; index < Docs.length; index++) {
             // TODO => when user can import existing doc =>  if is new create , else update
             const doc = Docs[index]
-            if (doc._id) {
-                const updated_doc = await dispatch('Update_this_Document', doc)
-                if (!updated_doc) return false
-            } else {
+            if (typeof doc._id == 'number') {
                 const created_doc = await dispatch('Create_this_Document', doc)
                 if (!created_doc) return false
                 await commit('ADD_NEW_ID', {
                     doc,
-                    id: created_doc._id
+                    _id: created_doc._id
                 })
+            } else {
+                const updated_doc = await dispatch('Update_this_Document', doc)
+                if (!updated_doc) return false
             }
         }
         const relationships_list = await dispatch('get_relationship_list');
@@ -158,13 +158,13 @@ export default {
             }
         }
         const url = `/tags`,
-            params = {
+            options = {
                 params: {
                     $limit: 50,
                     $select: ['_id', 'name']
                 }
             };
-        axios.get(url, params).then(res => {
+        axios.get(url, options).then(res => {
             if (res.status == 200) {
                 res.data.date = new Date()
                 localStorage.setItem("allTags", JSON.stringify(res.data));
@@ -180,13 +180,13 @@ export default {
         dispatch
     }) {
         const url = `/documents`;
-        const params = {
+        const options = {
             params: {
                 root: true,
                 $skip: 0
             }
         }
-        const docs = await axios.get(url, params).then((res) => {
+        const docs = await axios.get(url, options).then((res) => {
             if (res.status == 200) return res.data
         }).catch(error => {
             dispatch('handleAxiosError', error)
@@ -211,8 +211,8 @@ export default {
                     '_id[$in]': doc_ids
                 }
             },
-            params = is_doc_ids_array ? obj : {};
-        const docs = await axios.get(url, params).then(async res => res.data).catch(error => {
+            options = is_doc_ids_array ? obj : {};
+        const docs = await axios.get(url, options).then(async res => res.data).catch(error => {
             dispatch('handleAxiosError', error)
             return false
         });
@@ -248,7 +248,7 @@ export default {
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
                     const routeName = currentRoute.name
-                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/doc/${ (thisDoc._id || thisDoc.id) }`;
+                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ thisDoc._id }`;
                     await router.push(path);
                     toastObject.goAway(0);
                 }
@@ -260,7 +260,7 @@ export default {
                     keepOnHover: true,
                     iconPack: "fontawesome",
                     icon: "fa-times-circle",
-                    action: currentRoute.params.id == (thisDoc._id || thisDoc.id) ? false : action
+                    action: currentRoute.params._id == thisDoc._id ? false : action
                 });
             });
             return false
@@ -291,6 +291,9 @@ export default {
             ...thisDoc,
             junk: {}
         }
+
+        if (typeof doc._id == 'number') delete doc._id
+
         doc.title = doc.title.trim()
 
         // * create excerpt
@@ -367,7 +370,7 @@ export default {
     },
     // !  read_this_doc
     async read_this_doc(store) {
-        const _id = router.currentRoute.params.id
+        const _id = router.currentRoute.params._id
         let doc, whitoutDecode;
         if (store.state.allDocs.data.length) {
             doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]

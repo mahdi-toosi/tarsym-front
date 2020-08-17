@@ -23,14 +23,14 @@ const routes = [{
     //   component: () => import("../components/movingIcon.vue")
     // },
     {
-        path: "/create/doc/:id",
+        path: "/create/:_id",
         name: "create doc",
         component: () => import("../views/CU-Doc.vue"),
         meta: {
             requiresAuth: true,
         },
     }, {
-        path: "/update/doc/:id",
+        path: "/update/:_id",
         name: "update doc",
         component: () => import("../views/CU-Doc.vue"),
         meta: {
@@ -44,7 +44,7 @@ const routes = [{
             requiresAuth: true,
         },
     }, {
-        path: "/read/:id",
+        path: "/read/:_id",
         name: "read doc",
         component: () => import("../views/R-Doc.vue"),
         meta: {
@@ -73,15 +73,14 @@ router.beforeEach(async (to, from, next) => {
         }
         next('/Auth')
     }
+    if (to.fullPath == "/create" || to.fullPath == "/create/") {
+        await router.push('/create/forward')
+        return
+    }
     next()
 });
 
 router.afterEach(async (to) => {
-
-    if (to.fullPath == "/create/doc/") {
-        await router.push('/create/doc/forward')
-        return
-    }
     if (to.name == "create doc" || to.name == "update doc" || to.name == "read doc") {
         if (store.state.newDocs.length) store.commit('UPDATE_DOC_INDEX');
     }

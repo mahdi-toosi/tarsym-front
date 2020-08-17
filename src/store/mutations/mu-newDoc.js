@@ -3,15 +3,15 @@ import router from "../../router";
 const thisDoc = (state) => state.newDocs[state.DocProp.index]
 
 export default {
-    async REMOVE_THIS_DOC(state, id) {
+    async REMOVE_THIS_DOC(state, _id) {
         if (state.allDocs.data) {
             let Docs = state.allDocs.data;
-            let doc_index = await Docs.findIndex(doc => doc._id == id);
+            let doc_index = await Docs.findIndex(doc => doc._id == _id);
             if (doc_index >= 0) Docs.splice(doc_index, 1)
         }
 
         let Docs = state.newDocs
-        let doc_index = await Docs.findIndex(doc => (doc._id || doc.id) == id)
+        let doc_index = await Docs.findIndex(doc => doc._id == _id)
         if (doc_index < 0) return
 
         const doc = Docs[doc_index];
@@ -21,7 +21,7 @@ export default {
         } else {
             let childs_index = []
             doc.childs_id.forEach(async child_id => {
-                const doc_index = await Docs.findIndex(el => (el._id || el.id) == child_id)
+                const doc_index = await Docs.findIndex(doc => doc._id == child_id)
                 if (doc_index > 0) childs_index.push(doc_index)
             });
             if (!childs_index.length) return
@@ -163,21 +163,21 @@ export default {
         thisPoint.coordinates = coordinates;
     },
     UPDATE_DOC_INDEX(state) {
-        const docID = router.currentRoute.params.id
+        const doc_id = router.currentRoute.params._id
         const routeName = router.currentRoute.name
         console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
         const Docs = state.newDocs
-        const thisObject = (obj) => (obj._id || obj.id) == docID
+        const thisObject = (obj) => obj._id == doc_id
         const index = Docs.findIndex(thisObject);
         state.DocProp.index = index
-        state.DocProp.id = (Docs[index]._id || Docs[index].id)
+        state.DocProp._id = Docs[index]._id
     },
     SET_NEW_DOCUMENT(state, {
         fake_id,
         root
     }) {
         const newDocObj = {
-            id: fake_id,
+            _id: fake_id,
             title: "",
             description: "",
             tools: [],
@@ -198,23 +198,23 @@ export default {
     },
     ADD_NEW_ID(state, {
         doc,
-        id
+        _id
     }) {
-        doc._id = id
-        const fakeID = doc.id
+        const fakeID = doc._id
         state.newDocs.forEach(doc => {
             const index = doc.childs_id.findIndex(child_id => child_id == fakeID)
             if (index < 0) return
-            doc.childs_id[index] = id
+            doc.childs_id[index] = _id
         });
-        if (state.DocProp.id == fakeID) state.DocProp.id = id
+        doc._id = _id
+        if (state.DocProp._id == fakeID) state.DocProp._id = _id
     },
     CLEAR_NEW_DOC(state) {
         router.push('/my-docs')
         state.newDocs = []
         state.DocProp = {
             index: 0,
-            id: 0,
+            _id: 0,
             OnTool: {
                 condition: false,
                 index: -1

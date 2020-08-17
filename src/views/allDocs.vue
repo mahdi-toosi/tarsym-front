@@ -15,13 +15,13 @@
 					v-model.lazy="search"
 					v-debounce="delay"
 				/>
-				{{ search }}
 				<a href="#">
 					<i class="fas fa-search" />
 				</a>
 			</div>
 		</section>
 		<section class="points">
+			<span v-if="!allDocs.data.length" class="notingToShow">داکیومنتی برای نمایش دادن نیست</span>
 			<div
 				class="point shadow"
 				v-for="doc in allDocs.data "
@@ -50,7 +50,7 @@
 					<time>{{ doc.date | date }}</time>
 					<button
 						class="editDoc"
-						@click="$router.push(`/update/doc/${doc._id}`)"
+						@click="$router.push(`/update/${doc._id}`)"
 						v-if="$route.name == 'my docs'"
 					>
 						<i class="far fa-edit"></i>
@@ -64,7 +64,7 @@
 						<i class="far fa-trash-alt"></i>
 					</button>
 				</header>
-				<main v-html="doc.ecxerpt"></main>
+				<main v-html="doc.excerpt">{{doc.excerpt}}</main>
 				<footer>
 					<ul>
 						<li v-if="doc.imgsCount">
@@ -130,19 +130,11 @@ export default {
 			const condition =
 				from.name == "create doc" ||
 				from.name == "update doc" ||
-				from.name == "404 page" ||
-				from.path == "/";
+				!vm.$store.state.allDocs.data.length;
 			if (condition) vm.getAllDocs();
 		});
 	},
 	async created() {},
-	watch: {
-		search() {
-			if (this.search.length >= 3) {
-				this.fetchSearchResult();
-			}
-		},
-	},
 };
 </script>
 
