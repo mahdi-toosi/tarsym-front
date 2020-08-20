@@ -8,9 +8,19 @@ export default {
             index: -1
         },
     },
-    allTags: [{
-        name: 'تگ اول'
-    }],
+    readDoc: [],
+    taxonomies: {
+        tags: [{
+            name: 'تگ اول',
+            type: 2,
+            childs: []
+        }],
+        categorys: [{
+            name: 'دسته بندی اول',
+            type: 1,
+            childs: []
+        }]
+    },
     allDocs: {
         data: []
     },
@@ -19,6 +29,5 @@ export default {
         MouseCoordinate: null,
         center: ["32.879587173066305", "54.01105444025955"],
     },
-    readDoc: [],
     user: {},
 };

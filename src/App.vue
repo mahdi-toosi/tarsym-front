@@ -14,7 +14,8 @@ export default {
 		tarsymMap,
 		sidebar,
 	},
-	created() {
+	async created() {
+		await this.$store.dispatch("get_All_Taxanomies");
 		document.addEventListener("PWAupdatefound", () => {
 			let msg = "آپدیتی برای اپلیکیشن ارائه شد. در حال دانلود ...";
 			this.$toasted.info(msg, {

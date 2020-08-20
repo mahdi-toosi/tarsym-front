@@ -140,39 +140,32 @@ export default {
         })
         return data
     },
-    // !  get_All_Tag
-    get_All_Tag({
+    // !  get_All_Taxanomies
+    get_All_Taxanomies({
         commit,
         dispatch
-    }) {
-        const allTags = false; // JSON.parse(localStorage.getItem("allTags"))
-        if (allTags) {
-            const
-                current = new Date(),
-                allTagsDate = new Date(allTags.date),
-                Difference_In_Time = current.getTime() - allTagsDate.getTime(),
-                Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-            if (Difference_In_Days < 5) {
-                commit('SET_ALL_TAGS', allTags)
+    }, withCache = true) {
+        if (withCache) {
+            const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies")),
+                TaxonomysDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
+                CurrentTime = new Date().getTime();
+            if (TaxonomysDate_PlusSomeDays > CurrentTime) { // 5 days
+                commit('SET_CHOSEN_TAXONOMIES', Taxonomies)
                 return
             }
         }
-        const url = `/tags`,
+        const url = `/taxonomies`,
             options = {
                 params: {
                     $limit: 50,
-                    $select: ['_id', 'name']
+                    $select: ['_id', 'name', 'type', 'childs']
                 }
             };
         axios.get(url, options).then(res => {
-            if (res.status == 200) {
-                res.data.date = new Date()
-                localStorage.setItem("allTags", JSON.stringify(res.data));
-                commit('SET_ALL_TAGS', res.data)
-            }
-        }).catch(error => {
-            dispatch('handleAxiosError', error)
-        })
+            res.data.date = new Date()
+            localStorage.setItem("Taxonomies", JSON.stringify(res.data));
+            commit('SET_CHOSEN_TAXONOMIES', res.data)
+        }).catch(error => dispatch('handleAxiosError', error))
     },
     // !  getAllDocs
     async getAllDocs({
@@ -229,7 +222,7 @@ export default {
         // validate conditions
         const title = thisDoc.title.length > 5,
             description = thisDoc.description.length > 20,
-            tools = thisDoc.tools.length > 0,
+            tools = thisDoc.tools.length,
             date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
             currentRoute = router.currentRoute;
 
@@ -240,9 +233,11 @@ export default {
         if (thisDoc.root) {
             const tags = thisDoc.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
+            const categorys = thisDoc.categorys.length;
+            if (!categorys) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
         }
 
-        if (errors.length == 0) return true
+        if (!errors.length) return true
         else {
             const action = [{
                 text: 'داکیومنت',
@@ -260,7 +255,7 @@ export default {
                     keepOnHover: true,
                     iconPack: "fontawesome",
                     icon: "fa-times-circle",
-                    action: currentRoute.params._id == thisDoc._id ? false : action
+                    action: currentRoute.params._id == thisDoc._id ? [] : action
                 });
             });
             return false
@@ -355,6 +350,7 @@ export default {
         else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
         else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد"
+        else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است"
         else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";

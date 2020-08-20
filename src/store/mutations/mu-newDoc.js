@@ -62,9 +62,19 @@ export default {
         const thisTool = thisDoc(state).tools[index]
         thisTool[obj.type] = val
     },
-    SET_CHOSEN_TAG(state, tags) {
-        // console.log(tags);
-        thisDoc(state).tags = tags
+    SET_CHOSEN_TAXONOMY(state, {
+        $event,
+        type
+    }) {
+        $event.forEach(taxonomy => {
+            if (!taxonomy.type) taxonomy.type = type
+        });
+        //*  categorys type = 1 / tags type = 2
+        if (type == 1) {
+            thisDoc(state).categorys = $event
+            return
+        }
+        thisDoc(state).tags = $event
     },
     ADD_DATE(state, {
         century,
@@ -191,6 +201,7 @@ export default {
         };
         if (root) {
             newDocObj.tags = []
+            newDocObj.categorys = []
             newDocObj.root = true
             newDocObj.zoom = 4
         }

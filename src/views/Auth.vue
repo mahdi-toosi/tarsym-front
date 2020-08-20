@@ -63,7 +63,7 @@ export default {
 			await this.$axios
 				.post(url, data)
 				.then(async (res) => {
-					const day = 60 * 60 * 1000 * 24;
+					const day = 60 * 60 * 1000 * 24; // 24 hours
 					res.data.expire = new Date().getTime() + day;
 					const encryptUser = btoa(JSON.stringify(res.data));
 					localStorage.setItem("sjufNEbjDmE", encryptUser); // sjufNEbjDmE = userData

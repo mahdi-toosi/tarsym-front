@@ -14,16 +14,29 @@
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
-		<div v-if="newDocs.length > 0">
+		<div v-if="newDocs.length">
 			<section class="shadow">
 				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
+				<v-select
+					:options="taxonomies.categorys"
+					:value="DocLayer.categorys"
+					@input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
+					label="name"
+					placeholder="دسته بندی ..."
+					multiple
+					taggable
+					push-tags
+					class="tags categorys"
+					dir="rtl"
+					v-if="DocLayer.root"
+				/>
 				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
 			</section>
 			<section class="tag_date_section">
 				<v-select
-					:options="allTags"
+					:options="taxonomies.tags"
 					:value="DocLayer.tags"
-					@input="SET_CHOSEN_TAG"
+					@input="SET_CHOSEN_TAXONOMY( {$event , type: 2} )"
 					label="name"
 					placeholder="تگ ..."
 					multiple
@@ -32,7 +45,7 @@
 					class="tags"
 					dir="rtl"
 					v-if="DocLayer.root"
-				></v-select>
+				/>
 				<date-picker class="datepicker" :docLayer="DocProp.index" />
 			</section>
 			<section class="tools shadow">
@@ -135,7 +148,7 @@ export default {
 		};
 	},
 	methods: {
-		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAG"]),
+		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAXONOMY"]),
 		...mapActions([
 			"Create_or_Update_Documents",
 			"addNewDoc",
@@ -144,7 +157,7 @@ export default {
 			"Delete_this_Document",
 			"update_this_doc",
 			"get_childs",
-			"get_All_Tag",
+			"get_All_Taxanomies",
 			"addExistingDoc",
 		]),
 		async addChild() {
@@ -203,7 +216,7 @@ export default {
 		// },
 	},
 	computed: {
-		...mapState(["newDocs", "DocProp", "allTags"]),
+		...mapState(["newDocs", "DocProp", "taxonomies"]),
 		...mapGetters(["DocLayer", "DocChilds"]),
 		newPointTitle: {
 			get() {
@@ -226,9 +239,12 @@ export default {
 		const routeName = this.$route.name;
 		const route_id = this.$route.params._id;
 		const lastAddedDocID = this.lastAddedDocID();
+		this.get_All_Taxanomies(false); //* withCache = false
 		if (routeName == "create doc") {
-			if (Number(route_id) !== lastAddedDocID)
-				return await this.addNewDoc();
+			if (Number(route_id) !== lastAddedDocID) {
+				await this.addNewDoc();
+				return;
+			}
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
 		}
@@ -241,7 +257,6 @@ export default {
 		// 	console.log(element);
 		// 	element.setAttribute("tabindex", "-1");
 		// });
-		this.get_All_Tag();
 	},
 	components: {
 		datePicker,

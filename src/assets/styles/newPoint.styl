@@ -85,16 +85,6 @@
                     padding: 2px 5px 2px 10px
                     position: relative;
                     top: -7px;
-
-    .ql-snow
-        border none !important
-        font-family: iranSans
-        padding: 0px
-    .ql-container
-        .ql-editor
-            max-height: 250px
-            padding: 5px 8px;
-    
     .tags
         width: 70%;
         display: inline-block;
@@ -105,14 +95,35 @@
             padding: 0 10px;
         .vs__deselect
             margin-left: 0px;
-            margin-right: 4px;
+            margin-right: 4px !important;
             svg path 
                 transition: .2s
             &:hover svg path 
                 fill red
-
         .vs__dropdown-toggle
             border none
+    .categorys
+        width: 100%
+        border-bottom: 1px solid #bebebe;
+        .vs__search
+            padding: 0px
+            &::placeholder
+                color #767676
+        .vs__selected
+            position relative
+            margin-left: 15px;
+            background-color unset 
+            border unset
+            padding-left: 4px;
+            padding-right: 0px;
+            &::after 
+                display: block;
+                content: '/';
+                position: absolute;
+                right: 100%;
+                font-size: 22px;
+                color: #a3a3a3;
+
     .datepicker
         display: inline-block;
         width: 30%;
