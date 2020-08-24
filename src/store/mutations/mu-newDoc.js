@@ -7,7 +7,7 @@ export default {
         if (state.allDocs.data) {
             let Docs = state.allDocs.data;
             let doc_index = await Docs.findIndex(doc => doc._id == _id);
-            if (doc_index >= 0) Docs.splice(doc_index, 1)
+            if (doc_index > -1) Docs.splice(doc_index, 1)
         }
 
         let Docs = state.newDocs
@@ -20,14 +20,19 @@ export default {
             return
         } else {
             let childs_index = []
-            doc.childs_id.forEach(async child_id => {
+            for (let index = 0; index < doc.childs_id.length; index++) {
+                const child_id = doc.childs_id[index];
                 const doc_index = await Docs.findIndex(doc => doc._id == child_id)
-                if (doc_index > 0) childs_index.push(doc_index)
-            });
+                if (doc_index > -1) childs_index.push(doc_index)
+            }
             if (!childs_index.length) return
-            childs_index.forEach(child_index => {
-                Docs.splice(child_index, 1)
-            });
+            for (let index = 0; index < childs_index.length; index++) {
+                const child_index = childs_index[index];
+                if (!Docs[child_index].childs_id.length) continue
+                const doc_index = await Docs.findIndex(doc => doc._id == Docs[child_index]._id)
+                if (doc_index > -1) childs_index.push(doc_index)
+            }
+            childs_index.forEach(child_index => Docs.splice(child_index, 1));
         }
     },
     CHANGE_POLYLINE_DECORATOR(state, {
@@ -66,15 +71,23 @@ export default {
         $event,
         type
     }) {
+        let taxonomies = [];
         $event.forEach(taxonomy => {
+            if (typeof taxonomy == 'string')
+                taxonomy = {
+                    name: taxonomy
+                }
+            taxonomy.name = taxonomy.name.trim()
             if (!taxonomy.type) taxonomy.type = type
+            if (!taxonomy.childs) taxonomy.childs = []
+            taxonomies.push(taxonomy)
         });
-        //*  categorys type = 1 / tags type = 2
+        //*  categories type = 1 / tags type = 2
         if (type == 1) {
-            thisDoc(state).categorys = $event
+            thisDoc(state).categories = taxonomies
             return
         }
-        thisDoc(state).tags = $event
+        thisDoc(state).tags = taxonomies
     },
     ADD_DATE(state, {
         century,
@@ -174,8 +187,8 @@ export default {
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id
-        const routeName = router.currentRoute.name
-        console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
+        // const routeName = router.currentRoute.name
+        // console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
         const Docs = state.newDocs
         const thisObject = (obj) => obj._id == doc_id
         const index = Docs.findIndex(thisObject);
@@ -201,7 +214,7 @@ export default {
         };
         if (root) {
             newDocObj.tags = []
-            newDocObj.categorys = []
+            newDocObj.categories = []
             newDocObj.root = true
             newDocObj.zoom = 4
         }

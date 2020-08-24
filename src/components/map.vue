@@ -13,7 +13,16 @@
 			:minZoom="4"
 			ref="LeafletMap"
 		>
-			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
+			<l-control-layers position="bottomright"></l-control-layers>
+			<l-tile-layer
+				v-for="tileProvider in tileProviders"
+				:key="tileProvider.name"
+				:name="tileProvider.name"
+				:visible="tileProvider.visible"
+				:url="tileProvider.url"
+				layer-type="base"
+			/>
+
 			<div v-if="docs_list.length">
 				<div v-for="(tool, index) in DocWithChildsTools " :key="index">
 					<div v-if="tool.type == 'Polygon'">
@@ -156,6 +165,7 @@ import {
 	LIcon,
 	LControl,
 	LControlZoom,
+	LControlLayers,
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
@@ -186,6 +196,33 @@ export default {
 			popupAnchor: [4, -25],
 		});
 		return {
+			tileProviders: [
+				{
+					name: "نرمال",
+					visible: true,
+					url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				},
+				{
+					name: "OpenTopoMap",
+					visible: false,
+					url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+				},
+				{
+					name: "هوایی",
+					visible: false,
+					url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+				},
+				{
+					name: "گوگل مپ",
+					visible: false,
+					url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
+				},
+				{
+					name: "هوایی به همراه نام ها",
+					visible: false,
+					url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+				},
+			],
 			openStreetTileURL:
 				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			CircleIcon,
@@ -268,6 +305,7 @@ export default {
 		LControlPolylineMeasure,
 		polylineDecorator,
 		LTooltip,
+		LControlLayers,
 	},
 };
 </script>

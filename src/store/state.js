@@ -10,16 +10,8 @@ export default {
     },
     readDoc: [],
     taxonomies: {
-        tags: [{
-            name: 'تگ اول',
-            type: 2,
-            childs: []
-        }],
-        categorys: [{
-            name: 'دسته بندی اول',
-            type: 1,
-            childs: []
-        }]
+        tags: [],
+        categories: []
     },
     allDocs: {
         data: []

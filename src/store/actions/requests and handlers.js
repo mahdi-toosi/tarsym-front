@@ -59,7 +59,7 @@ export default {
 
         const url = `/documents/${_id}`
         const newID = await axios.delete(url).then(res => {
-            if (res.status == 200) commit('REMOVE_THIS_DOC', _id)
+            commit('REMOVE_THIS_DOC', _id)
             return res // remember this set value for newID
         }).catch(error => {
             dispatch('handleAxiosError', error)
@@ -145,9 +145,9 @@ export default {
         commit,
         dispatch
     }, withCache = true) {
-        if (withCache) {
-            const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies")),
-                TaxonomysDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
+        const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies"))
+        if (withCache && Taxonomies) {
+            const TaxonomysDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
                 CurrentTime = new Date().getTime();
             if (TaxonomysDate_PlusSomeDays > CurrentTime) { // 5 days
                 commit('SET_CHOSEN_TAXONOMIES', Taxonomies)
@@ -233,8 +233,8 @@ export default {
         if (thisDoc.root) {
             const tags = thisDoc.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
-            const categorys = thisDoc.categorys.length;
-            if (!categorys) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
+            const categories = thisDoc.categories.length;
+            if (!categories) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
         }
 
         if (!errors.length) return true

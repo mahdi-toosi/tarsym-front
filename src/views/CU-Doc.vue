@@ -18,18 +18,20 @@
 			<section class="shadow">
 				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
 				<v-select
-					:options="taxonomies.categorys"
-					:value="DocLayer.categorys"
+					:options="taxonomies.categories"
+					:value="DocLayer.categories"
 					@input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
 					label="name"
 					placeholder="دسته بندی ..."
 					multiple
 					taggable
 					push-tags
-					class="tags categorys"
+					class="tags categories"
 					dir="rtl"
 					v-if="DocLayer.root"
-				/>
+				>
+					<template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
+				</v-select>
 				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
 			</section>
 			<section class="tag_date_section">
@@ -83,17 +85,14 @@
 								:filterable="false"
 								label="title"
 								placeholder="جستجو ..."
-								autocomplete="on"
 								dir="rtl"
 								class="seachBoxForLayer"
-								ref="select"
 							>
 								<template slot="no-options">داکیومنتی با این عنوان به ثبت نرسیده...</template>
 								<template slot="option" slot-scope="option">
 									<div class="seachBoxForLayerOption">
 										<h4>{{ option.title }}</h4>
-										<!-- TODO this if should deleted ? -->
-										<p v-if="option.excerpt">{{ option.excerpt }}</p>
+										<p>{{ option.excerpt }}</p>
 									</div>
 								</template>
 							</v-select>
@@ -137,7 +136,7 @@ export default {
 		];
 		return {
 			searchBoxOptions: [],
-			searchedDoc: {},
+			searchedDoc: [],
 			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },

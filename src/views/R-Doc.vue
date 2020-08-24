@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="ReadDoc_wrapper">
 		<header>
 			<button
 				class="btn btn-back"
@@ -9,7 +9,7 @@
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
-		<article class="point shadow readPoint" v-if="DocLayer">
+		<article class="point readPoint" v-if="DocLayer">
 			<header>
 				<h1 v-text="DocLayer.title"></h1>
 				<time>{{ DocLayer.date | date }}</time>
@@ -65,4 +65,12 @@ export default {
 };
 </script>
 
-<style lang="stylus"></style>
+<style lang="stylus">
+.ReadDoc_wrapper {
+	direction: ltr;
+	height: 95vh;
+	overflow-y: auto;
+	border-radius: 5px;
+	background: #fff;
+}
+</style>

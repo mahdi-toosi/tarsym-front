@@ -103,6 +103,7 @@ export default {
 			"addNewDoc",
 			"Delete_this_Document",
 			"read_this_doc",
+			"get_All_Taxanomies",
 		]),
 		...mapMutations(["readThisPoint"]),
 		fetchSearchResult() {
@@ -126,12 +127,13 @@ export default {
 		},
 	},
 	beforeRouteEnter(to, from, next) {
-		next((vm) => {
+		next(async (vm) => {
 			const condition =
 				from.name == "create doc" ||
 				from.name == "update doc" ||
 				!vm.$store.state.allDocs.data.length;
-			if (condition) vm.getAllDocs();
+			if (to.name == "my docs") await vm.get_All_Taxanomies(false); //* withCache = false
+			if (condition) await vm.getAllDocs();
 		});
 	},
 	async created() {},

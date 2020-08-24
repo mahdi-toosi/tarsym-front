@@ -10,21 +10,18 @@ export default {
         dispatch,
         commit
     }, doc) {
-        if (!doc || !doc._id || !doc.childs_id.length) return
+        if (!doc || !doc.childs_id.length) return
         let valid_childs_id = []
-        for (let index = 0; index < doc.childs_id.length; index++) {
-            const child_id = doc.childs_id[index];
+        doc.childs_id.forEach(child_id => {
             const is_it_number = typeof child_id == 'number'
-            if (is_it_number) continue
-            const thisObject = (doc) => doc._id == child_id
-            const is_already_exist = state.newDocs.findIndex(thisObject)
-            if (!is_already_exist) continue
+            if (is_it_number) return
+            const already_exist = state.newDocs.findIndex(doc => doc._id == child_id)
+            if (!already_exist) return
             valid_childs_id.push(child_id)
-        }
+        });
         if (!valid_childs_id.length) return
 
         const childs = await dispatch('get_this_docs', valid_childs_id);
-
         await commit('SET_DOCS_TO', {
             docs: childs,
             list: 'newDocs',
