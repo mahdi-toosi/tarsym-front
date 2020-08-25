@@ -18,7 +18,7 @@
 			<section class="shadow">
 				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
 				<v-select
-					:options="taxonomies.categories"
+					:options="validCategories"
 					:value="DocLayer.categories"
 					@input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
 					label="name"
@@ -216,7 +216,7 @@ export default {
 	},
 	computed: {
 		...mapState(["newDocs", "DocProp", "taxonomies"]),
-		...mapGetters(["DocLayer", "DocChilds"]),
+		...mapGetters(["DocLayer", "DocChilds", "validCategories"]),
 		newPointTitle: {
 			get() {
 				return this.DocLayer.title;

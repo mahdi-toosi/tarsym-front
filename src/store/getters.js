@@ -32,13 +32,21 @@ export default {
     },
     DocChilds: (state, getters) => {
         const childs_ID = getters.DocLayer.childs_id
-        let childs = []
+        let All_childs = []
         childs_ID.forEach(_id => {
             const condition = (doc) => doc._id == _id
-            const child = getters.docs_list.filter(condition);
-            childs = [...childs, ...child]
+            const childs = getters.docs_list.filter(condition);
+            All_childs = All_childs.concat(childs)
         });
-        return childs
+        return All_childs
+    },
+    validCategories: (state, getters) => {
+        const DocLayerCats = getters.DocLayer.categories;
+        const Cats = state.taxonomies.categories
+        if (!DocLayerCats.length) return Cats
+        const DocLastCat = DocLayerCats[DocLayerCats.length - 1];
+        const validCats = Cats.filter(cat => cat.childs.includes(DocLastCat._id))
+        return validCats
     },
     tooltipData: (state, getters) => index => getters.DocLayer.tools[index].tooltip,
     isAuthenticated: (state) => state.user.email,

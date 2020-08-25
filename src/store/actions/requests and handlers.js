@@ -309,6 +309,15 @@ export default {
                 coordinates: doc.tools[searchable_tool_index].coordinates
             }
         }
+        // * optimize categories for backend
+        const Cats = doc.categories,
+            removeCats = [];
+        for (let index = 0; index < Cats.length; index++) {
+            const nextCat = Cats[index + 1];
+            if (nextCat._id) removeCats.push(index)
+            else break
+        }
+        removeCats.forEach(index => Cats.splice(index, 1));
 
         // * remove unnecessary items form tools color obj
         doc.tools.forEach(tool => {
