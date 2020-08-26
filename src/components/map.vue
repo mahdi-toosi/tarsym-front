@@ -26,37 +26,34 @@
 			<div v-if="docs_list.length">
 				<div v-for="(tool, index) in DocWithChildsTools " :key="index">
 					<div v-if="tool.type == 'Polygon'">
-						<span v-if="DocProp.OnTool.condition">
-							<l-polygon
-								:lat-lngs="polygonOrPolylineSimolationCoordinates"
-								v-if=" tool.isOn"
-								:dashArray="'10,10'"
-								:opacity="0.5"
-								:color="( tool.color.hex8 || tool.color )"
-								:fill="false"
-							/>
-						</span>
+						<l-polygon
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							v-if="DocProp.OnTool.condition && tool.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:color="( tool.color.hex8 || tool.color )"
+							:fill="false"
+						/>
 						<l-polygon
 							:fillOpacity="0.4"
 							:fillColor="( tool.secondaryColor.hex8 || tool.secondaryColor )"
 							:color="( tool.color.hex8 || tool.color )"
 							:lat-lngs="tool.coordinates"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polygon>
 					</div>
 					<!-- end Polygon -->
 					<div v-if="tool.type == 'Polyline'">
-						<span v-if="DocProp.OnTool.condition">
-							<l-polyline
-								:lat-lngs="polygonOrPolylineSimolationCoordinates"
-								:color="(tool.color.hex8 || tool.color)"
-								v-if="tool.isOn"
-								:dashArray="'10,10'"
-								:opacity="0.5"
-								:fill="false"
-							/>
-						</span>
+						<l-polyline
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							:color="(tool.color.hex8 || tool.color)"
+							v-if="DocProp.OnTool.condition && tool.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:fill="false"
+						/>
 						<!-- <l-marker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
@@ -67,7 +64,7 @@
 							:lat-lngs="tool.coordinates"
 							:color="(tool.color.hex8 || tool.color)"
 							:dashArray=" tool.dashed ? '10,10' : '' "
-							@click="mahdi(tool)"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polyline>
@@ -90,6 +87,7 @@
 							:draggable="tool.isOn"
 							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 							:icon="defaultIcon"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-icon
 								:icon-size="dynamicSize(tool.iconSize)"
@@ -114,6 +112,7 @@
 							:draggable="tool.isOn"
 							:icon="CircleIcon"
 							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-icon
 								v-if="tool.tooltip"
@@ -273,6 +272,18 @@ export default {
 			if (thisTool.type == "Point" || thisTool.type == "Textbox") return;
 			thisTool.coordinates.push(c.latlng);
 		},
+		goToThisDoc(_id) {
+			const router = this.$router;
+			const currentRoute = router.currentRoute;
+			const condition = ["create doc", "update doc"].includes(
+				currentRoute.name
+			);
+			const pathThing = condition
+				? currentRoute.path.split("/")[1]
+				: "read";
+			const path = `/${pathThing}/${_id}`;
+			if (path != currentRoute.fullPath) router.push(path);
+		},
 		setMouseCoordinate(m) {
 			this.map.MouseCoordinate = m.latlng;
 		},
@@ -286,12 +297,23 @@ export default {
 		},
 	},
 	mounted() {
+		const map = this.$refs.LeafletMap.mapObject;
 		L.easyPrint({
 			position: "bottomleft",
 			sizeModes: ["Current"],
 			exportOnly: true,
 			filename: "tarsym",
-		}).addTo(this.$refs.LeafletMap.mapObject);
+		}).addTo(map);
+
+		document.addEventListener(
+			"showThisDoc",
+			(event) => {
+				const doc = event.detail;
+				if (doc.coordinates)
+					map.flyTo(doc.coordinates.coordinates, doc.zoom + 1);
+			},
+			false
+		);
 	},
 	components: {
 		LMap,

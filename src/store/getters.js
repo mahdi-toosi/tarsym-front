@@ -16,17 +16,27 @@ export default {
         if (showMode) {
             currentList.forEach(doc => {
                 const doc_ZL = doc.zoom
-                if (doc.root && doc_ZL <= map_ZL) tools = [...tools, ...doc.tools]
+                if (doc.root && doc_ZL <= map_ZL) {
+                    let rootTools = doc.tools.filter(tool => tool.searchable)
+                    rootTools.forEach(tool => tool._id = doc._id);
+                    tools = tools.concat(rootTools);
+                }
             });
             return tools
         } else if (editMode) {
             const docLayer = getters.DocLayer
             const doc_ZL = docLayer.zoom
-            if (docLayer.root ? doc_ZL <= map_ZL : true) tools = [...docLayer.tools]
+            if (docLayer.root ? doc_ZL <= map_ZL : true) {
+                let docTools = docLayer.tools
+                docTools.forEach(tool => tool._id = docLayer._id);
+                tools = tools.concat(docTools)
+            }
             if (!docLayer.childs_id.length) return tools
-
             // * add childs tools to map
-            getters.DocChilds.forEach(child => tools = [...tools, ...child.tools]);
+            getters.DocChilds.forEach(child => {
+                child.tools.forEach(tool => tool._id = child._id);
+                tools = tools.concat(child.tools)
+            });
         }
         return tools
     },

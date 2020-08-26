@@ -1,6 +1,6 @@
 import router from "../../router";
 
-const thisDoc = (state) => state.newDocs[state.DocProp.index]
+const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     async REMOVE_THIS_DOC(state, _id) {
@@ -40,31 +40,31 @@ export default {
         index,
         type
     }) {
-        const thisTool = thisDoc(state).tools[index];
+        const thisTool = docLayer(state).tools[index];
         const val = $event.target.checked;
         if (type == "arrow") thisTool.showArrow = val;
         if (type == "icon") thisTool.showIcon = val;
         if (type == "dashed") thisTool.dashed = val;
     },
     SET_ZOOM_LEVEL(state, val) {
-        state.newDocs[0].zoomLevel = val;
+        state.newDocs[0].zoom = val;
     },
     CHANGE_TOOLTIP(state, {
         index,
         val
     }) {
-        const thisTool = thisDoc(state).tools[index];
+        const thisTool = docLayer(state).tools[index];
         thisTool.tooltip = val;
     },
     DELETE_TOOL(state, index) {
         const onTool = state.DocProp.OnTool;
         onTool.condition = false;
-        thisDoc(state).tools.splice(index, 1);
+        docLayer(state).tools.splice(index, 1);
     },
     CHANGE_RANG_INPUT(state, obj) {
         const index = obj.$event.target.attributes.index.value;
         const val = Number(obj.$event.target.value);
-        const thisTool = thisDoc(state).tools[index]
+        const thisTool = docLayer(state).tools[index]
         thisTool[obj.type] = val
     },
     SET_CHOSEN_TAXONOMY(state, {
@@ -84,10 +84,10 @@ export default {
         });
         //*  categories type = 1 / tags type = 2
         if (type == 1) {
-            thisDoc(state).categories = taxonomies
+            docLayer(state).categories = taxonomies
             return
         }
-        thisDoc(state).tags = taxonomies
+        docLayer(state).tags = taxonomies
     },
     ADD_DATE(state, {
         century,
@@ -95,25 +95,25 @@ export default {
         month,
         day
     }) {
-        const doc_dateProps = thisDoc(state).date_props
+        const doc_dateProps = docLayer(state).date_props
         if (century) doc_dateProps.century = century
         if (year) doc_dateProps.year = year
         if (month) doc_dateProps.month = month
         if (day) doc_dateProps.day = day
     },
     REMOVE_ICON(state, index) {
-        const thisTool = thisDoc(state).tools[index]
+        const thisTool = docLayer(state).tools[index]
         thisTool.iconName = null
     },
     ADD_ICON(state, {
         iconName,
         index
     }) {
-        const thisTool = thisDoc(state).tools[index]
+        const thisTool = docLayer(state).tools[index]
         thisTool.iconName = iconName
     },
     ADD_COLOR(state, obj) {
-        const thisTool = thisDoc(state).tools[obj.index]
+        const thisTool = docLayer(state).tools[obj.index]
         if (obj.secondaryColor) {
             thisTool.secondaryColor = obj.color
         } else thisTool.color = obj.color;
@@ -133,7 +133,7 @@ export default {
             obj.coordinates = state.map.center
             obj.angle = 0
             obj.iconSize = 35
-            const is_searchable_point = thisDoc(state).tools.length < 1
+            const is_searchable_point = docLayer(state).tools.length < 1
             if (is_searchable_point) obj.searchable = true
         }
         if (type == "Textbox") {
@@ -158,7 +158,7 @@ export default {
     OFF_THE_ON_TOOL(state) {
         const onTool = state.DocProp.OnTool
         if (!onTool.condition) return
-        const OnToolinDoc = thisDoc(state).tools[onTool.index]
+        const OnToolinDoc = docLayer(state).tools[onTool.index]
         OnToolinDoc.isOn = false
     },
     UPDATE_ON_TOOL(state) {
@@ -167,8 +167,8 @@ export default {
         onTool.condition = false;
         onTool.index = -1;
         for (let i = 0; i < Docs.length; i++) {
-            const thisDoc = Docs[i];
-            const OnToolindex = thisDoc.tools.findIndex(tool => tool.isOn == true);
+            const docLayer = Docs[i];
+            const OnToolindex = docLayer.tools.findIndex(tool => tool.isOn == true);
             const weHaveOnTool = OnToolindex >= 0;
             if (weHaveOnTool) {
                 onTool.condition = true;

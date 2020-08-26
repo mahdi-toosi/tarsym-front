@@ -88,10 +88,11 @@ export default {
 		]),
 	},
 	computed: {
+		DocLayer() {
+			return this.$store.getters.DocLayer;
+		},
 		logo() {
-			const thisDocLayer = this.$store.state.DocProp.index;
-			const thisDoc = this.$store.state.newDocs[thisDocLayer];
-			const thisTool = thisDoc.tools[this.index];
+			const thisTool = this.DocLayer.tools[this.index];
 			return thisTool.iconName;
 		},
 		toolTipModel: {

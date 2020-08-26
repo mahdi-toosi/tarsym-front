@@ -1,7 +1,7 @@
 <template>
 	<div class="allpoints">
 		<header>
-			<a class="btn btn-blue" @click="addNewDoc()">
+			<a class="btn btn-blue" @click="addNewDoc()" v-if="$route.name == 'my docs'">
 				نقطه ی جدید ایجاد کن
 				<i class="fas fa-plus" />
 			</a>
@@ -26,7 +26,7 @@
 				class="point shadow"
 				v-for="doc in allDocs.data "
 				:key="doc._id"
-				@click="$route.name == 'all docs' ? $router.push(`/read/${doc._id}`) : ''"
+				@click="showThisDoc(doc)"
 				style="cursor: pointer"
 			>
 				<!-- @click="readThisPoint(doc.coordinates)" -->
@@ -98,6 +98,10 @@ export default {
 		},
 	},
 	methods: {
+		showThisDoc(doc) {
+			if (this.$route.name == "all docs")
+				this.$router.push(`/read/${doc._id}`);
+		},
 		...mapActions([
 			"getAllDocs",
 			"addNewDoc",
@@ -132,8 +136,10 @@ export default {
 				from.name == "create doc" ||
 				from.name == "update doc" ||
 				!vm.$store.state.allDocs.data.length;
-			if (to.name == "my docs") await vm.get_All_Taxanomies(false); //* withCache = false
-			if (condition) await vm.getAllDocs();
+			if (condition) {
+				await vm.get_All_Taxanomies(false); //* withCache = false
+				await vm.getAllDocs();
+			}
 		});
 	},
 	async created() {},

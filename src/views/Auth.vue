@@ -49,6 +49,12 @@ export default {
 					await this.login();
 				})
 				.catch((error) => {
+					if (error == "Error: Request failed with status code 409") {
+						this.toasted.error("ایمیل قبلا به ثبت رسیده است", {
+							icon: "fa-times-circle",
+						});
+						return;
+					}
 					this.$store.dispatch("handleAxiosError", error);
 				});
 		},
@@ -63,14 +69,14 @@ export default {
 			await this.$axios
 				.post(url, data)
 				.then(async (res) => {
-					const day = 60 * 60 * 1000 * 24; // 24 hours
+					const day = 60 * 60 * 1000 * 24; //* 24 hours
 					res.data.expire = new Date().getTime() + day;
 					const encryptUser = btoa(JSON.stringify(res.data));
-					localStorage.setItem("sjufNEbjDmE", encryptUser); // sjufNEbjDmE = userData
-					localStorage.setItem("kemskDJobjgR", res.data.accessToken); // kemskDJobjgR = access key
+					localStorage.setItem("sjufNEbjDmE", encryptUser); //* sjufNEbjDmE = userData
+					localStorage.setItem("kemskDJobjgR", res.data.accessToken); //* kemskDJobjgR = access key
 					this.$axios.defaults.headers.common[
 						"Authorization"
-					] = `Bearer ${localStorage.getItem("kemskDJobjgR")}`; // kemskDJobjgR = access key
+					] = `Bearer ${res.data.accessToken}`;
 					await this.$router.push("/");
 				})
 				.catch((error) => {
@@ -80,10 +86,6 @@ export default {
 
 		sendError(msg) {
 			this.$toasted.error(msg, {
-				position: "bottom-left",
-				duration: 5 * 1000,
-				keepOnHover: true,
-				iconPack: "fontawesome",
 				icon: "fa-times-circle",
 			});
 		},

@@ -147,9 +147,9 @@ export default {
     }, withCache = true) {
         const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies"))
         if (withCache && Taxonomies) {
-            const TaxonomysDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
+            const TaxsDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
                 CurrentTime = new Date().getTime();
-            if (TaxonomysDate_PlusSomeDays > CurrentTime) { // 5 days
+            if (TaxsDate_PlusSomeDays > CurrentTime) {
                 commit('SET_CHOSEN_TAXONOMIES', Taxonomies)
                 return
             }
@@ -214,26 +214,26 @@ export default {
     // !  is_this_Doc_valid
     async is_this_Doc_valid({
         commit
-    }, thisDoc) {
+    }, docLayer) {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
         let errors = []
         // validate conditions
-        const title = thisDoc.title.length > 5,
-            description = thisDoc.description.length > 20,
-            tools = thisDoc.tools.length,
-            date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
+        const title = docLayer.title.length > 5,
+            description = docLayer.description.length > 20,
+            tools = docLayer.tools.length,
+            date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
             currentRoute = router.currentRoute;
 
         if (!title) errors.push('تیتر کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
-        if (thisDoc.root) {
-            const tags = thisDoc.tags.length;
+        if (docLayer.root) {
+            const tags = docLayer.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
-            const categories = thisDoc.categories.length;
+            const categories = docLayer.categories.length;
             if (!categories) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
         }
 
@@ -243,19 +243,15 @@ export default {
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
                     const routeName = currentRoute.name
-                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ thisDoc._id }`;
+                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ docLayer._id }`;
                     await router.push(path);
                     toastObject.goAway(0);
                 }
             }]
             errors.forEach(msg => {
                 Vue.toasted.error(msg, {
-                    position: "bottom-left",
-                    duration: 5 * 1000,
-                    keepOnHover: true,
-                    iconPack: "fontawesome",
                     icon: "fa-times-circle",
-                    action: currentRoute.params._id == thisDoc._id ? [] : action
+                    action: currentRoute.params._id == docLayer._id ? [] : action
                 });
             });
             return false
@@ -281,9 +277,9 @@ export default {
         }
     },
     // !  ready_document_for_send
-    ready_document_for_send(store, thisDoc) {
+    ready_document_for_send(store, docLayer) {
         let doc = {
-            ...thisDoc,
+            ...docLayer,
             junk: {}
         }
 
@@ -293,41 +289,42 @@ export default {
 
         // * create excerpt
         let excerpt = doc.description.replace(/<[^>]+>/g, '')
-        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ")
+        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ") //* 50 words
         let fakeElement = document.createElement("textarea");
         fakeElement.innerHTML = excerpt;
         excerpt = fakeElement.value
         excerpt += ' ...'
         doc.excerpt = excerpt
 
-        // * create searcheable coordinate
         if (doc.root) {
+            // * create searcheable coordinate
             const this_tool = obj => obj.searchable == true
             const searchable_tool_index = doc.tools.findIndex(this_tool)
             doc.coordinates = {
                 type: "Point",
                 coordinates: doc.tools[searchable_tool_index].coordinates
             }
+
+            // * optimize categories for backend
+            const Cats = doc.categories,
+                removeCats = [];
+            for (let index = 0; index < Cats.length; index++) {
+                const nextCat = Cats[index + 1];
+                if (nextCat && nextCat._id) removeCats.push(index)
+                else break
+            }
+            removeCats.forEach(index => Cats.splice(index, 1));
+
+            // * count imgs in description
+            const imgs = doc.description.match(/<img/gm);
+            doc.imgsCount = (imgs || []).length
         }
-        // * optimize categories for backend
-        const Cats = doc.categories,
-            removeCats = [];
-        for (let index = 0; index < Cats.length; index++) {
-            const nextCat = Cats[index + 1];
-            if (nextCat._id) removeCats.push(index)
-            else break
-        }
-        removeCats.forEach(index => Cats.splice(index, 1));
 
         // * remove unnecessary items form tools color obj
         doc.tools.forEach(tool => {
             if (tool.color.hex8) tool.color = tool.color.hex8
             if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8
         });
-
-        // * count imgs in description
-        const imgs = doc.description.match(/<img/gm);
-        doc.imgsCount = (imgs || []).length
 
         // * make valid date for database
         const year = doc.date_props.year,
@@ -336,7 +333,8 @@ export default {
         doc.date = year + month + day
         doc.date = Number(doc.date) + 2 * 1000 * 1000
 
-        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'dashed', 'description']
+        // *  make junk field
+        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description']
         clear_this_items.forEach(element => {
             if (doc[element]) {
                 doc.junk[element] = doc[element];
@@ -355,21 +353,22 @@ export default {
     handleAxiosError(store, error) {
         let msg;
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
-        else if (error == "Error: Request failed with status code 409") msg = "ایمیل قبلا به ثبت رسیده است";
-        else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
+        else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
         else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد"
         else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است"
-        else {
+        else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ..."
+        else if (error == "Error: Request failed with status code 401") {
+            // msg = "ایمیل یا رمز عبور اشتباه است"
+            localStorage.removeItem('sjufNEbjDmE'); //* sjufNEbjDmE = userData
+            localStorage.removeItem('kemskDJobjgR'); //* kemskDJobjgR = access key
+            router.push('/Auth')
+        } else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
             console.log("request get error => ", msg);
         }
         Vue.toasted.error(msg, {
-            position: "bottom-left",
-            duration: 5 * 1000,
-            keepOnHover: true,
-            iconPack: "fontawesome",
             icon: "fa-times-circle",
         });
     },
@@ -385,6 +384,11 @@ export default {
         }
 
         if (!doc) return
+        document.dispatchEvent(
+            new CustomEvent("showThisDoc", {
+                detail: doc
+            })
+        );
         await store.commit('SET_DOCS_TO', {
             docs: [doc],
             list: 'readDoc',
