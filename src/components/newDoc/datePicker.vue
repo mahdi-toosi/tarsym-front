@@ -144,7 +144,6 @@ export default {
 		picked() {
 			return this.$store.state.newDocs[this.docLayer].date_props;
 		},
-
 		curentMonthName() {
 			const pickedMonth = Number(this.picked.month - 1);
 			const calendarCurentType = this.calendar.curentType;

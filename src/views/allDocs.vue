@@ -6,20 +6,7 @@
 				<i class="fas fa-plus" />
 			</a>
 		</header>
-		<section class="searchbar shadow">
-			<div class="searchInput">
-				<input
-					type="search"
-					placeholder="جستجو"
-					class="searchBox"
-					v-model.lazy="search"
-					v-debounce="delay"
-				/>
-				<a href="#">
-					<i class="fas fa-search" />
-				</a>
-			</div>
-		</section>
+		<search-field />
 		<section class="points">
 			<span v-if="!allDocs.data.length" class="notingToShow">داکیومنتی برای نمایش دادن نیست</span>
 			<div
@@ -29,7 +16,6 @@
 				@click="showThisDoc(doc)"
 				style="cursor: pointer"
 			>
-				<!-- @click="readThisPoint(doc.coordinates)" -->
 				<header>
 					<i
 						class="logo"
@@ -80,18 +66,12 @@
 </template>
 
 <script>
-import debounce from "v-debounce";
-import { mapMutations, mapActions } from "vuex";
+import searchField from "@/components/searchField";
+import { mapActions } from "vuex";
 
 export default {
 	name: "all-Docs",
-	directives: { debounce },
-	data() {
-		return {
-			search: "",
-			delay: 500,
-		};
-	},
+
 	computed: {
 		allDocs() {
 			return this.$store.state.allDocs;
@@ -109,18 +89,6 @@ export default {
 			"read_this_doc",
 			"get_All_Taxanomies",
 		]),
-		...mapMutations(["readThisPoint"]),
-		fetchSearchResult() {
-			// console.log(this.search.length);
-			const url = "/point/search/" + this.search;
-			this.$axios
-				.get(url)
-				// .then(response => (this.results = response.data))
-				.then((response) => console.log(response.data))
-				.catch((error) => {
-					console.log(error);
-				});
-		},
 	},
 	filters: {
 		date(val) {
@@ -142,8 +110,6 @@ export default {
 			}
 		});
 	},
-	async created() {},
+	components: { searchField },
 };
 </script>
-
-<style lang="stylus"></style>

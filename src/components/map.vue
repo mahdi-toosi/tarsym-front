@@ -136,6 +136,24 @@
 					<!-- end Textbox  -->
 				</div>
 			</div>
+			<!-- end docs_list -->
+
+			<div v-if="searchPolygon">
+				<l-polygon
+					:lat-lngs="searchPolygonSimolationCoordinates"
+					v-if="searchPolygon.isOn"
+					:dashArray="'10,10'"
+					:opacity="0.5"
+					:color="searchPolygon.color"
+					:fill="false"
+				/>
+				<l-polygon
+					:fillOpacity="0.2"
+					:fillColor="searchPolygon.secondaryColor"
+					:color="searchPolygon.color"
+					:lat-lngs="searchPolygon.coordinates"
+				/>
+			</div>
 
 			<l-control-zoom position="bottomright"></l-control-zoom>
 			<l-control-polyline-measure
@@ -197,12 +215,12 @@ export default {
 		return {
 			tileProviders: [
 				{
-					name: "نرمال",
+					name: "اُپن استریت مپ",
 					visible: true,
 					url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 				},
 				{
-					name: "OpenTopoMap",
+					name: "توپولوژی",
 					visible: false,
 					url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
 				},
@@ -229,9 +247,10 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(["map", "DocProp"]),
+		...mapState(["map", "DocProp", "searchPolygon"]),
 		...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
 		undoCondition() {
+			if (this.searchPolygon.isOn) return true;
 			const onTool = this.DocProp.OnTool;
 			if (!onTool.condition) return false;
 			const thisTool = this.DocLayer.tools[onTool.index];
@@ -246,9 +265,23 @@ export default {
 					OnTool.type == "Polygon" || OnTool.type == "Polyline",
 				MouseCoordinate = this.map.MouseCoordinate;
 			if (!isPolygonOrPolylineOn && !MouseCoordinate) return [];
-			if (OnTool.coordinates.length < 1) return [];
+			if (!OnTool.coordinates.length) return [];
 			const coordinates = [
 				...OnTool.coordinates,
+				{
+					lat: MouseCoordinate.lat,
+					lng: MouseCoordinate.lng,
+				},
+			];
+			return coordinates;
+		},
+		searchPolygonSimolationCoordinates() {
+			const searchPolygon = this.searchPolygon;
+			const MouseCoordinate = this.map.MouseCoordinate;
+			if (!MouseCoordinate) return [];
+			if (!searchPolygon.coordinates.length) return [];
+			const coordinates = [
+				...searchPolygon.coordinates,
 				{
 					lat: MouseCoordinate.lat,
 					lng: MouseCoordinate.lng,
@@ -266,6 +299,10 @@ export default {
 			return [iconSize / 2, iconSize * 1.15];
 		},
 		setClickCoordinates(c) {
+			if (this.searchPolygon.isOn) {
+				this.searchPolygon.coordinates.push(c.latlng);
+				return;
+			}
 			const OnTool = this.DocProp.OnTool;
 			if (!OnTool.condition) return;
 			const thisTool = this.DocLayer.tools[OnTool.index];
@@ -291,26 +328,30 @@ export default {
 			this.map.zoom = zoomLevel;
 		},
 		undoTools() {
+			if (this.searchPolygon.isOn) {
+				this.searchPolygon.coordinates.pop();
+				return;
+			}
 			const OnTool = this.DocProp.OnTool;
 			if (OnTool.condition)
 				this.DocLayer.tools[OnTool.index].coordinates.pop();
 		},
 	},
 	mounted() {
-		const map = this.$refs.LeafletMap.mapObject;
+		const mapObject = this.$refs.LeafletMap.mapObject;
 		L.easyPrint({
 			position: "bottomleft",
 			sizeModes: ["Current"],
 			exportOnly: true,
 			filename: "tarsym",
-		}).addTo(map);
+		}).addTo(mapObject);
 
 		document.addEventListener(
 			"showThisDoc",
 			(event) => {
 				const doc = event.detail;
 				if (doc.coordinates)
-					map.flyTo(doc.coordinates.coordinates, doc.zoom + 1);
+					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom + 1);
 			},
 			false
 		);
@@ -332,16 +373,3 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="stylus">
-.map {
-	height: 100vh;
-	width: 60%;
-	position: relative;
-	overflow: hidden;
-	margin-right: auto;
-	outline: none;
-	// border: red dashed 1px;
-	direction: ltr;
-}
-</style>

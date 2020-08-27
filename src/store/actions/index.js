@@ -90,12 +90,11 @@ export default {
 
         const existingDoc = await dispatch('get_this_docs', _id)
         if (!existingDoc) return false
-
         const docLayer = state.newDocs[state.DocProp.index];
         docLayer.childs_id.push(_id);
 
         await commit('SET_DOCS_TO', {
-            docs: existingDoc,
+            docs: [existingDoc],
             list: 'newDocs',
             merge: true,
             deleteRoot: true

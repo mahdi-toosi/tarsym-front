@@ -77,27 +77,7 @@
 								</button>
 							</li>
 						</ul>
-						<div class="addNewLayerBox">
-							<v-select
-								:options="searchBoxOptions"
-								@search="onSearch"
-								v-model="searchedDoc"
-								:filterable="false"
-								label="title"
-								placeholder="جستجو ..."
-								dir="rtl"
-								class="seachBoxForLayer"
-							>
-								<template slot="no-options">داکیومنتی با این عنوان به ثبت نرسیده...</template>
-								<template slot="option" slot-scope="option">
-									<div class="seachBoxForLayerOption">
-										<h4>{{ option.title }}</h4>
-										<p>{{ option.excerpt }}</p>
-									</div>
-								</template>
-							</v-select>
-							<button @click="addChild()" class="btn btn-blue addNewLayer">+</button>
-						</div>
+						<add-new-layer-box @childAdded=" tabContent = 'tools' " />
 					</div>
 				</div>
 			</section>
@@ -117,6 +97,7 @@ import newPoint from "@/components/newDoc/newPoint";
 import newPolygon from "@/components/newDoc/newPolygon";
 import newPolyline from "@/components/newDoc/newPolyline";
 import newTextBox from "@/components/newDoc/newTextBox";
+import addNewLayerBox from "@/components/newDoc/addNewLayerBox";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -135,8 +116,6 @@ export default {
 			["clean"],
 		];
 		return {
-			searchBoxOptions: [],
-			searchedDoc: [],
 			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
@@ -157,47 +136,7 @@ export default {
 			"update_this_doc",
 			"get_childs",
 			"get_All_Taxanomies",
-			"addExistingDoc",
 		]),
-		async addChild() {
-			if (this.searchedDoc._id) {
-				await this.addExistingDoc(this.searchedDoc._id);
-			} else {
-				await this.addNewDoc(false);
-			}
-			this.tabContent = "tools";
-		},
-		async onSearch(search, loading) {
-			if (!search.trim()) return;
-			loading(true);
-			this.searchRequest(search, loading, this);
-		},
-		searchRequest: debounce(async (search, loading, vm) => {
-			const url = `/search/${search}`,
-				params = { params: { forLayers: true } };
-			await vm.$axios
-				.get(url, params)
-				.then(async (res) => {
-					const filteredData = await vm.filterSearchedData(res.data);
-					vm.searchBoxOptions = filteredData;
-					loading(false);
-				})
-				.catch((error) => {
-					vm.$store.dispatch("handleAxiosError", error);
-					loading(false);
-				});
-		}, 1500),
-		async filterSearchedData(searchedData) {
-			let filteredData = [];
-			await searchedData.forEach((data) => {
-				const newDocs = this.$store.state.newDocs;
-				const alreadyThere = newDocs.filter(
-					(doc) => doc._id == data._id
-				);
-				if (!alreadyThere.length) filteredData.push(data);
-			});
-			return filteredData;
-		},
 		lastAddedDocID() {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
@@ -265,36 +204,7 @@ export default {
 		newPolygon,
 		newPolyline,
 		newTextBox,
+		addNewLayerBox,
 	},
 };
-function debounce(func, wait, immediate) {
-	var timeout;
-	return function () {
-		var context = this,
-			args = arguments;
-		var later = function () {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-}
 </script>
-
-<style scoped lang="stylus">
-.tools {
-	padding: 0px;
-}
-
-.addNewLayerBox {
-	display: flex;
-
-	.seachBoxForLayer {
-		width: 70%;
-		margin: auto;
-	}
-}
-</style>

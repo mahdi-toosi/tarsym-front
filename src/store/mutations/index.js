@@ -2,6 +2,9 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
+    CHANGE_SEARCH_POLYGON_SITUATION(state) {
+        state.searchPolygon.isOn = !state.searchPolygon.isOn
+    },
     SET_USER(state, user) {
         state.user = user
     },
@@ -88,7 +91,7 @@ export default {
         if (state[list].data) {
             state[list].data = state[list].data.concat(docs.data)
             return
-        } else state[list] = state[list].concat(docs.data)
+        } else state[list] = state[list].concat(docs.data || docs)
     },
     mapCenterUpdated(state, coordinates) {
         state.map.center = coordinates;

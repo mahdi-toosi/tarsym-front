@@ -44,8 +44,11 @@ export default {
         const childs_ID = getters.DocLayer.childs_id
         let All_childs = []
         childs_ID.forEach(_id => {
-            const condition = (doc) => doc._id == _id
-            const childs = getters.docs_list.filter(condition);
+            const childs = getters.docs_list.filter(doc => {
+                // console.log('doc => ', doc);
+                if (!doc) return false
+                return doc._id == _id
+            });
             All_childs = All_childs.concat(childs)
         });
         return All_childs

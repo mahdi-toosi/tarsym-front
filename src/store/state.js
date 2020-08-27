@@ -21,5 +21,11 @@ export default {
         MouseCoordinate: null,
         center: ["32.879587173066305", "54.01105444025955"],
     },
+    searchPolygon: {
+        coordinates: [],
+        color: "#23A9AEFF",
+        secondaryColor: "#23A9AEFF",
+        isOn: false
+    },
     user: {},
 };
