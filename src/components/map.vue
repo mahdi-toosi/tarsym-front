@@ -159,7 +159,7 @@
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
-				v-if="!DocProp.OnTool.condition"
+				v-if="!DocProp.OnTool.condition && !searchPolygon.isOn"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
 				<a @click="undoTools" v-if="undoCondition">

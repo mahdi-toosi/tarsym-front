@@ -405,5 +405,28 @@ export default {
             merge: true,
             deleteRoot: true
         })
+    },
+    async searchData(store) {
+        const route = router.currentRoute
+        const url = "/searchInDocs";
+        const options = {
+            params: {}
+        };
+        if (route.query.area) options.params.area = route.query.area
+        if (route.query.text) options.params.text = route.query.text
+        await axios
+            .get(url, options)
+            .then((response) =>
+                console.log("response.data => ", response.data)
+            )
+            .catch((error) => {
+                if (error == "Error: Request failed with status code 415") {
+                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...", {
+                        icon: "fa-times-circle",
+                    });
+                    return;
+                }
+                store.dispatch("handleAxiosError", error);
+            });
     }
 }

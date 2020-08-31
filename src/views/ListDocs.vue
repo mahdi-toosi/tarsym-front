@@ -70,8 +70,7 @@ import searchField from "@/components/searchField";
 import { mapActions } from "vuex";
 
 export default {
-	name: "all-Docs",
-
+	name: "ListDocs",
 	computed: {
 		allDocs() {
 			return this.$store.state.allDocs;
@@ -88,6 +87,7 @@ export default {
 			"Delete_this_Document",
 			"read_this_doc",
 			"get_All_Taxanomies",
+			"searchData",
 		]),
 	},
 	filters: {
@@ -100,13 +100,12 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(async (vm) => {
-			const condition =
-				from.name == "create doc" ||
-				from.name == "update doc" ||
-				!vm.$store.state.allDocs.data.length;
-			if (condition) {
+			if (from.name == "create doc" || from.name == "update doc")
 				await vm.get_All_Taxanomies(false); //* withCache = false
+			if (to.name == "all docs" || to.name == "my docs")
 				await vm.getAllDocs();
+			if (to.name == "search") {
+				await vm.searchData();
 			}
 		});
 	},

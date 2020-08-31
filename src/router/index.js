@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const routes = [{
         path: "/",
         name: "all docs",
-        component: () => import("../views/allDocs.vue"),
+        component: () => import("../views/ListDocs.vue"),
         meta: {
             requiresAuth: true,
         },
@@ -39,7 +39,7 @@ const routes = [{
     }, {
         path: "/my-docs",
         name: "my docs",
-        component: () => import("../views/allDocs.vue"),
+        component: () => import("../views/ListDocs.vue"),
         meta: {
             requiresAuth: true,
         },
@@ -47,6 +47,13 @@ const routes = [{
         path: "/read/:_id",
         name: "read doc",
         component: () => import("../views/R-Doc.vue"),
+        meta: {
+            requiresAuth: true,
+        },
+    }, {
+        path: "/search",
+        name: "search",
+        component: () => import("../views/ListDocs.vue"),
         meta: {
             requiresAuth: true,
         },

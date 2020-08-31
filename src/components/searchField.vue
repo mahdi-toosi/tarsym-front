@@ -38,15 +38,22 @@ export default {
 	},
 	methods: {
 		fetchSearchResult() {
-			// console.log(this.search.length);
-			const url = "/search/" + this.search;
-			this.$axios
-				.get(url)
-				// .then(response => (this.results = response.data))
-				.then((response) => console.log(response.data))
-				.catch((error) => {
-					console.log(error);
+			const query = {};
+			const searchedText = new String(this.search.trim());
+			if (searchedText.length > 4) query.text = this.search.trim();
+
+			const polygonCoordinates = this.$store.state.searchPolygon
+				.coordinates;
+			if (polygonCoordinates.length > 2) {
+				query.area = [];
+				polygonCoordinates.forEach((coordinate) => {
+					query.area.push(coordinate.lat);
+					query.area.push(coordinate.lng);
 				});
+			}
+			this.$router.push({ path: "search", query });
+			if (this.$router.currentRoute.name == "search")
+				this.$store.dispatch("searchData");
 		},
 	},
 	computed: {

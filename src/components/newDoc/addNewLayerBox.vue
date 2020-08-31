@@ -32,10 +32,10 @@ export default {
 	},
 	methods: {
 		searchRequest: debounce(async (search, loading, vm) => {
-			const url = `/search/${search}`,
-				params = { params: { forLayers: true } };
+			const url = `/searchInDocs`,
+				options = { params: { text: search, forLayers: true } };
 			await vm.$axios
-				.get(url, params)
+				.get(url, options)
 				.then(async (res) => {
 					const filteredData = await vm.filterSearchedData(res.data);
 					vm.searchBoxOptions = filteredData;
@@ -48,6 +48,7 @@ export default {
 		}, 1500),
 		async filterSearchedData(searchedData) {
 			let filteredData = [];
+			if (!searchedData.length) return filteredData;
 			await searchedData.forEach((data) => {
 				const newDocs = this.$store.state.newDocs;
 				const alreadyThere = newDocs.filter(
