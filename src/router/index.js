@@ -58,6 +58,9 @@ const routes = [{
             requiresAuth: true,
         },
     }, {
+        path: "/create",
+        redirect: '/create/forward'
+    }, {
         path: "*",
         name: "404 page",
         component: () => import("../views/404.vue")
@@ -80,16 +83,13 @@ router.beforeEach(async (to, from, next) => {
         }
         next('/Auth')
     }
-    if (to.fullPath == "/create" || to.fullPath == "/create/") {
-        await router.push('/create/forward')
-        return
-    }
     next()
 });
 
 router.afterEach(async (to) => {
     if (to.name == "create doc" || to.name == "update doc" || to.name == "read doc") {
-        if (store.state.newDocs.length) store.commit('UPDATE_DOC_INDEX');
+        if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
+        await store.commit('CHANGE_MAP_LAYERS')
     }
 });
 

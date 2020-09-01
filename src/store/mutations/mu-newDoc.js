@@ -3,6 +3,19 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
+    CHANGE_MAP_LAYERS(state) {
+        const doc = docLayer(state)
+        if (!doc) return
+        state.map.tileProviders.forEach((tileProvider, index) => {
+            if (doc.layerIndex == index) tileProvider.visible = true
+            else tileProvider.visible = false
+        });
+    },
+    CHANGE_LAYER_INDEX(state, layerIndex) {
+        const routeName = router.currentRoute.name
+        if (routeName == 'create doc' || routeName == 'update doc')
+            docLayer(state).layerIndex = layerIndex;
+    },
     async REMOVE_THIS_DOC(state, _id) {
         if (state.allDocs.data) {
             let Docs = state.allDocs.data;
@@ -152,8 +165,7 @@ export default {
             obj.angle = 0
             obj.iconRepeat = 30
         }
-        const thisLayer = state.newDocs[state.DocProp.index]
-        thisLayer.tools.push(obj);
+        docLayer(state).tools.push(obj);
     },
     OFF_THE_ON_TOOL(state) {
         const onTool = state.DocProp.OnTool
@@ -181,9 +193,7 @@ export default {
         const coordinates = [clicked.lat, clicked.lng];
         const index = state.DocProp.OnTool.index
         if (index < 0) return
-        const thisLayer = state.newDocs[state.DocProp.index]
-        const thisPoint = thisLayer.tools[index];
-        thisPoint.coordinates = coordinates;
+        docLayer(state).tools[index].coordinates = coordinates;
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id
@@ -211,12 +221,13 @@ export default {
                 day: "01"
             },
             childs_id: [],
+            zoom: 4,
+            layerIndex: 0
         };
         if (root) {
             newDocObj.tags = []
             newDocObj.categories = []
             newDocObj.root = true
-            newDocObj.zoom = 4
         }
         state.newDocs.push(newDocObj)
     },

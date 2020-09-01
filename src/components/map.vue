@@ -15,7 +15,7 @@
 		>
 			<l-control-layers position="bottomright"></l-control-layers>
 			<l-tile-layer
-				v-for="tileProvider in tileProviders"
+				v-for="tileProvider in map.tileProviders"
 				:key="tileProvider.name"
 				:name="tileProvider.name"
 				:visible="tileProvider.visible"
@@ -213,35 +213,6 @@ export default {
 			popupAnchor: [4, -25],
 		});
 		return {
-			tileProviders: [
-				{
-					name: "اُپن استریت مپ",
-					visible: true,
-					url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-				},
-				{
-					name: "توپولوژی",
-					visible: false,
-					url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-				},
-				{
-					name: "هوایی",
-					visible: false,
-					url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-				},
-				{
-					name: "گوگل مپ",
-					visible: false,
-					url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
-				},
-				{
-					name: "هوایی به همراه نام ها",
-					visible: false,
-					url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-				},
-			],
-			openStreetTileURL:
-				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			CircleIcon,
 			defaultIcon,
 		};
@@ -291,7 +262,11 @@ export default {
 		},
 	},
 	methods: {
-		...mapMutations(["mapCenterUpdated", "UPDATE_THIS_POINT_COORDINATE"]),
+		...mapMutations([
+			"mapCenterUpdated",
+			"UPDATE_THIS_POINT_COORDINATE",
+			"CHANGE_LAYER_INDEX",
+		]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
 		},
@@ -351,10 +326,16 @@ export default {
 			(event) => {
 				const doc = event.detail;
 				if (doc.coordinates)
-					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom + 1);
+					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom + 2);
 			},
 			false
 		);
+		mapObject.on("baselayerchange", (Layer) => {
+			const layerIndex = this.map.tileProviders.findIndex(
+				(el) => el.name == Layer.name
+			);
+			this.CHANGE_LAYER_INDEX(layerIndex);
+		});
 	},
 	components: {
 		LMap,

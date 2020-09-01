@@ -67,8 +67,7 @@ export default {
 
         const fake_id = new Date().getTime();
         if (!root) {
-            const docLayer = state.newDocs[state.DocProp.index];
-            docLayer.childs_id.push(fake_id);
+            docLayer(state).childs_id.push(fake_id);
         }
         await commit('SET_NEW_DOCUMENT', {
             fake_id,
@@ -90,8 +89,7 @@ export default {
 
         const existingDoc = await dispatch('get_this_docs', _id)
         if (!existingDoc) return false
-        const docLayer = state.newDocs[state.DocProp.index];
-        docLayer.childs_id.push(_id);
+        docLayer(state).childs_id.push(_id);
 
         await commit('SET_DOCS_TO', {
             docs: [existingDoc],
