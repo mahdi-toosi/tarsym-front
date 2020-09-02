@@ -66,16 +66,13 @@ export default {
         await commit('UPDATE_ON_TOOL');
 
         const fake_id = new Date().getTime();
-        const payload = {
-            fake_id,
-            root,
-        }
         if (!root) {
-            const father_doc = docLayer(state)
-            father_doc.childs_id.push(fake_id);
-            payload.date_props = father_doc.date_props
+            docLayer(state).childs_id.push(fake_id);
         }
-        await commit('SET_NEW_DOCUMENT', payload)
+        await commit('SET_NEW_DOCUMENT', {
+            fake_id,
+            root
+        })
 
         const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${fake_id}`;
         await router.push(path);

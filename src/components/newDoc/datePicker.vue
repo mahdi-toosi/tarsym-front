@@ -1,12 +1,12 @@
 <template>
 	<div class="date_time_picker_wrapper">
-		<button @click="showPicker()">
-			{{showDateForOprator}}
-			<span v-if="/[-]/.test(picked.year)">-</span>
+		<button @click="showPicker()" :class="[ picked.year && picked.month ? '' : 'btn-red' ]">
+			{{
+			picked.month && picked.year ?
+			`${ picked.day } / ${ picked.month } / ${ picked.year }` :
+			'تاریخ'
+			}}
 		</button>
-		<span class="clearDate" v-if="picked.month != '00' " @click="$store.commit('CLEAR_DATE')">
-			<i class="fas fa-times"></i>
-		</span>
 		<div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
 			<header>
 				<ul class="pages">
@@ -141,17 +141,6 @@ export default {
 		};
 	},
 	computed: {
-		showDateForOprator() {
-			const picked = this.picked;
-			if (!picked.year) return "تاریخ";
-			if (picked.month == "00")
-				return `سال ${picked.year.replace(/[-]/gi, "")}`;
-			else
-				return `
-				${picked.day} / 
-				${picked.month} / 
-				${picked.year.replace(/[-]/gi, "")}`;
-		},
 		picked() {
 			return this.$store.state.newDocs[this.docLayer].date_props;
 		},
@@ -159,7 +148,7 @@ export default {
 			const pickedMonth = Number(this.picked.month - 1);
 			const calendarCurentType = this.calendar.curentType;
 			const name = this.calendar.types[calendarCurentType].months[
-				pickedMonth == -1 ? 0 : pickedMonth
+				pickedMonth
 			].name;
 			return name;
 		},

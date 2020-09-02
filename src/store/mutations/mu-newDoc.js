@@ -3,8 +3,6 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
-<<<<<<< HEAD
-=======
     CLEAR_DATE(state) {
         docLayer(state).date_props = {
             century: null,
@@ -44,16 +42,11 @@ export default {
         if (routeName == 'create doc' || routeName == 'update doc')
             docLayer(state).layerIndex = layerIndex;
     },
->>>>>>> addCategory
     async REMOVE_THIS_DOC(state, _id) {
         if (state.allDocs.data) {
             let Docs = state.allDocs.data;
             let doc_index = await Docs.findIndex(doc => doc._id == _id);
-<<<<<<< HEAD
-            if (doc_index >= 0) Docs.splice(doc_index, 1)
-=======
             if (doc_index > -1) Docs.splice(doc_index, 1)
->>>>>>> addCategory
         }
 
         let Docs = state.newDocs
@@ -66,18 +59,11 @@ export default {
             return
         } else {
             let childs_index = []
-<<<<<<< HEAD
-            doc.childs_id.forEach(async child_id => {
-                const doc_index = await Docs.findIndex(doc => doc._id == child_id)
-                if (doc_index > 0) childs_index.push(doc_index)
-            });
-=======
             for (let index = 0; index < doc.childs_id.length; index++) {
                 const child_id = doc.childs_id[index];
                 const doc_index = await Docs.findIndex(doc => doc._id == child_id)
                 if (doc_index > -1) childs_index.push(doc_index)
             }
->>>>>>> addCategory
             if (!childs_index.length) return
             for (let index = 0; index < childs_index.length; index++) {
                 const child_index = childs_index[index];
@@ -237,13 +223,8 @@ export default {
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id
-<<<<<<< HEAD
-        const routeName = router.currentRoute.name
-        console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
-=======
         // const routeName = router.currentRoute.name
         // console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
->>>>>>> addCategory
         const Docs = state.newDocs
         const thisObject = (obj) => obj._id == doc_id
         const index = Docs.findIndex(thisObject);
@@ -252,8 +233,7 @@ export default {
     },
     SET_NEW_DOCUMENT(state, {
         fake_id,
-        root,
-        date_props
+        root
     }) {
         const newDocObj = {
             _id: fake_id,
@@ -261,11 +241,11 @@ export default {
             description: "",
             tools: [],
             location: {},
-            date_props: date_props || {
+            date_props: {
                 century: null,
                 year: null,
-                month: "00",
-                day: "00"
+                month: "01",
+                day: "01"
             },
             childs_id: [],
             zoom: 4,
