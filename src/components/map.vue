@@ -6,9 +6,9 @@
 			:zoom="map.zoom"
 			:center="map.center"
 			@click="setClickCoordinates"
-			@update:zoom="zoomUpdated"
+			@update:zoom="UPDATE_MAP_ZOOM"
 			:options="{ zoomControl: false }"
-			@update:center="mapCenterUpdated"
+			@update:center="UPDATE_MAP_CENTER"
 			@mousemove="setMouseCoordinate"
 			:minZoom="4"
 			ref="LeafletMap"
@@ -263,9 +263,10 @@ export default {
 	},
 	methods: {
 		...mapMutations([
-			"mapCenterUpdated",
+			"UPDATE_MAP_CENTER",
 			"UPDATE_THIS_POINT_COORDINATE",
 			"CHANGE_LAYER_INDEX",
+			"UPDATE_MAP_ZOOM",
 		]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
@@ -296,12 +297,10 @@ export default {
 			const path = `/${pathThing}/${_id}`;
 			if (path != currentRoute.fullPath) router.push(path);
 		},
-		setMouseCoordinate(m) {
-			this.map.MouseCoordinate = m.latlng;
+		setMouseCoordinate(coordinates) {
+			this.map.MouseCoordinate = coordinates.latlng;
 		},
-		zoomUpdated(zoomLevel) {
-			this.map.zoom = zoomLevel;
-		},
+
 		undoTools() {
 			if (this.searchPolygon.isOn) {
 				this.searchPolygon.coordinates.pop();
@@ -326,7 +325,10 @@ export default {
 			(event) => {
 				const doc = event.detail;
 				if (doc.coordinates)
-					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom + 2);
+					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom);
+				else {
+					mapObject.flyTo(doc.location.coordinates, doc.zoom);
+				}
 			},
 			false
 		);

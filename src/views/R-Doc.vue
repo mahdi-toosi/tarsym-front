@@ -57,9 +57,6 @@ export default {
 			return `${year}/${month}/${day}`;
 		},
 	},
-	created() {
-		this.read_this_doc();
-	},
 	mounted() {},
 	components: {},
 };

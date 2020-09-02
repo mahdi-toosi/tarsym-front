@@ -93,7 +93,4 @@ export default {
             return
         } else state[list] = state[list].concat(docs.data || docs)
     },
-    mapCenterUpdated(state, coordinates) {
-        state.map.center = coordinates;
-    },
 }

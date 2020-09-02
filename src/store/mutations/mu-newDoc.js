@@ -3,6 +3,24 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
+    UPDATE_MAP_ZOOM(state, zoomLevel) {
+        state.map.zoom = zoomLevel;
+        const routeName = router.currentRoute.name
+        if (routeName == 'create doc' || routeName == 'update doc') {
+            const doc = docLayer(state)
+            if (!doc.root) doc.zoom = zoomLevel
+        }
+    },
+    UPDATE_MAP_CENTER(state, coordinates) {
+        state.map.center = coordinates;
+        const routeName = router.currentRoute.name
+        if (routeName == 'create doc' || routeName == 'update doc') {
+            const doc = docLayer(state)
+            //  TODO => edit this line to this => doc.location.coordinates = coordinates
+            doc.location = {}
+            doc.location.coordinates = coordinates
+        }
+    },
     CHANGE_MAP_LAYERS(state) {
         const doc = docLayer(state)
         if (!doc) return
@@ -214,6 +232,7 @@ export default {
             title: "",
             description: "",
             tools: [],
+            location: {},
             date_props: {
                 century: null,
                 year: null,

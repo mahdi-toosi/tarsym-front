@@ -91,6 +91,8 @@ router.afterEach(async (to) => {
         if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
         await store.commit('CHANGE_MAP_LAYERS')
     }
+    if (to.name == "read doc")
+        await store.dispatch('read_this_doc')
 });
 
 function set_user_if_exist() {

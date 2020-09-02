@@ -300,7 +300,7 @@ export default {
             // * create searcheable coordinate
             const this_tool = obj => obj.searchable == true
             const searchable_tool_index = doc.tools.findIndex(this_tool)
-            doc.coordinates = {
+            doc.location = {
                 type: "Point",
                 coordinates: doc.tools[searchable_tool_index].coordinates
             }
@@ -335,6 +335,7 @@ export default {
 
         // *  make junk field
         const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description', 'layerIndex']
+        if (!doc.root) clear_this_items.push('location')
         clear_this_items.forEach(element => {
             if (doc[element]) {
                 doc.junk[element] = doc[element];
@@ -373,15 +374,14 @@ export default {
         });
     },
     // !  read_this_doc
-    async read_this_doc(store) {
-        const _id = router.currentRoute.params._id
+    async read_this_doc(store, id) {
+        const _id = id || router.currentRoute.params._id
         let doc, whitoutDecode;
         if (store.state.allDocs.data.length) {
             doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]
-            whitoutDecode = true
-        } else {
-            doc = await store.dispatch('get_this_docs', _id);
+            if (doc) whitoutDecode = true
         }
+        if (!doc) doc = await store.dispatch('get_this_docs', _id);
 
         if (!doc) return
         document.dispatchEvent(
@@ -389,6 +389,7 @@ export default {
                 detail: doc
             })
         );
+
         await store.commit('SET_DOCS_TO', {
             docs: [doc],
             list: 'readDoc',

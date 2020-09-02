@@ -85,7 +85,6 @@ export default {
 			"getAllDocs",
 			"addNewDoc",
 			"Delete_this_Document",
-			"read_this_doc",
 			"get_All_Taxanomies",
 			"searchData",
 		]),
@@ -100,6 +99,7 @@ export default {
 	},
 	beforeRouteEnter(to, from, next) {
 		next(async (vm) => {
+			vm.$store.state.map.zoom = 5;
 			if (from.name == "create doc" || from.name == "update doc")
 				await vm.get_All_Taxanomies(false); //* withCache = false
 			if (to.name == "all docs" || to.name == "my docs")

@@ -8,12 +8,12 @@ export default {
     },
     DocWithChildsTools: (state, getters) => {
         const routeName = state.route.name,
-            editMode = routeName == 'update doc' || routeName == 'create doc' || routeName == 'read doc',
-            showMode = routeName == 'my docs' || routeName == 'all docs',
+            DocWithChildsToolsRoutes = routeName == 'update doc' || routeName == 'create doc' || routeName == 'read doc',
+            DocWithMarkerRoutes = routeName == 'my docs' || routeName == 'all docs',
             map_ZL = state.map.zoom,
             currentList = getters.docs_list;
         let tools = []
-        if (showMode) {
+        if (DocWithMarkerRoutes) {
             currentList.forEach(doc => {
                 const doc_ZL = doc.zoom
                 if (doc.root && doc_ZL <= map_ZL) {
@@ -23,7 +23,7 @@ export default {
                 }
             });
             return tools
-        } else if (editMode) {
+        } else if (DocWithChildsToolsRoutes) {
             const docLayer = getters.DocLayer
             const doc_ZL = docLayer.zoom
             if (docLayer.root ? doc_ZL <= map_ZL : true) {
