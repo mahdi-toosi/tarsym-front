@@ -3,14 +3,6 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
-    CLEAR_DATE(state) {
-        docLayer(state).date_props = {
-            century: null,
-            year: null,
-            month: "00",
-            day: "00"
-        }
-    },
     UPDATE_MAP_ZOOM(state, zoomLevel) {
         state.map.zoom = zoomLevel;
         const routeName = router.currentRoute.name

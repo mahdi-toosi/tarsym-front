@@ -12,7 +12,7 @@
 		<article class="point readPoint" v-if="DocLayer">
 			<header>
 				<h1 v-text="DocLayer.title"></h1>
-				<time v-html="filterdate(DocLayer.date) "></time>
+				<time>{{ DocLayer.date | date }}</time>
 			</header>
 			<main v-html="DocLayer.description"></main>
 			<footer>
@@ -48,7 +48,10 @@ export default {
 		hasHistory() {
 			return window.history.length > 2;
 		},
+<<<<<<< HEAD
 		filterdate() {},
+=======
+>>>>>>> parent of 34d2a71... date module improved and bugs fixed , color picker module improved ,,,
 	},
 	filters: {
 		date(val) {
