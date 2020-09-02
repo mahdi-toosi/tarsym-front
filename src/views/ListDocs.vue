@@ -33,7 +33,7 @@
 						<a href="#" v-text="doc.title"></a>
 						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
-					<time>{{ doc.date | date }}</time>
+					<time v-html="filterdate(doc.date)"></time>
 					<button
 						class="editDoc"
 						@click="$router.push(`/update/${doc._id}`)"
@@ -88,13 +88,17 @@ export default {
 			"get_All_Taxanomies",
 			"searchData",
 		]),
-	},
-	filters: {
-		date(val) {
+		filterdate(val) {
 			const day = String(val).slice(-2);
 			const month = String(val).slice(-4, -2);
 			const year = String(val).slice(0, -4);
-			return `${year}/${month}/${day}`;
+			const yearIsNegetive = /[-]/.test(year);
+			const currectYear = yearIsNegetive
+				? year.replace(/[-]/gi, "")
+				: year;
+			return `${day}/${month}/${currectYear}${
+				yearIsNegetive ? "<span>-</span>" : ""
+			}`;
 		},
 	},
 	beforeRouteEnter(to, from, next) {

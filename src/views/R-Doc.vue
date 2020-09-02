@@ -12,7 +12,7 @@
 		<article class="point readPoint" v-if="DocLayer">
 			<header>
 				<h1 v-text="DocLayer.title"></h1>
-				<time>{{ DocLayer.date | date }}</time>
+				<time v-html="filterdate(DocLayer.date) "></time>
 			</header>
 			<main v-html="DocLayer.description"></main>
 			<footer>
@@ -48,13 +48,17 @@ export default {
 		hasHistory() {
 			return window.history.length > 2;
 		},
-	},
-	filters: {
-		date(val) {
+		filterdate(val) {
 			const day = String(val).slice(-2);
 			const month = String(val).slice(-4, -2);
 			const year = String(val).slice(0, -4);
-			return `${year}/${month}/${day}`;
+			const yearIsNegetive = /[-]/.test(year);
+			const currectYear = yearIsNegetive
+				? year.replace(/[-]/gi, "")
+				: year;
+			return `${day}/${month}/${currectYear}${
+				yearIsNegetive ? "<span>-</span>" : ""
+			}`;
 		},
 	},
 	mounted() {},
