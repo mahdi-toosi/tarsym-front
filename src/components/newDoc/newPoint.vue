@@ -20,9 +20,10 @@
 				title="لول زوم 4 بیشترین مقدار زوم است"
 			>
 				<option :value="4">1</option>
-				<option :value="8">2</option>
-				<option :value="11">3</option>
-				<option :value="15">4</option>
+				<option :value="6">2</option>
+				<option :value="8">3</option>
+				<option :value="10">4</option>
+				<option :value="13">5</option>
 			</select>
 
 			<button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
@@ -105,7 +106,7 @@ export default {
 		},
 		zoomLevel: {
 			get() {
-				return this.$store.state.newDocs[0].zoom;
+				return this.DocLayer.zoom;
 			},
 			set(val) {
 				this.SET_ZOOM_LEVEL(val);

@@ -155,6 +155,8 @@
 				/>
 			</div>
 
+			<v-geosearch :options="geosearchOptions"></v-geosearch>
+
 			<l-control-zoom position="bottomright"></l-control-zoom>
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
@@ -187,6 +189,9 @@ import {
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 import polylineDecorator from "@/components/polyline-decorator";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import VGeosearch from "vue2-leaflet-geosearch";
+import "leaflet-geosearch/assets/css/leaflet.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 export default {
 	name: "leaflet-oprator-map",
@@ -215,6 +220,18 @@ export default {
 		return {
 			CircleIcon,
 			defaultIcon,
+			geosearchOptions: {
+				position: "topright",
+				// Important part Here
+				provider: new OpenStreetMapProvider(),
+				showMarker: true,
+				marker: {
+					// optional: L.Marker    - default L.Icon.Default
+					icon: defaultIcon,
+				},
+				searchLabel: "جستجو در نقشه ...",
+				autoClose: true,
+			},
 		};
 	},
 	computed: {
@@ -324,11 +341,8 @@ export default {
 			"showThisDoc",
 			(event) => {
 				const doc = event.detail;
-				if (doc.coordinates)
-					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom);
-				else {
-					mapObject.flyTo(doc.location.coordinates, doc.zoom);
-				}
+				if (doc.location)
+					mapObject.flyTo(doc.location.coordinates, doc.zoom + 2);
 			},
 			false
 		);
@@ -338,6 +352,16 @@ export default {
 			);
 			this.CHANGE_LAYER_INDEX(layerIndex);
 		});
+		// edit search in map
+		setTimeout(() => {
+			const button = document.querySelector(
+				".leaflet-control-geosearch .reset"
+			);
+			button.innerHTML = "";
+			const closeIcon = document.createElement("i");
+			closeIcon.classList.add("fas", "fa-times");
+			button.appendChild(closeIcon);
+		}, 2000);
 	},
 	components: {
 		LMap,
@@ -352,6 +376,7 @@ export default {
 		polylineDecorator,
 		LTooltip,
 		LControlLayers,
+		VGeosearch,
 	},
 };
 </script>

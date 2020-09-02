@@ -23,6 +23,29 @@
         margin-right: -0.4rem !important;
 
 //  Text box tool
+// quill editor
+.ql-snow
+    border none !important
+    font-family: iranSans
+    padding: 0px
+.ql-container>.ql-editor
+    direction: rtl
+    text-align: right
+    font-family: 'iranSans'
+    color: #0b0b0b
+    font-size: 15px
+    min-height: 100px
+    max-height: 250px
+    padding: 5px 2px;
+.ql-editor.ql-blank::before
+    right 4px !important
+.ql-toolbar
+    text-align: center 
+.ql-formats
+    margin-right: 0px !important
+    margin-left: 5px 
+.ql-picker-label
+    text-align: left
 // .bubble 
 //     overflow hidden
 //     border-radius: 10px
@@ -51,14 +74,15 @@
 
 //  map
 .map 
-	height: 100vh !important;
-	width: 60% !important;
-	position: relative;
-	overflow: hidden;
-	margin-right: auto;
-	outline: none;
-	// border: red dashed 1px;
-	direction: ltr;
+    font-family: iranSans
+    height: 100vh !important;
+    width: 60% !important;
+    position: relative;
+    overflow: hidden;
+    margin-right: auto;
+    outline: none;
+    // border: red dashed 1px;
+    direction: ltr;
 
 .leaflet-control-layers
     transition: .3s
@@ -94,30 +118,6 @@
 .leaflet-control-attribution
     display none
 
-// quill editor
-.ql-snow
-    border none !important
-    font-family: iranSans
-    padding: 0px
-.ql-container>.ql-editor
-    direction: rtl
-    text-align: right
-    font-family: 'iranSans'
-    color: #0b0b0b
-    font-size: 15px
-    min-height: 100px
-    max-height: 250px
-    padding: 5px 2px;
-.ql-editor.ql-blank::before
-    right 4px !important
-.ql-toolbar
-    text-align: center 
-.ql-formats
-    margin-right: 0px !important
-    margin-left: 5px 
-.ql-picker-label
-    text-align: left
-
 // easy Print for map
 .leaflet-control-easyPrint-button-export
     display none !important
@@ -144,3 +144,31 @@
         text-align: center !important
         text-decoration: none !important
         color: black !important
+
+.leaflet-control-geosearch
+    input
+        direction: rtl
+        padding-right: 2px;
+    form 
+        right: 23px !important;
+        max-width: 40vw;
+    .results
+        direction: rtl
+    a.reset
+        right unset 
+        left 0px
+        color: #959595;
+        line-height: 29px;
+        font-size: 15px
+        &:hover
+            color: red
+    a.leaflet-bar-part:after
+        top: 5px;
+        left: 5px;
+        height: 14px;
+        width: 14px;
+        background: white;
+    a.leaflet-bar-part:before 
+        top: 17px;
+        left: 13px;
+        width: 10px;
