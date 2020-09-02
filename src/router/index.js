@@ -83,10 +83,6 @@ router.beforeEach(async (to, from, next) => {
         }
         next('/Auth')
     }
-    if (to.fullPath == "/create" || to.fullPath == "/create/") {
-        await router.push('/create/forward')
-        return
-    }
     next()
 });
 

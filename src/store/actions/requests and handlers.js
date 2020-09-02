@@ -59,11 +59,7 @@ export default {
 
         const url = `/documents/${_id}`
         const newID = await axios.delete(url).then(res => {
-<<<<<<< HEAD
-            if (res.status == 200) commit('REMOVE_THIS_DOC', _id)
-=======
             commit('REMOVE_THIS_DOC', _id)
->>>>>>> addCategory
             return res // remember this set value for newID
         }).catch(error => {
             dispatch('handleAxiosError', error)
@@ -158,11 +154,7 @@ export default {
                 return
             }
         }
-<<<<<<< HEAD
-        const url = `/tags`,
-=======
         const url = `/taxonomies`,
->>>>>>> addCategory
             options = {
                 params: {
                     $limit: 50,
@@ -170,21 +162,10 @@ export default {
                 }
             };
         axios.get(url, options).then(res => {
-<<<<<<< HEAD
-            if (res.status == 200) {
-                res.data.date = new Date()
-                localStorage.setItem("allTags", JSON.stringify(res.data));
-                commit('SET_ALL_TAGS', res.data)
-            }
-        }).catch(error => {
-            dispatch('handleAxiosError', error)
-        })
-=======
             res.data.date = new Date()
             localStorage.setItem("Taxonomies", JSON.stringify(res.data));
             commit('SET_CHOSEN_TAXONOMIES', res.data)
         }).catch(error => dispatch('handleAxiosError', error))
->>>>>>> addCategory
     },
     // !  getAllDocs
     async getAllDocs({
@@ -262,11 +243,7 @@ export default {
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
                     const routeName = currentRoute.name
-<<<<<<< HEAD
-                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ thisDoc._id }`;
-=======
                     const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ docLayer._id }`;
->>>>>>> addCategory
                     await router.push(path);
                     toastObject.goAway(0);
                 }
@@ -274,11 +251,7 @@ export default {
             errors.forEach(msg => {
                 Vue.toasted.error(msg, {
                     icon: "fa-times-circle",
-<<<<<<< HEAD
-                    action: currentRoute.params._id == thisDoc._id ? false : action
-=======
                     action: currentRoute.params._id == docLayer._id ? [] : action
->>>>>>> addCategory
                 });
             });
             return false
@@ -401,13 +374,8 @@ export default {
         });
     },
     // !  read_this_doc
-<<<<<<< HEAD
-    async read_this_doc(store) {
-        const _id = router.currentRoute.params._id
-=======
     async read_this_doc(store, id) {
         const _id = id || router.currentRoute.params._id
->>>>>>> addCategory
         let doc, whitoutDecode;
         if (store.state.allDocs.data.length) {
             doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]

@@ -154,13 +154,8 @@ export default {
 		// },
 	},
 	computed: {
-<<<<<<< HEAD
-		...mapState(["newDocs", "DocProp", "allTags"]),
-		...mapGetters(["DocLayer", "DocChilds"]),
-=======
 		...mapState(["newDocs", "DocProp", "taxonomies"]),
 		...mapGetters(["DocLayer", "DocChilds", "validCategories"]),
->>>>>>> addCategory
 		newPointTitle: {
 			get() {
 				return this.DocLayer.title;

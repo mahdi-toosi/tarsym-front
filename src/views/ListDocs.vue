@@ -6,24 +6,7 @@
 				<i class="fas fa-plus" />
 			</a>
 		</header>
-<<<<<<< HEAD:src/views/allDocs.vue
-		<section class="searchbar shadow">
-			<div class="searchInput">
-				<input
-					type="search"
-					placeholder="جستجو"
-					class="searchBox"
-					v-model.lazy="search"
-					v-debounce="delay"
-				/>
-				<a href="#">
-					<i class="fas fa-search" />
-				</a>
-			</div>
-		</section>
-=======
 		<search-field />
->>>>>>> addCategory:src/views/ListDocs.vue
 		<section class="points">
 			<span v-if="!allDocs.data.length" class="notingToShow">داکیومنتی برای نمایش دادن نیست</span>
 			<div
@@ -50,7 +33,7 @@
 						<a href="#" v-text="doc.title"></a>
 						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
-					<time>{{ doc.date | date }}</time>
+					<time v-html="filterdate(doc.date)"></time>
 					<button
 						class="editDoc"
 						@click="$router.push(`/update/${doc._id}`)"
@@ -67,11 +50,7 @@
 						<i class="far fa-trash-alt"></i>
 					</button>
 				</header>
-<<<<<<< HEAD:src/views/allDocs.vue
-				<main v-html="doc.excerpt">{{doc.excerpt}}</main>
-=======
 				<main v-text="doc.excerpt"></main>
->>>>>>> addCategory:src/views/ListDocs.vue
 				<footer>
 					<ul>
 						<li v-if="doc.imgsCount">
@@ -109,27 +88,20 @@ export default {
 			"get_All_Taxanomies",
 			"searchData",
 		]),
-	},
-	filters: {
-		date(val) {
+		filterdate(val) {
 			const day = String(val).slice(-2);
 			const month = String(val).slice(-4, -2);
 			const year = String(val).slice(0, -4);
-			return `${year}/${month}/${day}`;
+			const yearIsNegetive = /[-]/.test(year);
+			const currectYear = yearIsNegetive
+				? year.replace(/[-]/gi, "")
+				: year;
+			return `${day}/${month}/${currectYear}${
+				yearIsNegetive ? "<span>-</span>" : ""
+			}`;
 		},
 	},
 	beforeRouteEnter(to, from, next) {
-<<<<<<< HEAD:src/views/allDocs.vue
-		next((vm) => {
-			const condition =
-				from.name == "create doc" ||
-				from.name == "update doc" ||
-				!vm.$store.state.allDocs.data.length;
-			if (condition) vm.getAllDocs();
-		});
-	},
-	async created() {},
-=======
 		next(async (vm) => {
 			vm.$store.state.map.zoom = 5;
 			if (from.name == "create doc" || from.name == "update doc")
@@ -142,6 +114,5 @@ export default {
 		});
 	},
 	components: { searchField },
->>>>>>> addCategory:src/views/ListDocs.vue
 };
 </script>
