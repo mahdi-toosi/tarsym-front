@@ -87,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach(async (to) => {
-    if (to.name == "create doc" || to.name == "update doc" || to.name == "read doc") {
+    if (["create doc", "update doc", "read doc"].includes(to.name)) {
         if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
         await store.commit('CHANGE_MAP_LAYERS')
     }

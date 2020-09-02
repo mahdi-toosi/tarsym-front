@@ -22,8 +22,11 @@ export default {
         if (!valid_childs_id.length) return
 
         const childs = await dispatch('get_this_docs', valid_childs_id);
+        const decoded_childs = await dispatch('decode_the_docs', {
+            docs: childs
+        })
         await commit('SET_DOCS_TO', {
-            docs: childs,
+            decoded_docs: decoded_childs,
             list: 'newDocs',
             merge: true
         })
@@ -94,11 +97,13 @@ export default {
         if (!existingDoc) return false
         docLayer(state).childs_id.push(_id);
 
+        const decode_existingDoc = await dispatch('decode_the_docs', {
+            docs: [existingDoc]
+        })
         await commit('SET_DOCS_TO', {
-            docs: [existingDoc],
+            decoded_docs: decode_existingDoc,
             list: 'newDocs',
             merge: true,
-            deleteRoot: true
         })
         const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${_id}`;
         await router.push(path);
@@ -165,7 +170,51 @@ export default {
         const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${_id}`;
         await router.push(path);
         return;
-
     },
+    decode_the_docs(store, {
+        docs,
+        deleteRoot,
+    }) {
+        const Docs = docs.data || docs
+        const newData = []
+        const categories = store.state.taxonomies.categories
+        const tags = store.state.taxonomies.tags
+        Docs.forEach(doc => {
+            const junk = JSON.parse(doc.junk)
+            delete doc.junk
+            const decoded_Doc = {
+                ...doc,
+                ...junk
+            }
+            decoded_Doc.date = decoded_Doc.date - 2000000
+            if (deleteRoot && decoded_Doc.root) delete decoded_Doc.root
+            // * populate taxonomies
+            // *tags
+            for (let index = 0; index < decoded_Doc.tags.length; index++) {
+                let doc_tag = decoded_Doc.tags[index];
+                const tag_obj = tags.filter(tag => tag._id == doc_tag)[0]
+                if (tag_obj) decoded_Doc.tags[index] = tag_obj
+                else decoded_Doc.tags.splice(index, 1)
+            }
+            // * categories
+            let categorys_list = [];
+            const last_category_child_id = decoded_Doc.categories[0]
+            const last_category_child_obj = categories.filter(category => category._id == last_category_child_id)[0]
+            if (last_category_child_obj) {
+                categorys_list.push(last_category_child_obj)
+                let stop_the_loop = false;
+                for (let index = 0; index < 30; index++) {
+                    const child = categorys_list[index];
+                    const father = categories.filter(category => category.childs.includes(child._id))[0]
+                    if (father) categorys_list.push(father)
+                    else stop_the_loop = true
+                    if (stop_the_loop) break;
+                }
+                decoded_Doc.categories = categorys_list.reverse()
+            }
+            newData.push(decoded_Doc)
+        });
+        return newData
+    }
 
 }

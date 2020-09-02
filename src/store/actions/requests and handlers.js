@@ -9,11 +9,7 @@ export default {
     }, doc, ) {
         const url = `/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
-        // if (url) {
-        // TODO delete this
-        //     console.log('ready_doc => ', ready_doc)
-        //     return 
-        // }
+
         const newID = await axios.post(url, ready_doc).then((res) => {
             if (res.status == 201) return res.data
         }).catch(error => {
@@ -186,8 +182,12 @@ export default {
         });
         if (!docs) return
 
+        const decoded_docs = await dispatch('decode_the_docs', {
+            docs
+        })
+        docs.data = decoded_docs
         await commit('SET_DOCS_TO', {
-            docs,
+            decoded_docs: docs,
             list: 'allDocs',
             merge: false
         })
@@ -337,7 +337,7 @@ export default {
         const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description', 'layerIndex']
         if (!doc.root) clear_this_items.push('location')
         clear_this_items.forEach(element => {
-            if (doc[element]) {
+            if (element in doc) {
                 doc.junk[element] = doc[element];
                 delete doc[element];
             }
@@ -376,35 +376,40 @@ export default {
     // !  read_this_doc
     async read_this_doc(store, id) {
         const _id = id || router.currentRoute.params._id
-        let doc, whitoutDecode;
+        let doc, already_Decoded, decoded_docs;
         if (store.state.allDocs.data.length) {
-            doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]
-            if (doc) whitoutDecode = true
+            doc = await store.state.allDocs.data.filter(doc => doc._id == _id)[0]
+            if (doc) already_Decoded = true
         }
         if (!doc) doc = await store.dispatch('get_this_docs', _id);
-
         if (!doc) return
+
+        if (!already_Decoded)
+            decoded_docs = await store.dispatch('decode_the_docs', {
+                docs: [doc]
+            })
+        await store.commit('SET_DOCS_TO', {
+            decoded_docs: decoded_docs || [doc],
+            list: 'readDoc',
+        })
         document.dispatchEvent(
             new CustomEvent("showThisDoc", {
-                detail: doc
+                detail: decoded_docs ? decoded_docs[0] : doc
             })
         );
-
-        await store.commit('SET_DOCS_TO', {
-            docs: [doc],
-            list: 'readDoc',
-            whitoutDecode: whitoutDecode
-        })
-
+        await store.commit('CHANGE_MAP_LAYERS')
         if (!doc.childs_id.length) return
         const childs = await store.dispatch('get_this_docs', doc.childs_id);
-
         if (!childs) return
-        await store.commit('SET_DOCS_TO', {
+
+        const decoded_childs = await store.dispatch('decode_the_docs', {
             docs: childs,
+            deleteRoot: true
+        })
+        await store.commit('SET_DOCS_TO', {
+            decoded_docs: decoded_childs,
             list: 'readDoc',
             merge: true,
-            deleteRoot: true
         })
     },
     async searchData(store) {

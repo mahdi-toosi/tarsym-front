@@ -341,8 +341,12 @@ export default {
 			"showThisDoc",
 			(event) => {
 				const doc = event.detail;
-				if (doc.location)
-					mapObject.flyTo(doc.location.coordinates, doc.zoom + 2);
+				if (doc.location) {
+					mapObject.flyTo(
+						doc.location.coordinates,
+						doc.root ? doc.zoom + 2 : doc.zoom
+					);
+				}
 			},
 			false
 		);

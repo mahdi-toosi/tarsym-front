@@ -30,7 +30,8 @@ export default {
         }
     },
     CHANGE_MAP_LAYERS(state) {
-        const doc = docLayer(state)
+        let doc = state.newDocs[state.DocProp.index]
+        if (!doc) doc = state.readDoc[0]
         if (!doc) return
         state.map.tileProviders.forEach((tileProvider, index) => {
             if (doc.layerIndex == index) tileProvider.visible = true
@@ -39,7 +40,7 @@ export default {
     },
     CHANGE_LAYER_INDEX(state, layerIndex) {
         const routeName = router.currentRoute.name
-        if (routeName == 'create doc' || routeName == 'update doc')
+        if (['create doc', 'update doc'].includes(routeName))
             docLayer(state).layerIndex = layerIndex;
     },
     async REMOVE_THIS_DOC(state, _id) {
@@ -249,13 +250,14 @@ export default {
                 day: "00"
             },
             childs_id: [],
-            zoom: 4,
+            zoom: state.map.zoom,
             layerIndex: 0
         };
         if (root) {
             newDocObj.tags = []
             newDocObj.categories = []
             newDocObj.root = true
+            newDocObj.zoom = 4
         }
         state.newDocs.push(newDocObj)
     },

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
 	name: "readDocument",
@@ -44,7 +44,6 @@ export default {
 		...mapGetters(["DocLayer"]),
 	},
 	methods: {
-		...mapActions(["read_this_doc"]),
 		hasHistory() {
 			return window.history.length > 2;
 		},
