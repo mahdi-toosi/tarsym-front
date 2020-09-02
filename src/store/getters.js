@@ -8,12 +8,12 @@ export default {
     },
     DocWithChildsTools: (state, getters) => {
         const routeName = state.route.name,
-            DocWithChildsToolsRoutes = routeName == 'update doc' || routeName == 'create doc' || routeName == 'read doc',
-            DocWithMarkerRoutes = routeName == 'my docs' || routeName == 'all docs',
+            EditRoutes = routeName == 'update doc' || routeName == 'create doc',
+            ListRoutes = routeName == 'my docs' || routeName == 'all docs',
             map_ZL = state.map.zoom,
             currentList = getters.docs_list;
         let tools = []
-        if (DocWithMarkerRoutes) {
+        if (ListRoutes) {
             currentList.forEach(doc => {
                 const doc_ZL = doc.zoom
                 if (doc.root && doc_ZL <= map_ZL) {
@@ -23,7 +23,7 @@ export default {
                 }
             });
             return tools
-        } else if (DocWithChildsToolsRoutes) {
+        } else if (EditRoutes) {
             if (state.newDocs[0].zoom <= map_ZL) {
                 state.newDocs.forEach(doc => {
                     let thisDoctools = []
@@ -35,19 +35,20 @@ export default {
                     tools = tools.concat(thisDoctools)
                 });
             }
-            // const docLayer = getters.DocLayer
-            // const doc_ZL = docLayer.zoom
-            // if (docLayer.root ? doc_ZL <= map_ZL : true) {
-            //     let docTools = docLayer.tools
-            //     docTools.forEach(tool => tool._id = docLayer._id);
-            //     tools = tools.concat(docTools)
-            // }
-            // if (!docLayer.childs_id.length) return tools
-            // // * add childs tools to map
-            // getters.DocChilds.forEach(child => {
-            //     child.tools.forEach(tool => tool._id = child._id);
-            //     tools = tools.concat(child.tools)
-            // });
+        } else if (routeName == 'read doc') {
+            const docLayer = getters.DocLayer
+            const doc_ZL = docLayer.zoom
+            if (docLayer.root ? doc_ZL <= map_ZL : true) {
+                let docTools = docLayer.tools
+                docTools.forEach(tool => tool._id = docLayer._id);
+                tools = tools.concat(docTools)
+            }
+            if (!docLayer.childs_id.length) return tools
+            // * add childs tools to map
+            getters.DocChilds.forEach(child => {
+                child.tools.forEach(tool => tool._id = child._id);
+                tools = tools.concat(child.tools)
+            });
         }
         return tools
     },
