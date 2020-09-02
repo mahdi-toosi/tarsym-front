@@ -6,48 +6,54 @@
 			:zoom="map.zoom"
 			:center="map.center"
 			@click="setClickCoordinates"
-			@update:zoom="zoomUpdated"
+			@update:zoom="UPDATE_MAP_ZOOM"
 			:options="{ zoomControl: false }"
-			@update:center="mapCenterUpdated"
+			@update:center="UPDATE_MAP_CENTER"
 			@mousemove="setMouseCoordinate"
 			:minZoom="4"
 			ref="LeafletMap"
 		>
-			<l-tile-layer :url="openStreetTileURL" layerType="satellite" />
+			<l-control-layers position="bottomright"></l-control-layers>
+			<l-tile-layer
+				v-for="tileProvider in map.tileProviders"
+				:key="tileProvider.name"
+				:name="tileProvider.name"
+				:visible="tileProvider.visible"
+				:url="tileProvider.url"
+				layer-type="base"
+			/>
+
 			<div v-if="docs_list.length">
 				<div v-for="(tool, index) in DocWithChildsTools " :key="index">
 					<div v-if="tool.type == 'Polygon'">
-						<span v-if="DocProp.OnTool.condition">
-							<l-polygon
-								:lat-lngs="polygonOrPolylineSimolationCoordinates"
-								v-if=" tool.isOn"
-								:dashArray="'10,10'"
-								:opacity="0.5"
-								:color="( tool.color.hex8 || tool.color )"
-								:fill="false"
-							/>
-						</span>
+						<l-polygon
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							v-if="DocProp.OnTool.condition && tool.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:color="( tool.color.hex8 || tool.color )"
+							:fill="false"
+						/>
 						<l-polygon
 							:fillOpacity="0.4"
 							:fillColor="( tool.secondaryColor.hex8 || tool.secondaryColor )"
 							:color="( tool.color.hex8 || tool.color )"
 							:lat-lngs="tool.coordinates"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polygon>
 					</div>
 					<!-- end Polygon -->
 					<div v-if="tool.type == 'Polyline'">
-						<span v-if="DocProp.OnTool.condition">
-							<l-polyline
-								:lat-lngs="polygonOrPolylineSimolationCoordinates"
-								:color="(tool.color.hex8 || tool.color)"
-								v-if="tool.isOn"
-								:dashArray="'10,10'"
-								:opacity="0.5"
-								:fill="false"
-							/>
-						</span>
+						<l-polyline
+							:lat-lngs="polygonOrPolylineSimolationCoordinates"
+							:color="(tool.color.hex8 || tool.color)"
+							v-if="DocProp.OnTool.condition && tool.isOn"
+							:dashArray="'10,10'"
+							:opacity="0.5"
+							:fill="false"
+						/>
 						<!-- <l-marker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
@@ -58,7 +64,7 @@
 							:lat-lngs="tool.coordinates"
 							:color="(tool.color.hex8 || tool.color)"
 							:dashArray=" tool.dashed ? '10,10' : '' "
-							@click="mahdi(tool)"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-tooltip v-if="tool.tooltip">{{ tool.tooltip }}</l-tooltip>
 						</l-polyline>
@@ -81,6 +87,7 @@
 							:draggable="tool.isOn"
 							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
 							:icon="defaultIcon"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-icon
 								:icon-size="dynamicSize(tool.iconSize)"
@@ -105,6 +112,7 @@
 							:draggable="tool.isOn"
 							:icon="CircleIcon"
 							@update:latLng="UPDATE_THIS_POINT_COORDINATE"
+							@click="goToThisDoc(tool._id)"
 						>
 							<l-icon
 								v-if="tool.tooltip"
@@ -128,12 +136,30 @@
 					<!-- end Textbox  -->
 				</div>
 			</div>
+			<!-- end docs_list -->
+
+			<div v-if="searchPolygon">
+				<l-polygon
+					:lat-lngs="searchPolygonSimolationCoordinates"
+					v-if="searchPolygon.isOn"
+					:dashArray="'10,10'"
+					:opacity="0.5"
+					:color="searchPolygon.color"
+					:fill="false"
+				/>
+				<l-polygon
+					:fillOpacity="0.2"
+					:fillColor="searchPolygon.secondaryColor"
+					:color="searchPolygon.color"
+					:lat-lngs="searchPolygon.coordinates"
+				/>
+			</div>
 
 			<l-control-zoom position="bottomright"></l-control-zoom>
 			<l-control-polyline-measure
 				:options="{ showUnitControl: true }"
 				position="bottomright"
-				v-if="!DocProp.OnTool.condition"
+				v-if="!DocProp.OnTool.condition && !searchPolygon.isOn"
 			/>
 			<l-control position="bottomright" class="leaflet-control mapmaker">
 				<a @click="undoTools" v-if="undoCondition">
@@ -156,6 +182,7 @@ import {
 	LIcon,
 	LControl,
 	LControlZoom,
+	LControlLayers,
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
@@ -186,16 +213,15 @@ export default {
 			popupAnchor: [4, -25],
 		});
 		return {
-			openStreetTileURL:
-				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			CircleIcon,
 			defaultIcon,
 		};
 	},
 	computed: {
-		...mapState(["map", "DocProp"]),
+		...mapState(["map", "DocProp", "searchPolygon"]),
 		...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
 		undoCondition() {
+			if (this.searchPolygon.isOn) return true;
 			const onTool = this.DocProp.OnTool;
 			if (!onTool.condition) return false;
 			const thisTool = this.DocLayer.tools[onTool.index];
@@ -210,7 +236,7 @@ export default {
 					OnTool.type == "Polygon" || OnTool.type == "Polyline",
 				MouseCoordinate = this.map.MouseCoordinate;
 			if (!isPolygonOrPolylineOn && !MouseCoordinate) return [];
-			if (OnTool.coordinates.length < 1) return [];
+			if (!OnTool.coordinates.length) return [];
 			const coordinates = [
 				...OnTool.coordinates,
 				{
@@ -220,9 +246,28 @@ export default {
 			];
 			return coordinates;
 		},
+		searchPolygonSimolationCoordinates() {
+			const searchPolygon = this.searchPolygon;
+			const MouseCoordinate = this.map.MouseCoordinate;
+			if (!MouseCoordinate) return [];
+			if (!searchPolygon.coordinates.length) return [];
+			const coordinates = [
+				...searchPolygon.coordinates,
+				{
+					lat: MouseCoordinate.lat,
+					lng: MouseCoordinate.lng,
+				},
+			];
+			return coordinates;
+		},
 	},
 	methods: {
-		...mapMutations(["mapCenterUpdated", "UPDATE_THIS_POINT_COORDINATE"]),
+		...mapMutations([
+			"UPDATE_MAP_CENTER",
+			"UPDATE_THIS_POINT_COORDINATE",
+			"CHANGE_LAYER_INDEX",
+			"UPDATE_MAP_ZOOM",
+		]),
 		dynamicSize(iconSize) {
 			return [iconSize, iconSize * 1.15];
 		},
@@ -230,31 +275,69 @@ export default {
 			return [iconSize / 2, iconSize * 1.15];
 		},
 		setClickCoordinates(c) {
+			if (this.searchPolygon.isOn) {
+				this.searchPolygon.coordinates.push(c.latlng);
+				return;
+			}
 			const OnTool = this.DocProp.OnTool;
 			if (!OnTool.condition) return;
 			const thisTool = this.DocLayer.tools[OnTool.index];
 			if (thisTool.type == "Point" || thisTool.type == "Textbox") return;
 			thisTool.coordinates.push(c.latlng);
 		},
-		setMouseCoordinate(m) {
-			this.map.MouseCoordinate = m.latlng;
+		goToThisDoc(_id) {
+			const router = this.$router;
+			const currentRoute = router.currentRoute;
+			const condition = ["create doc", "update doc"].includes(
+				currentRoute.name
+			);
+			const pathThing = condition
+				? currentRoute.path.split("/")[1]
+				: "read";
+			const path = `/${pathThing}/${_id}`;
+			if (path != currentRoute.fullPath) router.push(path);
 		},
-		zoomUpdated(zoomLevel) {
-			this.map.zoom = zoomLevel;
+		setMouseCoordinate(coordinates) {
+			this.map.MouseCoordinate = coordinates.latlng;
 		},
+
 		undoTools() {
+			if (this.searchPolygon.isOn) {
+				this.searchPolygon.coordinates.pop();
+				return;
+			}
 			const OnTool = this.DocProp.OnTool;
 			if (OnTool.condition)
 				this.DocLayer.tools[OnTool.index].coordinates.pop();
 		},
 	},
 	mounted() {
+		const mapObject = this.$refs.LeafletMap.mapObject;
 		L.easyPrint({
 			position: "bottomleft",
 			sizeModes: ["Current"],
 			exportOnly: true,
 			filename: "tarsym",
-		}).addTo(this.$refs.LeafletMap.mapObject);
+		}).addTo(mapObject);
+
+		document.addEventListener(
+			"showThisDoc",
+			(event) => {
+				const doc = event.detail;
+				if (doc.coordinates)
+					mapObject.flyTo(doc.coordinates.coordinates, doc.zoom);
+				else {
+					mapObject.flyTo(doc.location.coordinates, doc.zoom);
+				}
+			},
+			false
+		);
+		mapObject.on("baselayerchange", (Layer) => {
+			const layerIndex = this.map.tileProviders.findIndex(
+				(el) => el.name == Layer.name
+			);
+			this.CHANGE_LAYER_INDEX(layerIndex);
+		});
 	},
 	components: {
 		LMap,
@@ -268,20 +351,8 @@ export default {
 		LControlPolylineMeasure,
 		polylineDecorator,
 		LTooltip,
+		LControlLayers,
 	},
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="stylus">
-.map {
-	height: 100vh;
-	width: 60%;
-	position: relative;
-	overflow: hidden;
-	margin-right: auto;
-	outline: none;
-	// border: red dashed 1px;
-	direction: ltr;
-}
-</style>

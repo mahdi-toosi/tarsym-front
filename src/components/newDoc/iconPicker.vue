@@ -44,16 +44,15 @@ export default {
 			});
 			return filteredIcons;
 		},
+		DocLayer() {
+			return this.$store.getters.DocLayer;
+		},
 		logo() {
-			const thisDocLayer = this.$store.state.DocProp.index;
-			const thisDoc = this.$store.state.newDocs[thisDocLayer];
-			const thisTool = thisDoc.tools[this.index];
+			const thisTool = this.DocLayer.tools[this.index];
 			return thisTool.iconName;
 		},
 		logoColor() {
-			const thisDocLayer = this.$store.state.DocProp.index;
-			const thisDoc = this.$store.state.newDocs[thisDocLayer];
-			const thisTool = thisDoc.tools[this.index];
+			const thisTool = this.DocLayer.tools[this.index];
 			if (this.logo) {
 				return thisTool.secondaryColor.hex8;
 			} else return "#277696";

@@ -59,7 +59,11 @@ export default {
 
         const url = `/documents/${_id}`
         const newID = await axios.delete(url).then(res => {
+<<<<<<< HEAD
             if (res.status == 200) commit('REMOVE_THIS_DOC', _id)
+=======
+            commit('REMOVE_THIS_DOC', _id)
+>>>>>>> addCategory
             return res // remember this set value for newID
         }).catch(error => {
             dispatch('handleAxiosError', error)
@@ -140,31 +144,33 @@ export default {
         })
         return data
     },
-    // !  get_All_Tag
-    get_All_Tag({
+    // !  get_All_Taxanomies
+    get_All_Taxanomies({
         commit,
         dispatch
-    }) {
-        const allTags = false; // JSON.parse(localStorage.getItem("allTags"))
-        if (allTags) {
-            const
-                current = new Date(),
-                allTagsDate = new Date(allTags.date),
-                Difference_In_Time = current.getTime() - allTagsDate.getTime(),
-                Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-            if (Difference_In_Days < 5) {
-                commit('SET_ALL_TAGS', allTags)
+    }, withCache = true) {
+        const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies"))
+        if (withCache && Taxonomies) {
+            const TaxsDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
+                CurrentTime = new Date().getTime();
+            if (TaxsDate_PlusSomeDays > CurrentTime) {
+                commit('SET_CHOSEN_TAXONOMIES', Taxonomies)
                 return
             }
         }
+<<<<<<< HEAD
         const url = `/tags`,
+=======
+        const url = `/taxonomies`,
+>>>>>>> addCategory
             options = {
                 params: {
                     $limit: 50,
-                    $select: ['_id', 'name']
+                    $select: ['_id', 'name', 'type', 'childs']
                 }
             };
         axios.get(url, options).then(res => {
+<<<<<<< HEAD
             if (res.status == 200) {
                 res.data.date = new Date()
                 localStorage.setItem("allTags", JSON.stringify(res.data));
@@ -173,6 +179,12 @@ export default {
         }).catch(error => {
             dispatch('handleAxiosError', error)
         })
+=======
+            res.data.date = new Date()
+            localStorage.setItem("Taxonomies", JSON.stringify(res.data));
+            commit('SET_CHOSEN_TAXONOMIES', res.data)
+        }).catch(error => dispatch('handleAxiosError', error))
+>>>>>>> addCategory
     },
     // !  getAllDocs
     async getAllDocs({
@@ -221,46 +233,52 @@ export default {
     // !  is_this_Doc_valid
     async is_this_Doc_valid({
         commit
-    }, thisDoc) {
+    }, docLayer) {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
         let errors = []
         // validate conditions
-        const title = thisDoc.title.length > 5,
-            description = thisDoc.description.length > 20,
-            tools = thisDoc.tools.length > 0,
-            date = thisDoc.date_props.year && thisDoc.date_props.month && thisDoc.date_props.day,
+        const title = docLayer.title.length > 5,
+            description = docLayer.description.length > 20,
+            tools = docLayer.tools.length,
+            date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
             currentRoute = router.currentRoute;
 
         if (!title) errors.push('تیتر کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
-        if (thisDoc.root) {
-            const tags = thisDoc.tags.length;
+        if (docLayer.root) {
+            const tags = docLayer.tags.length;
             if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
+            const categories = docLayer.categories.length;
+            if (!categories) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
         }
 
-        if (errors.length == 0) return true
+        if (!errors.length) return true
         else {
             const action = [{
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
                     const routeName = currentRoute.name
+<<<<<<< HEAD
                     const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ thisDoc._id }`;
+=======
+                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ docLayer._id }`;
+>>>>>>> addCategory
                     await router.push(path);
                     toastObject.goAway(0);
                 }
             }]
             errors.forEach(msg => {
                 Vue.toasted.error(msg, {
-                    position: "bottom-left",
-                    duration: 5 * 1000,
-                    keepOnHover: true,
-                    iconPack: "fontawesome",
                     icon: "fa-times-circle",
+<<<<<<< HEAD
                     action: currentRoute.params._id == thisDoc._id ? false : action
+=======
+                    action: currentRoute.params._id == docLayer._id ? [] : action
+>>>>>>> addCategory
                 });
             });
             return false
@@ -286,9 +304,9 @@ export default {
         }
     },
     // !  ready_document_for_send
-    ready_document_for_send(store, thisDoc) {
+    ready_document_for_send(store, docLayer) {
         let doc = {
-            ...thisDoc,
+            ...docLayer,
             junk: {}
         }
 
@@ -298,21 +316,35 @@ export default {
 
         // * create excerpt
         let excerpt = doc.description.replace(/<[^>]+>/g, '')
-        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ")
+        excerpt = excerpt.split(/\s+/).slice(0, 50).join(" ") //* 50 words
         let fakeElement = document.createElement("textarea");
         fakeElement.innerHTML = excerpt;
         excerpt = fakeElement.value
         excerpt += ' ...'
         doc.excerpt = excerpt
 
-        // * create searcheable coordinate
         if (doc.root) {
+            // * create searcheable coordinate
             const this_tool = obj => obj.searchable == true
             const searchable_tool_index = doc.tools.findIndex(this_tool)
-            doc.coordinates = {
+            doc.location = {
                 type: "Point",
                 coordinates: doc.tools[searchable_tool_index].coordinates
             }
+
+            // * optimize categories for backend
+            const Cats = doc.categories,
+                removeCats = [];
+            for (let index = 0; index < Cats.length; index++) {
+                const nextCat = Cats[index + 1];
+                if (nextCat && nextCat._id) removeCats.push(index)
+                else break
+            }
+            removeCats.forEach(index => Cats.splice(index, 1));
+
+            // * count imgs in description
+            const imgs = doc.description.match(/<img/gm);
+            doc.imgsCount = (imgs || []).length
         }
 
         // * remove unnecessary items form tools color obj
@@ -321,10 +353,6 @@ export default {
             if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8
         });
 
-        // * count imgs in description
-        const imgs = doc.description.match(/<img/gm);
-        doc.imgsCount = (imgs || []).length
-
         // * make valid date for database
         const year = doc.date_props.year,
             month = doc.date_props.month,
@@ -332,7 +360,9 @@ export default {
         doc.date = year + month + day
         doc.date = Number(doc.date) + 2 * 1000 * 1000
 
-        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'dashed', 'description']
+        // *  make junk field
+        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description', 'layerIndex']
+        if (!doc.root) clear_this_items.push('location')
         clear_this_items.forEach(element => {
             if (doc[element]) {
                 doc.junk[element] = doc[element];
@@ -351,35 +381,47 @@ export default {
     handleAxiosError(store, error) {
         let msg;
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
-        else if (error == "Error: Request failed with status code 409") msg = "ایمیل قبلا به ثبت رسیده است";
-        else if (error == "Error: Request failed with status code 401") msg = "ایمیل یا رمز عبور اشتباه است";
+        else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
         else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد"
-        else {
+        else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است"
+        else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ..."
+        else if (error == "Error: Request failed with status code 401") {
+            // msg = "ایمیل یا رمز عبور اشتباه است"
+            localStorage.removeItem('sjufNEbjDmE'); //* sjufNEbjDmE = userData
+            localStorage.removeItem('kemskDJobjgR'); //* kemskDJobjgR = access key
+            router.push('/Auth')
+        } else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
             console.log("request get error => ", msg);
         }
         Vue.toasted.error(msg, {
-            position: "bottom-left",
-            duration: 5 * 1000,
-            keepOnHover: true,
-            iconPack: "fontawesome",
             icon: "fa-times-circle",
         });
     },
     // !  read_this_doc
+<<<<<<< HEAD
     async read_this_doc(store) {
         const _id = router.currentRoute.params._id
+=======
+    async read_this_doc(store, id) {
+        const _id = id || router.currentRoute.params._id
+>>>>>>> addCategory
         let doc, whitoutDecode;
         if (store.state.allDocs.data.length) {
             doc = store.state.allDocs.data.filter(doc => doc._id == _id)[0]
-            whitoutDecode = true
-        } else {
-            doc = await store.dispatch('get_this_docs', _id);
+            if (doc) whitoutDecode = true
         }
+        if (!doc) doc = await store.dispatch('get_this_docs', _id);
 
         if (!doc) return
+        document.dispatchEvent(
+            new CustomEvent("showThisDoc", {
+                detail: doc
+            })
+        );
+
         await store.commit('SET_DOCS_TO', {
             docs: [doc],
             list: 'readDoc',
@@ -396,5 +438,28 @@ export default {
             merge: true,
             deleteRoot: true
         })
+    },
+    async searchData(store) {
+        const route = router.currentRoute
+        const url = "/searchInDocs";
+        const options = {
+            params: {}
+        };
+        if (route.query.area) options.params.area = route.query.area
+        if (route.query.text) options.params.text = route.query.text
+        await axios
+            .get(url, options)
+            .then((response) =>
+                console.log("response.data => ", response.data)
+            )
+            .catch((error) => {
+                if (error == "Error: Request failed with status code 415") {
+                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...", {
+                        icon: "fa-times-circle",
+                    });
+                    return;
+                }
+                store.dispatch("handleAxiosError", error);
+            });
     }
 }

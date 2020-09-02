@@ -1,11 +1,12 @@
 <template>
 	<div class="allpoints">
 		<header>
-			<a class="btn btn-blue" @click="addNewDoc()">
+			<a class="btn btn-blue" @click="addNewDoc()" v-if="$route.name == 'my docs'">
 				نقطه ی جدید ایجاد کن
 				<i class="fas fa-plus" />
 			</a>
 		</header>
+<<<<<<< HEAD:src/views/allDocs.vue
 		<section class="searchbar shadow">
 			<div class="searchInput">
 				<input
@@ -20,16 +21,18 @@
 				</a>
 			</div>
 		</section>
+=======
+		<search-field />
+>>>>>>> addCategory:src/views/ListDocs.vue
 		<section class="points">
 			<span v-if="!allDocs.data.length" class="notingToShow">داکیومنتی برای نمایش دادن نیست</span>
 			<div
 				class="point shadow"
 				v-for="doc in allDocs.data "
 				:key="doc._id"
-				@click="$route.name == 'all docs' ? $router.push(`/read/${doc._id}`) : ''"
+				@click="showThisDoc(doc)"
 				style="cursor: pointer"
 			>
-				<!-- @click="readThisPoint(doc.coordinates)" -->
 				<header>
 					<i
 						class="logo"
@@ -47,7 +50,7 @@
 						<a href="#" v-text="doc.title"></a>
 						<!-- <a href="#" v-text="point.user.situation"></a> -->
 					</div>
-					<time>{{ doc.date | date }}</time>
+					<time v-html="filterdate(doc.date)"></time>
 					<button
 						class="editDoc"
 						@click="$router.push(`/update/${doc._id}`)"
@@ -64,7 +67,11 @@
 						<i class="far fa-trash-alt"></i>
 					</button>
 				</header>
+<<<<<<< HEAD:src/views/allDocs.vue
 				<main v-html="doc.excerpt">{{doc.excerpt}}</main>
+=======
+				<main v-text="doc.excerpt"></main>
+>>>>>>> addCategory:src/views/ListDocs.vue
 				<footer>
 					<ul>
 						<li v-if="doc.imgsCount">
@@ -80,52 +87,43 @@
 </template>
 
 <script>
-import debounce from "v-debounce";
-import { mapMutations, mapActions } from "vuex";
+import searchField from "@/components/searchField";
+import { mapActions } from "vuex";
 
 export default {
-	name: "all-Docs",
-	directives: { debounce },
-	data() {
-		return {
-			search: "",
-			delay: 500,
-		};
-	},
+	name: "ListDocs",
 	computed: {
 		allDocs() {
 			return this.$store.state.allDocs;
 		},
 	},
 	methods: {
+		showThisDoc(doc) {
+			if (this.$route.name == "all docs")
+				this.$router.push(`/read/${doc._id}`);
+		},
 		...mapActions([
 			"getAllDocs",
 			"addNewDoc",
 			"Delete_this_Document",
-			"read_this_doc",
+			"get_All_Taxanomies",
+			"searchData",
 		]),
-		...mapMutations(["readThisPoint"]),
-		fetchSearchResult() {
-			// console.log(this.search.length);
-			const url = "/point/search/" + this.search;
-			this.$axios
-				.get(url)
-				// .then(response => (this.results = response.data))
-				.then((response) => console.log(response.data))
-				.catch((error) => {
-					console.log(error);
-				});
-		},
-	},
-	filters: {
-		date(val) {
+		filterdate(val) {
 			const day = String(val).slice(-2);
 			const month = String(val).slice(-4, -2);
 			const year = String(val).slice(0, -4);
-			return `${year}/${month}/${day}`;
+			const yearIsNegetive = /[-]/.test(year);
+			const currectYear = yearIsNegetive
+				? year.replace(/[-]/gi, "")
+				: year;
+			return `${day}/${month}/${currectYear}${
+				yearIsNegetive ? "<span>-</span>" : ""
+			}`;
 		},
 	},
 	beforeRouteEnter(to, from, next) {
+<<<<<<< HEAD:src/views/allDocs.vue
 		next((vm) => {
 			const condition =
 				from.name == "create doc" ||
@@ -135,7 +133,19 @@ export default {
 		});
 	},
 	async created() {},
+=======
+		next(async (vm) => {
+			vm.$store.state.map.zoom = 5;
+			if (from.name == "create doc" || from.name == "update doc")
+				await vm.get_All_Taxanomies(false); //* withCache = false
+			if (to.name == "all docs" || to.name == "my docs")
+				await vm.getAllDocs();
+			if (to.name == "search") {
+				await vm.searchData();
+			}
+		});
+	},
+	components: { searchField },
+>>>>>>> addCategory:src/views/ListDocs.vue
 };
 </script>
-
-<style lang="stylus"></style>

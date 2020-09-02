@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const routes = [{
         path: "/",
         name: "all docs",
-        component: () => import("../views/allDocs.vue"),
+        component: () => import("../views/ListDocs.vue"),
         meta: {
             requiresAuth: true,
         },
@@ -39,7 +39,7 @@ const routes = [{
     }, {
         path: "/my-docs",
         name: "my docs",
-        component: () => import("../views/allDocs.vue"),
+        component: () => import("../views/ListDocs.vue"),
         meta: {
             requiresAuth: true,
         },
@@ -50,6 +50,16 @@ const routes = [{
         meta: {
             requiresAuth: true,
         },
+    }, {
+        path: "/search",
+        name: "search",
+        component: () => import("../views/ListDocs.vue"),
+        meta: {
+            requiresAuth: true,
+        },
+    }, {
+        path: "/create",
+        redirect: '/create/forward'
     }, {
         path: "*",
         name: "404 page",
@@ -82,8 +92,11 @@ router.beforeEach(async (to, from, next) => {
 
 router.afterEach(async (to) => {
     if (to.name == "create doc" || to.name == "update doc" || to.name == "read doc") {
-        if (store.state.newDocs.length) store.commit('UPDATE_DOC_INDEX');
+        if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
+        await store.commit('CHANGE_MAP_LAYERS')
     }
+    if (to.name == "read doc")
+        await store.dispatch('read_this_doc')
 });
 
 function set_user_if_exist() {

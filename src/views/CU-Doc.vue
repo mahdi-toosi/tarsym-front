@@ -14,16 +14,31 @@
 				<i class="fas fa-arrow-left"></i>
 			</button>
 		</header>
-		<div v-if="newDocs.length > 0">
+		<div v-if="newDocs.length">
 			<section class="shadow">
 				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
+				<v-select
+					:options="validCategories"
+					:value="DocLayer.categories"
+					@input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
+					label="name"
+					placeholder="دسته بندی ..."
+					multiple
+					taggable
+					push-tags
+					class="tags categories"
+					dir="rtl"
+					v-if="DocLayer.root"
+				>
+					<template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
+				</v-select>
 				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
 			</section>
 			<section class="tag_date_section">
 				<v-select
-					:options="allTags"
+					:options="taxonomies.tags"
 					:value="DocLayer.tags"
-					@input="SET_CHOSEN_TAG"
+					@input="SET_CHOSEN_TAXONOMY( {$event , type: 2} )"
 					label="name"
 					placeholder="تگ ..."
 					multiple
@@ -32,7 +47,7 @@
 					class="tags"
 					dir="rtl"
 					v-if="DocLayer.root"
-				></v-select>
+				/>
 				<date-picker class="datepicker" :docLayer="DocProp.index" />
 			</section>
 			<section class="tools shadow">
@@ -62,30 +77,7 @@
 								</button>
 							</li>
 						</ul>
-						<div class="addNewLayerBox">
-							<v-select
-								:options="searchBoxOptions"
-								@search="onSearch"
-								v-model="searchedDoc"
-								:filterable="false"
-								label="title"
-								placeholder="جستجو ..."
-								autocomplete="on"
-								dir="rtl"
-								class="seachBoxForLayer"
-								ref="select"
-							>
-								<template slot="no-options">داکیومنتی با این عنوان به ثبت نرسیده...</template>
-								<template slot="option" slot-scope="option">
-									<div class="seachBoxForLayerOption">
-										<h4>{{ option.title }}</h4>
-										<!-- TODO this if should deleted ? -->
-										<p v-if="option.excerpt">{{ option.excerpt }}</p>
-									</div>
-								</template>
-							</v-select>
-							<button @click="addChild()" class="btn btn-blue addNewLayer">+</button>
-						</div>
+						<add-new-layer-box @childAdded=" tabContent = 'tools' " />
 					</div>
 				</div>
 			</section>
@@ -105,6 +97,7 @@ import newPoint from "@/components/newDoc/newPoint";
 import newPolygon from "@/components/newDoc/newPolygon";
 import newPolyline from "@/components/newDoc/newPolyline";
 import newTextBox from "@/components/newDoc/newTextBox";
+import addNewLayerBox from "@/components/newDoc/addNewLayerBox";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -123,8 +116,6 @@ export default {
 			["clean"],
 		];
 		return {
-			searchBoxOptions: [],
-			searchedDoc: {},
 			tabContent: "tools",
 			quillEditorOptions: {
 				modules: { toolbar: toolbarOptions },
@@ -135,7 +126,7 @@ export default {
 		};
 	},
 	methods: {
-		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAG"]),
+		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAXONOMY"]),
 		...mapActions([
 			"Create_or_Update_Documents",
 			"addNewDoc",
@@ -144,48 +135,8 @@ export default {
 			"Delete_this_Document",
 			"update_this_doc",
 			"get_childs",
-			"get_All_Tag",
-			"addExistingDoc",
+			"get_All_Taxanomies",
 		]),
-		async addChild() {
-			if (this.searchedDoc._id) {
-				await this.addExistingDoc(this.searchedDoc._id);
-			} else {
-				await this.addNewDoc(false);
-			}
-			this.tabContent = "tools";
-		},
-		async onSearch(search, loading) {
-			if (!search.trim()) return;
-			loading(true);
-			this.searchRequest(search, loading, this);
-		},
-		searchRequest: debounce(async (search, loading, vm) => {
-			const url = `/search/${search}`,
-				params = { params: { forLayers: true } };
-			await vm.$axios
-				.get(url, params)
-				.then(async (res) => {
-					const filteredData = await vm.filterSearchedData(res.data);
-					vm.searchBoxOptions = filteredData;
-					loading(false);
-				})
-				.catch((error) => {
-					vm.$store.dispatch("handleAxiosError", error);
-					loading(false);
-				});
-		}, 1500),
-		async filterSearchedData(searchedData) {
-			let filteredData = [];
-			await searchedData.forEach((data) => {
-				const newDocs = this.$store.state.newDocs;
-				const alreadyThere = newDocs.filter(
-					(doc) => doc._id == data._id
-				);
-				if (!alreadyThere.length) filteredData.push(data);
-			});
-			return filteredData;
-		},
 		lastAddedDocID() {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
@@ -203,8 +154,13 @@ export default {
 		// },
 	},
 	computed: {
+<<<<<<< HEAD
 		...mapState(["newDocs", "DocProp", "allTags"]),
 		...mapGetters(["DocLayer", "DocChilds"]),
+=======
+		...mapState(["newDocs", "DocProp", "taxonomies"]),
+		...mapGetters(["DocLayer", "DocChilds", "validCategories"]),
+>>>>>>> addCategory
 		newPointTitle: {
 			get() {
 				return this.DocLayer.title;
@@ -226,9 +182,12 @@ export default {
 		const routeName = this.$route.name;
 		const route_id = this.$route.params._id;
 		const lastAddedDocID = this.lastAddedDocID();
+		this.get_All_Taxanomies(false); //* withCache = false
 		if (routeName == "create doc") {
-			if (Number(route_id) !== lastAddedDocID)
-				return await this.addNewDoc();
+			if (Number(route_id) !== lastAddedDocID) {
+				await this.addNewDoc();
+				return;
+			}
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
 		}
@@ -241,7 +200,6 @@ export default {
 		// 	console.log(element);
 		// 	element.setAttribute("tabindex", "-1");
 		// });
-		this.get_All_Tag();
 	},
 	components: {
 		datePicker,
@@ -251,36 +209,7 @@ export default {
 		newPolygon,
 		newPolyline,
 		newTextBox,
+		addNewLayerBox,
 	},
 };
-function debounce(func, wait, immediate) {
-	var timeout;
-	return function () {
-		var context = this,
-			args = arguments;
-		var later = function () {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-}
 </script>
-
-<style scoped lang="stylus">
-.tools {
-	padding: 0px;
-}
-
-.addNewLayerBox {
-	display: flex;
-
-	.seachBoxForLayer {
-		width: 70%;
-		margin: auto;
-	}
-}
-</style>

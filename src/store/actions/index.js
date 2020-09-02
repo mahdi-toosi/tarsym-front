@@ -1,7 +1,7 @@
 import requests from "./requests and handlers"
 import router from "../../router";
 
-const thisDoc = (state) => state.newDocs[state.DocProp.index]
+const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     ...requests,
@@ -10,21 +10,18 @@ export default {
         dispatch,
         commit
     }, doc) {
-        if (!doc || !doc._id || !doc.childs_id.length) return
+        if (!doc || !doc.childs_id.length) return
         let valid_childs_id = []
-        for (let index = 0; index < doc.childs_id.length; index++) {
-            const child_id = doc.childs_id[index];
+        doc.childs_id.forEach(child_id => {
             const is_it_number = typeof child_id == 'number'
-            if (is_it_number) continue
-            const thisObject = (doc) => doc._id == child_id
-            const is_already_exist = state.newDocs.findIndex(thisObject)
-            if (!is_already_exist) continue
+            if (is_it_number) return
+            const already_exist = state.newDocs.findIndex(doc => doc._id == child_id)
+            if (!already_exist) return
             valid_childs_id.push(child_id)
-        }
+        });
         if (!valid_childs_id.length) return
 
         const childs = await dispatch('get_this_docs', valid_childs_id);
-
         await commit('SET_DOCS_TO', {
             docs: childs,
             list: 'newDocs',
@@ -36,7 +33,7 @@ export default {
         await store.commit('UPDATE_ON_TOOL')
     },
     async toolSwitch(store, index) {
-        const thisTool = thisDoc(store.state).tools[index];
+        const thisTool = docLayer(store.state).tools[index];
         if (thisTool.isOn) {
             // if is on turned off
             await store.commit('OFF_THE_ON_TOOL')
@@ -48,7 +45,7 @@ export default {
     },
     async makeToolOn(store, index) {
         await store.commit('OFF_THE_ON_TOOL')
-        const thisTool = thisDoc(store.state).tools[index];
+        const thisTool = docLayer(store.state).tools[index];
         thisTool.isOn = true;
         await store.commit('UPDATE_ON_TOOL')
     },
@@ -69,14 +66,16 @@ export default {
         await commit('UPDATE_ON_TOOL');
 
         const fake_id = new Date().getTime();
-        if (!root) {
-            const thisDoc = state.newDocs[state.DocProp.index];
-            thisDoc.childs_id.push(fake_id);
-        }
-        await commit('SET_NEW_DOCUMENT', {
+        const payload = {
             fake_id,
-            root
-        })
+            root,
+        }
+        if (!root) {
+            const father_doc = docLayer(state)
+            father_doc.childs_id.push(fake_id);
+            payload.date_props = father_doc.date_props
+        }
+        await commit('SET_NEW_DOCUMENT', payload)
 
         const path = `/${state.route.name == 'update doc' ? 'update' : 'create'}/${fake_id}`;
         await router.push(path);
@@ -93,12 +92,10 @@ export default {
 
         const existingDoc = await dispatch('get_this_docs', _id)
         if (!existingDoc) return false
-
-        const thisDoc = state.newDocs[state.DocProp.index];
-        thisDoc.childs_id.push(_id);
+        docLayer(state).childs_id.push(_id);
 
         await commit('SET_DOCS_TO', {
-            docs: existingDoc,
+            docs: [existingDoc],
             list: 'newDocs',
             merge: true,
             deleteRoot: true
@@ -120,8 +117,8 @@ export default {
 
     //     const ID = (_id || new Date().getTime());
     //     if (!root) {
-    //         const thisDoc = state.newDocs[state.DocProp.index];
-    //         thisDoc.childs_id.push(ID);
+    //         const docLayer = state.newDocs[state.DocProp.index];
+    //         docLayer.childs_id.push(ID);
     //     }
     //     if (!_id) {
 

@@ -14,14 +14,13 @@ export default {
 		tarsymMap,
 		sidebar,
 	},
+	async mounted() {
+		await this.$store.dispatch("get_All_Taxanomies", false);
+	},
 	created() {
 		document.addEventListener("PWAupdatefound", () => {
 			let msg = "آپدیتی برای اپلیکیشن ارائه شد. در حال دانلود ...";
 			this.$toasted.info(msg, {
-				position: "bottom-left",
-				duration: 5 * 1000,
-				keepOnHover: true,
-				iconPack: "fontawesome",
 				icon: "fa-code",
 			});
 		});
@@ -29,20 +28,13 @@ export default {
 			let msg =
 				"آپدیت به پایان رسید ، نیاز به هارد رفرش کردن صفحه است ... ctrl + F5";
 			this.$toasted.info(msg, {
-				position: "bottom-left",
 				duration: 10 * 1000,
-				keepOnHover: true,
-				iconPack: "fontawesome",
 				icon: "fa-info-circle",
 			});
 		});
 		document.addEventListener("PWAoffline", () => {
 			let msg = "مشکل در ارتباط با سرور، اینترنت خود را بررسی کنید ...";
 			this.$toasted.error(msg, {
-				position: "bottom-left",
-				duration: 5 * 1000,
-				keepOnHover: true,
-				iconPack: "fontawesome",
 				icon: "fa-times-circle",
 			});
 		});
