@@ -24,19 +24,30 @@ export default {
             });
             return tools
         } else if (DocWithChildsToolsRoutes) {
-            const docLayer = getters.DocLayer
-            const doc_ZL = docLayer.zoom
-            if (docLayer.root ? doc_ZL <= map_ZL : true) {
-                let docTools = docLayer.tools
-                docTools.forEach(tool => tool._id = docLayer._id);
-                tools = tools.concat(docTools)
+            if (state.newDocs[0].zoom <= map_ZL) {
+                state.newDocs.forEach(doc => {
+                    let thisDoctools = []
+                    doc.tools.forEach(tool => {
+                        let edited_tool = tool
+                        edited_tool._id = doc._id
+                        thisDoctools.push(edited_tool)
+                    });
+                    tools = tools.concat(thisDoctools)
+                });
             }
-            if (!docLayer.childs_id.length) return tools
-            // * add childs tools to map
-            getters.DocChilds.forEach(child => {
-                child.tools.forEach(tool => tool._id = child._id);
-                tools = tools.concat(child.tools)
-            });
+            // const docLayer = getters.DocLayer
+            // const doc_ZL = docLayer.zoom
+            // if (docLayer.root ? doc_ZL <= map_ZL : true) {
+            //     let docTools = docLayer.tools
+            //     docTools.forEach(tool => tool._id = docLayer._id);
+            //     tools = tools.concat(docTools)
+            // }
+            // if (!docLayer.childs_id.length) return tools
+            // // * add childs tools to map
+            // getters.DocChilds.forEach(child => {
+            //     child.tools.forEach(tool => tool._id = child._id);
+            //     tools = tools.concat(child.tools)
+            // });
         }
         return tools
     },

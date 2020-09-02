@@ -12,7 +12,7 @@
 				<i class="fas fa-pencil-alt"></i>
 			</button>
 
-			<label for="zoomLevel" style="top: 4px">لول زوم:</label>
+			<label for="zoomLevel" style="top: 4px" v-if="tool.searchable">لول زوم:</label>
 			<select
 				id="zoomLevel"
 				v-if="tool.searchable"

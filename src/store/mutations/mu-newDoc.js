@@ -173,8 +173,8 @@ export default {
             obj.coordinates = state.map.center
             obj.angle = 0
             obj.iconSize = 35
-            const is_searchable_point = docLayer(state).tools.length < 1
-            if (is_searchable_point) obj.searchable = true
+            const currentDoc = docLayer(state)
+            if (currentDoc.root && currentDoc.tools.length < 1) obj.searchable = true
         }
         if (type == "Textbox") {
             obj.coordinates = state.map.center
