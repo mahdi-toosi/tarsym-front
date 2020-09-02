@@ -120,7 +120,7 @@
 								:icon-anchor="[ tool.width/2, tool.height/2 ]"
 							>
 								<div
-									class="bubble"
+									class="textBoxTool_inMap"
 									v-if="tool.tooltip"
 									:style="{ width: tool.width + 'px',
 												height: tool.height + 'px',
