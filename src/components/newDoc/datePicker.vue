@@ -3,6 +3,7 @@
 		<button @click="showPicker()">
 			{{showDateForOprator}}
 			<span v-if="/[-]/.test(picked.year)">-</span>
+			<!-- ه‍.ق -->
 		</button>
 		<span class="clearDate" v-if="picked.month != '00' " @click="$store.commit('CLEAR_DATE')">
 			<i class="fas fa-times"></i>
