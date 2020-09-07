@@ -90,6 +90,7 @@ router.afterEach(async (to) => {
     if (["create doc", "update doc"].includes(to.name)) {
         if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
         await store.commit('CHANGE_MAP_LAYERS')
+        await store.dispatch('get_childs')
     }
     if (to.name == "read doc") {
         await store.dispatch('read_this_doc')

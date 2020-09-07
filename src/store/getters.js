@@ -45,21 +45,21 @@ export default {
             }
             if (!docLayer.childs_id.length) return tools
             // * add childs tools to map
-            getters.DocChilds.forEach(child => {
+            getters.DocChilds(getters.DocLayer).forEach(child => {
                 child.tools.forEach(tool => tool._id = child._id);
                 tools = tools.concat(child.tools)
             });
         }
         return tools
     },
-    DocChilds: (state, getters) => {
-        const childs_ID = getters.DocLayer.childs_id
+    DocChilds: (state, getters) => (doc) => {
+        if (!doc) return []
+        const childs_ID = doc.childs_id || []
         let All_childs = []
-        childs_ID.forEach(_id => {
+        childs_ID.forEach(child_id => {
             const childs = getters.docs_list.filter(doc => {
-                // console.log('doc => ', doc);
                 if (!doc) return false
-                return doc._id == _id
+                return doc._id == child_id
             });
             All_childs = All_childs.concat(childs)
         });

@@ -69,14 +69,7 @@
 						<gooey-menu />
 					</div>
 					<div class="layers-content" v-show="tabContent == 'layers'">
-						<ul>
-							<li v-for="(child, index) in DocChilds" :key="index">
-								<button @click="goToChild( child._id )" class="child">{{ ( child.title || child._id ) }}</button>
-								<button @click="delete_this_child( child._id )" class="delete_button">
-									<i class="far fa-trash-alt"></i>
-								</button>
-							</li>
-						</ul>
+						<layers-relationship-tree @childClicked=" tabContent = 'tools' " />
 						<add-new-layer-box @childAdded=" tabContent = 'tools' " />
 					</div>
 				</div>
@@ -98,6 +91,7 @@ import newPolygon from "@/components/newDoc/newPolygon";
 import newPolyline from "@/components/newDoc/newPolyline";
 import newTextBox from "@/components/newDoc/newTextBox";
 import addNewLayerBox from "@/components/newDoc/addNewLayerBox";
+import layersRelationshipTree from "@/components/newDoc/layersRelationshipTree";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -131,12 +125,12 @@ export default {
 			"Create_or_Update_Documents",
 			"addNewDoc",
 			"goBackToParent",
-			"goToChild",
-			"Delete_this_Document",
+
 			"update_this_doc",
 			"get_childs",
 			"get_All_Taxanomies",
 		]),
+
 		lastAddedDocID() {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
@@ -144,9 +138,6 @@ export default {
 				return lastDoc._id;
 			}
 			return false;
-		},
-		async delete_this_child(child_id) {
-			await this.Delete_this_Document(child_id);
 		},
 		// keyPressed(e) {
 		// 	const OnTool = this.DocProp.OnTool;
@@ -158,7 +149,7 @@ export default {
 	},
 	computed: {
 		...mapState(["newDocs", "DocProp", "taxonomies"]),
-		...mapGetters(["DocLayer", "DocChilds", "validCategories"]),
+		...mapGetters(["DocLayer", "validCategories"]),
 		newPointTitle: {
 			get() {
 				return this.DocLayer.title;
@@ -189,7 +180,6 @@ export default {
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
 		}
-		this.get_childs();
 		// document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {
@@ -208,6 +198,7 @@ export default {
 		newPolyline,
 		newTextBox,
 		addNewLayerBox,
+		layersRelationshipTree,
 	},
 };
 </script>
