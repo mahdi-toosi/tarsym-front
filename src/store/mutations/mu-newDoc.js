@@ -45,6 +45,7 @@ export default {
     },
     async REMOVE_THIS_DOC(state, _id) {
         if (state.allDocs.data) {
+            //  ? delete from allDocs
             let Docs = state.allDocs.data;
             let doc_index = await Docs.findIndex(doc => doc._id == _id);
             if (doc_index > -1) Docs.splice(doc_index, 1)
@@ -52,10 +53,16 @@ export default {
 
         let Docs = state.newDocs
         let doc_index = await Docs.findIndex(doc => doc._id == _id)
-        if (doc_index < 0) return
+        if (doc_index == -1) return
+
+        // ? delete child from current doc
+        const currentDoc = docLayer(state)
+        const child_index = currentDoc.childs_id.findIndex(child_id => child_id == _id)
+        currentDoc.childs_id.splice(child_index, 1)
 
         const doc = Docs[doc_index];
         if (!doc.childs_id.length) {
+            // ? if dosent have child , just delete document
             Docs.splice(doc_index, 1)
             return
         } else {
@@ -63,6 +70,7 @@ export default {
             for (let index = 0; index < doc.childs_id.length; index++) {
                 const child_id = doc.childs_id[index];
                 const doc_index = await Docs.findIndex(doc => doc._id == child_id)
+                // ? get all childs index in newDocs
                 if (doc_index > -1) childs_index.push(doc_index)
             }
             if (!childs_index.length) return
@@ -70,8 +78,10 @@ export default {
                 const child_index = childs_index[index];
                 if (!Docs[child_index].childs_id.length) continue
                 const doc_index = await Docs.findIndex(doc => doc._id == Docs[child_index]._id)
+                // ? get all of grandsons
                 if (doc_index > -1) childs_index.push(doc_index)
             }
+            // ? delete all of sons and grandsons in newDocs
             childs_index.forEach(child_index => Docs.splice(child_index, 1));
         }
     },

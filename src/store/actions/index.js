@@ -9,12 +9,12 @@ export default {
         state,
         dispatch,
         commit
-    }, doc) {
+    }) {
+        const doc = docLayer(state)
         if (!doc || !doc.childs_id.length) return
         let valid_childs_id = []
         doc.childs_id.forEach(child_id => {
-            const is_it_number = typeof child_id == 'number'
-            if (is_it_number) return
+            if (typeof child_id == 'number') return
             const already_exist = state.newDocs.findIndex(doc => doc._id == child_id)
             if (!already_exist) return
             valid_childs_id.push(child_id)
@@ -22,6 +22,7 @@ export default {
         if (!valid_childs_id.length) return
 
         const childs = await dispatch('get_this_docs', valid_childs_id);
+        console.log('doc => ', childs);
         const decoded_childs = await dispatch('decode_the_docs', {
             docs: childs
         })

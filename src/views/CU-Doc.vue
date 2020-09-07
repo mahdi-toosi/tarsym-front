@@ -72,7 +72,7 @@
 						<ul>
 							<li v-for="(child, index) in DocChilds" :key="index">
 								<button @click="goToChild( child._id )" class="child">{{ ( child.title || child._id ) }}</button>
-								<button @click="Delete_this_Document( child._id )" class="delete_button">
+								<button @click="delete_this_child( child._id )" class="delete_button">
 									<i class="far fa-trash-alt"></i>
 								</button>
 							</li>
@@ -145,6 +145,9 @@ export default {
 			}
 			return false;
 		},
+		async delete_this_child(child_id) {
+			await this.Delete_this_Document(child_id);
+		},
 		// keyPressed(e) {
 		// 	const OnTool = this.DocProp.OnTool;
 		// 	if (e.keyCode === 27 && OnTool.condition) {
@@ -186,7 +189,7 @@ export default {
 		} else if (routeName == "update doc") {
 			await this.update_this_doc(route_id);
 		}
-		await this.get_childs(this.DocLayer);
+		this.get_childs();
 		// document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {
