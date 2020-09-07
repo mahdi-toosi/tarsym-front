@@ -25,8 +25,8 @@
 						<div class="vc-chrome-fields">
 							<!-- hex -->
 							<div class="vc-chrome-field">
-								<ed-in v-if="!hasAlpha" :value="colors.hex" @change="inputChange"></ed-in>
-								<ed-in v-if="hasAlpha" :value="colors.hex8" @change="inputChange"></ed-in>
+								<ed-in v-if="!hasAlpha" label="hex" :value="colors.hex" @change="inputChange"></ed-in>
+								<ed-in v-if="hasAlpha" label="hex" :value="colors.hex8" @change="inputChange"></ed-in>
 							</div>
 						</div>
 					</div>
@@ -81,14 +81,13 @@ export default {
 			this.colorChange(data);
 		},
 		inputChange(data) {
-			if (!data) {
-				return;
-			}
-			this.isValidHex(data.hex);
-			this.colorChange({
-				hex: data.hex,
-				source: "hex",
-			});
+			if (!data || !data.hex) return;
+			this.isValidHex(data.hex) &&
+				this.colorChange({
+					hex: data.hex,
+					source: "hex",
+				});
+			this.ADD_COLOR(this.colors);
 		},
 		showPicker() {
 			document.addEventListener("click", this.documentClick);
