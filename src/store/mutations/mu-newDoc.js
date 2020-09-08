@@ -11,12 +11,12 @@ export default {
             day: "00"
         }
     },
-    UPDATE_MAP_ZOOM(state, zoomLevel) {
-        state.map.zoom = zoomLevel;
+    UPDATE_MAP_ZOOM(state, zoom) {
+        state.map.zoom = zoom;
         const routeName = router.currentRoute.name
         if (routeName == 'create doc' || routeName == 'update doc') {
             const doc = docLayer(state)
-            if (!doc.root) doc.zoom = zoomLevel
+            doc.map_animate.zoom = zoom
         }
     },
     UPDATE_MAP_CENTER(state, coordinates) {
@@ -24,9 +24,7 @@ export default {
         const routeName = router.currentRoute.name
         if (routeName == 'create doc' || routeName == 'update doc') {
             const doc = docLayer(state)
-            //  TODO => edit this line to this => doc.location.coordinates = coordinates
-            doc.location = {}
-            doc.location.coordinates = coordinates
+            doc.map_animate.coordinates = coordinates
         }
     },
     CHANGE_MAP_LAYERS(state) {
@@ -34,14 +32,14 @@ export default {
         if (!doc) doc = state.readDoc[0]
         if (!doc) return
         state.map.tileProviders.forEach((tileProvider, index) => {
-            if (doc.layerIndex == index) tileProvider.visible = true
+            if (doc.map_animate.layerIndex == index) tileProvider.visible = true
             else tileProvider.visible = false
         });
     },
     CHANGE_LAYER_INDEX(state, layerIndex) {
         const routeName = router.currentRoute.name
         if (['create doc', 'update doc'].includes(routeName))
-            docLayer(state).layerIndex = layerIndex;
+            docLayer(state).map_animate.layerIndex = layerIndex;
     },
     async REMOVE_THIS_DOC(state, _id) {
         if (state.allDocs.data) {
@@ -97,7 +95,7 @@ export default {
         if (type == "dashed") thisTool.dashed = val;
     },
     SET_ZOOM_LEVEL(state, val) {
-        state.newDocs[0].zoom = val;
+        state.newDocs[0].zoomLevel = val;
     },
     CHANGE_TOOLTIP(state, {
         index,
@@ -229,7 +227,7 @@ export default {
     UPDATE_THIS_POINT_COORDINATE(state, clicked) {
         const coordinates = [clicked.lat, clicked.lng];
         const index = state.DocProp.OnTool.index
-        if (index < 0) return
+        if (index == -1) return
         docLayer(state).tools[index].coordinates = coordinates;
     },
     UPDATE_DOC_INDEX(state) {
@@ -260,14 +258,17 @@ export default {
                 day: "00"
             },
             childs_id: [],
-            zoom: state.map.zoom,
-            layerIndex: 0
+            map_animate: {
+                zoom: state.map.zoom,
+                layerIndex: 0,
+                coordinates: state.map.center
+            },
         };
         if (root) {
             newDocObj.tags = []
             newDocObj.categories = []
             newDocObj.root = true
-            newDocObj.zoom = 4
+            newDocObj.zoomLevel = 4
         }
         state.newDocs.push(newDocObj)
     },

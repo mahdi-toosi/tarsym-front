@@ -334,7 +334,7 @@ export default {
         doc.date = Number(doc.date) + 2 * 1000 * 1000
 
         // *  make junk field
-        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description', 'layerIndex']
+        const clear_this_items = ['tools', 'imgsCount', 'date_props', 'description', 'layerIndex', 'map_animate']
         if (!doc.root) clear_this_items.push('location')
         clear_this_items.forEach(element => {
             if (element in doc) {

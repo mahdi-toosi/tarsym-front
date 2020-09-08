@@ -106,7 +106,7 @@ export default {
 		},
 		zoomLevel: {
 			get() {
-				return this.DocLayer.zoom;
+				return this.DocLayer.zoomLevel;
 			},
 			set(val) {
 				this.SET_ZOOM_LEVEL(val);

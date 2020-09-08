@@ -15,7 +15,7 @@ export default {
         let tools = []
         if (ListRoutes) {
             currentList.forEach(doc => {
-                const doc_ZL = doc.zoom
+                const doc_ZL = doc.zoomLevel
                 if (doc.root && doc_ZL <= map_ZL) {
                     let rootTools = doc.tools.filter(tool => tool.searchable)
                     rootTools.forEach(tool => tool._id = doc._id);
@@ -24,7 +24,7 @@ export default {
             });
             return tools
         } else if (EditRoutes) {
-            if (state.newDocs[0].zoom <= map_ZL) {
+            if (state.newDocs[0].zoomLevel <= map_ZL) {
                 state.newDocs.forEach(doc => {
                     let thisDoctools = []
                     doc.tools.forEach(tool => {
@@ -37,7 +37,7 @@ export default {
             }
         } else if (routeName == 'read doc') {
             const docLayer = getters.DocLayer
-            const doc_ZL = docLayer.zoom
+            const doc_ZL = docLayer.zoomLevel
             if (docLayer.root ? doc_ZL <= map_ZL : true) {
                 let docTools = docLayer.tools
                 docTools.forEach(tool => tool._id = docLayer._id);

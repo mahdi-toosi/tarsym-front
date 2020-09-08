@@ -341,12 +341,11 @@ export default {
 			"showThisDoc",
 			(event) => {
 				const doc = event.detail;
-				if (doc.location) {
+				if (doc.map_animate)
 					mapObject.flyTo(
-						doc.location.coordinates,
-						doc.root ? doc.zoom + 2 : doc.zoom
+						doc.map_animate.coordinates,
+						doc.map_animate.zoom
 					);
-				}
 			},
 			false
 		);
