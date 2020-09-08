@@ -94,11 +94,14 @@
 								:icon-anchor="dynamicAnchor(tool.iconSize)"
 								v-if="tool.iconName"
 							>
+								<!-- if tool is on , this span make ripple wave effect -->
+								<span></span>
 								<i
 									:class="tool.iconName"
-									:style="{ fontSize:`${tool.iconSize}px`, 
+									:style="{ fontSize:`${ tool.iconSize }px`, 
 												color:  ( tool.secondaryColor.hex8 || tool.secondaryColor ), 
-												transform: `rotate(${tool.angle}deg)`
+												transform: `rotate(${ tool.angle }deg)`,
+												position: 'absolute'
 												}"
 								/>
 							</l-icon>
