@@ -96,9 +96,9 @@
 							>
 								<i
 									:class="tool.iconName"
-									:style="{ fontSize: tool.iconSize + 'px', 
+									:style="{ fontSize:`${tool.iconSize}px`, 
 												color:  ( tool.secondaryColor.hex8 || tool.secondaryColor ), 
-												transform: 'rotate('+tool.angle+ 'deg)' 
+												transform: `rotate(${tool.angle}deg)`
 												}"
 								/>
 							</l-icon>
@@ -122,10 +122,10 @@
 								<div
 									class="textBoxTool_inMap"
 									v-if="tool.tooltip"
-									:style="{ width: tool.width + 'px',
-												height: tool.height + 'px',
+									:style="{ width: `${ tool.width }px`,
+												height: `${ tool.height }px`,
 												background: ( tool.color.hex8 || tool.color ), 
-												fontSize: tool.fontSize + 'px',
+												fontSize: `${ tool.fontSize }px`,
 												color: ( tool.secondaryColor.hex8 || tool.secondaryColor )
 												}"
 								>{{ tool.tooltip }}</div>
@@ -201,7 +201,7 @@ export default {
 				<circle cx="50" cy="50" r="40" stroke="#4a47ff" stroke-width="10" fill="white" />
 			</svg>`;
 		let myIconUrl = encodeURI(
-			"data:image/svg+xml," + achenSvgString
+			`data:image/svg+xml,${achenSvgString}`
 		).replace("#", "%23");
 		let CircleIcon = L.icon({
 			iconUrl: myIconUrl,
@@ -341,11 +341,11 @@ export default {
 			"showThisDoc",
 			(event) => {
 				const doc = event.detail;
-				if (doc.map_animate)
-					mapObject.flyTo(
-						doc.map_animate.coordinates,
-						doc.map_animate.zoom
-					);
+				if (!doc || !doc.map_animate) return;
+				mapObject.flyTo(
+					doc.map_animate.coordinates,
+					doc.map_animate.zoom
+				);
 			},
 			false
 		);

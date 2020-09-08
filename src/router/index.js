@@ -88,13 +88,14 @@ router.beforeEach(async (to, from, next) => {
 
 router.afterEach(async (to) => {
     if (["create doc", "update doc"].includes(to.name)) {
-        if (store.state.newDocs.length) await store.commit('UPDATE_DOC_INDEX');
-        await store.commit('CHANGE_MAP_LAYERS')
+        if (store.state.newDocs.length) store.commit('UPDATE_DOC_INDEX');
         await store.dispatch('get_childs')
+        store.commit('CHANGE_MAP_LAYERS')
+        store.dispatch('flyToThisDoc')
     }
     if (to.name == "read doc") {
         await store.dispatch('read_this_doc')
-        await store.commit('CHANGE_MAP_LAYERS')
+        store.commit('CHANGE_MAP_LAYERS')
     }
 });
 

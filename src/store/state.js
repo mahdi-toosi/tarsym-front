@@ -20,6 +20,7 @@ export default {
         zoom: 5,
         MouseCoordinate: null,
         center: ["32.879587173066305", "54.01105444025955"],
+        layerIndex: 0,
         tileProviders: [{
                 name: "اُپن استریت مپ",
                 visible: true,

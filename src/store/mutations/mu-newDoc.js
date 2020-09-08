@@ -37,6 +37,7 @@ export default {
         });
     },
     CHANGE_LAYER_INDEX(state, layerIndex) {
+        state.map.layerIndex = layerIndex
         const routeName = router.currentRoute.name
         if (['create doc', 'update doc'].includes(routeName))
             docLayer(state).map_animate.layerIndex = layerIndex;
@@ -260,7 +261,7 @@ export default {
             childs_id: [],
             map_animate: {
                 zoom: state.map.zoom,
-                layerIndex: 0,
+                layerIndex: state.map.layerIndex,
                 coordinates: state.map.center
             },
         };

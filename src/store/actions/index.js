@@ -5,6 +5,13 @@ const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     ...requests,
+    flyToThisDoc(store, doc) {
+        document.dispatchEvent(
+            new CustomEvent("showThisDoc", {
+                detail: doc || docLayer(store.state)
+            })
+        );
+    },
     async get_childs({
         state,
         dispatch,

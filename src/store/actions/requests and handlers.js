@@ -374,39 +374,41 @@ export default {
         });
     },
     // !  read_this_doc
-    async read_this_doc(store, id) {
+    async read_this_doc({
+        state,
+        commit,
+        dispatch
+    }, id) {
         const _id = id || router.currentRoute.params._id
         let doc, already_Decoded, decoded_docs;
-        if (store.state.allDocs.data.length) {
-            doc = await store.state.allDocs.data.filter(doc => doc._id == _id)[0]
+        if (state.allDocs.data.length) {
+            doc = await state.allDocs.data.filter(doc => doc._id == _id)[0]
             if (doc) already_Decoded = true
         }
-        if (!doc) doc = await store.dispatch('get_this_docs', _id);
+        if (!doc) doc = await dispatch('get_this_docs', _id);
         if (!doc) return
 
         if (!already_Decoded)
-            decoded_docs = await store.dispatch('decode_the_docs', {
+            decoded_docs = await dispatch('decode_the_docs', {
                 docs: [doc]
             })
-        await store.commit('SET_DOCS_TO', {
+        await commit('SET_DOCS_TO', {
             decoded_docs: decoded_docs || [doc],
             list: 'readDoc',
         })
-        document.dispatchEvent(
-            new CustomEvent("showThisDoc", {
-                detail: decoded_docs ? decoded_docs[0] : doc
-            })
-        );
-        await store.commit('CHANGE_MAP_LAYERS')
+
+        dispatch('flyToThisDoc', decoded_docs ? decoded_docs[0] : doc)
+
+        await commit('CHANGE_MAP_LAYERS')
         if (!doc.childs_id.length) return
-        const childs = await store.dispatch('get_this_docs', doc.childs_id);
+        const childs = await dispatch('get_this_docs', doc.childs_id);
         if (!childs) return
 
-        const decoded_childs = await store.dispatch('decode_the_docs', {
+        const decoded_childs = await dispatch('decode_the_docs', {
             docs: childs,
             deleteRoot: true
         })
-        await store.commit('SET_DOCS_TO', {
+        await commit('SET_DOCS_TO', {
             decoded_docs: decoded_childs,
             list: 'readDoc',
             merge: true,
