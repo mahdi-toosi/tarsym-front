@@ -25,8 +25,7 @@ export default {
 			});
 		});
 		document.addEventListener("PWAupdated", () => {
-			let msg =
-				"آپدیت به پایان رسید ، نیاز به هارد رفرش کردن صفحه است ... ctrl + F5";
+			let msg = "آپدیت به پایان رسید ، نیاز به رفرش کردن صفحه است ...";
 			this.$toasted.info(msg, {
 				duration: 10 * 1000,
 				icon: "fa-info-circle",
