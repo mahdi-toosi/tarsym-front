@@ -100,7 +100,7 @@
 									:class="tool.iconName"
 									:style="{ fontSize:`${ tool.iconSize }px`, 
 												color:  ( tool.secondaryColor.hex8 || tool.secondaryColor ), 
-												transform: `rotate(${ tool.angle }deg)`,
+												transform: 'rotate('+ tool.angle +'deg)' ,
 												position: 'absolute'
 												}"
 								/>

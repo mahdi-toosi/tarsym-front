@@ -97,6 +97,9 @@ router.afterEach(async (to) => {
         await store.dispatch('read_this_doc')
         store.commit('CHANGE_MAP_LAYERS')
     }
+    if (['my docs', 'all docs'].includes(to.name)) {
+        store.commit("CHANGE_MAP_LAYERS", 0)
+    }
 });
 
 function set_user_if_exist() {

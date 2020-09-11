@@ -36,6 +36,9 @@ Vue.use(Toasted, {
     iconPack: "fontawesome",
 })
 
+// *  vue slider styles , component register locally
+import 'vue-slider-component/theme/antd.css'
+
 // * add route data in vuex
 import vuexSyncWithRouter from 'vuex-router-sync'
 vuexSyncWithRouter.sync(store, router)

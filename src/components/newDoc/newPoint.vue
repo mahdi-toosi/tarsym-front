@@ -43,28 +43,24 @@
 			<div class="tool_body">
 				<div class="iconSize">
 					<label for="iconSize">سایز آیکن:</label>
-					<input
-						dir="ltr"
+					<vue-slider
 						id="iconSize"
-						type="range"
-						:index="index"
-						min="10"
-						max="45"
-						value="35"
-						v-on:input="CHANGE_RANG_INPUT({ $event , type: 'iconSize' })"
+						v-model="IconSizeModel"
+						:width="120"
+						:height="6"
+						:min="10"
+						:max="45"
 					/>
 				</div>
 				<div class="iconDegree">
 					<label for="iconDegree">چرخش آیکن:</label>
-					<input
-						dir="ltr"
+					<vue-slider
 						id="iconDegree"
-						type="range"
-						:index="index"
-						min="0"
-						max="360"
-						value="0"
-						@input="CHANGE_RANG_INPUT({ $event, type:'angle' })"
+						v-model="iconDegreeModel"
+						:width="120"
+						:height="6"
+						:min="0"
+						:max="360"
 					/>
 				</div>
 			</div>
@@ -76,10 +72,16 @@
 import iconPicker from "@/components/newDoc/iconPicker";
 import colorPicker from "@/components/newDoc/colorPicker";
 import { mapActions, mapMutations } from "vuex";
+import VueSlider from "vue-slider-component";
 
 export default {
 	name: "newPoint",
 	props: ["tool", "index"],
+	data() {
+		return {
+			value: 30,
+		};
+	},
 	methods: {
 		...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
 		...mapMutations([
@@ -104,6 +106,30 @@ export default {
 				this.CHANGE_TOOLTIP({ index: this.index, val });
 			},
 		},
+		IconSizeModel: {
+			get() {
+				return this.DocLayer.tools[this.index].iconSize;
+			},
+			set(val) {
+				this.CHANGE_RANG_INPUT({
+					index: this.index,
+					val,
+					type: "iconSize",
+				});
+			},
+		},
+		iconDegreeModel: {
+			get() {
+				return this.DocLayer.tools[this.index].angel;
+			},
+			set(val) {
+				this.CHANGE_RANG_INPUT({
+					index: this.index,
+					val,
+					type: "angle",
+				});
+			},
+		},
 		zoomLevel: {
 			get() {
 				return this.DocLayer.zoomLevel;
@@ -116,6 +142,7 @@ export default {
 	components: {
 		iconPicker,
 		colorPicker,
+		VueSlider,
 	},
 };
 </script>

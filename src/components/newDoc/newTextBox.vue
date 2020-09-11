@@ -32,43 +32,37 @@
 
 			<div class="fontSize">
 				<label for="fontSize">سایز فونت:</label>
-				<input
-					dir="ltr"
+				<vue-slider
 					id="fontSize"
-					type="range"
-					:index="index"
-					min="14"
-					max="30"
-					value="16"
-					@input="CHANGE_RANG_INPUT({ $event, type:'fontSize' })"
+					v-model="TextBoxfontSize"
+					:width="120"
+					:height="6"
+					:min="14"
+					:max="30"
 				/>
 			</div>
 
 			<div class="heightOfbox">
 				<label for="heightOfbox">عرض باکس:</label>
-				<input
-					dir="ltr"
+				<vue-slider
 					id="heightOfbox"
-					type="range"
-					:index="index"
-					min="30"
-					max="300"
-					value="100"
-					@input="CHANGE_RANG_INPUT({ $event, type:'height' })"
+					v-model="TextBoxHeight"
+					:width="120"
+					:height="6"
+					:min="30"
+					:max="300"
 				/>
 			</div>
 
 			<div class="widthOfBox">
 				<label for="widthOfBox">طول باکس:</label>
-				<input
-					dir="ltr"
+				<vue-slider
 					id="widthOfBox"
-					type="range"
-					:index="index"
-					min="100"
-					max="350"
-					value="200"
-					v-on:input="CHANGE_RANG_INPUT({ $event , type: 'width' })"
+					v-model="TextBoxWidth"
+					:width="120"
+					:height="6"
+					:min="100"
+					:max="350"
 				/>
 			</div>
 		</div>
@@ -78,6 +72,7 @@
 <script>
 import colorPicker from "@/components/newDoc/colorPicker";
 import { mapActions, mapMutations } from "vuex";
+import VueSlider from "vue-slider-component";
 
 export default {
 	name: "newPoint",
@@ -103,8 +98,45 @@ export default {
 				this.CHANGE_TOOLTIP({ index, val });
 			},
 		},
+		TextBoxfontSize: {
+			get() {
+				return this.DocLayer.tools[this.index].iconRepeat;
+			},
+			set(val) {
+				this.CHANGE_RANG_INPUT({
+					index: this.index,
+					val,
+					type: "fontSize",
+				});
+			},
+		},
+		TextBoxHeight: {
+			get() {
+				return this.DocLayer.tools[this.index].iconRepeat;
+			},
+			set(val) {
+				this.CHANGE_RANG_INPUT({
+					index: this.index,
+					val,
+					type: "height",
+				});
+			},
+		},
+		TextBoxWidth: {
+			get() {
+				return this.DocLayer.tools[this.index].iconRepeat;
+			},
+			set(val) {
+				this.CHANGE_RANG_INPUT({
+					index: this.index,
+					val,
+					type: "width",
+				});
+			},
+		},
 	},
 	components: {
+		VueSlider,
 		colorPicker,
 	},
 };

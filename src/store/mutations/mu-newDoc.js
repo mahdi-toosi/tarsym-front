@@ -27,7 +27,14 @@ export default {
             doc.map_animate.coordinates = coordinates
         }
     },
-    CHANGE_MAP_LAYERS(state) {
+    CHANGE_MAP_LAYERS(state, Layerindex) {
+        if (Layerindex > -1) {
+            state.map.tileProviders.forEach((tileProvider, index) => {
+                if (Layerindex == index) tileProvider.visible = true
+                else tileProvider.visible = false
+            });
+            return
+        }
         let doc = state.newDocs[state.DocProp.index]
         if (!doc) doc = state.readDoc[0]
         if (!doc) return
@@ -111,10 +118,8 @@ export default {
         docLayer(state).tools.splice(index, 1);
     },
     CHANGE_RANG_INPUT(state, obj) {
-        const index = obj.$event.target.attributes.index.value;
-        const val = Number(obj.$event.target.value);
-        const thisTool = docLayer(state).tools[index]
-        thisTool[obj.type] = val
+        const thisTool = docLayer(state).tools[obj.index]
+        thisTool[obj.type] = obj.val
     },
     SET_CHOSEN_TAXONOMY(state, {
         $event,
