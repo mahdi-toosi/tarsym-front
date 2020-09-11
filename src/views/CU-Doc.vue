@@ -32,7 +32,14 @@
 				>
 					<template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
 				</v-select>
-				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" />
+				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" ref="quillEditor" />
+				<input
+					ref="quillimageInput"
+					style="display: none"
+					type="file"
+					accept="image/gif, image/jpeg, image/png"
+					@change="_doImageUpload"
+				/>
 			</section>
 			<section class="tag_date_section">
 				<v-select
@@ -83,6 +90,8 @@
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import { quillEditor } from "vue-quill-editor";
+// TODO => fix the quill-image-drop errors
+
 // * components
 import datePicker from "@/components/newDoc/datePicker";
 import gooeyMenu from "@/components/newDoc/gooeyMenu";
@@ -92,6 +101,7 @@ import newPolyline from "@/components/newDoc/newPolyline";
 import newTextBox from "@/components/newDoc/newTextBox";
 import addNewLayerBox from "@/components/newDoc/addNewLayerBox";
 import layersRelationshipTree from "@/components/newDoc/layersRelationshipTree";
+// * VUEX
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
@@ -111,8 +121,16 @@ export default {
 		];
 		return {
 			tabContent: "tools",
+			// customModulesForEditor: [{ alias: "imageDrop", module: ImageDrop }],
 			quillEditorOptions: {
-				modules: { toolbar: toolbarOptions },
+				modules: {
+					toolbar: {
+						container: toolbarOptions,
+						handlers: {
+							image: this.insertImage,
+						},
+					},
+				},
 				theme: "snow",
 				placeholder: "توضیحات ...",
 			},
@@ -125,12 +143,65 @@ export default {
 			"Create_or_Update_Documents",
 			"addNewDoc",
 			"goBackToParent",
-
 			"update_this_doc",
 			"get_childs",
 			"get_All_Taxanomies",
 		]),
-
+		insertImage() {
+			// manipulate the DOM to do a click on hidden input
+			this.$refs.quillimageInput.click();
+		},
+		async _doImageUpload(event) {
+			// for simplicity I only upload the first image
+			const file = event.target.files[0];
+			// 1e+6 == 1MB
+			if (file && file.size > 1e6) {
+				this.$toasted.error("حجم عکس حداکثر 1mb میتوانید باشد", {
+					icon: "fa-times-circle",
+				});
+				return;
+			}
+			// create form data
+			const fd = new FormData();
+			// just add file instance to form data normally
+			fd.append("image", file);
+			// I use axios here, should be obvious enough
+			console.log("fd => ", fd);
+			const url = "/upload-images";
+			const response = await this.$axios
+				.post(url, fd)
+				.then((res) => res.data)
+				.catch((error) => {
+					this.$store.dispatch("handleAxiosError", error);
+					return false;
+				});
+			if (!response) {
+				let msg =
+					"آپلود عکس با مشکل روبرو شده. لطفا دوباره امتحان کنید ...";
+				this.$toasted.error(msg, {
+					icon: "fa-times-circle",
+				});
+				return;
+			}
+			console.log("response => ", response);
+			// clear input value to make selecting the same image work
+			event.target.value = "";
+			// get current index of the cursor
+			const currentIndex = this.quillInstance.selection.lastRange.index;
+			// insert uploaded image url to 'image' embed (quill does this for you)
+			// the embed looks like this: <img src="{url}" />
+			// TODO => delete isProduction if is not necessary
+			const isProduction = process.env.NODE_ENV === "production";
+			this.quillInstance.insertEmbed(
+				currentIndex,
+				"image",
+				isProduction
+					? response.url
+					: `http://localhost:2345${response.url}`
+			);
+			// set cursor position to after the image
+			this.quillInstance.setSelection(currentIndex + 1, 0);
+		},
 		lastAddedDocID() {
 			const Docs = this.$store.state.newDocs;
 			if (Docs.length > 0) {
@@ -166,6 +237,9 @@ export default {
 				return (this.DocLayer.description = val);
 			},
 		},
+		quillInstance() {
+			return this.$refs.quillEditor.quill;
+		},
 	},
 	async created() {
 		const routeName = this.$route.name;
@@ -183,6 +257,7 @@ export default {
 		// document.addEventListener("keyup", this.keyPressed);
 	},
 	mounted() {
+		this.get_childs();
 		// const quillButtons = document.querySelectorAll(".ql-toolbar button");
 		// quillButtons.forEach((element) => {
 		// 	console.log(element);
