@@ -55,13 +55,13 @@ export default {
 			const currectYear = yearIsNegetive
 				? year.replace(/[-]/gi, "")
 				: year;
-			const JustYearInDate = `سال ${year.replace(/[-]/gi, "")}${
+			const JustYear = `سال ${year.replace(/[-]/gi, "")}${
 				yearIsNegetive ? "<span>-</span>" : ""
 			} ه‍.ق`;
-			const FullDate = `${day}/${month}/${currectYear}${
+			const FullDate = `${
 				yearIsNegetive ? "<span>-</span>" : ""
-			} ه‍.ق`;
-			return month == "00" ? JustYearInDate : FullDate;
+			}${currectYear}/${month}/${day} ه‍.ق`;
+			return month == "00" ? JustYear : FullDate;
 		},
 	},
 	mounted() {},

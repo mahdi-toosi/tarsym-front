@@ -226,7 +226,7 @@ export default {
             date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
             currentRoute = router.currentRoute;
 
-        if (!title) errors.push('تیتر کافی نیست')
+        if (!title) errors.push('عنوان کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
         if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
         if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')

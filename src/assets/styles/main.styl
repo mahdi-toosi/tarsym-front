@@ -29,14 +29,15 @@
     font-family: iranSans
     font-style: normal
     font-weight: normal
-    src: url('/fonts/eot/IRANSansWeb.eot')
-    src: url('/fonts/eot/IRANSansWeb.eot?#iefix') format('embedded-opentype'), 
-        url('/fonts/woff2/IRANSansWeb.woff2') format('woff2'), 
-        url('/fonts/woff/IRANSansWeb.woff') format('woff'),
-        url('/fonts/ttf/IRANSansWeb.ttf') format('truetype');
+    // src: url('/dist/fonts/eot/IRANSansWeb.eot')
+    src: local('IRANSans')
+    src: url('/dist/fonts/eot/IRANSansWeb.eot?#iefix') format('embedded-opentype'), 
+        url('/dist/fonts/woff2/IRANSansWeb.woff2') format('woff2'), 
+        url('/dist/fonts/woff/IRANSansWeb.woff') format('woff'),
+        url('/dist/fonts/ttf/IRANSansWeb.ttf') format('truetype');
 
 body 
-    font-family: iranSans
+    font-family: 'iranSans'
     background: #f4f3fb
     color: #8d96ac
 a
@@ -175,7 +176,7 @@ button
     .point
         direction: rtl
         transition: all 0.5s ease
-        // cursor pointer
+        cursor pointer
         position relative
         padding: 15px;
         border-radius: 5px;
@@ -190,6 +191,18 @@ button
                 background: transparent
                 border none
                 cursor pointer
+                transition: .3s
+                &:hover
+                    color: #0ce509
+            .deleteDoc
+                margin-right: auto
+                background: transparent
+                border none
+                cursor pointer
+                margin-right: 5px
+                transition: .3s
+                &:hover
+                    color: red
             time
                 position: absolute;
                 right: 11%;

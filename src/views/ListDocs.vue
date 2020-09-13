@@ -9,13 +9,7 @@
 		<search-field />
 		<section class="points">
 			<span v-if="!allDocs.data.length" class="notingToShow">داکیومنتی برای نمایش دادن نیست</span>
-			<div
-				class="point shadow"
-				v-for="doc in allDocs.data "
-				:key="doc._id"
-				@click="showThisDoc(doc)"
-				style="cursor: pointer"
-			>
+			<div class="point shadow" v-for="doc in allDocs.data " :key="doc._id" @click="showThisDoc(doc)">
 				<header>
 					<i
 						class="logo"
@@ -36,16 +30,15 @@
 					<time v-html="filterdate(doc.date)"></time>
 					<button
 						class="editDoc"
-						@click="$router.push(`/update/${doc._id}`)"
+						@click.stop="$router.push(`/update/${doc._id}`)"
 						v-if="$route.name == 'my docs'"
 					>
 						<i class="far fa-edit"></i>
 					</button>
 					<button
-						@click="Delete_this_Document(doc._id)"
-						class="editDoc"
+						@click.stop="Delete_this_Document(doc._id)"
+						class="deleteDoc"
 						v-if="$route.name == 'my docs'"
-						style="margin-right: 5px;"
 					>
 						<i class="far fa-trash-alt"></i>
 					</button>
@@ -78,8 +71,8 @@ export default {
 	},
 	methods: {
 		showThisDoc(doc) {
-			if (this.$route.name == "all docs")
-				this.$router.push(`/read/${doc._id}`);
+			// if (this.$route.name == "all docs")
+			this.$router.push(`/read/${doc._id}`);
 		},
 		...mapActions([
 			"getAllDocs",
@@ -96,13 +89,13 @@ export default {
 			const currectYear = yearIsNegetive
 				? year.replace(/[-]/gi, "")
 				: year;
-			const JustYearInDate = `سال ${year.replace(/[-]/gi, "")}${
+			const JustYear = `سال ${year.replace(/[-]/gi, "")}${
 				yearIsNegetive ? "<span>-</span>" : ""
 			} ه‍.ق`;
-			const FullDate = `${day}/${month}/${currectYear}${
+			const FullDate = `${
 				yearIsNegetive ? "<span>-</span>" : ""
-			} ه‍.ق`;
-			return month == "00" ? JustYearInDate : FullDate;
+			}${currectYear}/${month}/${day} ه‍.ق`;
+			return month == "00" ? JustYear : FullDate;
 		},
 	},
 	beforeRouteEnter(to, from, next) {

@@ -3,6 +3,7 @@ node_modules
 /dist
 dist.zip
 public/mahdi.js
+public/dist
 # local env files
 .env
 .env.local
