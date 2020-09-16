@@ -173,6 +173,7 @@ export default {
         } else thisTool.color = obj.color;
     },
     SET_TOOL(state, type) {
+        const currentDoc = docLayer(state)
         const obj = {
             isOn: true,
             type: type,
@@ -183,12 +184,12 @@ export default {
             secondaryColor: "#23A9AEFF",
         }
         if (type == "Point") {
+            const isSearcheable = currentDoc.root && currentDoc.tools.length < 1
+            if (isSearcheable) obj.searchable = true
             obj.iconName = null
-            obj.coordinates = state.map.center
+            obj.coordinates = isSearcheable ? ['0', '0'] : state.map.center
             obj.angle = 0
             obj.iconSize = 35
-            const currentDoc = docLayer(state)
-            if (currentDoc.root && currentDoc.tools.length < 1) obj.searchable = true
         }
         if (type == "Textbox") {
             obj.coordinates = state.map.center
@@ -206,7 +207,7 @@ export default {
             obj.angle = 0
             obj.iconRepeat = 30
         }
-        docLayer(state).tools.push(obj);
+        currentDoc.tools.push(obj);
     },
     OFF_THE_ON_TOOL(state) {
         const onTool = state.DocProp.OnTool

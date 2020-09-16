@@ -12,12 +12,12 @@
 				<i class="fas fa-pencil-alt"></i>
 			</button>
 
-			<label for="zoomLevel" style="top: 4px" v-if="tool.searchable">لول زوم:</label>
+			<label for="zoomLevel" style="top: 4px" v-if="tool.searchable">سطح زوم:</label>
 			<select
 				id="zoomLevel"
 				v-if="tool.searchable"
 				v-model="zoomLevel"
-				title="لول زوم 4 بیشترین مقدار زوم است"
+				title="سطح زوم 5 بیشترین مقدار زوم است"
 			>
 				<option :value="4">1</option>
 				<option :value="6">2</option>
@@ -146,9 +146,3 @@ export default {
 	},
 };
 </script>
-
-<style>
-#zoomLevel {
-	cursor: pointer;
-}
-</style>

@@ -228,13 +228,17 @@ export default {
 
         if (!title) errors.push('عنوان کافی نیست')
         if (!description) errors.push('توضیحات کافی نیست')
-        if (!date) errors.push('تاریخ برای این داکیومنت انتخاب کنید')
-        if (!tools) errors.push('حداقل از یک ابزار برای این داکیومنت استفاده کنید')
+        if (!date) errors.push('تاریخ انتخاب کنید')
+        if (!tools) errors.push('حداقل از یک ابزار استفاده کنید')
         if (docLayer.root) {
+            //  IMC == Index Marker Coordinates 
+            const IMC = docLayer.tools[0].coordinates
+            const isIndexMarketDefault = IMC[0] == "0" && IMC[1] == "0"
+            if (isIndexMarketDefault) errors.push('برای آیکون شاخص مختصات مشخص کنید')
             const tags = docLayer.tags.length;
-            if (!tags) errors.push('حداقل یک تگ برای این داکیومنت انتخاب کنید')
+            if (!tags) errors.push('حداقل یک تگ انتخاب کنید')
             const categories = docLayer.categories.length;
-            if (!categories) errors.push(' یک دسته بندی برای این داکیومنت انتخاب کنید')
+            if (!categories) errors.push(' یک دسته بندی انتخاب کنید')
         }
 
         if (!errors.length) return true
