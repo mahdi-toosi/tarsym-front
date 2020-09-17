@@ -1,88 +1,118 @@
 <template>
-	<div class="newpoint">
-		<header>
-			<button class="btn btn-red ml1" @click="CLEAR_NEW_DOC()">
-				منصرف شدم
-				<i class="fas fa-times"></i>
-			</button>
-			<button class="btn btn-green" @click="Create_or_Update_Documents()">
-				{{ $route.name == 'create doc' ? 'ثبت' : 'بروزرسانی' }}
-				<i class="fas fa-save"></i>
-			</button>
-			<!-- back button -->
-			<button class="btn btn-back" @click="goBackToParent()" v-if="DocProp.index !== 0 ">
-				<i class="fas fa-arrow-left"></i>
-			</button>
-		</header>
-		<div v-if="newDocs.length">
-			<section class="shadow">
-				<input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
-				<v-select
-					:options="validCategories"
-					:value="DocLayer.categories"
-					@input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
-					label="name"
-					placeholder="دسته بندی ..."
-					multiple
-					taggable
-					push-tags
-					class="tags categories"
-					dir="rtl"
-					v-if="DocLayer.root"
-				>
-					<template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
-				</v-select>
-				<quill-editor v-model="newPointDescription" :options="quillEditorOptions" ref="quillEditor" />
-				<input
-					ref="quillimageInput"
-					style="display: none"
-					type="file"
-					accept="image/gif, image/jpeg, image/png"
-					@change="_doImageUpload"
-				/>
-			</section>
-			<section class="tag_date_section">
-				<v-select
-					:options="taxonomies.tags"
-					:value="DocLayer.tags"
-					@input="SET_CHOSEN_TAXONOMY( {$event , type: 2} )"
-					label="name"
-					placeholder="تگ ..."
-					multiple
-					taggable
-					push-tags
-					class="tags"
-					dir="rtl"
-					v-if="DocLayer.root"
-				/>
-				<date-picker class="datepicker" :docLayer="DocProp.index" />
-			</section>
-			<section class="tools shadow">
-				<br />
-				<div class="tabs">
-					<span @click="tabContent = 'tools'" :class="tabContent == 'tools' ? 'activeTab' : ''">ابزار ها</span>
-					<span @click="tabContent = 'layers'" :class="tabContent == 'layers' ? 'activeTab' : ''">لایه ها</span>
-				</div>
-				<div class="content">
-					<div class="tools-content" v-show="tabContent == 'tools'">
-						<ul class="tools">
-							<li v-for="(tool, index) in DocLayer.tools" :key="index">
-								<new-point :tool="tool" :index="index" v-if="tool.type == 'Point'" class="tool" />
-								<new-polygon :tool="tool" :index="index" v-if="tool.type == 'Polygon'" class="tool" />
-								<new-polyline :tool="tool" :index="index" v-if="tool.type == 'Polyline'" class="tool" />
-								<new-text-box :tool="tool" :index="index" v-if="tool.type == 'Textbox'" class="tool" />
-							</li>
-						</ul>
-						<gooey-menu />
-					</div>
-					<div class="layers-content" v-show="tabContent == 'layers'">
-						<layers-relationship-tree @childClicked=" tabContent = 'tools' " />
-						<add-new-layer-box @childAdded=" tabContent = 'tools' " />
-					</div>
-				</div>
-			</section>
-		</div>
-	</div>
+    <div class="newpoint">
+        <header>
+            <button class="btn btn-red ml1" @click="CLEAR_NEW_DOC()">
+                منصرف شدم
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="btn btn-green" @click="Create_or_Update_Documents()">
+                {{ $route.name == 'create doc' ? 'ثبت' : 'بروزرسانی' }}
+                <i class="fas fa-save"></i>
+            </button>
+            <!-- back button -->
+            <button class="btn btn-back" @click="goBackToParent()" v-if="DocProp.index !== 0 ">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </header>
+        <div v-if="newDocs.length">
+            <section class="shadow">
+                <input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
+                <v-select
+                    :options="validCategories"
+                    :value="DocLayer.categories"
+                    @input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
+                    label="name"
+                    placeholder="دسته بندی ..."
+                    multiple
+                    taggable
+                    push-tags
+                    class="tags categories"
+                    dir="rtl"
+                    v-if="DocLayer.root"
+                >
+                    <template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
+                </v-select>
+                <quill-editor
+                    v-model="newPointDescription"
+                    :options="quillEditorOptions"
+                    ref="quillEditor"
+                />
+                <input
+                    ref="quillimageInput"
+                    style="display: none"
+                    type="file"
+                    accept="image/gif, image/jpeg, image/png"
+                    @change="_doImageUpload"
+                />
+            </section>
+            <section class="tag_date_section">
+                <v-select
+                    :options="taxonomies.tags"
+                    :value="DocLayer.tags"
+                    @input="SET_CHOSEN_TAXONOMY( {$event , type: 2} )"
+                    label="name"
+                    placeholder="تگ ..."
+                    multiple
+                    taggable
+                    push-tags
+                    class="tags"
+                    dir="rtl"
+                    v-if="DocLayer.root"
+                />
+                <date-picker class="datepicker" :docLayer="DocProp.index" />
+            </section>
+            <section class="tools shadow">
+                <br />
+                <div class="tabs">
+                    <span
+                        @click="tabContent = 'tools'"
+                        :class="tabContent == 'tools' ? 'activeTab' : ''"
+                    >ابزار ها</span>
+                    <span
+                        @click="tabContent = 'layers'"
+                        :class="tabContent == 'layers' ? 'activeTab' : ''"
+                    >لایه ها</span>
+                </div>
+                <div class="content">
+                    <div class="tools-content" v-show="tabContent == 'tools'">
+                        <ul class="tools">
+                            <li v-for="(tool, index) in DocLayer.tools" :key="index">
+                                <new-point
+                                    :tool="tool"
+                                    :index="index"
+                                    v-if="tool.type == 'Point'"
+                                    class="tool"
+                                />
+                                <new-polygon
+                                    :tool="tool"
+                                    :index="index"
+                                    v-if="tool.type == 'Polygon'"
+                                    class="tool"
+                                />
+                                <new-polyline
+                                    :tool="tool"
+                                    :index="index"
+                                    v-if="tool.type == 'Polyline'"
+                                    class="tool"
+                                />
+                                <new-text-box
+                                    :tool="tool"
+                                    :index="index"
+                                    v-if="tool.type == 'Textbox'"
+                                    class="tool"
+                                />
+                            </li>
+                        </ul>
+                        <gooey-menu />
+                    </div>
+                    <div class="layers-content" v-show="tabContent == 'layers'">
+                        <layers-relationship-tree @childClicked=" tabContent = 'tools' " />
+                        <add-new-layer-box @childAdded=" tabContent = 'tools' " />
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -105,175 +135,171 @@ import layersRelationshipTree from "@/components/newDoc/layersRelationshipTree";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
-	name: "newDoc",
-	data() {
-		const toolbarOptions = [
-			["blockquote", "italic", "underline", "bold"], // toggled buttons
-			[
-				"image",
-				{ background: [] },
-				{ color: [] },
-				{ align: [] },
-				{ direction: "rtl" },
-			],
-			[{ header: [2, 3, false] }],
-			["clean"],
-		];
-		return {
-			tabContent: "tools",
-			// customModulesForEditor: [{ alias: "imageDrop", module: ImageDrop }],
-			quillEditorOptions: {
-				modules: {
-					toolbar: {
-						container: toolbarOptions,
-						handlers: {
-							image: this.insertImage,
-						},
-					},
-				},
-				theme: "snow",
-				placeholder: "توضیحات ...",
-			},
-			defaultColor: "#FF0000",
-		};
-	},
-	methods: {
-		...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAXONOMY"]),
-		...mapActions([
-			"Create_or_Update_Documents",
-			"addNewDoc",
-			"goBackToParent",
-			"update_this_doc",
-			"get_childs",
-			"get_All_Taxanomies",
-		]),
-		insertImage() {
-			// manipulate the DOM to do a click on hidden input
-			this.$refs.quillimageInput.click();
-		},
-		async _doImageUpload(event) {
-			// for simplicity I only upload the first image
-			const file = event.target.files[0];
-			// 1e+6 == 1MB
-			if (file && file.size > 1e6) {
-				this.$toasted.error("حجم عکس حداکثر 1mb میتوانید باشد", {
-					icon: "fa-times-circle",
-				});
-				return;
-			}
-			// create form data
-			const fd = new FormData();
-			// just add file instance to form data normally
-			fd.append("image", file);
-			// I use axios here, should be obvious enough
-			console.log("fd => ", fd);
-			const url = "/upload-images";
-			const response = await this.$axios
-				.post(url, fd)
-				.then((res) => res.data)
-				.catch((error) => {
-					this.$store.dispatch("handleAxiosError", error);
-					return false;
-				});
-			if (!response) {
-				let msg =
-					"آپلود عکس با مشکل روبرو شده. لطفا دوباره امتحان کنید ...";
-				this.$toasted.error(msg, {
-					icon: "fa-times-circle",
-				});
-				return;
-			}
-			console.log("response => ", response);
-			// clear input value to make selecting the same image work
-			event.target.value = "";
-			// get current index of the cursor
-			const currentIndex = this.quillInstance.selection.lastRange.index;
-			// insert uploaded image url to 'image' embed (quill does this for you)
-			// the embed looks like this: <img src="{url}" />
-			// TODO => delete isProduction if is not necessary
-			const isProduction = process.env.NODE_ENV === "production";
-			this.quillInstance.insertEmbed(
-				currentIndex,
-				"image",
-				isProduction
-					? response.url
-					: `http://localhost:2345${response.url}`
-			);
-			// set cursor position to after the image
-			this.quillInstance.setSelection(currentIndex + 1, 0);
-		},
-		lastAddedDocID() {
-			const Docs = this.$store.state.newDocs;
-			if (Docs.length > 0) {
-				const lastDoc = Docs[Docs.length - 1];
-				return lastDoc._id;
-			}
-			return false;
-		},
-		// keyPressed(e) {
-		// 	const OnTool = this.DocProp.OnTool;
-		// 	if (e.keyCode === 27 && OnTool.condition) {
-		// 		this.toolSwitch(OnTool.index);
-		// 		return;
-		// 	} else return;
-		// },
-	},
-	computed: {
-		...mapState(["newDocs", "DocProp", "taxonomies"]),
-		...mapGetters(["DocLayer", "validCategories"]),
-		newPointTitle: {
-			get() {
-				return this.DocLayer.title;
-			},
-			set(val) {
-				return (this.DocLayer.title = val);
-			},
-		},
-		newPointDescription: {
-			get() {
-				return this.DocLayer.description;
-			},
-			set(val) {
-				return (this.DocLayer.description = val);
-			},
-		},
-		quillInstance() {
-			return this.$refs.quillEditor.quill;
-		},
-	},
-	async created() {
-		const routeName = this.$route.name;
-		const route_id = this.$route.params._id;
-		const lastAddedDocID = this.lastAddedDocID();
-		this.get_All_Taxanomies(false); //* withCache = false
-		if (routeName == "create doc") {
-			if (Number(route_id) !== lastAddedDocID) {
-				await this.addNewDoc();
-				return;
-			}
-		} else if (routeName == "update doc") {
-			await this.update_this_doc(route_id);
-		}
-		// document.addEventListener("keyup", this.keyPressed);
-	},
-	mounted() {
-		this.get_childs();
-		// const quillButtons = document.querySelectorAll(".ql-toolbar button");
-		// quillButtons.forEach((element) => {
-		// 	console.log(element);
-		// 	element.setAttribute("tabindex", "-1");
-		// });
-	},
-	components: {
-		datePicker,
-		quillEditor,
-		gooeyMenu,
-		newPoint,
-		newPolygon,
-		newPolyline,
-		newTextBox,
-		addNewLayerBox,
-		layersRelationshipTree,
-	},
+    name: "newDoc",
+    data() {
+        const toolbarOptions = [
+            ["blockquote", "italic", "underline", "bold"], // toggled buttons
+            [
+                "image",
+                { background: [] },
+                { color: [] },
+                { align: [] },
+                { direction: "rtl" },
+            ],
+            [{ header: [2, 3, false] }],
+            ["clean"],
+        ];
+        return {
+            tabContent: "tools",
+            // customModulesForEditor: [{ alias: "imageDrop", module: ImageDrop }],
+            quillEditorOptions: {
+                modules: {
+                    toolbar: {
+                        container: toolbarOptions,
+                        handlers: {
+                            image: this.insertImage,
+                        },
+                    },
+                },
+                theme: "snow",
+                placeholder: "توضیحات ...",
+            },
+            defaultColor: "#FF0000",
+        };
+    },
+    methods: {
+        ...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAXONOMY"]),
+        ...mapActions([
+            "Create_or_Update_Documents",
+            "addNewDoc",
+            "goBackToParent",
+            "update_this_doc",
+            "get_childs",
+            "get_All_Taxanomies",
+        ]),
+        insertImage() {
+            // manipulate the DOM to do a click on hidden input
+            this.$refs.quillimageInput.click();
+        },
+        async _doImageUpload(event) {
+            // for simplicity I only upload the first image
+            const file = event.target.files[0];
+            // 1e+6 == 1MB
+            if (file && file.size > 1e6) {
+                this.$toasted.error("حجم عکس حداکثر 1mb میتوانید باشد");
+                return;
+            }
+            // create form data
+            const fd = new FormData();
+            // just add file instance to form data normally
+            fd.append("image", file);
+            // I use axios here, should be obvious enough
+            console.log("fd => ", fd);
+            const url = "/upload-images";
+            const response = await this.$axios
+                .post(url, fd)
+                .then((res) => res.data)
+                .catch((error) => {
+                    this.$store.dispatch("handleAxiosError", error);
+                    return false;
+                });
+            if (!response) {
+                let msg =
+                    "آپلود عکس با مشکل روبرو شده. لطفا دوباره امتحان کنید ...";
+                this.$toasted.error(msg);
+                return;
+            }
+            console.log("response => ", response);
+            // clear input value to make selecting the same image work
+            event.target.value = "";
+            // get current index of the cursor
+            const currentIndex = this.quillInstance.selection.lastRange.index;
+            // insert uploaded image url to 'image' embed (quill does this for you)
+            // the embed looks like this: <img src="{url}" />
+            // TODO => delete isProduction if is not necessary
+            const isProduction = process.env.NODE_ENV === "production";
+            this.quillInstance.insertEmbed(
+                currentIndex,
+                "image",
+                isProduction
+                    ? response.url
+                    : `http://localhost:2345${response.url}`
+            );
+            // set cursor position to after the image
+            this.quillInstance.setSelection(currentIndex + 1, 0);
+        },
+        lastAddedDocID() {
+            const Docs = this.$store.state.newDocs;
+            if (Docs.length > 0) {
+                const lastDoc = Docs[Docs.length - 1];
+                return lastDoc._id;
+            }
+            return false;
+        },
+        // keyPressed(e) {
+        // 	const OnTool = this.DocProp.OnTool;
+        // 	if (e.keyCode === 27 && OnTool.condition) {
+        // 		this.toolSwitch(OnTool.index);
+        // 		return;
+        // 	} else return;
+        // },
+    },
+    computed: {
+        ...mapState(["newDocs", "DocProp", "taxonomies"]),
+        ...mapGetters(["DocLayer", "validCategories"]),
+        newPointTitle: {
+            get() {
+                return this.DocLayer.title;
+            },
+            set(val) {
+                return (this.DocLayer.title = val);
+            },
+        },
+        newPointDescription: {
+            get() {
+                return this.DocLayer.description;
+            },
+            set(val) {
+                return (this.DocLayer.description = val);
+            },
+        },
+        quillInstance() {
+            return this.$refs.quillEditor.quill;
+        },
+    },
+    async created() {
+        const routeName = this.$route.name;
+        const route_id = this.$route.params._id;
+        const lastAddedDocID = this.lastAddedDocID();
+        this.get_All_Taxanomies(false); //* withCache = false
+        if (routeName == "create doc") {
+            if (Number(route_id) !== lastAddedDocID) {
+                await this.addNewDoc();
+                return;
+            }
+        } else if (routeName == "update doc") {
+            await this.update_this_doc(route_id);
+        }
+        // document.addEventListener("keyup", this.keyPressed);
+    },
+    mounted() {
+        this.get_childs();
+        // const quillButtons = document.querySelectorAll(".ql-toolbar button");
+        // quillButtons.forEach((element) => {
+        // 	console.log(element);
+        // 	element.setAttribute("tabindex", "-1");
+        // });
+    },
+    components: {
+        datePicker,
+        quillEditor,
+        gooeyMenu,
+        newPoint,
+        newPolygon,
+        newPolyline,
+        newTextBox,
+        addNewLayerBox,
+        layersRelationshipTree,
+    },
 };
 </script>

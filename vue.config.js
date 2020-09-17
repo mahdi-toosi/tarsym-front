@@ -1,10 +1,16 @@
 // const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production' ?
-        '/dist/' : '/',
+    publicPath: process.env.NODE_ENV === "production" ? "/dist/" : "/",
+    pwa: {
+        name: "Tarsym",
+        themeColor: "#4DBA87",
+        msTileColor: "#000000",
+        appleMobileWebAppCapable: "yes",
+        appleMobileWebAppStatusBarStyle: "#22dda9",
+    },
     chainWebpack(config) {
-        config.plugins.delete('prefetch');
+        config.plugins.delete("prefetch");
         // config.plugin('CompressionPlugin').use(CompressionPlugin);
     },
     // configureWebpack: {
@@ -26,11 +32,4 @@ module.exports = {
     //         },
     //     },
     // },
-    pwa: {
-        name: 'Tarsym',
-        themeColor: '#4DBA87',
-        msTileColor: '#000000',
-        appleMobileWebAppCapable: 'yes',
-        appleMobileWebAppStatusBarStyle: '#22dda9',
-    }
-}
+};

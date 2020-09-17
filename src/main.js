@@ -34,6 +34,7 @@ Vue.use(Toasted, {
     duration: 5 * 1000,
     keepOnHover: true,
     iconPack: "fontawesome",
+    icon: "fa-times-circle"
 })
 
 // *  vue slider styles , component register locally

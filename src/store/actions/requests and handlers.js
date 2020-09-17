@@ -198,7 +198,7 @@ export default {
         dispatch
     }, doc_ids) {
         let is_doc_ids_array = Array.isArray(doc_ids),
-            url = `/documents/${ is_doc_ids_array ? '' : doc_ids }`,
+            url = `/documents/${is_doc_ids_array ? '' : doc_ids}`,
             obj = {
                 params: {
                     '_id[$in]': doc_ids
@@ -247,14 +247,13 @@ export default {
                 text: 'داکیومنت',
                 onClick: async (e, toastObject) => {
                     const routeName = currentRoute.name
-                    const path = `/${ routeName == 'create doc' ? 'create' : 'update' }/${ docLayer._id }`;
+                    const path = `/${routeName == 'create doc' ? 'create' : 'update'}/${docLayer._id}`;
                     await router.push(path);
                     toastObject.goAway(0);
                 }
             }]
             errors.forEach(msg => {
                 Vue.toasted.error(msg, {
-                    icon: "fa-times-circle",
                     action: currentRoute.params._id == docLayer._id ? [] : action
                 });
             });
@@ -373,9 +372,7 @@ export default {
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
             console.log("request get error => ", msg);
         }
-        Vue.toasted.error(msg, {
-            icon: "fa-times-circle",
-        });
+        Vue.toasted.error(msg);
     },
     // !  read_this_doc
     async read_this_doc({
@@ -433,9 +430,7 @@ export default {
             )
             .catch((error) => {
                 if (error == "Error: Request failed with status code 415") {
-                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...", {
-                        icon: "fa-times-circle",
-                    });
+                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
                     return;
                 }
                 store.dispatch("handleAxiosError", error);
