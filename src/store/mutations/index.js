@@ -2,6 +2,12 @@ import newDoc from "./mu-newDoc"
 
 export default {
     ...newDoc,
+    LOGOUT(state) {
+        localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
+        localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
+        state.user = {};
+        document.dispatchEvent(new CustomEvent("hideSidebarNav"));
+    },
     CHANGE_SEARCH_POLYGON_SITUATION(state) {
         state.searchPolygon.isOn = !state.searchPolygon.isOn
     },

@@ -2,17 +2,20 @@
     <div id="app">
         <tarsym-map />
         <sidebar />
+        <sidebar-navigation />
     </div>
 </template>
 <script>
 import tarsymMap from "@/components/map";
 import sidebar from "@/components/sidebar";
+import sidebarNavigation from "@/components/sidebarNavigation";
 
 export default {
     name: "app",
     components: {
         tarsymMap,
         sidebar,
+        sidebarNavigation,
     },
     async mounted() {
         await this.$store.dispatch("get_All_Taxanomies", false);

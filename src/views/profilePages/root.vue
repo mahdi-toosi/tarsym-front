@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <div></div>
-    </div>
+    <router-view></router-view>
 </template>
 
 <script>
@@ -11,7 +9,7 @@ export default {
         ...mapState(["user"]),
     },
     mounted() {
-        console.log("\n => user", this.user);
+        console.log("root => user", this.user);
     },
 };
 </script>

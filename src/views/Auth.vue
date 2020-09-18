@@ -85,7 +85,10 @@ export default {
                             "در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده";
                         this.$toasted.error(msg);
                     }
+
                     await this.$router.push(`/`);
+
+                    document.dispatchEvent(new CustomEvent("showSidebarNav"));
                 })
                 .catch((error) => {
                     this.$store.dispatch("handleAxiosError", error);

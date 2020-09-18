@@ -96,10 +96,14 @@ export default {
                 : year;
             const JustYear = `سال ${year.replace(/[-]/gi, "")}${
                 yearIsNegetive ? "<span>-</span>" : ""
-            } ه‍.ق`;
-            const FullDate = `${
-                yearIsNegetive ? "<span>-</span>" : ""
-            }${currectYear}/${month}/${day} ه‍.ق`;
+            }<span> ه‍.ق</span>`;
+            const FullDate = `${month}/${day}/${
+                yearIsNegetive
+                    ? "<span style='display: inline-block; direction: ltr;'>-" +
+                      currectYear +
+                      "</span>"
+                    : currectYear
+            }<span> ه‍.ق</span>`;
             return month == "00" ? JustYear : FullDate;
         },
     },
