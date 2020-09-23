@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
 export default {
     data() {
         return {
@@ -73,6 +74,9 @@ export default {
             loading(true);
             this.searchRequest(search, loading, this);
         },
+    },
+    components: {
+        vSelect,
     },
 };
 function debounce(func, wait, immediate) {

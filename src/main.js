@@ -18,15 +18,6 @@ axios.interceptors.response.use(response => {
 })
 Vue.prototype.$axios = axios;
 
-// * vuex and vue router
-import router from "./router";
-import store from "./store";
-
-// * vue select
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-Vue.component('v-select', vSelect);
-
 // * vue toasted
 import Toasted from 'vue-toasted';
 Vue.use(Toasted, {
@@ -37,8 +28,9 @@ Vue.use(Toasted, {
     icon: "fa-times-circle"
 })
 
-// *  vue slider styles , component register locally
-import 'vue-slider-component/theme/antd.css'
+// * vuex and vue router
+import router from "./router";
+import store from "./store";
 
 // * add route data in vuex
 import vuexSyncWithRouter from 'vuex-router-sync'

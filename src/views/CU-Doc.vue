@@ -1,7 +1,7 @@
 <template>
     <div class="newpoint">
         <header>
-            <button class="btn btn-red ml1" @click="CLEAR_NEW_DOC()">
+            <button class="btn btn-red ml1" @click="CLEAR_NEW_DOC(),$router.push('/my-docs')">
                 منصرف شدم
                 <i class="fas fa-times"></i>
             </button>
@@ -24,7 +24,7 @@
                     label="name"
                     placeholder="دسته بندی ..."
                     multiple
-                    taggable
+                    :taggable="35 <= user.role"
                     push-tags
                     class="tags categories"
                     dir="rtl"
@@ -53,7 +53,7 @@
                     label="name"
                     placeholder="تگ ..."
                     multiple
-                    taggable
+                    :taggable="35 <= user.role"
                     push-tags
                     class="tags"
                     dir="rtl"
@@ -122,7 +122,12 @@ import "quill/dist/quill.snow.css";
 import { quillEditor } from "vue-quill-editor";
 // TODO => fix the quill-image-drop errors
 
+// *  vue slider styles
+import "vue-slider-component/theme/antd.css";
+
 // * components
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import datePicker from "@/components/newDoc/datePicker";
 import gooeyMenu from "@/components/newDoc/gooeyMenu";
 import newPoint from "@/components/newDoc/newPoint";
@@ -245,7 +250,7 @@ export default {
         // },
     },
     computed: {
-        ...mapState(["newDocs", "DocProp", "taxonomies"]),
+        ...mapState(["newDocs", "DocProp", "taxonomies", "user"]),
         ...mapGetters(["DocLayer", "validCategories"]),
         newPointTitle: {
             get() {
@@ -291,6 +296,7 @@ export default {
         // });
     },
     components: {
+        vSelect,
         datePicker,
         quillEditor,
         gooeyMenu,

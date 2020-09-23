@@ -254,6 +254,7 @@ export default {
             if (this.searchPolygon.isOn) return true;
             const onTool = this.DocProp.OnTool;
             if (!onTool.condition) return false;
+            if (!this.DocLayer) return false;
             const thisTool = this.DocLayer.tools[onTool.index];
             if (thisTool.type !== "Point" && thisTool.type !== "Textbox")
                 return true;

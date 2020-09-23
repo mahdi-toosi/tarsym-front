@@ -293,7 +293,6 @@ export default {
         if (state.DocProp._id == fakeID) state.DocProp._id = _id
     },
     CLEAR_NEW_DOC(state) {
-        router.push('/my-docs')
         state.newDocs = []
         state.DocProp = {
             index: 0,

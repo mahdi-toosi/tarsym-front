@@ -99,6 +99,7 @@ export default {
         // get and add childs
         // TODO show done if work is successful
         commit('CLEAR_NEW_DOC')
+        router.push('/my-docs')
     },
     // !  get_relationship_list
     get_relationship_list({

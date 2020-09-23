@@ -20,7 +20,10 @@ const routes = [{
     // ! should delete
     path: "/my-docs",
     name: "my docs",
-    component: () => import("../views/ListDocs.vue")
+    component: () => import("../views/ListDocs.vue"),
+    meta: {
+        minimumRole: 35
+    }
 }, {
     path: "/read/:_id",
     name: "read doc",
@@ -131,13 +134,14 @@ function set_user_if_exist(minimumRole) {
     if (userData) {
         const now = new Date().getTime();
         if (userData.expire > now) {
+            // * add user 
             store.commit("SET_USER", userData.user);
             store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
-            if (minimumRole >= store.state.user.role)
+            // * validate user role for route
+            if (minimumRole <= store.state.user.role)
                 return true;
             else {
-                console.log('Vue => ', Vue);
-                Vue.toasted('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...')
+                Vue.toasted.error('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...')
                 return false
             }
         }
@@ -146,11 +150,12 @@ function set_user_if_exist(minimumRole) {
 }
 
 function checkForAuth(minimumRole) {
+    // * validate user role for route if exist
     if (store.getters.isAuthenticated) {
-        if (minimumRole >= store.state.user.role)
+        if (minimumRole <= store.state.user.role)
             return true
         else {
-            Vue.toasted('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت  ...')
+            Vue.toasted.error('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت  ...')
             return false
         }
     }
