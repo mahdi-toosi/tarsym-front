@@ -73,8 +73,8 @@ export default {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 999;
     user-select: none;
+    z-index: 999;
 
     img {
         border-radius: 50%;
@@ -92,9 +92,17 @@ export default {
         border-radius: 25px 12px 12px 12px;
         font-size: 15px;
         text-align: center;
-        padding: 5px;
+        padding: 0px;
         transition: all 0.5s ease-in-out;
         clip-path: circle(100% at -65% -60%);
+        max-height: 0;
+
+        &.show {
+            max-height: 100%;
+            padding: 5px;
+            clip-path: circle(100%);
+            box-shadow: #00000091 2px 2px 8px -3px;
+        }
 
         .header {
             display: flex;
@@ -123,11 +131,6 @@ export default {
         li:not(:last-child) {
             border-bottom: 1px solid darkgray;
         }
-    }
-
-    .sidebar.show {
-        clip-path: circle(100%);
-        box-shadow: #00000091 2px 2px 8px -3px;
     }
 }
 </style>

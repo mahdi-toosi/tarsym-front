@@ -1,97 +1,196 @@
 <template>
     <div dir="rtl" class="categoriesPage">
-        <div class="editStageclass" v-if="editStage.item && editStage.item.name">
-            <i class="fas fa-times" @click="editStage = {}"></i>
-            <input type="text" v-model="editStage.item.name" maxlength="28" />
-            <button class="btn btn-green" @click="editCategory()">ذخیره</button>
-            <hr />
-            <button class="btn btn-red" @click="deleteCategory()">حذف</button>
-        </div>
-        <div v-for="(grandpa , index) in categories" :key="grandpa._id" class="tree">
-            <label :for="grandpa._id" v-if=" grandpa.children.length ">
-                <i class="fas fa-angle-left"></i>
+        <button class="btn btn-blue" @click="AddChild()">
+            ایجاد دسته بندی جدید
+            <i class="fas fa-plus"></i>
+        </button>
+        <button
+            class="btn btn-green expandButton"
+            @click="expandSituation ? expandAllCats(false) : expandAllCats()"
+        >
+            <i
+                class="fas fa-angle-left"
+                style="transition: 0.3s"
+                :style="{
+                    transform: `rotate(${expandSituation ? -90 : 0}deg)`,
+                }"
+            ></i>
+        </button>
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level One !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+        <div
+            v-for="(grandpa, index) in categories"
+            :key="grandpa._id"
+            class="tree"
+        >
+            <label :for="grandpa._id">
+                <i class="fas fa-angle-left" v-if="grandpa.children.length"></i>
+                {{ grandpa.name }}
             </label>
-            <input type="checkbox" :id="grandpa._id" v-if=" grandpa.children.length " hidden />
+            <input
+                type="checkbox"
+                :id="grandpa._id"
+                v-if="grandpa.children.length"
+                hidden
+            />
             <div class="item">
-                <div>{{ grandpa.name }}</div>
                 <div class="options">
                     <i>{{ grandpa.documents.length }} سند</i>
-                    <span @click="AddChild(grandpa._id)">
+                    <span
+                        @click="AddChild(grandpa, index)"
+                        v-if="grandpa.name !== uncategorized"
+                    >
                         <i class="fas fa-plus"></i>
                     </span>
-                    <span @click="setToEditStage(index)">
+                    <span
+                        @click="setToEditStage(index)"
+                        v-if="grandpa.name !== uncategorized"
+                    >
                         <i class="fas fa-edit"></i>
+                    </span>
+                    <span
+                        @click="pasteCatlvl1(index)"
+                        v-if="movecat._id && grandpa.name !== uncategorized"
+                    >
+                        <i class="fas fa-paste"></i>
+                    </span>
+                    <span
+                        @click="cutCatlvl1(index)"
+                        v-if="!movecat._id && grandpa.name !== uncategorized"
+                    >
+                        <i class="fas fa-cut"></i>
                     </span>
                 </div>
             </div>
-            <div v-if=" grandpa.children.length " class="itemGroup">
-                <div v-for="(parent, index ) in grandpa.children" :key="parent.id" class="tree">
-                    <label :for="parent._id" v-if=" parent.children.length ">
+            <div v-if="grandpa.children.length" class="itemGroup">
+                <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level TWO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div
+                    v-for="(parent, index) in grandpa.children"
+                    :key="parent.id"
+                    class="tree"
+                >
+                    <label :for="parent._id" v-if="parent.children.length">
                         <i class="fas fa-angle-left"></i>
                     </label>
-                    <input type="checkbox" :id="parent._id" hidden v-if=" parent.children.length " />
+                    <input
+                        type="checkbox"
+                        :id="parent._id"
+                        hidden
+                        v-if="parent.children.length"
+                    />
                     <div class="item">
                         <div>{{ parent.name }}</div>
                         <div class="options">
                             <i>{{ parent.documents.length }} سند</i>
-                            <span @click="AddChild(parent._id)">
+                            <span @click="AddChild(parent, index, grandpa)">
                                 <i class="fas fa-plus"></i>
                             </span>
-                            <span @click="setToEditStage(index , grandpa)">
+                            <span @click="setToEditStage(index, grandpa)">
                                 <i class="fas fa-edit"></i>
+                            </span>
+                            <span
+                                @click="pasteCatlvl2(index, grandpa)"
+                                v-if="movecat._id"
+                            >
+                                <i class="fas fa-paste"></i>
+                            </span>
+                            <span @click="cutCatlvl2(index, grandpa)" v-else>
+                                <i class="fas fa-cut"></i>
                             </span>
                         </div>
                     </div>
                     <div v-if="parent.children.length" class="itemGroup">
+                        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level Three !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                         <div
-                            v-for="(child , index) in parent.children"
+                            v-for="(child, index) in parent.children"
                             :key="child.id"
                             class="tree"
                         >
-                            <label :for="child._id" v-if=" child.children.length ">
+                            <label
+                                :for="child._id"
+                                v-if="child.children.length"
+                            >
                                 <i class="fas fa-angle-left"></i>
                             </label>
                             <input
                                 type="checkbox"
                                 :id="child._id"
                                 hidden
-                                v-if=" child.children.length "
+                                v-if="child.children.length"
                             />
                             <div class="item">
                                 <div>{{ child.name }}</div>
                                 <div class="options">
                                     <i>{{ child.documents.length }} سند</i>
-                                    <span @click="setToEditStage(index , parent, grandpa )">
+                                    <span
+                                        @click="
+                                            setToEditStage(
+                                                index,
+                                                parent,
+                                                grandpa
+                                            )
+                                        "
+                                    >
                                         <i class="fas fa-edit"></i>
                                     </span>
                                 </div>
                             </div>
                         </div>
+                        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level Three END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                     </div>
                 </div>
+                <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level Two END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
             </div>
+        </div>
+        <!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! level One END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+        <button
+            class="item pasteOnRoot"
+            v-if="movecat._id"
+            @click="pasteOnRoot()"
+        >
+            <i class="fas fa-paste"></i>
+        </button>
+        <div
+            class="editStageclass"
+            :class="editStage.show ? 'showEditStage' : ''"
+        >
+            <i class="fas fa-times" @click="editStage.show = false"></i>
+            <input type="text" v-model="editStage.item.name" maxlength="28" />
+            <button class="btn btn-green" @click="saveTheStage()">ذخیره</button>
+            <hr v-if="editStage.item._id" />
+            <button
+                class="btn btn-red"
+                v-if="editStage.item._id"
+                @click="deleteCategory()"
+            >
+                حذف
+            </button>
         </div>
     </div>
 </template>
 
 <script>
+const url = "/taxonomies/";
+
 export default {
     name: "editCategories",
     data() {
         return {
             categories: [],
-            editStage: {},
+            editStage: { item: {}, show: false },
+            expandSituation: false,
+            movecat: {},
+            uncategorized: "بدون دسته بندی",
         };
     },
     methods: {
         getCategories() {
-            const url = `/taxonomies`,
-                options = {
-                    params: {
-                        type: 1, //* categories type = 1 / tags type = 2
-                        $limit: 100,
-                    },
-                };
+            const options = {
+                params: {
+                    type: 1, //* categories type = 1 / tags type = 2
+                    $limit: 100,
+                },
+            };
             this.$axios
                 .get(url, options)
                 .then((res) => {
@@ -133,33 +232,55 @@ export default {
             });
             return roots;
         },
-        AddChild(_id) {
-            const list = this.rawList;
-            const index = list.findIndex((el) => el._id == _id);
-            const fake_id = new Date().getTime();
+        AddChild(parent_obj, index, parent, gparent) {
             const emptyCat = {
-                _id: fake_id,
                 name: "",
                 type: 1,
-                documents: [],
-                childs: [],
             };
-            list[index].childs.push(fake_id);
-            list.push(emptyCat);
-            this.makeValidList(list);
+            this.editStage = {
+                show: true,
+                item: emptyCat,
+                relations: { index, parent, gparent },
+                parent: parent_obj || null,
+            };
         },
         setToEditStage(index, parent, gparent) {
             const item = this.find_Item(gparent, parent, index);
             this.editStage = {
+                show: true,
                 item: { ...item },
                 relations: { index, parent, gparent },
             };
         },
-        editCategory() {
+        async AddNewCat() {
+            const parent = this.editStage.parent;
+            await this.$axios
+                .post(url, this.editStage.item)
+                .then(async ({ data }) => {
+                    if (parent) {
+                        const edited_data = {
+                            childs: [...parent.childs, data._id],
+                        };
+                        await this.$axios.patch(url + parent._id, edited_data);
+                    }
+                    // * show the new cat if parent unexpanded
+                    document.getElementById(parent._id).checked = true;
+                    // * hide the editStage box
+                    this.editStage.show = false;
+                    setTimeout(() => {
+                        this.editStage.item = {};
+                    }, 1000);
+                    // * refresh categories
+                    this.getCategories();
+                })
+                .catch((error) =>
+                    this.$store.dispatch("handleAxiosError", error)
+                );
+        },
+        updateCat() {
             const new_item = this.editStage.item;
-            const url = `/taxonomies/${new_item._id}`;
             this.$axios
-                .put(url, new_item)
+                .put(url + new_item._id, new_item)
                 .then(({ data, status }) => {
                     if (status == 200) {
                         const rel = this.editStage.relations;
@@ -169,27 +290,38 @@ export default {
                             rel.index
                         );
                         old_item.name = data.name;
-                        this.editStage = {};
                     }
                 })
                 .catch((error) =>
                     this.$store.dispatch("handleAxiosError", error)
                 );
+            // * hide the editStage box
+            this.editStage.show = false;
+            setTimeout(() => {
+                this.editStage.item = {};
+            }, 1000);
+        },
+        saveTheStage() {
+            if (this.editStage.parent !== undefined) {
+                this.AddNewCat();
+                return;
+            }
+            this.updateCat();
         },
         deleteCategory() {
             const item = this.editStage.item;
-            const url = `/taxonomies/${item._id}`;
             this.$axios
-                .delete(url)
-                .then(({ status }) => {
-                    if (status == 200) {
-                        this.getCategories();
-                        this.editStage = {};
-                    }
+                .delete(url + item._id)
+                .then(() => {
+                    this.getCategories();
                 })
                 .catch((error) =>
                     this.$store.dispatch("handleAxiosError", error)
                 );
+            this.editStage.show = false;
+            setTimeout(() => {
+                this.editStage.item = {};
+            }, 1000);
         },
         find_Item(gparent, parent, index) {
             if (gparent) {
@@ -218,11 +350,81 @@ export default {
                 .children[index];
             return item;
         },
+        cutCatlvl1(index) {
+            this.movecat = this.categories[index];
+            this.categories.splice(index, 1);
+        },
+        cutCatlvl2(index, parent) {
+            this.movecat = this.find_Item(undefined, parent, index);
+            const father_index = this.categories.findIndex(
+                (el) => el._id == parent._id
+            );
+            this.categories[father_index].children.splice(index, 1);
+        },
+        pasteCatlvl1(index) {
+            const newChild = this.movecat;
+            if (findCounterDepth(newChild) < 2) {
+                const father = this.categories[index];
+                father.children.push(newChild);
+                this.movecat = {};
+                return;
+            }
+            this.$toasted.error(
+                "جا به جایی امکان پذیر نیست، در صورت جا به جایی کتگوری از 3 سطح بیشترمیشود  ..."
+            );
+        },
+        pasteCatlvl2(index, parent) {
+            const newChild = this.movecat;
+            if (findCounterDepth(newChild) < 1) {
+                const father = this.find_Item(undefined, parent, index);
+                father.children.push(newChild);
+                this.movecat = {};
+                return;
+            }
+            this.$toasted.error(
+                "جا به جایی امکان پذیر نیست، در صورت جا به جایی کتگوری از 3 سطح بیشترمیشود  ..."
+            );
+        },
+        pasteOnRoot() {
+            const newChild = this.movecat;
+            this.categories.push(newChild);
+            this.movecat = {};
+        },
+        expandAllCats(situation = true) {
+            const checkboxes = document.querySelectorAll("[type='checkbox']");
+            checkboxes.forEach((el) => (el.checked = situation));
+            this.expandSituation = !this.expandSituation;
+        },
     },
     created() {
         this.getCategories();
     },
 };
+
+function findCounterDepth(counter) {
+    var maxDepth = 0;
+    var leafCount = 0; // add a leaf counter
+
+    counter.children.forEach(function (algo) {
+        leafCount = 0; // zero leaf count per algorithm object
+        findParamListDepth(algo.children, 0);
+        algo.dataLeafCount = leafCount; // store as "dataLeafCount" property
+    });
+
+    function findParamListDepth(children, depth) {
+        ++depth;
+        children.forEach(function (paramObj) {
+            var child = paramObj.children;
+            if (child) {
+                findParamListDepth(child, depth);
+                return;
+            }
+            ++leafCount; // it doesn't have children, increment leaf count;
+        });
+        maxDepth = Math.max(maxDepth, depth);
+    }
+    return maxDepth;
+}
 </script>
 <style lang="stylus">
 .itemGroup {
@@ -271,6 +473,7 @@ export default {
         top: 11px;
         right: 10px;
         z-index: 999;
+        font-size: 15px;
     }
 
     input:checked ~ .itemGroup {
@@ -291,6 +494,7 @@ export default {
     margin: 3px;
     overflow: hidden;
     position: relative;
+    min-height: 20px;
 
     .options {
         margin-right: 20px;
@@ -302,20 +506,30 @@ export default {
             opacity: 0;
             margin: 10px;
             cursor: pointer;
-
-            &.m {
-                color: red;
-            }
         }
 
         i {
             position: absolute;
+            left: 5px;
+            width: 50px;
+            text-align: left;
+        }
+
+        .fas {
+            position: absolute;
             font-style: normal;
+            left: unset;
+            width: 16px;
+            transition: 0.3s;
+
+            &:hover {
+                color: #4be179;
+            }
         }
     }
 
     &:hover .options>i {
-        opacity: 0;
+        display: none;
     }
 
     &:hover .options>span {
@@ -324,6 +538,10 @@ export default {
 }
 
 .categoriesPage {
+    > button {
+        margin: 15px;
+    }
+
     .editStageclass {
         padding: 20px;
         background: white;
@@ -333,7 +551,16 @@ export default {
         right: 30%;
         display: flex;
         flex-direction: column;
-        z-index: 9999;
+        overflow: hidden;
+        z-index: -1;
+        clip-path: circle(0% at 100% 3%);
+        transition: all 0.5s ease-in-out;
+        box-shadow: #747474ab 0px 2px 12px 0px;
+
+        &.showEditStage {
+            z-index: 99999;
+            clip-path: circle(100%);
+        }
 
         i {
             position: absolute;
@@ -357,8 +584,25 @@ export default {
             padding: 8px;
         }
 
+        button:last-of-type {
+            width: 50%;
+            margin: 0 auto;
+        }
+
         hr {
             margin: 5px 15px;
+        }
+    }
+
+    .pasteOnRoot {
+        width: 170px;
+        padding: 8px 20px 8px 15px;
+        background: #fff;
+        margin: 3px 30px;
+        cursor: pointer;
+
+        i {
+            margin: 0 auto;
         }
     }
 }
