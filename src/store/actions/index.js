@@ -1,10 +1,12 @@
 import requests from "./requests and handlers"
+import profilePage from "./ac-profilePage"
 import router from "../../router";
 
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     ...requests,
+    ...profilePage,
     flyToThisDoc(store, doc) {
         document.dispatchEvent(
             new CustomEvent("showThisDoc", {

@@ -55,4 +55,14 @@ export default {
         isOn: false
     },
     user: {},
+    profilePage: {
+        categoriesPage: {
+            categories: {},
+            movecat: {},
+            editStage: {
+                item: {},
+                show: false
+            },
+        }
+    }
 };

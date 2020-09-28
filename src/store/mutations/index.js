@@ -1,7 +1,9 @@
 import newDoc from "./mu-newDoc"
+import profilePage from "./profilePage"
 
 export default {
     ...newDoc,
+    ...profilePage,
     LOGOUT(state) {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
