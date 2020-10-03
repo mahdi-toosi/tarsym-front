@@ -41,10 +41,23 @@ const routes = [{
 }, {
     path: "/Auth",
     name: "Authentication",
-    component: () => import("../views/Auth.vue"),
+    component: () => import("../views/Auth/root.vue"),
     meta: {
         withoutAuth: true
-    }
+    },
+    children: [{
+        path: '',
+        component: () => import("../views/Auth/login.vue"),
+    }, {
+        path: 'signup',
+        component: () => import("../views/Auth/signup.vue"),
+    }, {
+        path: 'verify-mobile',
+        component: () => import("../views/Auth/verifyMobile.vue"),
+    }, {
+        path: 'reset-password',
+        component: () => import("../views/Auth/resetPassword.vue"),
+    }]
 }, {
     path: "/profile/:email",
     component: () => import("../views/profilePages/root.vue"),
@@ -58,10 +71,17 @@ const routes = [{
             minimumRole: 3
         }
     }, {
+        // ! admin page
         path: 'categories',
         component: () => import("../views/profilePages/categories.vue"),
         meta: {
             minimumRole: 48
+        }
+    }, {
+        path: 'change-password',
+        component: () => import("../views/profilePages/changePassword.vue"),
+        meta: {
+            minimumRole: 3
         }
     }]
 }, {
@@ -106,7 +126,7 @@ router.beforeEach(async (to, from, next) => {
         next();
         return;
     }
-    store.commit('LOGOOUT')
+    store.commit('LOGOUT')
     next("/Auth");
 });
 
@@ -131,21 +151,21 @@ function set_user_if_exist(minimumRole) {
     if (!userInLocalStorage) return false;
     const decrypt = atob(userInLocalStorage);
     const userData = JSON.parse(decrypt);
-    if (userData) {
-        const now = new Date().getTime();
-        if (userData.expire > now) {
-            // * add user 
-            store.commit("SET_USER", userData.user);
-            store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
-            // * validate user role for route
-            if (minimumRole <= store.state.user.role)
-                return true;
-            else {
-                Vue.toasted.error('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...')
-                return false
-            }
+    const now = new Date().getTime();
+    if (userData && userData.expire > now) {
+        console.log('its nooooot expried');
+        // * add user 
+        store.commit("SET_USER", userData.user);
+        store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
+        // * validate user role for route
+        if (minimumRole <= store.state.user.role)
+            return true;
+        else {
+            Vue.toasted.error('اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...')
+            return false
         }
     }
+    console.log('its expried');
     return false;
 }
 

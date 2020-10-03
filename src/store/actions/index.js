@@ -1,12 +1,14 @@
 import requests from "./requests and handlers"
 import profilePage from "./ac-profilePage"
 import router from "../../router";
+import auth from "./auth"
 
 const docLayer = (state) => state.newDocs[state.DocProp.index]
 
 export default {
     ...requests,
     ...profilePage,
+    ...auth,
     flyToThisDoc(store, doc) {
         document.dispatchEvent(
             new CustomEvent("showThisDoc", {

@@ -13,24 +13,48 @@
             <div class="loginForm">
                 <h1>ورود به ترسیم</h1>
                 <form @submit.prevent="login" class="registrationForm">
-                    <input type="email" placeholder="email" v-model="user.email" />
-                    <input type="password" placeholder="password" v-model="user.password" />
+                    <input
+                        type="email"
+                        placeholder="email"
+                        v-model="user.email"
+                    />
+                    <input
+                        type="password"
+                        placeholder="password"
+                        v-model="user.password"
+                    />
                     <input class="btn btn-green" type="submit" value="ورود" />
                 </form>
-                <button @click="loginPage = false ">ثبت نام</button>
+                <button @click="loginPage = false">ثبت نام</button>
             </div>
             <div class="signupForm">
                 <h1>ثبت نام در ترسیم</h1>
                 <form @submit.prevent="signup" class="registrationForm">
                     -->
                     <input type="text" placeholder="name" v-model="user.name" />
-                    <input type="email" placeholder="email" v-model="user.email" />
-                    <input type="text" placeholder="imgURL" v-model="user.imgURL" />
-                    <input type="password" placeholder="password" v-model="user.password" />
-                    <input type="password" placeholder="repeat password" v-model="user.rpassword" />
+                    <input
+                        type="email"
+                        placeholder="email"
+                        v-model="user.email"
+                    />
+                    <input
+                        type="text"
+                        placeholder="imgURL"
+                        v-model="user.imgURL"
+                    />
+                    <input
+                        type="password"
+                        placeholder="password"
+                        v-model="user.password"
+                    />
+                    <input
+                        type="password"
+                        placeholder="repeat password"
+                        v-model="user.rpassword"
+                    />
                     <input class="btn btn-blue" type="submit" value="ثبت نام" />
                 </form>
-                <button @click="loginPage = true ">قبلا ثبت نام کردم</button>
+                <button @click="loginPage = true">قبلا ثبت نام کردم</button>
             </div>
         </div>
     </div>
