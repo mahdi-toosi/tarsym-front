@@ -9,7 +9,7 @@ export default {
         ...mapState(["user"]),
     },
     mounted() {
-        console.log("root => user", this.user);
+        // console.log("root => user", this.user);
     },
 };
 </script>

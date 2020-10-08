@@ -153,7 +153,6 @@ function set_user_if_exist(minimumRole) {
     const userData = JSON.parse(decrypt);
     const now = new Date().getTime();
     if (userData && userData.expire > now) {
-        console.log('its nooooot expried');
         // * add user 
         store.commit("SET_USER", userData.user);
         store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
@@ -165,7 +164,6 @@ function set_user_if_exist(minimumRole) {
             return false
         }
     }
-    console.log('its expried');
     return false;
 }
 

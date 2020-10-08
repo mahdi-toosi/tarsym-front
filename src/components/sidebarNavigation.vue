@@ -1,16 +1,34 @@
 <template>
     <div class="sidebarNavigation" ref="sidebarNav">
-        <img src="/img/icons/apple-touch-icon-120x120.png" @click="toggleNav()" />
-        <div class="sidebar" :class="displayNav ? 'show' : '' " v-if="showSidebarNav">
+        <img
+            src="/img/icons/apple-touch-icon-120x120.png"
+            @click="toggleNav()"
+        />
+        <div
+            class="sidebar"
+            :class="displayNav ? 'show' : ''"
+            v-if="showSidebarNav"
+        >
             <div class="header">
                 <div></div>
                 <header>mahdi toosi</header>
             </div>
             <ul class="menuItems">
-                <li @click="$router.push(`/profile/${user.email}`),hideNav()">پروفایل</li>
+                <li @click="$router.push('/'), hideNav()">صفحه نخست</li>
+                <li @click="$router.push('/my-docs'), hideNav()">
+                    نقشه های من
+                </li>
+                <li @click="$router.push(`/profile/${user.email}`), hideNav()">
+                    پروفایل
+                </li>
                 <li
-                    @click="$router.push(`/profile/${user.email}/categories`),hideNav()"
-                >دسته بندی ها</li>
+                    @click="
+                        $router.push(`/profile/${user.email}/categories`),
+                            hideNav()
+                    "
+                >
+                    دسته بندی ها
+                </li>
                 <li @click="hideNav()">تنظیمات اکانت</li>
                 <li @click="Logout()">خارج شدن</li>
             </ul>
