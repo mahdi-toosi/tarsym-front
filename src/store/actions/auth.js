@@ -1,32 +1,28 @@
-import Vue from "vue"
+import Vue from "vue";
 import router from "../../router";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-    async login({
-        dispatch
-    }, user) {
+    async login({ dispatch }, user) {
         const data = {
                 strategy: "local",
                 ...user,
             },
-            url = '/authentication';
+            url = "/authentication";
 
         await axios
             .post(url, data)
             .then(async (res) => {
-
                 // * suspension
                 if (res.data.user.role == 1) {
-                    const msg =
-                        "در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده";
+                    const msg = "در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده";
                     Vue.toasted.error(msg);
                     return;
                 }
 
                 dispatch("addDataToAxiosAndLocalStorage", res.data);
 
-                await router.push('/');
+                await router.push("/");
 
                 document.dispatchEvent(new CustomEvent("showSidebarNav"));
             })
@@ -40,17 +36,13 @@ export default {
         const encryptUser = btoa(JSON.stringify(data));
         localStorage.setItem("sjufNEbjDmE", encryptUser); //* sjufNEbjDmE = userData
         localStorage.setItem("kemskDJobjgR", data.accessToken); //* kemskDJobjgR = access key
-        axios.defaults.headers.common[
-            "Authorization"
-        ] = `Bearer ${data.accessToken}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
     },
-    async signup({
-        dispatch
-    }, userData) {
-        let url = '/users';
+    async signup({ dispatch }, userData) {
+        let url = "/users";
         await axios
             .post(url, userData)
-            .then(async () => await dispatch('login', userData))
+            .then(async () => await dispatch("login", userData))
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
                     Vue.toasted.error("ایمیل قبلا به ثبت رسیده است");
@@ -59,4 +51,4 @@ export default {
                 dispatch("handleAxiosError", error);
             });
     },
-}
+};

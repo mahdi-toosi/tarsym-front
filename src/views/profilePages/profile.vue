@@ -123,6 +123,7 @@ export default {
     beforeRouteEnter(to, from, next) {
         if (to.params.email === "forward") {
             next(async (vm) => vm.$router.push(`/profile/${vm.user.email}`));
+            return
         }
         next(async (vm) => {
             vm.$store.state.map.zoom = 5;
