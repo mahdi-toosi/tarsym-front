@@ -5,23 +5,24 @@ export default {
         _id: 0,
         OnTool: {
             condition: false,
-            index: -1
+            index: -1,
         },
     },
     readDoc: [],
     taxonomies: {
         tags: [],
-        categories: []
+        categories: [],
     },
     allDocs: {
-        data: []
+        data: [],
     },
     map: {
         zoom: 5,
         MouseCoordinate: null,
         center: ["32.879587173066305", "54.01105444025955"],
         layerIndex: 0,
-        tileProviders: [{
+        tileProviders: [
+            {
                 name: "اُپن استریت مپ",
                 visible: true,
                 url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -52,7 +53,7 @@ export default {
         coordinates: [],
         color: "#23A9AEFF",
         secondaryColor: "#23A9AEFF",
-        isOn: false
+        isOn: false,
     },
     user: {},
     profilePage: {
@@ -63,8 +64,8 @@ export default {
             movecat: {},
             editStage: {
                 item: {},
-                show: false
+                show: false,
             },
-        }
-    }
+        },
+    },
 };
