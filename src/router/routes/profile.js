@@ -7,6 +7,7 @@ const profileRoutes = [{
     children: [{
         path: '',
         component: () => import("@/views/profilePages/profile.vue"),
+        name: 'profile',
         meta: {
             minimumRole: 3
         }
@@ -24,6 +25,12 @@ const profileRoutes = [{
             minimumRole: 3
         }
     }]
+}, {
+    path: "/profile",
+    redirect: "/profile/forward",
+    meta: {
+        minimumRole: 3
+    },
 }]
 
 

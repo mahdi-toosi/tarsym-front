@@ -52,4 +52,7 @@ export default {
             return
         } else state[list] = state[list].concat(decoded_docs)
     },
+    SET_DOCS_TO_Profile_Page(state, docs){
+        state.profilePage.docs=  docs
+    }
 }

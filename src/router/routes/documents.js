@@ -1,12 +1,4 @@
-const documentsRoutes = [{
-    // ! should delete
-    path: "/my-docs",
-    name: "my docs",
-    component: () => import("@/views/ListDocs.vue"),
-    meta: {
-        minimumRole: 35
-    }
-}, {
+const documentsRoutes = [ {
     path: "/read/:_id",
     name: "read doc",
     component: () => import("@/views/R-Doc.vue"),

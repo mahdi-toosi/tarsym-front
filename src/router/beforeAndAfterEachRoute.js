@@ -28,10 +28,11 @@ function afterEach(){
         if (to.name == "read doc") {
             await store.dispatch("read_this_doc");
             store.commit("CHANGE_MAP_LAYERS");
+            return
         }
-        if (["my docs", "all docs"].includes(to.name)) {
+        // if (["profile", "all docs"].includes(to.name)) {
             store.commit("CHANGE_MAP_LAYERS", 0);
-        }
+        // }
     }
 }
 export default {

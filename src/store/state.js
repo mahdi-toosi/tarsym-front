@@ -56,6 +56,8 @@ export default {
     },
     user: {},
     profilePage: {
+        user: {},
+        docs: [],
         categoriesPage: {
             categories: {},
             movecat: {},

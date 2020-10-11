@@ -3,15 +3,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-export default {
-    computed: {
-        ...mapState(["user"]),
-    },
-    mounted() {
-        // console.log("root => user", this.user);
-    },
-};
+export default {};
 </script>
 
 <style>

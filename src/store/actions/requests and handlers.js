@@ -4,9 +4,7 @@ import Vue from "vue";
 
 export default {
     // !  Create_this_Document
-    async Create_this_Document({
-        dispatch
-    }, doc, ) {
+    async Create_this_Document({ dispatch }, doc, ) {
         const url = `/documents`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
@@ -19,9 +17,7 @@ export default {
         return newID
     },
     // !  Update_this_Document
-    async Update_this_Document({
-        dispatch,
-    }, doc, ) {
+    async Update_this_Document({ dispatch }, doc, ) {
         const url = `/documents/${doc._id}`,
             ready_doc = await dispatch('ready_document_for_send', doc)
 
@@ -34,11 +30,7 @@ export default {
         return newID
     },
     // !  Delete_this_Document
-    async Delete_this_Document({
-        state,
-        commit,
-        dispatch
-    }, _id, ) {
+    async Delete_this_Document({ state, commit, dispatch }, _id, ) {
         if (typeof _id == 'number') {
             const doc = state.newDocs.filter(el => el._id == _id)[0]
             //  TODO => check for childs, if have child send toast for childs will delete ?
@@ -65,19 +57,15 @@ export default {
 
     },
     // !  Create_or_Update_Documents
-    async Create_or_Update_Documents({
-        state,
-        dispatch,
-        commit
-    }) {
+    async Create_or_Update_Documents({ state, dispatch, commit }) {
         const Docs = state.newDocs
-        // TODO => show loading
-        // validate docs
+        let verb;
+        // * validate docs
         for (let index = 0; index < Docs.length; index++) {
             const is_this_Doc_valid = await dispatch('is_this_Doc_valid', Docs[index]);
             if (!is_this_Doc_valid) return false
         }
-        // create and add new _id s
+        // * create documents and add new _id s
         for (let index = 0; index < Docs.length; index++) {
             // TODO => when user can import existing doc =>  if is new create , else update
             const doc = Docs[index]
@@ -88,23 +76,23 @@ export default {
                     doc,
                     _id: created_doc._id
                 })
+                verb = 'ساخته شد'
             } else {
                 const updated_doc = await dispatch('Update_this_Document', doc)
                 if (!updated_doc) return false
+                verb = 'بروزرسانی شد'
             }
         }
         const relationships_list = await dispatch('get_relationship_list');
-        await dispatch('create_relationships', relationships_list);
+        const create_relationships = await dispatch('create_relationships', relationships_list);
+        if(!create_relationships) return
 
-        // get and add childs
-        // TODO show done if work is successful
-        commit('CLEAR_NEW_DOC')
-        router.push('/my-docs')
+        await commit('CLEAR_NEW_DOC')
+        await router.push('/profile')
+        Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`);
     },
     // !  get_relationship_list
-    get_relationship_list({
-        state
-    }) {
+    get_relationship_list({ state }) {
         const Docs = state.newDocs
         let list = []
         Docs.forEach(doc => {
@@ -123,25 +111,21 @@ export default {
         return list
     },
     // !  create_relationships
-    async create_relationships({
-        dispatch
-    }, list) {
-        if (!list.length) return
+    async create_relationships({ dispatch }, list) {
+        if (!list.length) return true
         const url = `/create/documents/relationship`;
 
         const data = await axios.post(url, list).then((res) => {
             if (res.status == 201) return res.data
         }).catch(error => {
             dispatch('handleAxiosError', error)
+            Vue.toasted.success('ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...');
             return false
         })
         return data
     },
     // !  get_All_Taxanomies
-    get_All_Taxanomies({
-        commit,
-        dispatch
-    }, withCache = true) {
+    get_All_Taxanomies({ commit, dispatch }, withCache = true) {
         const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies"))
         if (withCache && Taxonomies) {
             const TaxsDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + (1000 * 60 * 60 * 24 * 5), //*  5 days
@@ -165,10 +149,7 @@ export default {
         }).catch(error => dispatch('handleAxiosError', error))
     },
     // !  getAllDocs
-    async getAllDocs({
-        commit,
-        dispatch
-    }) {
+    async getAllDocs({ commit, dispatch }) {
         const url = `/documents`;
         const options = {
             params: {
@@ -195,9 +176,7 @@ export default {
 
     },
     // !  get_this_docs
-    async get_this_docs({
-        dispatch
-    }, doc_ids) {
+    async get_this_docs({ dispatch }, doc_ids) {
         let is_doc_ids_array = Array.isArray(doc_ids),
             url = `/documents/${is_doc_ids_array ? '' : doc_ids}`,
             obj = {
@@ -213,9 +192,7 @@ export default {
         return docs
     },
     // !  is_this_Doc_valid
-    async is_this_Doc_valid({
-        commit
-    }, docLayer) {
+    async is_this_Doc_valid({ commit }, docLayer) {
         await commit('OFF_THE_ON_TOOL')
         await commit('UPDATE_ON_TOOL');
 
@@ -262,22 +239,18 @@ export default {
         }
     },
     // !  update_this_doc
-    async update_this_doc({
-        state,
-        commit,
-        // dispatch
-    }, doc_id) {
-        if (!state.allDocs.data) {
-            router.push('/my-docs')
+    async update_this_doc({state, commit}, doc_id) {
+        if (!state.profilePage.docs.data) {
+            router.push('/profile')
             return
         }
 
-        const doc = state.allDocs.data.filter(el => el._id == doc_id)
+        const doc = state.profilePage.docs.data.filter(el => el._id == doc_id)
         if (doc.length) {
             await commit('UPDATE_THIS_DOC', doc)
             return
         } else {
-            router.push('/my-docs')
+            router.push('/profile')
         }
     },
     // !  ready_document_for_send
@@ -416,6 +389,7 @@ export default {
             merge: true,
         })
     },
+    // !  searchData
     async searchData(store) {
         const route = router.currentRoute
         const url = "/searchInDocs";
@@ -436,5 +410,56 @@ export default {
                 }
                 store.dispatch("handleAxiosError", error);
             });
+    },
+    // !  setUserProfileAndGet_id
+    async setUserProfileAndGet_id({state, dispatch, commit} , email){
+        const currentUser = state.user
+        if (email === currentUser.email) {
+            commit('SET_User_to_Profile', currentUser)
+            return currentUser._id
+        }
+        const url = '/users'
+        const options = {
+            params: { 
+                email, 
+                }
+        }
+        const user = await axios.get(url, options).then((res) => {
+            console.log({setUserProfileAndGet_id: res});
+            if (res.status == 200) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
+        });
+        if(user){
+            commit('SET_User_to_Profile', user)
+            return user._id
+        }else return false
+    },
+    // !  getUserDocs
+    async getUserDocs({ dispatch, commit }){
+        const userEmail = router.currentRoute.params.email
+        const user_id = await dispatch('setUserProfileAndGet_id' , userEmail)
+        if(!user_id) return;
+
+        const url = '/documents';
+        const options = {
+            params: {
+                root: true,
+                'user.id': user_id
+            }
+        }
+        const docs = await axios.get(url, options).then((res) => {
+            if (res.status == 200) return res.data
+        }).catch(error => {
+            dispatch('handleAxiosError', error)
+        });
+        if (!docs) return
+
+        const decoded_docs = await dispatch('decode_the_docs', {
+            docs
+        })
+        docs.data = decoded_docs
+        await commit('SET_DOCS_TO_Profile_Page', docs)
+
     }
 }

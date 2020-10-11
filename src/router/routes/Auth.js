@@ -1,12 +1,12 @@
 const AuthRoutes = [{
     path: "/Auth",
-    name: "Authentication",
     component: () => import("@/views/Auth/root.vue"),
     meta: {
         withoutAuth: true
     },
     children: [{
         path: '',
+        name: "Authentication",
         component: () => import("@/views/Auth/login.vue"),
     }, {
         path: 'signup',

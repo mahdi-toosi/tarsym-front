@@ -15,9 +15,6 @@
             </div>
             <ul class="menuItems">
                 <li @click="$router.push('/'), hideNav()">صفحه نخست</li>
-                <li @click="$router.push('/my-docs'), hideNav()">
-                    نقشه های من
-                </li>
                 <li @click="$router.push(`/profile/${user.email}`), hideNav()">
                     پروفایل
                 </li>

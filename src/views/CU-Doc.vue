@@ -1,26 +1,38 @@
 <template>
     <div class="newpoint">
         <header>
-            <button class="btn btn-red ml1" @click="CLEAR_NEW_DOC(),$router.push('/my-docs')">
+            <button
+                class="btn btn-red ml1"
+                @click="CLEAR_NEW_DOC(), $router.push('/profile')"
+            >
                 منصرف شدم
                 <i class="fas fa-times"></i>
             </button>
             <button class="btn btn-green" @click="Create_or_Update_Documents()">
-                {{ $route.name == 'create doc' ? 'ثبت' : 'بروزرسانی' }}
+                {{ $route.name == "create doc" ? "ثبت" : "بروزرسانی" }}
                 <i class="fas fa-save"></i>
             </button>
             <!-- back button -->
-            <button class="btn btn-back" @click="goBackToParent()" v-if="DocProp.index !== 0 ">
+            <button
+                class="btn btn-back"
+                @click="goBackToParent()"
+                v-if="DocProp.index !== 0"
+            >
                 <i class="fas fa-arrow-left"></i>
             </button>
         </header>
         <div v-if="newDocs.length">
             <section class="shadow">
-                <input class="title" type="text" placeholder="عنوان" v-model="newPointTitle" />
+                <input
+                    class="title"
+                    type="text"
+                    placeholder="عنوان"
+                    v-model="newPointTitle"
+                />
                 <v-select
                     :options="validCategories"
                     :value="DocLayer.categories"
-                    @input="SET_CHOSEN_TAXONOMY( {$event , type: 1} )"
+                    @input="SET_CHOSEN_TAXONOMY({ $event, type: 1 })"
                     label="name"
                     placeholder="دسته بندی ..."
                     multiple
@@ -30,7 +42,9 @@
                     dir="rtl"
                     v-if="DocLayer.root"
                 >
-                    <template slot="no-options">هنوز دسته بندی ای به ثبت نرسیده ...</template>
+                    <template slot="no-options"
+                        >هنوز دسته بندی ای به ثبت نرسیده ...</template
+                    >
                 </v-select>
                 <quill-editor
                     v-model="newPointDescription"
@@ -49,7 +63,7 @@
                 <v-select
                     :options="taxonomies.tags"
                     :value="DocLayer.tags"
-                    @input="SET_CHOSEN_TAXONOMY( {$event , type: 2} )"
+                    @input="SET_CHOSEN_TAXONOMY({ $event, type: 2 })"
                     label="name"
                     placeholder="تگ ..."
                     multiple
@@ -67,16 +81,21 @@
                     <span
                         @click="tabContent = 'tools'"
                         :class="tabContent == 'tools' ? 'activeTab' : ''"
-                    >ابزار ها</span>
+                        >ابزار ها</span
+                    >
                     <span
                         @click="tabContent = 'layers'"
                         :class="tabContent == 'layers' ? 'activeTab' : ''"
-                    >لایه ها</span>
+                        >لایه ها</span
+                    >
                 </div>
                 <div class="content">
                     <div class="tools-content" v-show="tabContent == 'tools'">
                         <ul class="tools">
-                            <li v-for="(tool, index) in DocLayer.tools" :key="index">
+                            <li
+                                v-for="(tool, index) in DocLayer.tools"
+                                :key="index"
+                            >
                                 <new-point
                                     :tool="tool"
                                     :index="index"
@@ -106,8 +125,10 @@
                         <gooey-menu />
                     </div>
                     <div class="layers-content" v-show="tabContent == 'layers'">
-                        <layers-relationship-tree @childClicked=" tabContent = 'tools' " />
-                        <add-new-layer-box @childAdded=" tabContent = 'tools' " />
+                        <layers-relationship-tree
+                            @childClicked="tabContent = 'tools'"
+                        />
+                        <add-new-layer-box @childAdded="tabContent = 'tools'" />
                     </div>
                 </div>
             </section>
