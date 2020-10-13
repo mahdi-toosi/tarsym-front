@@ -14,7 +14,11 @@
                     <th>نام کاربری</th>
                     <th>نقش</th>
                 </tr>
-                <tr v-for="user in users.data" :key="user._id">
+                <tr
+                    v-for="user in users.data"
+                    :key="user._id"
+                    :class="user.role === 1 ? 'suspended' : ''"
+                >
                     <td class="name" v-text="user.name"></td>
                     <td class="name" v-text="user.username"></td>
                     <td class="role">{{ users.roles[user.role] }}</td>
@@ -25,7 +29,7 @@
             </tbody>
         </table>
         <div class="editStage" v-if="editStage.show">
-            <i class="fas fa-times" @click="clearStage()"></i>
+            <i class="fas fa-times" @click="CloseStage()"></i>
             <label for="name">نام</label>
             <input type="text" id="name" v-model="editStage.user.name" />
             <label for="username">نام کاربری</label>
@@ -76,7 +80,7 @@
             <button
                 v-if="!editStage.createMode"
                 class="btn btn-red"
-                @click="deleteUser()"
+                @click="deleteUser(editStage.user._id)"
             >
                 حذف
             </button>
@@ -94,7 +98,6 @@ export default {
         return {
             users: {
                 data: [],
-                limit: 30,
                 skip: 0,
                 total: 0,
                 roles: {
@@ -113,15 +116,14 @@ export default {
     },
     methods: {
         getUsers() {
-            const url = "/users",
-                options = {
-                    params: {
-                        "$sort[createdAt]": -1,
-                        $limit: 30,
-                    },
-                };
+            const options = {
+                params: {
+                    "$sort[createdAt]": -1,
+                    $limit: 30,
+                },
+            };
             this.$axios
-                .get(url, options)
+                .get("/users", options)
                 .then(({ data }) => {
                     this.users.data = [...this.users.data, ...data.data];
                     this.users.skip = data.skip;
@@ -132,12 +134,11 @@ export default {
                 });
         },
         updateThisUser() {
-            const newUser = { ...this.trimUserData(this.editStage.user) },
-                url = `/users/${newUser._id}`;
+            const newUser = { ...this.trimUserData(this.editStage.user) };
             newUser.role = newUser.role.key;
             if (!this.validateUser(newUser)) return false;
             this.$axios
-                .patch(url, newUser)
+                .patch(`/users/${newUser._id}`, newUser)
                 .then(({ data }) => {
                     const users = this.users.data;
                     const user_index = users.findIndex(
@@ -148,10 +149,10 @@ export default {
                 .catch((error) =>
                     this.$store.dispatch("handleAxiosError", error)
                 );
-            this.clearStage();
+            this.CloseStage();
         },
         editThisUser(user) {
-            if (this.editStage.show) this.clearStage();
+            if (this.editStage.show) this.CloseStage();
             this.editStage.user = { ...user };
             const user_role = this.editStageRoles.filter(
                 (el) => el.key === user.role
@@ -160,7 +161,7 @@ export default {
             this.editStage.show = true;
         },
         createNewUser() {
-            if (this.editStage.show) this.clearStage();
+            if (this.editStage.show) this.CloseStage();
 
             this.editStage.user = {
                 name: null,
@@ -197,22 +198,34 @@ export default {
             } else return true;
         },
         createThisUser() {
-            const newUser = { ...this.trimUserData(this.editStage.user) },
-                url = "/users";
-            newUser.role = newUser.role.key;
+            const newUser = { ...this.trimUserData(this.editStage.user) };
+            delete newUser.role;
             if (!this.validateUser(newUser)) return false;
             this.$axios
-                .post(url, newUser)
+                .post("/users", newUser)
                 .then((res) => {
                     this.users.data.unshift(res.data);
                 })
                 .catch((error) => console.log({ error }));
-            this.clearStage();
+            this.CloseStage();
         },
-        clearStage() {
+        CloseStage() {
             this.editStage.user = {};
             this.editStage.createMode = false;
             this.editStage.show = false;
+        },
+        deleteUser(_id) {
+            const sure = confirm("مطمئنید که میخواهید این یوزر را حذف کنید ؟");
+            if (!sure) return this.CloseStage();
+            this.$axios
+                .delete(`/users/${_id}`)
+                .then(() => {
+                    const users = this.users.data;
+                    const user_index = users.findIndex((el) => el._id === _id);
+                    users.splice(user_index, 1);
+                })
+                .catch((error) => console.log({ error }));
+            this.CloseStage();
         },
     },
     computed: {
@@ -262,6 +275,10 @@ export default {
         padding: 5px 10px;
     }
 
+    th {
+        padding-bottom: 8px;
+    }
+
     tr {
         td {
             border-top: gray solid 1px;
@@ -270,6 +287,10 @@ export default {
             &:last-child {
                 border-left: none;
             }
+        }
+
+        &.suspended {
+            background: orange;
         }
 
         .name {
