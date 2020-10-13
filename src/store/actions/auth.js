@@ -20,7 +20,7 @@ export default {
                     return;
                 }
 
-                dispatch("addDataToAxiosAndLocalStorage", res.data);
+                await dispatch("addDataToAxiosAndLocalStorage", res.data);
 
                 await router.push("/");
 
@@ -33,8 +33,7 @@ export default {
     addDataToAxiosAndLocalStorage(store, data) {
         const day = 60 * 60 * 1000 * 24; //* 24 hours
         data.expire = new Date().getTime() + day;
-        const encryptUser = btoa(JSON.stringify(data));
-        localStorage.setItem("sjufNEbjDmE", encryptUser); //* sjufNEbjDmE = userData
+        localStorage.setItem("sjufNEbjDmE", JSON.stringify(data)); //* sjufNEbjDmE = userData
         localStorage.setItem("kemskDJobjgR", data.accessToken); //* kemskDJobjgR = access key
         axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
     },
@@ -45,7 +44,7 @@ export default {
             .then(async () => await dispatch("login", userData))
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
-                    Vue.toasted.error("ایمیل قبلا به ثبت رسیده است");
+                    Vue.toasted.error("نام کاربری قبلا به ثبت رسیده است");
                     return;
                 }
                 dispatch("handleAxiosError", error);

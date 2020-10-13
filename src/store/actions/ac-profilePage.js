@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "../../router";
 
 function makeTreeFromList(list) {
     // * set parent ID
@@ -81,5 +82,61 @@ export default {
             })
             .catch((error) => dispatch("handleAxiosError", error));
         commit("HIDE_THE_EDIT_STAGE");
+    },
+    // !  setUserProfileAndGet_id
+    async setUserProfileAndGet_id({ state, dispatch, commit }, username) {
+        const currentUser = state.user;
+        if (username === currentUser.username) {
+            commit("SET_User_to_Profile", currentUser);
+            return currentUser._id;
+        }
+        const url = "/users";
+        const options = {
+            params: {
+                username,
+            },
+        };
+        const user = await axios
+            .get(url, options)
+            .then((res) => {
+                console.log({ setUserProfileAndGet_id: res });
+                if (res.status == 200) return res.data;
+            })
+            .catch((error) => {
+                dispatch("handleAxiosError", error);
+            });
+        if (user) {
+            commit("SET_User_to_Profile", user);
+            return user._id;
+        } else return false;
+    },
+    // !  getUserDocs
+    async getUserDocs({ dispatch, commit }) {
+        const username = router.currentRoute.params.username;
+        const user_id = await dispatch("setUserProfileAndGet_id", username);
+        if (!user_id) return;
+
+        const url = "/documents";
+        const options = {
+            params: {
+                root: true,
+                "user.id": user_id,
+            },
+        };
+        const docs = await axios
+            .get(url, options)
+            .then((res) => {
+                if (res.status == 200) return res.data;
+            })
+            .catch((error) => {
+                dispatch("handleAxiosError", error);
+            });
+        if (!docs) return;
+
+        const decoded_docs = await dispatch("decode_the_docs", {
+            docs,
+        });
+        docs.data = decoded_docs;
+        await commit("SET_DOCS_TO_Profile_Page", docs);
     },
 };

@@ -15,16 +15,28 @@
             </div>
             <ul class="menuItems">
                 <li @click="$router.push('/'), hideNav()">صفحه نخست</li>
-                <li @click="$router.push(`/profile/${user.email}`), hideNav()">
+                <li
+                    @click="
+                        $router.push(`/profile/${user.username}`), hideNav()
+                    "
+                >
                     پروفایل
                 </li>
                 <li
                     @click="
-                        $router.push(`/profile/${user.email}/categories`),
+                        $router.push(`/profile/${user.username}/categories`),
                             hideNav()
                     "
                 >
                     دسته بندی ها
+                </li>
+                <li
+                    @click="
+                        $router.push(`/profile/${user.username}/users`),
+                            hideNav()
+                    "
+                >
+                    کاربران
                 </li>
                 <li @click="hideNav()">تنظیمات اکانت</li>
                 <li @click="Logout()">خارج شدن</li>
@@ -78,7 +90,7 @@ export default {
         document.addEventListener("hideSidebarNav", () => {
             setTimeout(() => (this.showSidebarNav = false), 1400);
         });
-        if (this.user.email) this.showSidebarNav = true;
+        if (this.user.username) this.showSidebarNav = true;
     },
 };
 </script>

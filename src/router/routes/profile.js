@@ -1,6 +1,6 @@
 const profileRoutes = [
     {
-        path: "/profile/:email",
+        path: "/profile/:username",
         component: () => import("@/views/profilePages/root.vue"),
         meta: {
             minimumRole: 3,
@@ -18,6 +18,14 @@ const profileRoutes = [
                 // ! admin page
                 path: "categories",
                 component: () => import("@/views/profilePages/categories.vue"),
+                meta: {
+                    minimumRole: 48,
+                },
+            },
+            {
+                // ! admin page
+                path: "users",
+                component: () => import("@/views/profilePages/users.vue"),
                 meta: {
                     minimumRole: 48,
                 },

@@ -6,7 +6,7 @@
         <div class="resetPassword">
             <h1>ریست پسورد</h1>
             <form @submit.prevent="resetPassword()">
-                <input type="email" placeholder="email" v-model="email" />
+                <input type="text" placeholder="username" v-model="username" />
                 <input class="btn btn-green" type="submit" value="ارسال" />
             </form>
         </div>
@@ -46,7 +46,7 @@ var intervalTimer;
 export default {
     data() {
         return {
-            email: "",
+            username: "",
             verifyCode: "",
             resetPasswordPage: true,
             selectedTime: 0,
@@ -57,7 +57,7 @@ export default {
         resetPassword() {
             const url = "/reset-password";
             this.$axios
-                .post(url, { email: this.email })
+                .post(url, { username: this.username })
                 .then((res) => {
                     console.log({ res });
                     this.$toasted.info(res.data.msg);
@@ -71,8 +71,10 @@ export default {
                             "کد اعتبار سنجی قبلا برای شما ارسال شده است ..."
                         );
                         return;
-                    } else if (msg == "email not found") {
-                        this.$toasted.info("با این ایمیل ثبت نام نکرده اید");
+                    } else if (msg == "username not found") {
+                        this.$toasted.info(
+                            "با این نام کاربری ثبت نام نکرده اید"
+                        );
                         return;
                     } else {
                         this.$store.dispatch("handleAxiosError", error);
@@ -83,7 +85,7 @@ export default {
             const url = "/reset-password",
                 options = {
                     params: {
-                        user_email: this.email,
+                        username: this.username,
                         random_num: String(this.verifyCode),
                     },
                 };
@@ -95,7 +97,9 @@ export default {
                         "addDataToAxiosAndLocalStorage",
                         data
                     );
-                    this.$router.push(`/profile/${this.email}/change-password`);
+                    this.$router.push(
+                        `/profile/${this.username}/change-password`
+                    );
                 })
                 .catch((error) => {
                     if (error.response.data.message == "validation failed") {

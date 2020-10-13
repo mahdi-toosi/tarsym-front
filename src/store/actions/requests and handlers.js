@@ -352,7 +352,7 @@ export default {
         return doc;
     },
     // !  handleAxiosError
-    handleAxiosError(store, error) {
+    handleAxiosError({ commit }, error) {
         let msg;
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
@@ -362,8 +362,7 @@ export default {
         else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ...";
         else if (error == "Error: Request failed with status code 401") {
             // msg = "ایمیل یا رمز عبور اشتباه است"
-            localStorage.removeItem("sjufNEbjDmE"); //* sjufNEbjDmE = userData
-            localStorage.removeItem("kemskDJobjgR"); //* kemskDJobjgR = access key
+            commit("LOGOUT");
             router.push("/Auth");
         } else {
             msg = error;
@@ -428,61 +427,5 @@ export default {
                 }
                 store.dispatch("handleAxiosError", error);
             });
-    },
-    // !  setUserProfileAndGet_id
-    async setUserProfileAndGet_id({ state, dispatch, commit }, email) {
-        const currentUser = state.user;
-        if (email === currentUser.email) {
-            commit("SET_User_to_Profile", currentUser);
-            return currentUser._id;
-        }
-        const url = "/users";
-        const options = {
-            params: {
-                email,
-            },
-        };
-        const user = await axios
-            .get(url, options)
-            .then((res) => {
-                console.log({ setUserProfileAndGet_id: res });
-                if (res.status == 200) return res.data;
-            })
-            .catch((error) => {
-                dispatch("handleAxiosError", error);
-            });
-        if (user) {
-            commit("SET_User_to_Profile", user);
-            return user._id;
-        } else return false;
-    },
-    // !  getUserDocs
-    async getUserDocs({ dispatch, commit }) {
-        const userEmail = router.currentRoute.params.email;
-        const user_id = await dispatch("setUserProfileAndGet_id", userEmail);
-        if (!user_id) return;
-
-        const url = "/documents";
-        const options = {
-            params: {
-                root: true,
-                "user.id": user_id,
-            },
-        };
-        const docs = await axios
-            .get(url, options)
-            .then((res) => {
-                if (res.status == 200) return res.data;
-            })
-            .catch((error) => {
-                dispatch("handleAxiosError", error);
-            });
-        if (!docs) return;
-
-        const decoded_docs = await dispatch("decode_the_docs", {
-            docs,
-        });
-        docs.data = decoded_docs;
-        await commit("SET_DOCS_TO_Profile_Page", docs);
     },
 };

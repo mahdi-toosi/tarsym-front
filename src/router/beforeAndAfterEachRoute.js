@@ -44,10 +44,8 @@ export default {
 
 // * Helper Functions
 function set_user_if_exist(minimumRole) {
-    const userInLocalStorage = localStorage.getItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
-    if (!userInLocalStorage) return false;
-    const decrypt = atob(userInLocalStorage);
-    const userData = JSON.parse(decrypt);
+    const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
+    if (!userData) return false;
     const now = new Date().getTime();
     if (userData && userData.expire > now) {
         // * add user
@@ -56,7 +54,7 @@ function set_user_if_exist(minimumRole) {
         // * validate user role for route
         if (minimumRole <= store.state.user.role) return true;
         else {
-            Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
+            // Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
             return false;
         }
     }

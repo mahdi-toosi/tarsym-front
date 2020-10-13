@@ -3,7 +3,7 @@
         <header>
             <div class="profileData">
                 <img src="/img/profileAvatar.png" />
-                <span v-text="profile.user.email"></span>
+                <span v-text="profile.user.username"></span>
             </div>
             <a
                 class="btn btn-blue"
@@ -121,9 +121,9 @@ export default {
         },
     },
     beforeRouteEnter(to, from, next) {
-        if (to.params.email === "forward") {
-            next(async (vm) => vm.$router.push(`/profile/${vm.user.email}`));
-            return
+        if (to.params.username === "forward") {
+            next(async (vm) => vm.$router.push(`/profile/${vm.user.username}`));
+            return;
         }
         next(async (vm) => {
             vm.$store.state.map.zoom = 5;

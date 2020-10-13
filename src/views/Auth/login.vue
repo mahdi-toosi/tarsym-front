@@ -2,10 +2,14 @@
     <div class="loginForm">
         <h1>ورود به ترسیم</h1>
         <form @submit.prevent="login()">
-            <input type="email" placeholder="email" v-model="user.email" />
+            <input
+                type="text"
+                placeholder="نام کاربری"
+                v-model="user.username"
+            />
             <input
                 type="password"
-                placeholder="password"
+                placeholder="رمز عبور"
                 v-model="user.password"
             />
             <input class="btn btn-green" type="submit" value="ورود" />
@@ -19,7 +23,7 @@
 export default {
     data() {
         return {
-            user: { email: "", password: "" },
+            user: { username: "", password: "" },
         };
     },
     methods: {
@@ -30,9 +34,9 @@ export default {
         validateLoginForm() {
             const user = this.user;
             let errors = [];
-            if (!this.validEmail(user.email))
-                errors.push("ایمیل معتبر نمیباشد");
-            if (user.password.length < 5) errors.push("پسورد معتبر نمیباشد");
+            if (user.username.length < 5)
+                errors.push("نام کاربری معتبر نمیباشد");
+            if (user.password.length < 5) errors.push("رمز عبور معتبر نمیباشد");
             if (!errors.length) return true;
             else {
                 errors.forEach((error) => {
@@ -40,10 +44,6 @@ export default {
                 });
                 return false;
             }
-        },
-        validEmail(email) {
-            var regx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return regx.test(email);
         },
     },
 };

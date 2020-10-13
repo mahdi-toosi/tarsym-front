@@ -74,6 +74,6 @@ export default {
         return validCats;
     },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
-    isAuthenticated: (state) => state.user.email,
+    isAuthenticated: (state) => state.user.username,
     DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],
 };

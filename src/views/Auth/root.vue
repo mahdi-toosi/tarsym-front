@@ -49,7 +49,9 @@ export default {};
         text-align: right;
     }
 
-    input[type='email'], input[type='password'], input[type='text'] {
+    input[type='text'], input[type='password'] {
+        text-align: right;
+        direction: rtl;
         border-radius: 0;
         background: transparent;
         border: none;
