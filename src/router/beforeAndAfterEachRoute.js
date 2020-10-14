@@ -16,7 +16,6 @@ function beforeEach() {
             return;
         }
         store.commit("LOGOUT");
-        next("/Auth");
     };
 }
 function afterEach() {

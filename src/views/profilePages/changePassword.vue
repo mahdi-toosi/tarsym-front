@@ -32,7 +32,6 @@ export default {
                 .then(async () => {
                     this.$toasted.success("پسورد با موفقیت تغییر کرد");
                     await this.$store.commit("LOGOUT");
-                    await this.$router.push("/Auth");
                 })
                 .catch((error) => {
                     this.$store.dispatch("handleAxiosError", error);

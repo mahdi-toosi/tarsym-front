@@ -363,7 +363,6 @@ export default {
         else if (error == "Error: Request failed with status code 401") {
             // msg = "ایمیل یا رمز عبور اشتباه است"
             commit("LOGOUT");
-            router.push("/Auth");
         } else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";

@@ -15,6 +15,14 @@ const profileRoutes = [
                 },
             },
             {
+                path: "messages",
+                component: () => import("@/views/profilePages/messages.vue"),
+                name: "messages",
+                meta: {
+                    minimumRole: 3,
+                },
+            },
+            {
                 // ! admin page
                 path: "categories",
                 component: () => import("@/views/profilePages/categories.vue"),

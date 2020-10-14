@@ -1,3 +1,4 @@
+import router from "../../router";
 import newDoc from "./mu-newDoc";
 import profilePage from "./profilePage";
 
@@ -9,6 +10,7 @@ export default {
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         state.user = {};
         document.dispatchEvent(new CustomEvent("hideSidebarNav"));
+        router.push("/Auth");
     },
     CHANGE_SEARCH_POLYGON_SITUATION(state) {
         state.searchPolygon.isOn = !state.searchPolygon.isOn;

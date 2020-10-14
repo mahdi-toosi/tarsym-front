@@ -13,33 +13,19 @@
                 <div></div>
                 <header>mahdi toosi</header>
             </div>
-            <ul class="menuItems">
-                <li @click="$router.push('/'), hideNav()">صفحه نخست</li>
-                <li
-                    @click="
-                        $router.push(`/profile/${user.username}`), hideNav()
-                    "
+            <ul class="navigation_items">
+                <router-link
+                    :to="nav.addr"
+                    v-for="nav in routes"
+                    :key="nav.addr"
+                    tag="li"
                 >
-                    پروفایل
+                    {{ nav.name }} <i :class="nav.icon"></i>
+                </router-link>
+                <li @click="$store.commit('LOGOUT')">
+                    خارج شدن
+                    <i class="fas fa-sign-out-alt"></i>
                 </li>
-                <li
-                    @click="
-                        $router.push(`/profile/${user.username}/categories`),
-                            hideNav()
-                    "
-                >
-                    دسته بندی ها
-                </li>
-                <li
-                    @click="
-                        $router.push(`/profile/${user.username}/users`),
-                            hideNav()
-                    "
-                >
-                    کاربران
-                </li>
-                <li @click="hideNav()">تنظیمات اکانت</li>
-                <li @click="Logout()">خارج شدن</li>
             </ul>
         </div>
     </div>
@@ -57,13 +43,49 @@ export default {
         user() {
             return this.$store.state.user;
         },
+        routes() {
+            const routes = [
+                {
+                    name: "صفحه نخست",
+                    addr: "/",
+                    icon: "far fa-circle",
+                    role: 3,
+                },
+                {
+                    name: "پروفایل",
+                    addr: `/profile/${this.user.username}`,
+                    icon: "far fa-user",
+                    role: 3,
+                },
+                {
+                    name: "دسته بندی ها",
+                    addr: `/profile/${this.user.username}/categories`,
+                    icon: "fas fa-tags",
+                    role: 48,
+                },
+                {
+                    name: "کاربران",
+                    addr: `/profile/${this.user.username}/users`,
+                    icon: "fas fa-users",
+                    role: 48,
+                },
+                {
+                    name: "پیام ها",
+                    addr: `/profile/${this.user.username}/messages`,
+                    icon: "far fa-envelope",
+                    role: 3,
+                },
+                {
+                    name: "تنظیمات اکانت",
+                    addr: ``,
+                    icon: "fas fa-cogs",
+                    role: 3,
+                },
+            ];
+            return routes.filter((route) => route.role <= this.user.role);
+        },
     },
     methods: {
-        Logout() {
-            this.$store.commit("LOGOUT");
-            this.hideNav();
-            this.$router.push(`/Auth`);
-        },
         showNav() {
             document.addEventListener("click", this.documentClick);
             this.displayNav = true;
@@ -91,6 +113,15 @@ export default {
             setTimeout(() => (this.showSidebarNav = false), 1400);
         });
         if (this.user.username) this.showSidebarNav = true;
+
+        setTimeout(() => {
+            const navMenu = document.querySelectorAll(".navigation_items li");
+            navMenu.forEach((element) => {
+                element.addEventListener("click", () => {
+                    this.hideNav();
+                });
+            });
+        }, 2000);
     },
 };
 </script>
@@ -153,6 +184,7 @@ export default {
             cursor: pointer;
             list-style: none;
             padding: 10px 0;
+            text-align: right;
         }
 
         li:not(:last-child) {
