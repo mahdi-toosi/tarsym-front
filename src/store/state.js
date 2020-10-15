@@ -59,6 +59,7 @@ export default {
     profilePage: {
         user: {},
         docs: [],
+        unreadMessages: 0,
         categoriesPage: {
             categories: {},
             movecat: {},

@@ -25,8 +25,15 @@ export default {
                 await router.push("/");
 
                 document.dispatchEvent(new CustomEvent("showSidebarNav"));
+
+                setTimeout(() => dispatch("CHECK_User_Unread_Messages"), 2000);
             })
             .catch((error) => {
+                if (error == "Error: Request failed with status code 401") {
+                    const msg = "ایمیل یا رمز عبور اشتباه است ...";
+                    Vue.toasted.error(msg);
+                    return;
+                }
                 dispatch("handleAxiosError", error);
             });
     },

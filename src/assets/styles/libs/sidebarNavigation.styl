@@ -1,0 +1,104 @@
+.sidebarNavigation {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    user-select: none;
+    z-index: 999;
+
+    &.haveMsg {
+        &:before {
+            content: '';
+            width: 6px;
+            height: 5px;
+            background: red;
+            display: block;
+            border-radius: 99px;
+            position: relative;
+            top: 11px;
+            left: 5px;
+            z-index: 9999;
+        }
+
+        .messages:before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: #f00;
+            display: block;
+            border-radius: 99px;
+            margin-left: auto;
+            position: relative;
+            top: 2px;
+            left: 4px;
+            z-index: 9999;
+        }
+    }
+
+    img {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        position: relative;
+        z-index: 999;
+        cursor: pointer;
+    }
+
+    .sidebar {
+        max-width: 400px;
+        background: white;
+        margin-top: -55px;
+        border-radius: 25px 12px 12px 12px;
+        font-size: 15px;
+        text-align: center;
+        padding: 0px;
+        transition: all 0.5s ease-in-out;
+        clip-path: circle(100% at -65% -60%);
+        max-height: 0;
+
+        &.show {
+            max-height: 100%;
+            padding: 5px 5px 0px;
+            clip-path: circle(100%);
+            box-shadow: #00000091 2px 2px 8px -3px;
+        }
+
+        .router-link-exact-active i {
+            color: #00bf9c;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+
+            div {
+                width: 50px;
+            }
+
+            header {
+                padding: 3px 10px 0px;
+                line-height: 22px;
+                text-align: right;
+            }
+        }
+
+        ul {
+            padding: 6px 10px;
+            margin: 0;
+        }
+
+        li {
+            cursor: pointer;
+            list-style: none;
+            padding: 10px 0;
+            text-align: right;
+        }
+
+        i {
+            margin-left: 3px;
+        }
+
+        li:not(:last-child) {
+            border-bottom: 1px solid darkgray;
+        }
+    }
+}

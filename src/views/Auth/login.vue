@@ -23,7 +23,7 @@
 export default {
     data() {
         return {
-            user: { username: "", password: "" },
+            user: { username: null, password: null },
         };
     },
     methods: {

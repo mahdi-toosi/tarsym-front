@@ -73,6 +73,14 @@ export default {
         const validCats = Cats.filter((cat) => cat.childs.includes(DocLastCat._id));
         return validCats;
     },
+    msgNotification: (state) => {
+        const sidebar = document.querySelector(".sidebarNavigation");
+        if (state.profilePage.unreadMessages) {
+            sidebar.classList.add("haveMsg");
+        } else {
+            sidebar.classList.remove("haveMsg");
+        }
+    },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
     isAuthenticated: (state) => state.user.username,
     DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],

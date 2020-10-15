@@ -3,7 +3,10 @@
         <header>
             <div class="profileData">
                 <img src="/img/profileAvatar.png" />
-                <span v-text="profile.user.username"></span>
+                <span>
+                    {{ profile.user.name }} <br />
+                    {{ profile.user.username }}
+                </span>
             </div>
             <a
                 class="btn btn-blue"
@@ -14,7 +17,6 @@
                 <i class="fas fa-plus" />
             </a>
         </header>
-        <search-field />
         <section class="points">
             <span v-if="!profile.docs.data" class="notingToShow"
                 >داکیومنتی برای نمایش دادن نیست</span
@@ -74,7 +76,6 @@
 </template>
 
 <script>
-import searchField from "@/components/searchField";
 import { mapActions } from "vuex";
 
 export default {
@@ -135,7 +136,6 @@ export default {
             }
         });
     },
-    components: { searchField },
 };
 </script>
 
@@ -156,11 +156,13 @@ export default {
     .profileData {
         display: flex;
         align-items: center;
+        line-height: 24px;
 
         img {
             width: 60px;
             height: 60px;
             border-radius: 100%;
+            margin-left: 6px;
         }
     }
 }

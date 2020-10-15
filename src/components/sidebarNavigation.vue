@@ -11,19 +11,20 @@
         >
             <div class="header">
                 <div></div>
-                <header>mahdi toosi</header>
+                <header>{{ user.name }} <br />{{ user.username }}</header>
             </div>
             <ul class="navigation_items">
                 <router-link
                     :to="nav.addr"
                     v-for="nav in routes"
                     :key="nav.addr"
+                    :class="nav.class"
                     tag="li"
                 >
                     {{ nav.name }} <i :class="nav.icon"></i>
                 </router-link>
                 <li @click="$store.commit('LOGOUT')">
-                    خارج شدن
+                    خروج
                     <i class="fas fa-sign-out-alt"></i>
                 </li>
             </ul>
@@ -44,43 +45,50 @@ export default {
             return this.$store.state.user;
         },
         routes() {
+            const username = this.user.username;
             const routes = [
                 {
                     name: "صفحه نخست",
                     addr: "/",
                     icon: "far fa-circle",
                     role: 3,
+                    class: "home",
                 },
                 {
                     name: "پروفایل",
-                    addr: `/profile/${this.user.username}`,
+                    addr: `/profile/${username}`,
                     icon: "far fa-user",
                     role: 3,
+                    class: "profile",
                 },
                 {
                     name: "دسته بندی ها",
-                    addr: `/profile/${this.user.username}/categories`,
+                    addr: `/profile/${username}/categories`,
                     icon: "fas fa-tags",
                     role: 48,
+                    class: "categories",
                 },
                 {
                     name: "کاربران",
-                    addr: `/profile/${this.user.username}/users`,
+                    addr: `/profile/${username}/users`,
                     icon: "fas fa-users",
                     role: 48,
+                    class: "users",
                 },
                 {
                     name: "پیام ها",
-                    addr: `/profile/${this.user.username}/messages`,
+                    addr: `/profile/${username}/messages`,
                     icon: "far fa-envelope",
                     role: 3,
+                    class: "messages",
                 },
-                {
-                    name: "تنظیمات اکانت",
-                    addr: ``,
-                    icon: "fas fa-cogs",
-                    role: 3,
-                },
+                // {
+                //     name: "تنظیمات اکانت",
+                //     addr: ``,
+                //     icon: "fas fa-cogs",
+                //     role: 3,
+                //     class: "options",
+                // },
             ];
             return routes.filter((route) => route.role <= this.user.role);
         },
@@ -125,71 +133,3 @@ export default {
     },
 };
 </script>
-
-<style  lang="stylus">
-.sidebarNavigation {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    user-select: none;
-    z-index: 999;
-
-    img {
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        position: relative;
-        z-index: 999;
-        cursor: pointer;
-    }
-
-    .sidebar {
-        max-width: 400px;
-        background: white;
-        margin-top: -55px;
-        border-radius: 25px 12px 12px 12px;
-        font-size: 15px;
-        text-align: center;
-        padding: 0px;
-        transition: all 0.5s ease-in-out;
-        clip-path: circle(100% at -65% -60%);
-        max-height: 0;
-
-        &.show {
-            max-height: 100%;
-            padding: 5px;
-            clip-path: circle(100%);
-            box-shadow: #00000091 2px 2px 8px -3px;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-
-            div {
-                width: 50px;
-                height: 50px;
-            }
-
-            header {
-                padding: 10px;
-            }
-        }
-
-        ul {
-            padding: 0px 10px;
-        }
-
-        li {
-            cursor: pointer;
-            list-style: none;
-            padding: 10px 0;
-            text-align: right;
-        }
-
-        li:not(:last-child) {
-            border-bottom: 1px solid darkgray;
-        }
-    }
-}
-</style>

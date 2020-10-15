@@ -1,24 +1,28 @@
 <template>
     <div id="app">
-        <tarsym-map />
-        <sidebar />
-        <sidebar-navigation />
+        <Tarsym-map />
+        <Sidebar />
+        <Sidebar-navigation />
+        <Send-msg />
     </div>
 </template>
 <script>
-import tarsymMap from "@/components/map";
-import sidebar from "@/components/sidebar";
-import sidebarNavigation from "@/components/sidebarNavigation";
+import TarsymMap from "@/components/map";
+import Sidebar from "@/components/sidebar";
+import SidebarNavigation from "@/components/sidebarNavigation";
+import SendMsg from "@/components/sendMessage";
 
 export default {
     name: "app",
     components: {
-        tarsymMap,
-        sidebar,
-        sidebarNavigation,
+        TarsymMap,
+        Sidebar,
+        SidebarNavigation,
+        SendMsg,
     },
     async mounted() {
         await this.$store.dispatch("get_All_Taxanomies", false);
+        await this.$store.dispatch("CHECK_User_Unread_Messages");
     },
     created() {
         document.addEventListener("PWAupdatefound", () => {
