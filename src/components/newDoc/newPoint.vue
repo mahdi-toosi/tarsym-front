@@ -12,12 +12,18 @@
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
-                :class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
+                :class="
+                    $store.state.DocProp.OnTool.index == index
+                        ? 'tool_is_on'
+                        : ''
+                "
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
-            <label for="zoomLevel" style="top: 4px" v-if="tool.searchable">سطح زوم:</label>
+            <label for="zoomLevel" style="top: 4px" v-if="tool.searchable"
+                >سطح زوم:</label
+            >
             <select
                 id="zoomLevel"
                 v-if="tool.searchable"
@@ -31,7 +37,11 @@
                 <option :value="13">5</option>
             </select>
 
-            <button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
+            <button
+                @click="deleteTool(index)"
+                class="delete_button"
+                v-if="!tool.searchable"
+            >
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>

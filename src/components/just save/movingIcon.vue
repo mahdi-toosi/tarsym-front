@@ -2,7 +2,9 @@
     <div>
         <l-map :zoom="2" :center="initialLocation">
             <l-icon-default></l-icon-default>
-            <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <l-tile-layer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
             <l-moving-marker
                 :lat-lng="location.latlng"
                 :duration="movingMarkerDuration"
@@ -11,13 +13,23 @@
             >
                 <l-popup :content="location.text"></l-popup>
             </l-moving-marker>
-            <l-polyline :lat-lngs="polyline.latlngs" :color="polyline.color"></l-polyline>
+            <l-polyline
+                :lat-lngs="polyline.latlngs"
+                :color="polyline.color"
+            ></l-polyline>
         </l-map>
-        <button @click="movingIconControl('next')" :disabled="movingIconButtonIsDisable">go to next</button>
+        <button
+            @click="movingIconControl('next')"
+            :disabled="movingIconButtonIsDisable"
+        >
+            go to next
+        </button>
         <button
             @click="movingIconControl('previous')"
             :disabled="movingIconButtonIsDisable"
-        >go to previous</button>
+        >
+            go to previous
+        </button>
     </div>
 </template>
 

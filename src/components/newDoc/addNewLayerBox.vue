@@ -10,7 +10,9 @@
             dir="rtl"
             class="seachBoxForLayer"
         >
-            <template slot="no-options">داکیومنتی با این عنوان به ثبت نرسیده...</template>
+            <template slot="no-options"
+                >داکیومنتی با این عنوان به ثبت نرسیده...</template
+            >
             <template slot="option" slot-scope="option">
                 <div class="seachBoxForLayerOption">
                     <h4>{{ option.title }}</h4>

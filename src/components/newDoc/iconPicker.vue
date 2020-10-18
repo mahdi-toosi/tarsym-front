@@ -1,19 +1,32 @@
 <template>
     <div class="icons_box_wrapper" ref="iconpicker">
         <i
-            :class=" logo || 'fas fa-map-marker-alt' "
-            :style="{color: logoColor}"
+            :class="logo || 'fas fa-map-marker-alt'"
+            :style="{ color: logoColor }"
             @click="togglePicker()"
         />
-        <div class="icons_box" :class="displayPicker ? 'show' : '' ">
-            <i class="fa fa-search" aria-hidden="true" style=" position: relative; left: -16px;" />
-            <input type="text" v-model.lazy="search" placeholder="search in icons" v-debounce="500" />
+        <div class="icons_box" :class="displayPicker ? 'show' : ''">
+            <i
+                class="fa fa-search"
+                aria-hidden="true"
+                style="position: relative; left: -16px"
+            />
+            <input
+                type="text"
+                v-model.lazy="search"
+                placeholder="search in icons"
+                v-debounce="500"
+            />
             <ul>
                 <li @click="REMOVE_ICON()">
                     <i class="fas fa-map-marker-alt" style="color: #277696"></i>
                 </li>
                 <!-- <transition-group name="flip-list"> -->
-                <li v-for="icon in filteredicons" :key="icon" @click="ADD_ICON(icon)">
+                <li
+                    v-for="icon in filteredicons"
+                    :key="icon"
+                    @click="ADD_ICON(icon)"
+                >
                     <i :class="icon" />
                 </li>
                 <!-- </transition-group> -->

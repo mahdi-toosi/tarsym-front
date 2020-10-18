@@ -1,7 +1,7 @@
 <template>
     <section class="searchbar shadow">
         <div class="searchInput">
-            <button style="font-size: 22px; " @click="fetchSearchResult()">
+            <button style="font-size: 22px" @click="fetchSearchResult()">
                 <i class="fas fa-search" />
             </button>
             <input
@@ -10,14 +10,18 @@
                 class="searchBox"
                 v-model.lazy="search"
                 v-debounce="delay"
-                :style="{borderBottom: showOptions ? '1px solid silver' : 'none' }"
+                :style="{
+                    borderBottom: showOptions ? '1px solid silver' : 'none',
+                }"
             />
-            <button style="font-size: 25px;" @click="showOptions = !showOptions">
+            <button style="font-size: 25px" @click="showOptions = !showOptions">
                 <i class="fas fa-sliders-h"></i>
             </button>
         </div>
         <div class="options" v-show="showOptions">
-            <button @click="$store.commit('CHANGE_SEARCH_POLYGON_SITUATION')">select polygon</button>
+            <button @click="$store.commit('CHANGE_SEARCH_POLYGON_SITUATION')">
+                select polygon
+            </button>
         </div>
     </section>
 </template>

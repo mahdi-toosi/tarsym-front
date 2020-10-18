@@ -1,7 +1,13 @@
 <template>
     <div class="gooeyMenu">
         <nav class="menu">
-            <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+            <input
+                type="checkbox"
+                href="#"
+                class="menu-open"
+                name="menu-open"
+                id="menu-open"
+            />
             <label class="menu-open-button" for="menu-open">
                 <a class="plus">
                     <i class="fa fa-plus"></i>
@@ -24,7 +30,11 @@
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
             <defs>
                 <filter id="shadowed-goo">
-                    <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
+                    <feGaussianBlur
+                        in="SourceGraphic"
+                        result="blur"
+                        stdDeviation="10"
+                    />
                     <feColorMatrix
                         in="blur"
                         mode="matrix"
@@ -43,7 +53,11 @@
                     <feComposite in2="goo" in="SourceGraphic" result="mix" />
                 </filter>
                 <filter id="goo">
-                    <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
+                    <feGaussianBlur
+                        in="SourceGraphic"
+                        result="blur"
+                        stdDeviation="10"
+                    />
                     <feColorMatrix
                         in="blur"
                         mode="matrix"

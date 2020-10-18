@@ -6,8 +6,11 @@
                 :style="'background-color: ' + colors.hex8"
                 @click="togglePicker()"
             ></span>
-            <!-- bottom line ---- @click can be mouseover-->
-            <div class="vc-chrome" :class="displayPicker ? 'show' : '' " @click="ADD_COLOR(colors)">
+            <div
+                class="vc-chrome"
+                :class="displayPicker ? 'show' : ''"
+                @click="ADD_COLOR(colors)"
+            >
                 <div class="vc-chrome-saturation-wrap">
                     <saturation v-model="colors" @change="childChange" />
                 </div>
@@ -96,11 +99,11 @@ export default {
         },
         inputChange(data) {
             if (!data || !data.hex) return;
-            this.isValidHex(data.hex) &&
-                this.colorChange({
-                    hex: data.hex,
-                    source: "hex",
-                });
+            this.isValidHex(data.hex);
+            this.colorChange({
+                hex: data.hex,
+                source: "hex",
+            });
             this.ADD_COLOR(this.colors);
         },
         showPicker() {

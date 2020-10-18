@@ -2,12 +2,25 @@
     <div class="newPolyline">
         <div class="tool_header">
             <icon-picker :index="index" v-if="tool.showIcon" />
-            <i class="fas fa-long-arrow-alt-up" style="font-size: 25px; padding: 3px 5px;" v-else />
-            <input type="text" class="tooltip" placeholder="توضیح کوتاه خط" v-model="toolTipModel" />
+            <i
+                class="fas fa-long-arrow-alt-up"
+                style="font-size: 25px; padding: 3px 5px"
+                v-else
+            />
+            <input
+                type="text"
+                class="tooltip"
+                placeholder="توضیح کوتاه خط"
+                v-model="toolTipModel"
+            />
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
-                :class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
+                :class="
+                    $store.state.DocProp.OnTool.index == index
+                        ? 'tool_is_on'
+                        : ''
+                "
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
@@ -17,38 +30,63 @@
         </div>
         <div class="tool_body">
             <div class="lineColor">
-                <label for="lineColor">رنگ خط</label>
-                <color-picker id="lineColor" :value="tool.color" :index="index" />
+                <label for="lineColor">رنگ خط:</label>
+                <color-picker
+                    id="lineColor"
+                    :value="tool.color"
+                    :index="index"
+                />
             </div>
             <div class="addIcon">
-                <label for="addIcon">آیکن:</label>
+                <label :for="'addIcon' + index">آیکن:</label>
                 <input
                     type="checkbox"
-                    id="addIcon"
-                    @input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'icon'})"
+                    :id="'addIcon' + index"
+                    :checked="tool.showIcon"
+                    @input="
+                        CHANGE_POLYLINE_DECORATOR({
+                            $event,
+                            index,
+                            type: 'icon',
+                        })
+                    "
                 />
             </div>
             <div class="isDashed">
-                <label for="isDashed">خط چین:</label>
+                <label :for="'isDashed' + index">خط چین:</label>
                 <input
                     type="checkbox"
-                    id="isDashed"
-                    @input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'dashed' })"
+                    :id="'isDashed' + index"
+                    :checked="tool.dashed"
+                    @input="
+                        CHANGE_POLYLINE_DECORATOR({
+                            $event,
+                            index,
+                            type: 'dashed',
+                        })
+                    "
                 />
             </div>
             <div class="addArrow">
-                <label for="addArrow">فلش:</label>
+                <label :for="'addArrow' + index">فلش:</label>
                 <input
                     type="checkbox"
-                    id="addArrow"
-                    @input="CHANGE_POLYLINE_DECORATOR({ $event, index , type: 'arrow'})"
+                    :id="'addArrow' + index"
+                    :checked="tool.showArrow"
+                    @input="
+                        CHANGE_POLYLINE_DECORATOR({
+                            $event,
+                            index,
+                            type: 'arrow',
+                        })
+                    "
                 />
             </div>
             <div class="lineIconsColor" v-if="tool.showIcon">
                 <label for="lineIconsColor">رنگ آیکن:</label>
                 <color-picker
                     id="lineIconsColor"
-                    :value="tool.color"
+                    :value="tool.secondaryColor"
                     :index="index"
                     :secondaryColor="true"
                 />
@@ -64,7 +102,7 @@
                     :max="45"
                 />
             </div>
-            <div class="lineIconRepeat" v-if="tool.showIcon ">
+            <div class="lineIconRepeat" v-if="tool.showIcon">
                 <label for="lineIconRepeat">فاصله آیکن ها:</label>
                 <vue-slider
                     id="lineIconRepeat"
@@ -76,7 +114,7 @@
                     :tooltip-formatter="'{value}%'"
                 />
             </div>
-            <div class="lineIconDegree" v-if="tool.showIcon ">
+            <div class="lineIconDegree" v-if="tool.showIcon">
                 <label for="lineIconDegree">چرخش آیکن:</label>
                 <vue-slider
                     id="lineIconDegree"

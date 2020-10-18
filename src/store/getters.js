@@ -46,8 +46,12 @@ export default {
             if (!docLayer.childs_id.length) return tools;
             // * add childs tools to map
             getters.DocChilds(getters.DocLayer).forEach((child) => {
-                child.tools.forEach((tool) => (tool._id = child._id));
-                tools = tools.concat(child.tools);
+                // child.tools.forEach((tool) => (tool._id = child._id));
+                // tools = tools.concat(child.tools);
+                // * just add first Tool of Child
+                const firstTool = child.tools[0];
+                firstTool._id = child._id;
+                tools = tools.concat(firstTool);
             });
         }
         return tools;

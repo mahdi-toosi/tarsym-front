@@ -2,90 +2,197 @@
     <ul>
         <li>
             <button
-                @click=" goToThisChildMethod(firstNewDoc._id) "
+                @click="goToThisChildMethod(firstNewDoc._id)"
                 class="child"
-                :class="$route.params._id == firstNewDoc._id ? 'currentLayer' : '' "
-            >{{ ( firstNewDoc.title || firstNewDoc._id ) }}</button>
-            <button @click="delete_this_child( firstNewDoc._id )" class="delete_button">
+                :class="
+                    $route.params._id == firstNewDoc._id ? 'currentLayer' : ''
+                "
+            >
+                {{ firstNewDoc.title || firstNewDoc._id }}
+            </button>
+            <button
+                @click="delete_this_child(firstNewDoc._id)"
+                class="delete_button"
+            >
                 <i class="far fa-trash-alt"></i>
             </button>
             <ul v-if="firstNewDoc.childs_id.length">
-                <li v-for="(child, index) in DocChilds( firstNewDoc )" :key="index">
+                <li
+                    v-for="(child, index) in DocChilds(firstNewDoc)"
+                    :key="index"
+                >
                     <button
-                        @click=" goToThisChildMethod( child._id ) "
+                        @click="goToThisChildMethod(child._id)"
                         class="child"
-                        :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                    >{{ ( child.title || child._id ) }}</button>
-                    <button @click="delete_this_child( child._id )" class="delete_button">
+                        :class="
+                            $route.params._id == child._id ? 'currentLayer' : ''
+                        "
+                    >
+                        {{ child.title || child._id }}
+                    </button>
+                    <button
+                        @click="delete_this_child(child._id)"
+                        class="delete_button"
+                    >
                         <i class="far fa-trash-alt"></i>
                     </button>
                     <ul v-if="child.childs_id.length">
-                        <li v-for="(child, index) in DocChilds(child)" :key="index">
+                        <li
+                            v-for="(child, index) in DocChilds(child)"
+                            :key="index"
+                        >
                             <button
-                                @click=" goToThisChildMethod( child._id ) "
+                                @click="goToThisChildMethod(child._id)"
                                 class="child"
-                                :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                            >{{ ( child.title || child._id ) }}</button>
-                            <button @click="delete_this_child( child._id )" class="delete_button">
+                                :class="
+                                    $route.params._id == child._id
+                                        ? 'currentLayer'
+                                        : ''
+                                "
+                            >
+                                {{ child.title || child._id }}
+                            </button>
+                            <button
+                                @click="delete_this_child(child._id)"
+                                class="delete_button"
+                            >
                                 <i class="far fa-trash-alt"></i>
                             </button>
                             <ul v-if="child.childs_id.length">
-                                <li v-for="(child, index) in DocChilds(child)" :key="index">
+                                <li
+                                    v-for="(child, index) in DocChilds(child)"
+                                    :key="index"
+                                >
                                     <button
-                                        @click=" goToThisChildMethod( child._id ) "
+                                        @click="goToThisChildMethod(child._id)"
                                         class="child"
-                                        :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                                    >{{ ( child.title || child._id ) }}</button>
+                                        :class="
+                                            $route.params._id == child._id
+                                                ? 'currentLayer'
+                                                : ''
+                                        "
+                                    >
+                                        {{ child.title || child._id }}
+                                    </button>
                                     <button
-                                        @click="delete_this_child( child._id )"
+                                        @click="delete_this_child(child._id)"
                                         class="delete_button"
                                     >
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                     <ul v-if="child.childs_id.length">
-                                        <li v-for="(child, index) in DocChilds(child)" :key="index">
+                                        <li
+                                            v-for="(child, index) in DocChilds(
+                                                child
+                                            )"
+                                            :key="index"
+                                        >
                                             <button
-                                                @click=" goToThisChildMethod( child._id ) "
+                                                @click="
+                                                    goToThisChildMethod(
+                                                        child._id
+                                                    )
+                                                "
                                                 class="child"
-                                                :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                                            >{{ ( child.title || child._id ) }}</button>
+                                                :class="
+                                                    $route.params._id ==
+                                                    child._id
+                                                        ? 'currentLayer'
+                                                        : ''
+                                                "
+                                            >
+                                                {{ child.title || child._id }}
+                                            </button>
                                             <button
-                                                @click="delete_this_child( child._id )"
+                                                @click="
+                                                    delete_this_child(child._id)
+                                                "
                                                 class="delete_button"
                                             >
                                                 <i class="far fa-trash-alt"></i>
                                             </button>
                                             <ul v-if="child.childs_id.length">
                                                 <li
-                                                    v-for="(child, index) in DocChilds(child)"
+                                                    v-for="(child,
+                                                    index) in DocChilds(child)"
                                                     :key="index"
                                                 >
                                                     <button
-                                                        @click=" goToThisChildMethod( child._id ) "
+                                                        @click="
+                                                            goToThisChildMethod(
+                                                                child._id
+                                                            )
+                                                        "
                                                         class="child"
-                                                        :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                                                    >{{ ( child.title || child._id ) }}</button>
+                                                        :class="
+                                                            $route.params._id ==
+                                                            child._id
+                                                                ? 'currentLayer'
+                                                                : ''
+                                                        "
+                                                    >
+                                                        {{
+                                                            child.title ||
+                                                            child._id
+                                                        }}
+                                                    </button>
                                                     <button
-                                                        @click="delete_this_child( child._id )"
+                                                        @click="
+                                                            delete_this_child(
+                                                                child._id
+                                                            )
+                                                        "
                                                         class="delete_button"
                                                     >
-                                                        <i class="far fa-trash-alt"></i>
+                                                        <i
+                                                            class="far fa-trash-alt"
+                                                        ></i>
                                                     </button>
-                                                    <ul v-if="child.childs_id.length">
+                                                    <ul
+                                                        v-if="
+                                                            child.childs_id
+                                                                .length
+                                                        "
+                                                    >
                                                         <li
-                                                            v-for="(child, index) in DocChilds(child)"
+                                                            v-for="(child,
+                                                            index) in DocChilds(
+                                                                child
+                                                            )"
                                                             :key="index"
                                                         >
                                                             <button
-                                                                @click=" goToThisChildMethod( child._id ) "
+                                                                @click="
+                                                                    goToThisChildMethod(
+                                                                        child._id
+                                                                    )
+                                                                "
                                                                 class="child"
-                                                                :class="$route.params._id == child._id ? 'currentLayer' : '' "
-                                                            >{{ ( child.title || child._id ) }}</button>
+                                                                :class="
+                                                                    $route
+                                                                        .params
+                                                                        ._id ==
+                                                                    child._id
+                                                                        ? 'currentLayer'
+                                                                        : ''
+                                                                "
+                                                            >
+                                                                {{
+                                                                    child.title ||
+                                                                    child._id
+                                                                }}
+                                                            </button>
                                                             <button
-                                                                @click="delete_this_child( child._id )"
+                                                                @click="
+                                                                    delete_this_child(
+                                                                        child._id
+                                                                    )
+                                                                "
                                                                 class="delete_button"
                                                             >
-                                                                <i class="far fa-trash-alt"></i>
+                                                                <i
+                                                                    class="far fa-trash-alt"
+                                                                ></i>
                                                             </button>
                                                         </li>
                                                     </ul>

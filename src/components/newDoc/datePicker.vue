@@ -1,62 +1,89 @@
 <template>
     <div class="date_time_picker_wrapper">
         <button @click="showPicker()">
-            {{showDateForOprator}}
+            {{ showDateForOprator }}
             <span v-if="/[-]/.test(picked.year)">-</span>
             <!-- ه‍.ق -->
         </button>
-        <span class="clearDate" v-if="picked.month != '00' " @click="$store.commit('CLEAR_DATE')">
+        <span
+            class="clearDate"
+            v-if="picked.month != '00'"
+            @click="$store.commit('CLEAR_DATE')"
+        >
             <i class="fas fa-times"></i>
         </span>
-        <div class="date_time_picker" :class=" displayPicker ?  'show' : '' ">
+        <div class="date_time_picker" :class="displayPicker ? 'show' : ''">
             <header>
                 <ul class="pages">
-                    <li class="type" @click="changeType()">{{ calendar.curentName }}</li>
+                    <li class="type" @click="changeType()">
+                        {{ calendar.curentName }}
+                    </li>
                     <li
                         class="year"
-                        @click="changePage( picked.year ? 'years' : 'centurys' )"
-                    >{{ picked.year ? picked.year : 'سال' }}</li>
-                    <li class="month" @click="changePage('months')">{{ curentMonthName }}</li>
+                        @click="changePage(picked.year ? 'years' : 'centurys')"
+                    >
+                        {{ picked.year ? picked.year : "سال" }}
+                    </li>
+                    <li class="month" @click="changePage('months')">
+                        {{ curentMonthName }}
+                    </li>
                 </ul>
             </header>
             <div class="page_wrapper">
-                <ul class="centurys" :class="[pages.centurys ? 'show_this_page': '']">
+                <ul
+                    class="centurys"
+                    :class="[pages.centurys ? 'show_this_page' : '']"
+                >
                     <li
-                        v-for="(century,index) in centurys"
+                        v-for="(century, index) in centurys"
                         :key="index"
-                        :class="century == picked.century ? 'selected':''"
+                        :class="century == picked.century ? 'selected' : ''"
                         @click="pickCentury(century)"
-                    >{{ century }}</li>
+                    >
+                        {{ century }}
+                    </li>
                 </ul>
-                <ul class="years" :class="[pages.years ? 'show_this_page': '']">
+                <ul
+                    class="years"
+                    :class="[pages.years ? 'show_this_page' : '']"
+                >
                     <li @click="changePage('centurys')">
                         <i class="fas fa-chevron-right"></i>
                     </li>
                     <li
-                        v-for="(year,index) in years"
+                        v-for="(year, index) in years"
                         :key="index"
-                        :class="year == picked.year ? 'selected':''"
+                        :class="year == picked.year ? 'selected' : ''"
                         @click="pickYear(year)"
-                    >{{ year }}</li>
+                    >
+                        {{ year }}
+                    </li>
                     <li class="year" @click="changePage('centurys')">
                         <i class="fas fa-chevron-left"></i>
                     </li>
                 </ul>
-                <ul class="months" :class="[pages.months ? 'show_this_page': '']">
+                <ul
+                    class="months"
+                    :class="[pages.months ? 'show_this_page' : '']"
+                >
                     <li
-                        v-for="(month,index) in calcMonths"
+                        v-for="(month, index) in calcMonths"
                         :key="index"
-                        :class="index +1 == picked.month ? 'selected':''"
+                        :class="index + 1 == picked.month ? 'selected' : ''"
                         @click="pickMonth(index)"
-                    >{{ month.name }}</li>
+                    >
+                        {{ month.name }}
+                    </li>
                 </ul>
-                <ul class="days" :class="[pages.days ? 'show_this_page': '']">
+                <ul class="days" :class="[pages.days ? 'show_this_page' : '']">
                     <li
-                        v-for="(day,index) in calcDays"
+                        v-for="(day, index) in calcDays"
                         :key="index"
-                        :class="day == picked.day ? 'selected':''"
+                        :class="day == picked.day ? 'selected' : ''"
                         @click="pickDay(day)"
-                    >{{day}}</li>
+                    >
+                        {{ day }}
+                    </li>
                 </ul>
             </div>
         </div>

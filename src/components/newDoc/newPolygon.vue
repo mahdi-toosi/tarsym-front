@@ -1,7 +1,10 @@
 <template>
     <div class="newPolygon">
         <div class="tool_header">
-            <i class="fas fa-draw-polygon" style="font-size: 24px; padding: 3px 4px;"></i>
+            <i
+                class="fas fa-draw-polygon"
+                style="font-size: 24px; padding: 3px 4px"
+            ></i>
             <input
                 type="text"
                 class="tooltip"
@@ -11,7 +14,11 @@
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
-                :class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
+                :class="
+                    $store.state.DocProp.OnTool.index == index
+                        ? 'tool_is_on'
+                        : ''
+                "
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
@@ -22,7 +29,11 @@
         <div class="tool_body">
             <div class="polygonColor">
                 <label for="polygonColor">رنگ بیرونی:</label>
-                <color-picker :value="tool.color" id="polygonColor" :index="index" />
+                <color-picker
+                    :value="tool.color"
+                    id="polygonColor"
+                    :index="index"
+                />
             </div>
             <div class="polygonSencondaryColor">
                 <label for="polygonSencondaryColor">رنگ داخلی</label>

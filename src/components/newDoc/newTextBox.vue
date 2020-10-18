@@ -1,23 +1,42 @@
 <template>
     <div class="newPoint">
         <div class="tool_header">
-            <i class="far fa-comment-alt" style="font-size: 25px; padding: 3px 5px;" />
-            <textarea class="tooltip" placeholder="تکست باکس" v-model="toolTipModel" />
+            <i
+                class="far fa-comment-alt"
+                style="font-size: 25px; padding: 3px 5px"
+            />
+            <textarea
+                class="tooltip"
+                placeholder="تکست باکس"
+                v-model="toolTipModel"
+            />
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
-                :class="$store.state.DocProp.OnTool.index == index ? 'tool_is_on' : '' "
+                :class="
+                    $store.state.DocProp.OnTool.index == index
+                        ? 'tool_is_on'
+                        : ''
+                "
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
-            <button @click="deleteTool(index)" class="delete_button" v-if="!tool.searchable">
+            <button
+                @click="deleteTool(index)"
+                class="delete_button"
+                v-if="!tool.searchable"
+            >
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>
         <div class="tool_body">
             <div class="backColor">
                 <label for="backColor">رنگ زمینه:</label>
-                <color-picker id="backColor" :value="tool.color" :index="index" />
+                <color-picker
+                    id="backColor"
+                    :value="tool.color"
+                    :index="index"
+                />
             </div>
 
             <div class="fontColor">
