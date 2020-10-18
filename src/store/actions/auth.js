@@ -30,7 +30,7 @@ export default {
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 401") {
-                    const msg = "ایمیل یا رمز عبور اشتباه است ...";
+                    const msg = "نام کاربری یا رمز عبور اشتباه است ...";
                     Vue.toasted.error(msg);
                     return;
                 }

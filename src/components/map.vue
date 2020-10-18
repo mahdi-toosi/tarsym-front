@@ -25,7 +25,7 @@
 
             <div v-if="docs_list.length">
                 <div v-for="(tool, index) in DocWithChildsTools" :key="index">
-                    <div v-if="tool.type == 'Polygon'">
+                    <div v-if="tool.type === 'Polygon'">
                         <l-polygon
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
                             v-if="DocProp.OnTool.condition && tool.isOn"
@@ -42,6 +42,7 @@
                             :color="tool.color.hex8 || tool.color"
                             :lat-lngs="tool.coordinates"
                             @click="goToThisDoc(tool._id)"
+                            :visible="tool.visible"
                         >
                             <l-tooltip v-if="tool.tooltip">{{
                                 tool.tooltip
@@ -49,7 +50,7 @@
                         </l-polygon>
                     </div>
                     <!-- end Polygon -->
-                    <div v-if="tool.type == 'Polyline'">
+                    <div v-if="tool.type === 'Polyline'">
                         <l-polyline
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
                             :color="tool.color.hex8 || tool.color"
@@ -69,6 +70,7 @@
                             :color="tool.color.hex8 || tool.color"
                             :dashArray="tool.dashed ? '10,10' : ''"
                             @click="goToThisDoc(tool._id)"
+                            :visible="tool.visible"
                         >
                             <l-tooltip v-if="tool.tooltip">{{
                                 tool.tooltip
@@ -86,14 +88,13 @@
                             :arrow-color="tool.color.hex8 || tool.color"
                             :show-icon="tool.showIcon"
                             :show-arrow="tool.showArrow"
+                            v-if="tool.visible"
                         />
                     </div>
                     <!-- end Polyline -->
                     <div
                         v-if="
-                            tool.type == 'Point' &&
-                            tool.coordinates[0] != '0' &&
-                            tool.coordinates[1] != '0'
+                            tool.type === 'Point' && tool.coordinates[1] != '0'
                         "
                     >
                         <l-marker
@@ -102,6 +103,7 @@
                             @update:latLng="UPDATE_THIS_POINT_COORDINATE"
                             :icon="defaultIcon"
                             @click="goToThisDoc(tool._id)"
+                            :visible="tool.visible"
                         >
                             <l-icon
                                 :icon-size="dynamicSize(tool.iconSize)"
@@ -129,13 +131,14 @@
                         </l-marker>
                     </div>
                     <!-- end Point -->
-                    <div v-if="tool.type == 'Textbox'">
+                    <div v-if="tool.type === 'Textbox'">
                         <l-marker
                             :lat-lng="tool.coordinates"
                             :draggable="tool.isOn"
                             :icon="CircleIcon"
                             @update:latLng="UPDATE_THIS_POINT_COORDINATE"
                             @click="goToThisDoc(tool._id)"
+                            :visible="tool.visible"
                         >
                             <l-icon
                                 v-if="tool.tooltip"
@@ -158,7 +161,6 @@
                                 >
                                     {{ tool.tooltip }}
                                 </div>
-                                <!-- <div class="pointer"></div> -->
                             </l-icon>
                         </l-marker>
                     </div>
@@ -280,7 +282,7 @@ export default {
             const OnToolProp = this.DocProp.OnTool,
                 OnTool = this.DocLayer.tools[OnToolProp.index],
                 isPolygonOrPolylineOn =
-                    OnTool.type == "Polygon" || OnTool.type == "Polyline",
+                    OnTool.type === "Polygon" || OnTool.type === "Polyline",
                 MouseCoordinate = this.map.MouseCoordinate;
             if (!isPolygonOrPolylineOn && !MouseCoordinate) return [];
             if (!OnTool.coordinates.length) return [];
@@ -329,8 +331,8 @@ export default {
             const OnTool = this.DocProp.OnTool;
             if (!OnTool.condition) return;
             const thisTool = this.DocLayer.tools[OnTool.index];
-            if (thisTool.type == "Textbox") return;
-            if (thisTool.type == "Point") {
+            if (thisTool.type === "Textbox") return;
+            if (thisTool.type === "Point") {
                 thisTool.coordinates = [c.latlng.lat, c.latlng.lng];
                 return;
             }
@@ -385,7 +387,7 @@ export default {
         );
         mapObject.on("baselayerchange", (Layer) => {
             const layerIndex = this.map.tileProviders.findIndex(
-                (el) => el.name == Layer.name
+                (el) => el.name === Layer.name
             );
             this.CHANGE_LAYER_INDEX(layerIndex);
         });

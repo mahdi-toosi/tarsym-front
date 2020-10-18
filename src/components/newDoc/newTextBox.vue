@@ -5,11 +5,13 @@
                 class="far fa-comment-alt"
                 style="font-size: 25px; padding: 3px 5px"
             />
+
             <textarea
                 class="tooltip"
                 placeholder="تکست باکس"
                 v-model="toolTipModel"
             />
+
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
@@ -21,6 +23,18 @@
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
+
+            <button
+                class="visibility"
+                @click="CHANGE_VISIBILITY(index)"
+                v-if="index != 0"
+            >
+                <i
+                    class="far"
+                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                ></i>
+            </button>
+
             <button
                 @click="deleteTool(index)"
                 class="delete_button"
@@ -89,7 +103,7 @@
 </template>
 
 <script>
-import colorPicker from "@/components/newDoc/colorPicker";
+import colorPicker from "@/components/newDoc/helper Components/colorPicker";
 import { mapActions, mapMutations } from "vuex";
 import VueSlider from "vue-slider-component";
 
@@ -98,11 +112,18 @@ export default {
     props: ["tool", "index"],
     methods: {
         ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-        ...mapMutations(["CHANGE_RANG_INPUT", "CHANGE_TOOLTIP"]),
+        ...mapMutations([
+            "CHANGE_TOOLTIP",
+            "CHANGE_VISIBILITY",
+            "CHANGE_RANG_INPUT",
+        ]),
     },
     computed: {
         DocLayer() {
             return this.$store.getters.DocLayer;
+        },
+        visibility() {
+            return this.$store.getters.visibility;
         },
         logo() {
             const thisTool = this.DocLayer.tools[this.index];
@@ -119,7 +140,7 @@ export default {
         },
         TextBoxfontSize: {
             get() {
-                return this.DocLayer.tools[this.index].iconRepeat;
+                return this.DocLayer.tools[this.index].fontSize;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -131,7 +152,7 @@ export default {
         },
         TextBoxHeight: {
             get() {
-                return this.DocLayer.tools[this.index].iconRepeat;
+                return this.DocLayer.tools[this.index].height;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -143,7 +164,7 @@ export default {
         },
         TextBoxWidth: {
             get() {
-                return this.DocLayer.tools[this.index].iconRepeat;
+                return this.DocLayer.tools[this.index].width;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({

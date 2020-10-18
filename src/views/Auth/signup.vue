@@ -33,10 +33,10 @@ export default {
     data() {
         return {
             user: {
-                name: null,
-                username: null,
-                password: null,
-                rpassword: null,
+                name: "",
+                username: "",
+                password: "",
+                rpassword: "",
             },
         };
     },

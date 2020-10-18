@@ -7,12 +7,14 @@
                 style="font-size: 25px; padding: 3px 5px"
                 v-else
             />
+
             <input
                 type="text"
                 class="tooltip"
                 placeholder="توضیح کوتاه خط"
                 v-model="toolTipModel"
             />
+
             <button
                 class="editIcon"
                 @click="toolSwitch(index)"
@@ -24,6 +26,18 @@
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
+
+            <button
+                class="visibility"
+                @click="CHANGE_VISIBILITY(index)"
+                v-if="index != 0"
+            >
+                <i
+                    class="far"
+                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                ></i>
+            </button>
+
             <button @click="deleteTool(index)" class="delete_button">
                 <i class="far fa-trash-alt"></i>
             </button>
@@ -130,8 +144,8 @@
 </template>
 
 <script>
-import colorPicker from "@/components/newDoc/colorPicker";
-import iconPicker from "@/components/newDoc/iconPicker";
+import colorPicker from "@/components/newDoc/helper Components/colorPicker";
+import iconPicker from "@/components/newDoc/helper Components/iconPicker";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import VueSlider from "vue-slider-component";
 
@@ -142,12 +156,13 @@ export default {
         ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
         ...mapMutations([
             "CHANGE_TOOLTIP",
+            "CHANGE_VISIBILITY",
             "CHANGE_RANG_INPUT",
             "CHANGE_POLYLINE_DECORATOR",
         ]),
     },
     computed: {
-        ...mapGetters(["DocLayer"]),
+        ...mapGetters(["DocLayer", "visibility"]),
         toolTipModel: {
             get() {
                 return this.$store.getters.tooltipData(this.index);

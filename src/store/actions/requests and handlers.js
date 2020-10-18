@@ -37,14 +37,23 @@ export default {
     },
     // !  Delete_this_Document
     async Delete_this_Document({ state, commit, dispatch }, _id) {
+        const areYouSure = confirm("بابت حدف این داکیومنت مطمئنید ؟");
+        if (!areYouSure) return;
+
         if (typeof _id == "number") {
             const doc = state.newDocs.filter((el) => el._id == _id)[0];
             //  TODO => check for childs, if have child send toast for childs will delete ?
             if (doc.childs_id.length) {
                 const remove_childs = confirm("این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شود؟");
                 if (remove_childs) commit("REMOVE_THIS_DOC", _id);
-            } else {
-                commit("REMOVE_THIS_DOC", _id);
+            } else commit("REMOVE_THIS_DOC", _id);
+
+            // * redirect if need
+            const CR = router.currentRoute._id; // * current route
+            if (CR._id === _id) {
+                const root_id = state.newDocs[0]._id;
+                const path = `/${CR.name === "create doc" ? "create" : "update"}/${root_id}`;
+                router.push(path);
             }
             return;
         }
@@ -294,13 +303,13 @@ export default {
         let fakeElement = document.createElement("textarea");
         fakeElement.innerHTML = excerpt;
         excerpt = fakeElement.value;
-        excerpt += " ...";
+        // TODO => remove bottom line
+        // excerpt += " ...";
         doc.excerpt = excerpt;
 
         if (doc.root) {
             // * create searcheable coordinate
-            const this_tool = (obj) => obj.searchable == true;
-            const searchable_tool_index = doc.tools.findIndex(this_tool);
+            const searchable_tool_index = doc.tools.findIndex((obj) => obj.searchable === true);
             doc.location = {
                 type: "Point",
                 coordinates: doc.tools[searchable_tool_index].coordinates,
@@ -321,8 +330,9 @@ export default {
             doc.imgsCount = (imgs || []).length;
         }
 
-        // * remove unnecessary items form tools color obj
+        // * remove unnecessary items form tools
         doc.tools.forEach((tool) => {
+            if (tool._id) delete tool._id;
             if (tool.color.hex8) tool.color = tool.color.hex8;
             if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8;
         });
@@ -361,7 +371,7 @@ export default {
         else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است";
         else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ...";
         else if (error == "Error: Request failed with status code 401") {
-            // msg = "ایمیل یا رمز عبور اشتباه است"
+            // msg = "نام کاربری یا رمز عبور اشتباه است"
             commit("LOGOUT");
         } else {
             msg = error;

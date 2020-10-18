@@ -53,11 +53,10 @@ export default {
             await store.dispatch("makeToolOn", index);
         }
     },
-    async makeToolOn(store, index) {
-        await store.commit("OFF_THE_ON_TOOL");
-        const thisTool = docLayer(store.state).tools[index];
-        thisTool.isOn = true;
-        await store.commit("UPDATE_ON_TOOL");
+    async makeToolOn({ commit }, index) {
+        await commit("OFF_THE_ON_TOOL");
+        await commit("MAKE_TOOL_ON", index);
+        await commit("UPDATE_ON_TOOL");
     },
     async setTool({ commit }, type) {
         await commit("OFF_THE_ON_TOOL");

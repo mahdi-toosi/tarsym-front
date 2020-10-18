@@ -14,26 +14,27 @@ function beforeEach() {
         } else if (set_user_if_exist(to.meta.minimumRole)) {
             next();
             return;
-        }
-        store.commit("LOGOUT");
+        } else store.commit("LOGOUT");
     };
 }
 function afterEach() {
     return async (to) => {
-        if (["create doc", "update doc"].includes(to.name)) {
-            if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
-            await store.dispatch("get_childs");
-            store.commit("CHANGE_MAP_LAYERS");
-            store.dispatch("flyToThisDoc");
-        }
-        if (to.name == "read doc") {
+        const RN = to.name; // * route name
+        if (RN === "read doc") {
             await store.dispatch("read_this_doc");
             store.commit("CHANGE_MAP_LAYERS");
             return;
-        }
-        // if (["profile", "all docs"].includes(to.name)) {
-        store.commit("CHANGE_MAP_LAYERS", 0);
-        // }
+        } else if (RN === "create doc" || RN === "update doc") {
+            if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
+            await store.dispatch("get_childs");
+            store.commit("CHANGE_MAP_LAYERS");
+            const _id = to.params._id;
+            const invisibleDocs = store.state.DocProp.invisibleDocs || [];
+            const indexOfDoc = invisibleDocs.indexOf(_id);
+            if (indexOfDoc >= 0) invisibleDocs.splice(indexOfDoc, 1);
+            store.dispatch("flyToThisDoc");
+            return;
+        } else store.commit("CHANGE_MAP_LAYERS", 0);
     };
 }
 export default {

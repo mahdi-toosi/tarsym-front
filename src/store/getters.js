@@ -3,18 +3,18 @@ export default {
         const routeName = state.route.name;
         if (routeName == "all docs") return state.allDocs.data || [];
         else if (routeName == "read doc") return state.readDoc || [];
+        else if (routeName == "profile") return state.profilePage.docs.data || [];
         else if (routeName == "update doc" || routeName == "create doc") return state.newDocs || [];
         else return [];
     },
     DocWithChildsTools: (state, getters) => {
         const routeName = state.route.name,
             EditRoutes = routeName == "update doc" || routeName == "create doc",
-            ListRoutes = routeName == "all docs",
-            map_ZL = state.map.zoom,
-            currentList = getters.docs_list;
+            ListRoutes = routeName == "all docs" || routeName == "profile",
+            map_ZL = state.map.zoom;
         let tools = [];
         if (ListRoutes) {
-            currentList.forEach((doc) => {
+            getters.docs_list.forEach((doc) => {
                 const doc_ZL = doc.zoomLevel;
                 if (doc.root && doc_ZL <= map_ZL) {
                     let rootTools = doc.tools.filter((tool) => tool.searchable);
@@ -25,16 +25,15 @@ export default {
             return tools;
         } else if (EditRoutes) {
             if (state.newDocs[0].zoomLevel <= map_ZL) {
+                const invisibleDocs = state.DocProp.invisibleDocs;
                 state.newDocs.forEach((doc) => {
-                    let thisDoctools = [];
-                    doc.tools.forEach((tool) => {
-                        let edited_tool = tool;
-                        edited_tool._id = doc._id;
-                        thisDoctools.push(edited_tool);
-                    });
-                    tools = tools.concat(thisDoctools);
+                    if (invisibleDocs && invisibleDocs.includes(doc._id)) return;
+                    let thisDocTools = doc.tools;
+                    thisDocTools.forEach((tool) => (tool._id = doc._id));
+                    tools = tools.concat(thisDocTools);
                 });
             }
+            return tools;
         } else if (routeName == "read doc") {
             const docLayer = getters.DocLayer;
             const doc_ZL = docLayer.zoomLevel;
@@ -86,6 +85,7 @@ export default {
         }
     },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
+    visibility: (state, getters) => (index) => getters.DocLayer.tools[index].visible,
     isAuthenticated: (state) => state.user.username,
     DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],
 };

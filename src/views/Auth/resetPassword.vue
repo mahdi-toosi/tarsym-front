@@ -34,7 +34,7 @@
                 :class="timeLeft == '00:00' ? 'active' : ''"
                 @click="resetPasswordPage = timeLeft == '00:00' ? true : false"
             >
-                تغییر ایمیل
+                تغییر نام کاربری
             </button>
         </div>
     </div>

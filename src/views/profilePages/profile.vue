@@ -60,7 +60,7 @@
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </header>
-                <main v-text="doc.excerpt"></main>
+                <main v-text="doc.excerpt + ' ...'"></main>
                 <footer>
                     <ul>
                         <li v-if="doc.imgsCount">

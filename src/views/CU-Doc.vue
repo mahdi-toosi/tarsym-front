@@ -149,14 +149,14 @@ import "vue-slider-component/theme/antd.css";
 // * components
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-import datePicker from "@/components/newDoc/datePicker";
-import gooeyMenu from "@/components/newDoc/gooeyMenu";
 import newPoint from "@/components/newDoc/newPoint";
 import newPolygon from "@/components/newDoc/newPolygon";
 import newPolyline from "@/components/newDoc/newPolyline";
 import newTextBox from "@/components/newDoc/newTextBox";
-import addNewLayerBox from "@/components/newDoc/addNewLayerBox";
-import layersRelationshipTree from "@/components/newDoc/layersRelationshipTree";
+import datePicker from "@/components/newDoc/helper Components/datePicker";
+import gooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
+import addNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
+import layersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
 // * VUEX
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
@@ -200,7 +200,6 @@ export default {
             "addNewDoc",
             "goBackToParent",
             "update_this_doc",
-            "get_childs",
             "get_All_Taxanomies",
         ]),
         insertImage() {
@@ -301,15 +300,14 @@ export default {
         if (routeName == "create doc") {
             if (Number(route_id) !== lastAddedDocID) {
                 await this.addNewDoc();
-                return;
             }
-        } else if (routeName == "update doc") {
+            return;
+        } else if (routeName == "update doc")
             await this.update_this_doc(route_id);
-        }
+
         // document.addEventListener("keyup", this.keyPressed);
     },
     mounted() {
-        this.get_childs();
         // const quillButtons = document.querySelectorAll(".ql-toolbar button");
         // quillButtons.forEach((element) => {
         // 	console.log(element);

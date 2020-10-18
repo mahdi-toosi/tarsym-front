@@ -1,7 +1,7 @@
 <template>
     <div class="sidebarNavigation" ref="sidebarNav">
         <img
-            src="/img/icons/apple-touch-icon-120x120.png"
+            src="/dist/img/icons/apple-touch-icon-120x120.png"
             @click="toggleNav()"
         />
         <div

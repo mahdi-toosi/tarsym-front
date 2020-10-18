@@ -59,13 +59,18 @@
                 line-height: 25px;
                 height: 50px;
             .editIcon
-                border none 
-                background: transparent
                 cursor pointer
                 transition: .2s
                 margin-right: auto; 
                 &:hover
                     color: #0ce509;
+            .visibility
+                width: 32px
+                cursor: pointer
+                .fa-eye:hover
+                    color: red
+                .fa-eye-slash:hover
+                    color: #0ce509
             .tool_is_on
                 color: #0ce509;
             .delete_button
@@ -176,7 +181,14 @@
                 margin-right: auto
                 cursor pointer
                 position absolute
-                right: -15px;
+                right: -40px;
                 top: 17px;
                 &:hover
                     color red
+            .visibility
+                margin-right: auto;
+                cursor: pointer;
+                position: absolute;
+                right: -18px;
+                top: 17px;
+                cursor pointer

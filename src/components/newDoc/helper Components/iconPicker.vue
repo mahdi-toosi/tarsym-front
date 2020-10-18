@@ -82,6 +82,7 @@ export default {
         },
         REMOVE_ICON() {
             this.$store.commit("REMOVE_ICON", this.index);
+            this.hidePicker();
         },
         showPicker() {
             document.addEventListener("click", this.documentClick);

@@ -31,7 +31,7 @@
                     </div>
                     <time v-html="filterdate(doc.date)"></time>
                 </header>
-                <main v-text="doc.excerpt"></main>
+                <main v-text="doc.excerpt + ' ...'"></main>
                 <footer>
                     <ul>
                         <li v-if="doc.imgsCount">

@@ -3,6 +3,7 @@ export default {
     DocProp: {
         index: 0,
         _id: 0,
+        invisibleDocs: [],
         OnTool: {
             condition: false,
             index: -1,

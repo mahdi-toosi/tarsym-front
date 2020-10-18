@@ -3,6 +3,21 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index];
 
 export default {
+    MAKE_TOOL_ON(state, index) {
+        const thisTool = docLayer(state).tools[index];
+        thisTool.isOn = true;
+        thisTool.visible = true;
+    },
+    CHANGE_VISIBILITY_FOR_THIS_DOC(state, _id) {
+        const invisibleDocs = state.DocProp.invisibleDocs;
+        const isInvisible = invisibleDocs.indexOf(_id);
+        if (isInvisible >= 0) invisibleDocs.splice(isInvisible, 1);
+        else invisibleDocs.push(_id);
+    },
+    CHANGE_VISIBILITY(state, index) {
+        const tool = docLayer(state).tools[index];
+        tool.visible = !tool.visible;
+    },
     CLEAR_DATE(state) {
         docLayer(state).date_props = {
             century: null,
@@ -52,17 +67,17 @@ export default {
         if (state.allDocs.data) {
             //  ? delete from allDocs
             let Docs = state.allDocs.data;
-            let doc_index = await Docs.findIndex((doc) => doc._id == _id);
+            let doc_index = await Docs.findIndex((doc) => doc._id === _id);
             if (doc_index > -1) Docs.splice(doc_index, 1);
         }
 
         let Docs = state.newDocs;
-        let doc_index = await Docs.findIndex((doc) => doc._id == _id);
-        if (doc_index == -1) return;
+        let doc_index = await Docs.findIndex((doc) => doc._id === _id);
+        if (doc_index < 0) return;
 
         // ? delete child from current doc
         const currentDoc = docLayer(state);
-        const child_index = currentDoc.childs_id.findIndex((child_id) => child_id == _id);
+        const child_index = currentDoc.childs_id.findIndex((child_id) => child_id === _id);
         currentDoc.childs_id.splice(child_index, 1);
 
         const doc = Docs[doc_index];
@@ -74,7 +89,7 @@ export default {
             let childs_index = [];
             for (let index = 0; index < doc.childs_id.length; index++) {
                 const child_id = doc.childs_id[index];
-                const doc_index = await Docs.findIndex((doc) => doc._id == child_id);
+                const doc_index = await Docs.findIndex((doc) => doc._id === child_id);
                 // ? get all childs index in newDocs
                 if (doc_index > -1) childs_index.push(doc_index);
             }
@@ -82,7 +97,7 @@ export default {
             for (let index = 0; index < childs_index.length; index++) {
                 const child_index = childs_index[index];
                 if (!Docs[child_index].childs_id.length) continue;
-                const doc_index = await Docs.findIndex((doc) => doc._id == Docs[child_index]._id);
+                const doc_index = await Docs.findIndex((doc) => doc._id === Docs[child_index]._id);
                 // ? get all of grandsons
                 if (doc_index > -1) childs_index.push(doc_index);
             }
@@ -163,6 +178,7 @@ export default {
             color: "#23A9AEFF",
             colorpicker: false,
             secondaryColor: "#23A9AEFF",
+            visible: true,
         };
         if (type == "Point") {
             const isSearcheable = currentDoc.root && currentDoc.tools.length < 1;

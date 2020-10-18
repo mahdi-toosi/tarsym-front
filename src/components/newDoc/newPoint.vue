@@ -21,6 +21,17 @@
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
+            <button
+                class="visibility"
+                @click="CHANGE_VISIBILITY(index)"
+                v-if="!tool.searchable"
+            >
+                <i
+                    class="far"
+                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                ></i>
+            </button>
+
             <label for="zoomLevel" style="top: 4px" v-if="tool.searchable"
                 >سطح زوم:</label
             >
@@ -84,8 +95,8 @@
 </template>
 
 <script>
-import iconPicker from "@/components/newDoc/iconPicker";
-import colorPicker from "@/components/newDoc/colorPicker";
+import iconPicker from "@/components/newDoc/helper Components/iconPicker";
+import colorPicker from "@/components/newDoc/helper Components/colorPicker";
 import { mapActions, mapMutations } from "vuex";
 import VueSlider from "vue-slider-component";
 
@@ -103,15 +114,21 @@ export default {
             "CHANGE_RANG_INPUT",
             "CHANGE_TOOLTIP",
             "SET_ZOOM_LEVEL",
+            "CHANGE_VISIBILITY",
         ]),
     },
     computed: {
         DocLayer() {
             return this.$store.getters.DocLayer;
         },
+        visibility() {
+            return this.$store.getters.visibility;
+        },
+        computedTool() {
+            return this.DocLayer.tools[this.index];
+        },
         logo() {
-            const thisTool = this.DocLayer.tools[this.index];
-            return thisTool.iconName;
+            return this.computedTool.iconName;
         },
         toolTipModel: {
             get() {
@@ -123,7 +140,7 @@ export default {
         },
         IconSizeModel: {
             get() {
-                return this.DocLayer.tools[this.index].iconSize;
+                return this.computedTool.iconSize;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -135,7 +152,7 @@ export default {
         },
         iconDegreeModel: {
             get() {
-                return this.DocLayer.tools[this.index].angel;
+                return this.computedTool.angel;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
