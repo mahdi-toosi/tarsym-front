@@ -99,7 +99,6 @@ export default {
         const user = await axios
             .get(url, options)
             .then((res) => {
-                console.log({ setUserProfileAndGet_id: res });
                 if (res.status == 200) return res.data;
             })
             .catch((error) => {

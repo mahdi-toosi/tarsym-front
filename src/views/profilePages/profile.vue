@@ -128,13 +128,15 @@ export default {
         }
         next(async (vm) => {
             vm.$store.state.map.zoom = 5;
-            if (from.name == "create doc" || from.name == "update doc")
-                await vm.get_All_Taxanomies(false); //* withCache = false
-            if (to.name == "profile") await vm.getUserDocs();
-            if (to.name == "search") {
+            if (to.name === "search") {
                 await vm.searchData();
             }
         });
+    },
+    created() {
+        if (this.$route.params.username !== "forward") {
+            this.getUserDocs();
+        }
     },
 };
 </script>

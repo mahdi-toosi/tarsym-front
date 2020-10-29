@@ -77,6 +77,7 @@
                             }}</l-tooltip>
                         </l-polyline>
                         <polyline-decorator
+                            @click="goToThisDoc(tool._id)"
                             :lat-lngs="tool.coordinates"
                             :icon-size="tool.iconSize"
                             :icon-name="tool.iconName"
@@ -125,9 +126,14 @@
                                     }"
                                 />
                             </l-icon>
-                            <l-tooltip v-if="tool.tooltip">{{
-                                tool.tooltip
-                            }}</l-tooltip>
+                            <l-tooltip
+                                v-if="tool.tooltip"
+                                :options="tooltipOptions"
+                                @click="goToThisDoc(tool._id)"
+                                :key="mmmm"
+                            >
+                                {{ tool.tooltip }}
+                            </l-tooltip>
                         </l-marker>
                     </div>
                     <!-- end Point -->
@@ -199,6 +205,11 @@
                     <i class="fa fa-undo" aria-hidden="true"></i>
                 </a>
             </l-control>
+            <l-control position="bottomright" class="leaflet-control mapmaker">
+                <a @click="toggleShowAllToolips()">
+                    <i class="far fa-comment-alt"></i>
+                </a>
+            </l-control>
         </l-map>
     </div>
 </template>
@@ -225,7 +236,7 @@ import VGeosearch from "vue2-leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 export default {
-    name: "leaflet-oprator-map",
+    name: "Map",
     data() {
         let achenSvgString = `
 			<svg xmlns='http://www.w3.org/2000/svg' height="100" width="100">
@@ -263,6 +274,8 @@ export default {
                 searchLabel: "جستجو در نقشه ...",
                 autoClose: true,
             },
+            tooltipOptions: { permanent: false },
+            mmmm: 54825,
         };
     },
     computed: {
@@ -316,6 +329,7 @@ export default {
             "UPDATE_THIS_POINT_COORDINATE",
             "CHANGE_LAYER_INDEX",
             "UPDATE_MAP_ZOOM",
+            "TOGGLE_SHOW_ALL_TOOLTIPS",
         ]),
         dynamicSize(iconSize) {
             return [iconSize, iconSize * 1.15];
@@ -353,7 +367,6 @@ export default {
         setMouseCoordinate(coordinates) {
             this.map.MouseCoordinate = coordinates.latlng;
         },
-
         undoTools() {
             if (this.searchPolygon.isOn) {
                 this.searchPolygon.coordinates.pop();
@@ -362,6 +375,10 @@ export default {
             const OnTool = this.DocProp.OnTool;
             if (OnTool.condition)
                 this.DocLayer.tools[OnTool.index].coordinates.pop();
+        },
+        toggleShowAllToolips() {
+            this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
+            this.mmmm = Math.ceil(Math.random() * 100);
         },
     },
     mounted() {
@@ -385,13 +402,15 @@ export default {
             },
             false
         );
+
         mapObject.on("baselayerchange", (Layer) => {
             const layerIndex = this.map.tileProviders.findIndex(
                 (el) => el.name === Layer.name
             );
             this.CHANGE_LAYER_INDEX(layerIndex);
         });
-        // edit search in map
+
+        // * edit search in map
         setTimeout(() => {
             const button = document.querySelector(
                 ".leaflet-control-geosearch .reset"

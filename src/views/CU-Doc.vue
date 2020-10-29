@@ -200,6 +200,7 @@ export default {
             "addNewDoc",
             "goBackToParent",
             "update_this_doc",
+            "get_childs",
             "get_All_Taxanomies",
         ]),
         insertImage() {
@@ -308,6 +309,7 @@ export default {
         // document.addEventListener("keyup", this.keyPressed);
     },
     mounted() {
+        this.get_childs();
         // const quillButtons = document.querySelectorAll(".ql-toolbar button");
         // quillButtons.forEach((element) => {
         // 	console.log(element);
