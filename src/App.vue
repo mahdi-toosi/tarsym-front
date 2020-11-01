@@ -21,7 +21,6 @@ export default {
         SendMsg,
     },
     async mounted() {
-        await this.$store.dispatch("get_All_Taxanomies", false);
         await this.$store.dispatch("CHECK_User_Unread_Messages");
     },
     created() {

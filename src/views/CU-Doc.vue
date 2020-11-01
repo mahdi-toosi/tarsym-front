@@ -3,7 +3,9 @@
         <header>
             <button
                 class="btn btn-red ml1"
-                @click="CLEAR_NEW_DOC(), $router.push('/profile')"
+                @click="
+                    CLEAR_NEW_DOC(), $router.push(`/profile/${user.username}`)
+                "
             >
                 منصرف شدم
                 <i class="fas fa-times"></i>
@@ -30,10 +32,9 @@
                     v-model="newPointTitle"
                 />
                 <v-select
-                    :options="validCategories"
+                    :options="validCats"
                     :value="DocLayer.categories"
-                    @input="SET_CHOSEN_TAXONOMY({ $event, type: 1 })"
-                    label="name"
+                    @input="SET_Taxonomie_in_Doc({ $event, cat: true })"
                     placeholder="دسته بندی ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -42,9 +43,9 @@
                     dir="rtl"
                     v-if="DocLayer.root"
                 >
-                    <template slot="no-options"
-                        >هنوز دسته بندی ای به ثبت نرسیده ...</template
-                    >
+                    <template slot="no-options">
+                        گزینه ای برای پیشنهاد نیست، دسته بندی جدیدی بسازید...
+                    </template>
                 </v-select>
                 <quill-editor
                     v-model="newPointDescription"
@@ -63,7 +64,7 @@
                 <v-select
                     :options="taxonomies.tags"
                     :value="DocLayer.tags"
-                    @input="SET_CHOSEN_TAXONOMY({ $event, type: 2 })"
+                    @input="SET_Taxonomie_in_Doc({ $event, cat: false })"
                     label="name"
                     placeholder="تگ ..."
                     multiple
@@ -191,17 +192,18 @@ export default {
                 placeholder: "توضیحات ...",
             },
             defaultColor: "#FF0000",
+            taxonomies: { categories: [], tags: [] },
         };
     },
     methods: {
-        ...mapMutations(["CLEAR_NEW_DOC", "SET_CHOSEN_TAXONOMY"]),
+        ...mapMutations(["CLEAR_NEW_DOC", "SET_Taxonomie_in_Doc"]),
         ...mapActions([
             "Create_or_Update_Documents",
             "addNewDoc",
             "goBackToParent",
             "update_this_doc",
             "get_childs",
-            "get_All_Taxanomies",
+            "get_User_Taxonomies",
         ]),
         insertImage() {
             // manipulate the DOM to do a click on hidden input
@@ -249,7 +251,7 @@ export default {
                 "image",
                 isProduction
                     ? response.url
-                    : `http://localhost:2345${response.url}`
+                    : process.env.VUE_APP_DOMAIN + response.url
             );
             // set cursor position to after the image
             this.quillInstance.setSelection(currentIndex + 1, 0);
@@ -262,6 +264,17 @@ export default {
             }
             return false;
         },
+        async getAndSetTaxonomies() {
+            const tags = [],
+                cats = [];
+            const taxs = await this.get_User_Taxonomies();
+            taxs.forEach((el) => {
+                el.tags.forEach((tag) => tags.push(tag));
+                cats.push(el.categories);
+            });
+            this.taxonomies.tags = tags;
+            this.taxonomies.categories = cats;
+        },
         // keyPressed(e) {
         // 	const OnTool = this.DocProp.OnTool;
         // 	if (e.keyCode === 27 && OnTool.condition) {
@@ -271,8 +284,8 @@ export default {
         // },
     },
     computed: {
-        ...mapState(["newDocs", "DocProp", "taxonomies", "user"]),
-        ...mapGetters(["DocLayer", "validCategories"]),
+        ...mapState(["newDocs", "DocProp", "user"]),
+        ...mapGetters(["DocLayer"]),
         newPointTitle: {
             get() {
                 return this.DocLayer.title;
@@ -292,20 +305,34 @@ export default {
         quillInstance() {
             return this.$refs.quillEditor.quill;
         },
+        validCats() {
+            const docCats = this.DocLayer.categories;
+            const lastCat = docCats[docCats.length - 1];
+            const validCats = [];
+            this.taxonomies.categories.forEach((cat) => {
+                if (docCats.length < 1) return validCats.push(cat[0]);
+
+                if (
+                    cat[docCats.length - 1] === lastCat &&
+                    cat[docCats.length]
+                ) {
+                    validCats.push(cat[docCats.length]);
+                    console.log(cat[docCats.length]);
+                }
+            });
+            return validCats;
+        },
     },
     async created() {
         const routeName = this.$route.name;
         const route_id = this.$route.params._id;
+        this.getAndSetTaxonomies();
         const lastAddedDocID = this.lastAddedDocID();
-        this.get_All_Taxanomies(false); //* withCache = false
         if (routeName == "create doc") {
-            if (Number(route_id) !== lastAddedDocID) {
-                await this.addNewDoc();
-            }
+            if (Number(route_id) !== lastAddedDocID) await this.addNewDoc();
             return;
         } else if (routeName == "update doc")
             await this.update_this_doc(route_id);
-
         // document.addEventListener("keyup", this.keyPressed);
     },
     mounted() {

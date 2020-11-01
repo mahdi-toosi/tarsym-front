@@ -66,7 +66,6 @@ export default {
             "getAllDocs",
             "addNewDoc",
             "Delete_this_Document",
-            "get_All_Taxanomies",
             "searchData",
         ]),
         filterdate(val) {
@@ -93,8 +92,6 @@ export default {
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
             vm.$store.state.map.zoom = 5;
-            if (from.name == "create doc" || from.name == "update doc")
-                await vm.get_All_Taxanomies(false); //* withCache = false
             if (to.name == "all docs") await vm.getAllDocs();
             if (to.name == "search") {
                 await vm.searchData();

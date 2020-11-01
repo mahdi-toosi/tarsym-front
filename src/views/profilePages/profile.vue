@@ -18,9 +18,13 @@
             </a>
         </header>
         <section class="points">
-            <span v-if="!profile.docs.data" class="notingToShow"
-                >داکیومنتی برای نمایش دادن نیست</span
-            >
+            <span v-if="!profile.user._id" class="notingToShow">
+                وجود ندارد
+                {{ $router.currentRoute.params.username }} کاربری با نام کاربری
+            </span>
+            <span v-if="!profile.docs.data" class="notingToShow">
+                داکیومنتی برای نمایش دادن نیست
+            </span>
             <div
                 class="point shadow"
                 v-for="doc in profile.docs.data"
@@ -97,8 +101,8 @@ export default {
             "getUserDocs",
             "addNewDoc",
             "Delete_this_Document",
-            "get_All_Taxanomies",
             "searchData",
+            "setUserProfileAndGet_id",
         ]),
         filterdate(val) {
             const day = String(val).slice(-2);
@@ -123,20 +127,31 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         if (to.params.username === "forward") {
-            next(async (vm) => vm.$router.push(`/profile/${vm.user.username}`));
+            next(async (vm) => {
+                console.log("profile beforeRouteEnter", "forward");
+                vm.$router.push(`/profile/${vm.user.username}`);
+            });
             return;
         }
-        next(async (vm) => {
-            vm.$store.state.map.zoom = 5;
-            if (to.name === "search") {
-                await vm.searchData();
-            }
-        });
+        next();
     },
-    created() {
-        if (this.$route.params.username !== "forward") {
-            this.getUserDocs();
-        }
+    // async beforeRouteUpdate(to, from, next) {
+    // console.log("profile beforeRouteUpdate");
+    // const username = this.$router.currentRoute.params.username;
+    // const user_id = await this.setUserProfileAndGet_id(username);
+    // console.log("user_id", user_id);
+    // if (!user_id) return;
+    // this.getUserDocs(user_id);
+    // this.$store.state.map.zoom = 5;
+    // next();
+    // },
+    async created() {
+        const username = this.$router.currentRoute.params.username;
+        const user_id = await this.setUserProfileAndGet_id(username);
+        if (!user_id) return;
+        this.getUserDocs(user_id);
+        this.$store.state.map.zoom = 5;
+        console.log("profile created");
     },
 };
 </script>

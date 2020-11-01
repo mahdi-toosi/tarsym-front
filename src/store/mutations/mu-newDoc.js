@@ -3,6 +3,11 @@ import router from "../../router";
 const docLayer = (state) => state.newDocs[state.DocProp.index];
 
 export default {
+    SET_Taxonomie_in_Doc(state, val) {
+        const doc = docLayer(state);
+        if (val.cat) doc.categories = val.$event;
+        else doc.tags = val.$event;
+    },
     MAKE_TOOL_ON(state, index) {
         const thisTool = docLayer(state).tools[index];
         thisTool.isOn = true;
@@ -128,25 +133,6 @@ export default {
         const thisTool = docLayer(state).tools[obj.index];
         thisTool[obj.type] = obj.val;
     },
-    SET_CHOSEN_TAXONOMY(state, { $event, type }) {
-        let taxonomies = [];
-        $event.forEach((taxonomy) => {
-            if (typeof taxonomy == "string")
-                taxonomy = {
-                    name: taxonomy,
-                };
-            taxonomy.name = taxonomy.name.trim();
-            if (!taxonomy.type) taxonomy.type = type;
-            if (!taxonomy.childs) taxonomy.childs = [];
-            taxonomies.push(taxonomy);
-        });
-        //*  categories type = 1 / tags type = 2
-        if (type == 1) {
-            docLayer(state).categories = taxonomies;
-            return;
-        }
-        docLayer(state).tags = taxonomies;
-    },
     ADD_DATE(state, { century, year, month, day }) {
         const doc_dateProps = docLayer(state).date_props;
         if (century) doc_dateProps.century = century;
@@ -250,7 +236,6 @@ export default {
             title: "",
             description: "",
             tools: [],
-            location: {},
             date_props: date_props || {
                 century: null,
                 year: null,

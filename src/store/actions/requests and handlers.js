@@ -105,7 +105,7 @@ export default {
         if (!create_relationships) return;
 
         await commit("CLEAR_NEW_DOC");
-        await router.push("/profile");
+        await router.push(`/profile/${state.user.username}`);
         Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`);
     },
     // !  get_relationship_list
@@ -144,32 +144,20 @@ export default {
             });
         return data;
     },
-    // !  get_All_Taxanomies
-    get_All_Taxanomies({ commit, dispatch }, withCache = true) {
-        const Taxonomies = JSON.parse(localStorage.getItem("Taxonomies"));
-        if (withCache && Taxonomies) {
-            const TaxsDate_PlusSomeDays = new Date(Taxonomies.date).getTime() + 1000 * 60 * 60 * 24 * 5, //*  5 days
-                CurrentTime = new Date().getTime();
-            if (TaxsDate_PlusSomeDays > CurrentTime) {
-                commit("SET_CHOSEN_TAXONOMIES", Taxonomies);
-                return;
-            }
-        }
-        const url = `/taxonomies`,
+    // !  get_User_Cat_and_Tags
+    async get_User_Taxonomies({ state, dispatch }) {
+        const url = `/documents`,
             options = {
                 params: {
-                    $limit: 50,
-                    $select: ["_id", "name", "type", "childs"],
+                    "user._id": state.user._id,
+                    $select: ["tags", "categories"],
                 },
             };
-        axios
+        const taxonomies = await axios
             .get(url, options)
-            .then((res) => {
-                res.data.date = new Date();
-                localStorage.setItem("Taxonomies", JSON.stringify(res.data));
-                commit("SET_CHOSEN_TAXONOMIES", res.data);
-            })
+            .then((res) => res.data.data)
             .catch((error) => dispatch("handleAxiosError", error));
+        return taxonomies;
     },
     // !  getAllDocs
     async getAllDocs({ commit, dispatch }) {
@@ -271,7 +259,7 @@ export default {
     // !  update_this_doc
     async update_this_doc({ state, commit }, doc_id) {
         if (!state.profilePage.docs.data) {
-            router.push("/profile");
+            router.push(`/profile/${state.user.username}`);
             return;
         }
 
@@ -280,7 +268,7 @@ export default {
             await commit("UPDATE_THIS_DOC", doc);
             return;
         } else {
-            router.push("/profile");
+            router.push(`/profile/${state.user.username}`);
         }
     },
     // !  ready_document_for_send
@@ -308,23 +296,6 @@ export default {
         doc.excerpt = excerpt;
 
         if (doc.root) {
-            // * create searcheable coordinate
-            const searchable_tool_index = doc.tools.findIndex((obj) => obj.searchable === true);
-            doc.location = {
-                type: "Point",
-                coordinates: doc.tools[searchable_tool_index].coordinates,
-            };
-
-            // * optimize categories for backend
-            const Cats = doc.categories,
-                removeCats = [];
-            for (let index = 0; index < Cats.length; index++) {
-                const nextCat = Cats[index + 1];
-                if (nextCat && nextCat._id) removeCats.push(index);
-                else break;
-            }
-            removeCats.forEach((index) => Cats.splice(index, 1));
-
             // * count imgs in description
             const imgs = doc.description.match(/<img/gm);
             doc.imgsCount = (imgs || []).length;
@@ -346,7 +317,6 @@ export default {
 
         // *  make junk field
         const clear_this_items = ["tools", "imgsCount", "date_props", "description", "layerIndex", "map_animate"];
-        if (!doc.root) clear_this_items.push("location");
         clear_this_items.forEach((element) => {
             if (element in doc) {
                 doc.junk[element] = doc[element];

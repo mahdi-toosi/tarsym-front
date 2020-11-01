@@ -5,9 +5,9 @@ import Helpers from "./beforeAndAfterEachRoute";
 
 import AuthRoutes from "./routes/Auth";
 import documentsRoutes from "./routes/documents";
-import profileRoutes from "./routes/profile";
 
 Vue.use(VueRouter);
+
 // * USERS ROLES
 // *  admin: 48,
 // *  drawer: 35,
@@ -24,7 +24,28 @@ const routes = [
         },
     },
     ...documentsRoutes,
-    ...profileRoutes,
+    {
+        path: "/profile/:username",
+        component: () => import("@/views/profilePages/profile.vue"),
+        name: "profile",
+        meta: {
+            minimumRole: 3,
+        },
+    },
+    {
+        path: "/profile",
+        name: "forward profile",
+        meta: {
+            minimumRole: 3,
+        },
+    },
+    {
+        path: "/profile/:username/change-password",
+        component: () => import("@/views/profilePages/changePassword.vue"),
+        meta: {
+            minimumRole: 3,
+        },
+    },
     ...AuthRoutes,
     {
         path: "*",

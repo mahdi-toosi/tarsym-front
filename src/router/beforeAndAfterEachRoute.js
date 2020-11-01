@@ -8,10 +8,18 @@ function beforeEach() {
             next();
             return;
         } else if (checkForAuth(to.meta.minimumRole)) {
+            if (to.name === "forward profile") {
+                next(`/profile/${store.state.user.username}`);
+                return;
+            }
             // * check authenticate
             next();
             return;
         } else if (set_user_if_exist(to.meta.minimumRole)) {
+            if (to.name === "forward profile") {
+                next(`/profile/${store.state.user.username}`);
+                return;
+            }
             next();
             return;
         } else store.commit("LOGOUT");
@@ -28,10 +36,12 @@ function afterEach() {
             if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
             await store.dispatch("get_childs");
             store.commit("CHANGE_MAP_LAYERS");
+
             const _id = to.params._id;
             const invisibleDocs = store.state.DocProp.invisibleDocs || [];
             const indexOfDoc = invisibleDocs.indexOf(_id);
             if (indexOfDoc >= 0) invisibleDocs.splice(indexOfDoc, 1);
+
             store.dispatch("flyToThisDoc");
             return;
         } else store.commit("CHANGE_MAP_LAYERS", 0);

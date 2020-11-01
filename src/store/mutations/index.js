@@ -21,22 +21,6 @@ export default {
     SET_USER_ACCESS_TOKEN(state, token) {
         if (state.user) state.user.accessToken = token;
     },
-    SET_CHOSEN_TAXONOMIES(state, { data }) {
-        // if (!data.length) return
-        let categories = [],
-            tags = [];
-        data.forEach((taxonomy) => {
-            //*  categories type = 1 / tags type = 2s
-            if (taxonomy.type == 1) {
-                categories.push(taxonomy);
-                return;
-            }
-            delete taxonomy.childs;
-            tags.push(taxonomy);
-        });
-        state.taxonomies.categories = categories;
-        state.taxonomies.tags = tags;
-    },
     UPDATE_THIS_DOC(state, doc) {
         state.newDocs = doc;
     },

@@ -10,10 +10,6 @@ export default {
         },
     },
     readDoc: [],
-    taxonomies: {
-        tags: [],
-        categories: [],
-    },
     allDocs: {
         data: [],
     },
@@ -61,13 +57,5 @@ export default {
         user: {},
         docs: [],
         unreadMessages: 0,
-        categoriesPage: {
-            categories: {},
-            movecat: {},
-            editStage: {
-                item: {},
-                show: false,
-            },
-        },
     },
 };

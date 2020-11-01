@@ -68,14 +68,6 @@ export default {
         });
         return All_childs;
     },
-    validCategories: (state, getters) => {
-        const DocLayerCats = getters.DocLayer.categories;
-        const Cats = state.taxonomies.categories;
-        if (!DocLayerCats.length) return Cats;
-        const DocLastCat = DocLayerCats[DocLayerCats.length - 1];
-        const validCats = Cats.filter((cat) => cat.childs.includes(DocLastCat._id));
-        return validCats;
-    },
     msgNotification: (state) => {
         const sidebar = document.querySelector(".sidebarNavigation");
         if (state.profilePage.unreadMessages) {
