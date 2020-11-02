@@ -56,6 +56,5 @@ export default {
     profilePage: {
         user: {},
         docs: [],
-        unreadMessages: 0,
     },
 };

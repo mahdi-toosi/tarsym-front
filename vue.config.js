@@ -1,7 +1,8 @@
 // const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
-    publicPath: process.env.NODE_ENV === "production" ? "/dist/" : "/",
+    publicPath: process.env.NODE_ENV === "production" ? "/statics/" : "/",
+    outputDir: "statics",
     pwa: {
         name: "Tarsym",
         themeColor: "#4DBA87",

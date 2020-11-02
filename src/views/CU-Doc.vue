@@ -62,7 +62,7 @@
             </section>
             <section class="tag_date_section">
                 <v-select
-                    :options="taxonomies.tags"
+                    :options="validTags"
                     :value="DocLayer.tags"
                     @input="SET_Taxonomie_in_Doc({ $event, cat: false })"
                     label="name"
@@ -305,6 +305,9 @@ export default {
         quillInstance() {
             return this.$refs.quillEditor.quill;
         },
+        validTags() {
+            return [...new Set(...this.taxonomies.tags)];
+        },
         validCats() {
             const docCats = this.DocLayer.categories;
             const lastCat = docCats[docCats.length - 1];
@@ -317,10 +320,9 @@ export default {
                     cat[docCats.length]
                 ) {
                     validCats.push(cat[docCats.length]);
-                    console.log(cat[docCats.length]);
                 }
             });
-            return validCats;
+            return [...new Set(validCats)];
         },
     },
     async created() {

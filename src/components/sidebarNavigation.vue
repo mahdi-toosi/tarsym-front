@@ -1,9 +1,6 @@
 <template>
     <div class="sidebarNavigation" ref="sidebarNav">
-        <img
-            src="/dist/img/icons/apple-touch-icon-120x120.png"
-            @click="toggleNav()"
-        />
+        <img src="@/assets/apple-touch-icon-120x120.png" @click="toggleNav()" />
         <div
             class="sidebar"
             :class="displayNav ? 'show' : ''"

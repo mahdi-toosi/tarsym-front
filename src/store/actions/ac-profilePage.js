@@ -54,14 +54,4 @@ export default {
         docs.data = decoded_docs;
         await commit("SET_DOCS_TO_Profile_Page", docs);
     },
-    async CHECK_User_Unread_Messages({ state, dispatch }) {
-        const user_id = state.user._id;
-        if (!user_id) return;
-        await axios
-            .get(`/unreadMsgs?_id=${user_id}`)
-            .then(({ data }) => {
-                state.profilePage.unreadMessages = data.unreadMsgs;
-            })
-            .catch((error) => dispatch("handleAxiosError", error));
-    },
 };

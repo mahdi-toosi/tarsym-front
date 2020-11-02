@@ -20,9 +20,7 @@ export default {
         SidebarNavigation,
         SendMsg,
     },
-    async mounted() {
-        await this.$store.dispatch("CHECK_User_Unread_Messages");
-    },
+    async mounted() {},
     created() {
         document.addEventListener("PWAupdatefound", () => {
             let msg = "آپدیتی برای اپلیکیشن ارائه شد. در حال دانلود ...";

@@ -68,14 +68,6 @@ export default {
         });
         return All_childs;
     },
-    msgNotification: (state) => {
-        const sidebar = document.querySelector(".sidebarNavigation");
-        if (state.profilePage.unreadMessages) {
-            sidebar.classList.add("haveMsg");
-        } else {
-            sidebar.classList.remove("haveMsg");
-        }
-    },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
     visibility: (state, getters) => (index) => getters.DocLayer.tools[index].visible,
     isAuthenticated: (state) => state.user.username,

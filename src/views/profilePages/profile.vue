@@ -2,7 +2,7 @@
     <div class="profilePage">
         <header>
             <div class="profileData">
-                <img src="/img/profileAvatar.png" />
+                <img src="@/assets/profileAvatar.png" />
                 <span>
                     {{ profile.user.name }} <br />
                     {{ profile.user.username }}
@@ -128,7 +128,6 @@ export default {
     beforeRouteEnter(to, from, next) {
         if (to.params.username === "forward") {
             next(async (vm) => {
-                console.log("profile beforeRouteEnter", "forward");
                 vm.$router.push(`/profile/${vm.user.username}`);
             });
             return;
@@ -151,7 +150,6 @@ export default {
         if (!user_id) return;
         this.getUserDocs(user_id);
         this.$store.state.map.zoom = 5;
-        console.log("profile created");
     },
 };
 </script>
