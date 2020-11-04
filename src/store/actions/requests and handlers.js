@@ -26,9 +26,7 @@ export default {
 
         const newID = await axios
             .put(url, ready_doc)
-            .then(async (res) => {
-                if (res.status == 200) return res.data;
-            })
+            .then(async (res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error);
                 return false;
@@ -160,27 +158,26 @@ export default {
         return taxonomies;
     },
     // !  getAllDocs
-    async getAllDocs({ commit, dispatch }) {
+    async getAllDocs({ commit, dispatch }, taxonomies = {}) {
         const url = `/documents`;
         const options = {
             params: {
                 root: true,
-                $skip: 0,
+                "$sort[createdAt]": -1,
             },
         };
+
+        // * select docs with taxonomies
+        if (taxonomies.tag) options.params.tags = taxonomies.tag;
+        if (taxonomies.category) options.params.categories = taxonomies.category;
+
         const docs = await axios
             .get(url, options)
-            .then((res) => {
-                if (res.status == 200) return res.data;
-            })
-            .catch((error) => {
-                dispatch("handleAxiosError", error);
-            });
+            .then((res) => res.data)
+            .catch((error) => dispatch("handleAxiosError", error));
         if (!docs) return;
 
-        const decoded_docs = await dispatch("decode_the_docs", {
-            docs,
-        });
+        const decoded_docs = await dispatch("decode_the_docs", { docs });
         docs.data = decoded_docs;
         await commit("SET_DOCS_TO", {
             decoded_docs: docs,
@@ -257,19 +254,29 @@ export default {
         }
     },
     // !  update_this_doc
-    async update_this_doc({ state, commit }, doc_id) {
-        if (!state.profilePage.docs.data) {
+    async update_this_doc({ state, commit, dispatch }, doc_id) {
+        let doc, already_Decoded, decode_doc;
+
+        if (state.profilePage.docs.data && state.profilePage.docs.data.length) {
+            console.log("load from profile page");
+            doc = await state.profilePage.docs.data.filter((doc) => doc._id == doc_id)[0];
+            if (doc) already_Decoded = true;
+        }
+        if (!doc) doc = await dispatch("get_this_docs", doc_id);
+
+        if (!doc) {
             router.push(`/profile/${state.user.username}`);
             return;
         }
 
-        const doc = state.profilePage.docs.data.filter((el) => el._id == doc_id);
-        if (doc.length) {
-            await commit("UPDATE_THIS_DOC", doc);
-            return;
-        } else {
-            router.push(`/profile/${state.user.username}`);
-        }
+        if (state.user.role >= 48 || doc.user._id === state.user._id) {
+            if (!already_Decoded)
+                decode_doc = await dispatch("decode_the_docs", {
+                    docs: [doc],
+                });
+
+            await commit("UPDATE_THIS_DOC", decode_doc || [doc]);
+        } else return;
     },
     // !  ready_document_for_send
     ready_document_for_send(store, docLayer) {
@@ -316,8 +323,16 @@ export default {
         doc.date = Number(doc.date) + 2 * 1000 * 1000;
 
         // *  make junk field
-        const clear_this_items = ["tools", "imgsCount", "date_props", "description", "layerIndex", "map_animate"];
-        clear_this_items.forEach((element) => {
+        const make_junk_with_this_items = [
+            "tools",
+            "imgsCount",
+            "date_props",
+            "description",
+            "layerIndex",
+            "map_animate",
+            "zoomLevel",
+        ];
+        make_junk_with_this_items.forEach((element) => {
             if (element in doc) {
                 doc.junk[element] = doc[element];
                 delete doc[element];

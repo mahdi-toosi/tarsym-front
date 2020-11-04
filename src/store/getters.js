@@ -1,7 +1,8 @@
 export default {
     docs_list: (state) => {
         const routeName = state.route.name;
-        if (routeName == "all docs") return state.allDocs.data || [];
+        if (["all docs", "list Docs with tag", "list Docs with category"].includes(routeName))
+            return state.allDocs.data || [];
         else if (routeName == "read doc") return state.readDoc || [];
         else if (routeName == "profile") return state.profilePage.docs.data || [];
         else if (routeName == "update doc" || routeName == "create doc") return state.newDocs || [];
@@ -10,7 +11,7 @@ export default {
     DocWithChildsTools: (state, getters) => {
         const routeName = state.route.name,
             EditRoutes = routeName == "update doc" || routeName == "create doc",
-            ListRoutes = routeName == "all docs" || routeName == "profile",
+            ListRoutes = ["all docs", "profile", "list Docs with tag", "list Docs with category"].includes(routeName),
             map_ZL = state.map.zoom;
         let tools = [];
         if (ListRoutes) {

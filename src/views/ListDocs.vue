@@ -79,23 +79,24 @@ export default {
             const JustYear = `سال ${year.replace(/[-]/gi, "")}${
                 yearIsNegetive ? "<span>-</span>" : ""
             }<span> ه‍.ق</span>`;
-            const FullDate = `${month}/${day}/${
+            const FullDate = `${
                 yearIsNegetive
                     ? "<span style='display: inline-block; direction: ltr;'>-" +
                       currectYear +
                       "</span>"
                     : currectYear
-            }<span> ه‍.ق</span>`;
+            }/${month}/${day} <span> ه‍.ق</span>`;
             return month == "00" ? JustYear : FullDate;
         },
     },
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
             vm.$store.state.map.zoom = 5;
-            if (to.name == "all docs") await vm.getAllDocs();
-            if (to.name == "search") {
-                await vm.searchData();
-            }
+            if (to.name === "all docs") await vm.getAllDocs();
+            if (to.name === "list Docs with category")
+                await vm.getAllDocs({ category: to.params.name });
+            if (to.name === "list Docs with tag")
+                await vm.getAllDocs({ tag: to.params.name });
         });
     },
     components: { searchField },

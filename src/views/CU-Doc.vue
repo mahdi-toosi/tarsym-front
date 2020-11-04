@@ -65,7 +65,6 @@
                     :options="validTags"
                     :value="DocLayer.tags"
                     @input="SET_Taxonomie_in_Doc({ $event, cat: false })"
-                    label="name"
                     placeholder="تگ ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -306,7 +305,7 @@ export default {
             return this.$refs.quillEditor.quill;
         },
         validTags() {
-            return [...new Set(...this.taxonomies.tags)];
+            return [...new Set(this.taxonomies.tags)];
         },
         validCats() {
             const docCats = this.DocLayer.categories;

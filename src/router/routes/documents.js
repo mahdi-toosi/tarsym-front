@@ -8,6 +8,22 @@ const documentsRoutes = [
         },
     },
     {
+        path: "/tag/:name",
+        name: "list Docs with tag",
+        component: () => import("@/views/ListDocs.vue"),
+        meta: {
+            minimumRole: 3,
+        },
+    },
+    {
+        path: "/category/:name",
+        name: "list Docs with category",
+        component: () => import("@/views/ListDocs.vue"),
+        meta: {
+            minimumRole: 3,
+        },
+    },
+    {
         path: "/search",
         name: "search",
         component: () => import("@/views/ListDocs.vue"),
