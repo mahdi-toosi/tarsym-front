@@ -37,10 +37,11 @@ function afterEach() {
             await store.dispatch("get_childs");
             store.commit("CHANGE_MAP_LAYERS");
 
+            // * show document items if invisible
             const _id = to.params._id;
             const invisibleDocs = store.state.DocProp.invisibleDocs || [];
             const indexOfDoc = invisibleDocs.indexOf(_id);
-            if (indexOfDoc >= 0) invisibleDocs.splice(indexOfDoc, 1);
+            if (indexOfDoc > -1) invisibleDocs.splice(indexOfDoc, 1);
 
             store.dispatch("flyToThisDoc");
             return;

@@ -12,21 +12,30 @@
         <article class="point readPoint" v-if="DocLayer">
             <header>
                 <h1 v-text="DocLayer.title"></h1>
-                <time v-html="filterdate(DocLayer.date) "></time>
+                <div>
+                    <h4>
+                        <i class="fas fa-tags"></i>
+                        <span
+                            v-for="(cat, index) in DocLayer.categories"
+                            :key="index"
+                            v-text="cat"
+                            @click="$router.push(`/category/${cat}`)"
+                        ></span>
+                    </h4>
+                    <time v-html="filterdate(DocLayer.date)"></time>
+                </div>
             </header>
             <main v-html="DocLayer.description"></main>
             <footer>
-                <!-- <ul>
-						<li
-							v-for="(media, index) in point.contentMedia"
-							:key="index"
-							:class="mediaClass(media.type)"
-						>
-							<i class="fas" :class="mediaImage(media.type)"></i>
-							<span v-text="media.num"></span>
-							{{ mediaText(media.type) }}
-						</li>
-                </ul>-->
+                <ul class="tags">
+                    <li
+                        v-for="(tag, index) in DocLayer.tags"
+                        :key="index"
+                        @click="$router.push(`/tag/${tag}`)"
+                    >
+                        <i class="fas fa-hashtag"></i> {{ tag }}
+                    </li>
+                </ul>
             </footer>
         </article>
     </div>
@@ -58,18 +67,16 @@ export default {
             const JustYear = `سال ${year.replace(/[-]/gi, "")}${
                 yearIsNegetive ? "<span>-</span>" : ""
             }<span> ه‍.ق</span>`;
-            const FullDate = `${month}/${day}/${
+            const FullDate = `${
                 yearIsNegetive
                     ? "<span style='display: inline-block; direction: ltr;'>-" +
                       currectYear +
                       "</span>"
                     : currectYear
-            }<span> ه‍.ق</span>`;
+            }/${month}/${day} <span> ه‍.ق</span>`;
             return month == "00" ? JustYear : FullDate;
         },
     },
-    mounted() {},
-    components: {},
 };
 </script>
 
