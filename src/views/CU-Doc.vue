@@ -34,7 +34,7 @@
                 <v-select
                     :options="validCats"
                     :value="DocLayer.categories"
-                    @input="SET_Taxonomie_in_Doc({ $event, cat: true })"
+                    @input="SET_Taxonomie_in_Doc({ $event, cats: true })"
                     placeholder="دسته بندی ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -62,9 +62,9 @@
             </section>
             <section class="tag_date_section">
                 <v-select
-                    :options="validTags"
+                    :options="taxonomies.tags"
                     :value="DocLayer.tags"
-                    @input="SET_Taxonomie_in_Doc({ $event, cat: false })"
+                    @input="SET_Taxonomie_in_Doc({ $event, cats: false })"
                     placeholder="تگ ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -257,7 +257,7 @@ export default {
         },
         lastAddedDocID() {
             const Docs = this.$store.state.newDocs;
-            if (Docs.length > 0) {
+            if (Docs.length) {
                 const lastDoc = Docs[Docs.length - 1];
                 return lastDoc._id;
             }
@@ -271,7 +271,7 @@ export default {
                 el.tags.forEach((tag) => tags.push(tag));
                 cats.push(el.categories);
             });
-            this.taxonomies.tags = tags;
+            this.taxonomies.tags = [...new Set(tags)];
             this.taxonomies.categories = cats;
         },
         // keyPressed(e) {
@@ -304,9 +304,6 @@ export default {
         quillInstance() {
             return this.$refs.quillEditor.quill;
         },
-        validTags() {
-            return [...new Set(this.taxonomies.tags)];
-        },
         validCats() {
             const docCats = this.DocLayer.categories;
             const lastCat = docCats[docCats.length - 1];
@@ -328,16 +325,16 @@ export default {
         const routeName = this.$route.name;
         const route_id = this.$route.params._id;
         this.getAndSetTaxonomies();
-        const lastAddedDocID = this.lastAddedDocID();
-        if (routeName == "create doc") {
+        if (routeName === "create doc") {
+            const lastAddedDocID = this.lastAddedDocID();
             if (Number(route_id) !== lastAddedDocID) await this.addNewDoc();
             return;
-        } else if (routeName == "update doc")
+        } else if (routeName === "update doc")
             await this.update_this_doc(route_id);
         // document.addEventListener("keyup", this.keyPressed);
     },
     mounted() {
-        this.get_childs();
+        // this.get_childs();
         // const quillButtons = document.querySelectorAll(".ql-toolbar button");
         // quillButtons.forEach((element) => {
         // 	console.log(element);

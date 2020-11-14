@@ -42,15 +42,15 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
     name: "readDocument",
     data() {
         return {};
     },
     computed: {
-        ...mapGetters(["DocLayer"]),
+        DocLayer() {
+            return this.$store.getters.DocLayer;
+        },
     },
     methods: {
         hasHistory() {
@@ -76,6 +76,9 @@ export default {
             }/${month}/${day} <span> ه‍.ق</span>`;
             return month == "00" ? JustYear : FullDate;
         },
+    },
+    destroyed() {
+        this.$store.commit("CLEAR_READ_DOC");
     },
 };
 </script>

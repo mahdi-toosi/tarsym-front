@@ -1,12 +1,17 @@
 import router from "../../router";
+import Vue from "vue";
 
 const docLayer = (state) => state.newDocs[state.DocProp.index];
 
 export default {
-    SET_Taxonomie_in_Doc(state, val) {
+    SET_Taxonomie_in_Doc(state, { $event, cats }) {
+        if ($event.length && $event[$event.length - 1].length < 3) {
+            Vue.toasted.error(`${cats ? "دسته بندی" : "تگ"} باید حداقل 4 حرف داشته باشد`);
+            return;
+        }
         const doc = docLayer(state);
-        if (val.cat) doc.categories = val.$event;
-        else doc.tags = val.$event;
+        if (cats) doc.categories = $event;
+        else doc.tags = $event;
     },
     MAKE_TOOL_ON(state, index) {
         const thisTool = docLayer(state).tools[index];
@@ -206,7 +211,7 @@ export default {
         for (let i = 0; i < Docs.length; i++) {
             const docLayer = Docs[i];
             const OnToolindex = docLayer.tools.findIndex((tool) => tool.isOn == true);
-            const weHaveOnTool = OnToolindex >= 0;
+            const weHaveOnTool = OnToolindex > -1;
             if (weHaveOnTool) {
                 onTool.condition = true;
                 onTool.index = OnToolindex;
@@ -217,16 +222,15 @@ export default {
     UPDATE_THIS_POINT_COORDINATE(state, clicked) {
         const coordinates = [clicked.lat, clicked.lng];
         const index = state.DocProp.OnTool.index;
-        if (index == -1) return;
+        if (index < 0) return;
         docLayer(state).tools[index].coordinates = coordinates;
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id;
-        // const routeName = router.currentRoute.name
-        // console.log('UPDATE_DOC_INDEX', 'routeName => ', routeName);
-        const Docs = state.newDocs;
-        const thisObject = (obj) => obj._id == doc_id;
-        const index = Docs.findIndex(thisObject);
+        const routeName = router.currentRoute.name;
+        const Docs = ["create doc", "update doc"].includes(routeName) ? state.newDocs : state.readDoc;
+        const index = Docs.findIndex((obj) => obj._id == doc_id); // * should be == (for make number to string)
+
         state.DocProp.index = index;
         state.DocProp._id = Docs[index]._id;
     },
@@ -258,6 +262,7 @@ export default {
         state.newDocs.push(newDocObj);
     },
     ADD_NEW_ID(state, { doc, _id }) {
+        console.log("ADD_NEW_ID");
         const fakeID = doc._id;
         state.newDocs.forEach((doc) => {
             const index = doc.childs_id.findIndex((child_id) => child_id == fakeID);

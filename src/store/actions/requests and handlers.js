@@ -147,6 +147,7 @@ export default {
         const url = `/documents`,
             options = {
                 params: {
+                    root: true,
                     "user._id": state.user._id,
                     $select: ["tags", "categories"],
                 },
@@ -256,10 +257,11 @@ export default {
     // !  update_this_doc
     async update_this_doc({ state, commit, dispatch }, doc_id) {
         let doc, already_Decoded, decode_doc;
+        const profileDocs = state.profilePage.docs.data;
 
-        if (state.profilePage.docs.data && state.profilePage.docs.data.length) {
-            console.log("load from profile page");
-            doc = await state.profilePage.docs.data.filter((doc) => doc._id == doc_id)[0];
+        if (profileDocs && profileDocs.length) {
+            // * load from profile page
+            doc = await profileDocs.filter((doc) => doc._id === doc_id)[0];
             if (doc) already_Decoded = true;
         }
         if (!doc) doc = await dispatch("get_this_docs", doc_id);
@@ -275,7 +277,13 @@ export default {
                     docs: [doc],
                 });
 
-            await commit("UPDATE_THIS_DOC", decode_doc || [doc]);
+            await commit("SET_DOCS_TO", {
+                decoded_docs: decode_doc || [doc],
+                list: "newDocs",
+                merge: false,
+            });
+
+            await dispatch("get_childs");
         } else return;
     },
     // !  ready_document_for_send
@@ -367,10 +375,15 @@ export default {
     },
     // !  read_this_doc
     async read_this_doc({ state, commit, dispatch }, id) {
+        console.log("read_this_doc");
         const _id = id || router.currentRoute.params._id;
         let doc, already_Decoded, decoded_docs;
         if (state.allDocs.data.length) {
-            doc = await state.allDocs.data.filter((doc) => doc._id == _id)[0];
+            doc = await state.allDocs.data.filter((doc) => doc._id === _id)[0];
+            if (doc) already_Decoded = true;
+        }
+        if (!doc && state.readDoc.length) {
+            doc = await state.readDoc.filter((doc) => doc._id === _id)[0];
             if (doc) already_Decoded = true;
         }
         if (!doc) doc = await dispatch("get_this_docs", _id);
@@ -383,6 +396,7 @@ export default {
         await commit("SET_DOCS_TO", {
             decoded_docs: decoded_docs || [doc],
             list: "readDoc",
+            merge: true,
         });
 
         dispatch("flyToThisDoc", decoded_docs ? decoded_docs[0] : doc);

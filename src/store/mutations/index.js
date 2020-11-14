@@ -21,11 +21,11 @@ export default {
     SET_USER_ACCESS_TOKEN(state, token) {
         if (state.user) state.user.accessToken = token;
     },
-    UPDATE_THIS_DOC(state, doc) {
-        state.newDocs = doc;
-    },
     SET_DOCS_TO(state, { decoded_docs, list, merge }) {
-        if (!merge) return (state[list] = decoded_docs);
+        if (!merge) {
+            state[list] = decoded_docs;
+            return;
+        }
 
         if (state[list].data) {
             state[list].data = state[list].data.concat(decoded_docs);
@@ -34,5 +34,16 @@ export default {
     },
     SET_DOCS_TO_Profile_Page(state, docs) {
         state.profilePage.docs = docs;
+    },
+    CLEAR_READ_DOC(state) {
+        state.readDoc = [];
+        state.DocProp = {
+            index: 0,
+            _id: 0,
+            OnTool: {
+                condition: false,
+                index: -1,
+            },
+        };
     },
 };

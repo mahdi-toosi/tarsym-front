@@ -22,7 +22,7 @@ export default {
         let valid_childs_id = [];
         doc.childs_id.forEach((child_id) => {
             if (typeof child_id === "number") return;
-            const already_exist = state.newDocs.findIndex((doc) => doc._id == child_id);
+            const already_exist = state.newDocs.findIndex((doc) => doc._id === child_id);
             if (already_exist > -1) return;
             valid_childs_id.push(child_id);
         });

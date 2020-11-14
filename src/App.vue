@@ -3,14 +3,12 @@
         <Tarsym-map />
         <Sidebar />
         <Sidebar-navigation />
-        <Send-msg />
     </div>
 </template>
 <script>
 import TarsymMap from "@/components/map";
 import Sidebar from "@/components/sidebar";
 import SidebarNavigation from "@/components/sidebarNavigation";
-import SendMsg from "@/components/sendMessage";
 
 export default {
     name: "app",
@@ -18,7 +16,6 @@ export default {
         TarsymMap,
         Sidebar,
         SidebarNavigation,
-        SendMsg,
     },
     async mounted() {},
     created() {

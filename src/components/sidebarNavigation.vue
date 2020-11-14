@@ -4,7 +4,7 @@
         <div
             class="sidebar"
             :class="displayNav ? 'show' : ''"
-            v-if="showSidebarNav"
+            v-show="showSidebarNav"
         >
             <div class="header">
                 <div></div>
@@ -13,8 +13,8 @@
             <ul class="navigation_items">
                 <router-link
                     :to="nav.addr"
-                    v-for="nav in routes"
-                    :key="nav.addr"
+                    v-for="(nav, index) in routes"
+                    :key="index"
                     :class="nav.class"
                     tag="li"
                 >
@@ -48,46 +48,22 @@ export default {
                     name: "صفحه نخست",
                     addr: "/",
                     icon: "far fa-circle",
-                    role: 3,
                     class: "home",
                 },
                 {
                     name: "پروفایل",
                     addr: `/profile/${username}`,
                     icon: "far fa-user",
-                    role: 3,
                     class: "profile",
                 },
-                // {
-                //     name: "دسته بندی ها",
-                //     addr: `/profile/${username}/categories`,
-                //     icon: "fas fa-tags",
-                //     role: 48,
-                //     class: "categories",
-                // },
-                // {
-                //     name: "کاربران",
-                //     addr: `/profile/${username}/users`,
-                //     icon: "fas fa-users",
-                //     role: 48,
-                //     class: "users",
-                // },
-                // {
-                //     name: "پیام ها",
-                //     addr: `/profile/${username}/messages`,
-                //     icon: "far fa-envelope",
-                //     role: 3,
-                //     class: "messages",
-                // },
                 // {
                 //     name: "تنظیمات اکانت",
                 //     addr: ``,
                 //     icon: "fas fa-cogs",
-                //     role: 3,
                 //     class: "options",
                 // },
             ];
-            return routes.filter((route) => route.role <= this.user.role);
+            return routes;
         },
     },
     methods: {
@@ -122,9 +98,7 @@ export default {
         setTimeout(() => {
             const navMenu = document.querySelectorAll(".navigation_items li");
             navMenu.forEach((element) => {
-                element.addEventListener("click", () => {
-                    this.hideNav();
-                });
+                element.addEventListener("click", () => this.hideNav());
             });
         }, 2000);
     },

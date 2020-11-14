@@ -36,13 +36,12 @@ export default {
             params: {
                 root: true,
                 "user._id": user_id,
+                "$sort[createdAt]": -1,
             },
         };
         const docs = await axios
             .get(url, options)
-            .then((res) => {
-                if (res.status == 200) return res.data;
-            })
+            .then((res) => res.data)
             .catch((error) => {
                 if (error != "Error: Request failed with status code 404") dispatch("handleAxiosError", error);
             });

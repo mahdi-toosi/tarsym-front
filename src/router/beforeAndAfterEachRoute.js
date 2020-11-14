@@ -30,11 +30,16 @@ function afterEach() {
         const RN = to.name; // * route name
         if (RN === "read doc") {
             await store.dispatch("read_this_doc");
+
+            if (store.state.readDoc.length) store.commit("UPDATE_DOC_INDEX");
+
             store.commit("CHANGE_MAP_LAYERS");
             return;
         } else if (RN === "create doc" || RN === "update doc") {
             if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
+
             await store.dispatch("get_childs");
+
             store.commit("CHANGE_MAP_LAYERS");
 
             // * show document items if invisible

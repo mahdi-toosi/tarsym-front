@@ -230,7 +230,7 @@ import {
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
-import polylineDecorator from "@/components/polyline-decorator";
+import polylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
