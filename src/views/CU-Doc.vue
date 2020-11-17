@@ -96,25 +96,25 @@
                                 v-for="(tool, index) in DocLayer.tools"
                                 :key="index"
                             >
-                                <new-point
+                                <NewPoint
                                     :tool="tool"
                                     :index="index"
                                     v-if="tool.type == 'Point'"
                                     class="tool"
                                 />
-                                <new-polygon
+                                <NewPolygon
                                     :tool="tool"
                                     :index="index"
                                     v-if="tool.type == 'Polygon'"
                                     class="tool"
                                 />
-                                <new-polyline
+                                <NewPolyline
                                     :tool="tool"
                                     :index="index"
                                     v-if="tool.type == 'Polyline'"
                                     class="tool"
                                 />
-                                <new-text-box
+                                <NewTextBox
                                     :tool="tool"
                                     :index="index"
                                     v-if="tool.type == 'Textbox'"
@@ -122,13 +122,13 @@
                                 />
                             </li>
                         </ul>
-                        <gooey-menu />
+                        <GooeyMenu />
                     </div>
                     <div class="layers-content" v-show="tabContent == 'layers'">
-                        <layers-relationship-tree
+                        <LayersRelationshipTree
                             @childClicked="tabContent = 'tools'"
                         />
-                        <add-new-layer-box @childAdded="tabContent = 'tools'" />
+                        <AddNewLayerBox @childAdded="tabContent = 'tools'" />
                     </div>
                 </div>
             </section>
@@ -149,14 +149,14 @@ import "vue-slider-component/theme/antd.css";
 // * components
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-import newPoint from "@/components/newDoc/newPoint";
-import newPolygon from "@/components/newDoc/newPolygon";
-import newPolyline from "@/components/newDoc/newPolyline";
-import newTextBox from "@/components/newDoc/newTextBox";
+import NewPoint from "@/components/newDoc/newPoint";
+import NewPolygon from "@/components/newDoc/newPolygon";
+import NewPolyline from "@/components/newDoc/newPolyline";
+import NewTextBox from "@/components/newDoc/newTextBox";
 import datePicker from "@/components/newDoc/helper Components/datePicker";
-import gooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
-import addNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
-import layersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
+import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
+import AddNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
+import LayersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
 // * VUEX
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
@@ -322,9 +322,10 @@ export default {
         },
     },
     async created() {
+        this.getAndSetTaxonomies();
+
         const routeName = this.$route.name;
         const route_id = this.$route.params._id;
-        this.getAndSetTaxonomies();
         if (routeName === "create doc") {
             const lastAddedDocID = this.lastAddedDocID();
             if (Number(route_id) !== lastAddedDocID) await this.addNewDoc();
@@ -345,13 +346,13 @@ export default {
         vSelect,
         datePicker,
         quillEditor,
-        gooeyMenu,
-        newPoint,
-        newPolygon,
-        newPolyline,
-        newTextBox,
-        addNewLayerBox,
-        layersRelationshipTree,
+        GooeyMenu,
+        NewPoint,
+        NewPolygon,
+        NewPolyline,
+        NewTextBox,
+        AddNewLayerBox,
+        LayersRelationshipTree,
     },
 };
 </script>

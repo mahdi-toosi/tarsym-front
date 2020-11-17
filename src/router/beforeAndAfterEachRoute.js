@@ -38,17 +38,19 @@ function afterEach() {
         } else if (RN === "create doc" || RN === "update doc") {
             if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
 
-            store.commit("CHANGE_MAP_LAYERS");
-
             // * show document items if invisible
             const _id = to.params._id;
             const invisibleDocs = store.state.DocProp.invisibleDocs || [];
             const indexOfDoc = invisibleDocs.indexOf(_id);
             if (indexOfDoc > -1) invisibleDocs.splice(indexOfDoc, 1);
 
-            store.dispatch("flyToThisDoc");
+            // * flyToThisDoc
+            setTimeout(() => {
+                store.commit("CHANGE_MAP_LAYERS");
+                store.dispatch("flyToThisDoc");
+            }, 300);
             return;
-        } else store.commit("CHANGE_MAP_LAYERS", 0);
+        } else store.commit("CHANGE_MAP_LAYERS", true); // mainMap = true
     };
 }
 export default {

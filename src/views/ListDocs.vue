@@ -9,7 +9,7 @@
                 class="point shadow"
                 v-for="doc in allDocs.data"
                 :key="doc._id"
-                @click="showThisDoc(doc)"
+                @click="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -58,10 +58,6 @@ export default {
         },
     },
     methods: {
-        showThisDoc(doc) {
-            // if (this.$route.name == "all docs")
-            this.$router.push(`/read/${doc._id}`);
-        },
         ...mapActions(["getAllDocs", "addNewDoc", "searchData"]),
         filterdate(val) {
             const day = String(val).slice(-2);

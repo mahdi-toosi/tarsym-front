@@ -4,7 +4,7 @@
         <div
             class="sidebar"
             :class="displayNav ? 'show' : ''"
-            v-show="showSidebarNav"
+            v-show="$store.state.showSidebarNav"
         >
             <div class="header">
                 <div></div>
@@ -34,7 +34,6 @@ export default {
     data() {
         return {
             displayNav: false,
-            showSidebarNav: false,
         };
     },
     computed: {
@@ -86,14 +85,8 @@ export default {
             }
         },
     },
-    mounted() {
-        document.addEventListener("showSidebarNav", () => {
-            this.showSidebarNav = true;
-        });
-        document.addEventListener("hideSidebarNav", () => {
-            setTimeout(() => (this.showSidebarNav = false), 1400);
-        });
-        if (this.user.username) this.showSidebarNav = true;
+    created() {
+        if (this.user.username) this.$store.state.showSidebarNav = true;
 
         setTimeout(() => {
             const navMenu = document.querySelectorAll(".navigation_items li");

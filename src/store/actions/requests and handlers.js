@@ -151,7 +151,9 @@ export default {
         return taxonomies;
     },
     // !  getAllDocs
-    async getAllDocs({ commit, dispatch }, taxonomies = {}) {
+    async getAllDocs({ state, commit, dispatch }, taxonomies = {}) {
+        if (!state.user.username) return; // if authenticated continue
+
         const options = {
             params: {
                 root: true,

@@ -9,8 +9,8 @@ export default {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         state.user = {};
-        document.dispatchEvent(new CustomEvent("hideSidebarNav"));
         router.push("/Auth");
+        setTimeout(() => (state.showSidebarNav = false), 600);
     },
     CHANGE_SEARCH_POLYGON_SITUATION(state) {
         state.searchPolygon.isOn = !state.searchPolygon.isOn;

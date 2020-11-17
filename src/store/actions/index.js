@@ -9,10 +9,10 @@ export default {
     ...requests,
     ...profilePage,
     ...auth,
-    flyToThisDoc(store, doc) {
+    flyToThisDoc({ state }, doc) {
         document.dispatchEvent(
             new CustomEvent("showThisDoc", {
-                detail: doc || docLayer(store.state),
+                detail: doc || docLayer(state),
             })
         );
     },

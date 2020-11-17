@@ -3,7 +3,7 @@ import router from "../../router";
 import axios from "axios";
 
 export default {
-    async login({ dispatch }, user) {
+    async login({ dispatch, state }, user) {
         const data = {
                 strategy: "local",
                 ...user,
@@ -24,7 +24,7 @@ export default {
 
                 await router.push("/");
 
-                document.dispatchEvent(new CustomEvent("showSidebarNav"));
+                state.showSidebarNav = true;
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 401") {

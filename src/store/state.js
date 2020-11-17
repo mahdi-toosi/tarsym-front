@@ -57,4 +57,5 @@ export default {
         user: {},
         docs: {},
     },
+    showSidebarNav: false,
 };

@@ -29,7 +29,7 @@
                 class="point shadow"
                 v-for="doc in profile.docs.data"
                 :key="doc._id"
-                @click="showThisDoc(doc)"
+                @click="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -93,10 +93,6 @@ export default {
         },
     },
     methods: {
-        showThisDoc(doc) {
-            // if (this.$route.name == "all docs")
-            this.$router.push(`/read/${doc._id}`);
-        },
         ...mapActions([
             "getUserDocs",
             "addNewDoc",

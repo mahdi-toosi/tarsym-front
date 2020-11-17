@@ -152,7 +152,7 @@ export default {
         },
         iconDegreeModel: {
             get() {
-                return this.computedTool.angel;
+                return this.computedTool.angle;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({

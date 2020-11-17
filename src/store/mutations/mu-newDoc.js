@@ -20,8 +20,9 @@ export default {
     },
     CHANGE_VISIBILITY_FOR_THIS_DOC(state, _id) {
         const invisibleDocs = state.DocProp.invisibleDocs;
+        console.log({ invisibleDocs }, { _id });
         const isInvisible = invisibleDocs.indexOf(_id);
-        if (isInvisible >= 0) invisibleDocs.splice(isInvisible, 1);
+        if (isInvisible !== -1) invisibleDocs.splice(isInvisible, 1);
         else invisibleDocs.push(_id);
     },
     CHANGE_VISIBILITY(state, index) {
@@ -39,7 +40,7 @@ export default {
     UPDATE_MAP_ZOOM(state, zoom) {
         state.map.zoom = zoom;
         const routeName = router.currentRoute.name;
-        if (routeName == "create doc" || routeName == "update doc") {
+        if (routeName === "create doc" || routeName === "update doc") {
             const doc = docLayer(state);
             doc.map_animate.zoom = zoom;
         }
@@ -47,24 +48,22 @@ export default {
     UPDATE_MAP_CENTER(state, coordinates) {
         state.map.center = coordinates;
         const routeName = router.currentRoute.name;
-        if (routeName == "create doc" || routeName == "update doc") {
+        if (routeName === "create doc" || routeName === "update doc") {
             const doc = docLayer(state);
             doc.map_animate.coordinates = coordinates;
         }
     },
-    CHANGE_MAP_LAYERS(state, Layerindex) {
-        if (Layerindex > -1) {
-            state.map.tileProviders.forEach((tileProvider, index) => {
-                if (Layerindex == index) tileProvider.visible = true;
-                else tileProvider.visible = false;
-            });
+    CHANGE_MAP_LAYERS(state, mainMap) {
+        if (mainMap) {
+            state.map.tileProviders.forEach((tileProvider) => (tileProvider.visible = false));
+            state.map.tileProviders[0].visible = true;
             return;
         }
-        let doc = state.newDocs[state.DocProp.index];
-        if (!doc) doc = state.readDoc[0];
+        const docs = router.currentRoute.name === "read doc" ? state.readDoc : state.newDocs;
+        const doc = docs[state.DocProp.index];
         if (!doc) return;
         state.map.tileProviders.forEach((tileProvider, index) => {
-            if (doc.map_animate.layerIndex == index) tileProvider.visible = true;
+            if (doc.map_animate.layerIndex === index) tileProvider.visible = true;
             else tileProvider.visible = false;
         });
     },
@@ -177,15 +176,15 @@ export default {
             secondaryColor: "#23A9AEFF",
             visible: true,
         };
-        if (type == "Point") {
-            const isSearcheable = currentDoc.root && currentDoc.tools.length < 1;
+        if (type === "Point") {
+            const isSearcheable = currentDoc.root && !currentDoc.tools.length;
             if (isSearcheable) obj.searchable = true;
             obj.iconName = null;
             obj.coordinates = isSearcheable ? ["0", "0"] : state.map.center;
             obj.angle = 0;
             obj.iconSize = 35;
         }
-        if (type == "Textbox") {
+        if (type === "Textbox") {
             obj.coordinates = state.map.center;
             obj.width = 200;
             obj.height = 100;
@@ -193,7 +192,7 @@ export default {
             obj.color = "#E6E6E6FF";
             obj.secondaryColor = "#4C4C4CFF";
         }
-        if (type == "Polyline") {
+        if (type === "Polyline") {
             obj.showIcon = false;
             obj.showArrow = false;
             obj.iconName = "fa fa-plane";
@@ -225,16 +224,16 @@ export default {
             }
         }
     },
-    UPDATE_THIS_POINT_COORDINATE(state, clicked) {
-        const coordinates = [clicked.lat, clicked.lng];
-        const index = state.DocProp.OnTool.index;
-        if (index < 0) return;
-        docLayer(state).tools[index].coordinates = coordinates;
+    UPDATE_THIS_POINT_COORDINATE(state, { $event, tool }) {
+        if (["Textbox", "Point"].includes(tool.type) && tool.isOn) {
+            const coordinates = [$event.lat, $event.lng];
+            tool.coordinates = coordinates;
+        }
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id;
         const routeName = router.currentRoute.name;
-        const Docs = ["create doc", "update doc"].includes(routeName) ? state.newDocs : state.readDoc;
+        const Docs = routeName === "read doc" ? state.readDoc : state.newDocs;
         const index = Docs.findIndex((obj) => obj._id == doc_id); // * should be == (for make number to string)
 
         state.DocProp.index = index;
@@ -285,6 +284,7 @@ export default {
         state.DocProp = {
             index: 0,
             _id: 0,
+            invisibleDocs: [],
             OnTool: {
                 condition: false,
                 index: -1,

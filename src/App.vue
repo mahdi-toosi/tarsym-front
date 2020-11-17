@@ -1,8 +1,8 @@
 <template>
     <div id="app">
+        <Sidebar-navigation />
         <Tarsym-map />
         <Sidebar />
-        <Sidebar-navigation />
     </div>
 </template>
 <script>
