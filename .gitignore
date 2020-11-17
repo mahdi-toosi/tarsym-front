@@ -4,6 +4,9 @@ node_modules
 statics.zip
 public/mahdi.js
 public/dist
+
+package-lock.json
+
 # local env files
 .env
 .env.local

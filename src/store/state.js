@@ -55,6 +55,6 @@ export default {
     user: {},
     profilePage: {
         user: {},
-        docs: [],
+        docs: {},
     },
 };

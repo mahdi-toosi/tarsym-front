@@ -38,29 +38,26 @@ export default {
         const areYouSure = confirm("بابت حدف این داکیومنت مطمئنید ؟");
         if (!areYouSure) return;
 
-        if (typeof _id == "number") {
-            const doc = state.newDocs.filter((el) => el._id == _id)[0];
-            //  TODO => check for childs, if have child send toast for childs will delete ?
+        if (typeof _id === "number") {
+            const doc = state.newDocs.filter((el) => el._id === _id)[0];
+
             if (doc.childs_id.length) {
                 const remove_childs = confirm("این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شود؟");
                 if (remove_childs) commit("REMOVE_THIS_DOC", _id);
             } else commit("REMOVE_THIS_DOC", _id);
 
             // * redirect if need
-            const CR = router.currentRoute._id; // * current route
-            if (CR._id === _id) {
-                const root_id = state.newDocs[0]._id;
-                const path = `/${CR.name === "create doc" ? "create" : "update"}/${root_id}`;
-                router.push(path);
-            }
+            const CR = router.currentRoute; // * current route
+            const root_id = state.newDocs[0]._id;
+            const path = `/${CR.name === "create doc" ? "create" : "update"}/${root_id}`;
+            router.push(path);
             return;
         }
         const remove_childs = confirm("در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند");
         if (!remove_childs) return;
 
-        const url = `/documents/${_id}`;
         const newID = await axios
-            .delete(url)
+            .delete(`/documents/${_id}`)
             .then((res) => {
                 commit("REMOVE_THIS_DOC", _id);
                 return res; // remember this set value for newID
@@ -80,21 +77,24 @@ export default {
             const is_this_Doc_valid = await dispatch("is_this_Doc_valid", Docs[index]);
             if (!is_this_Doc_valid) return false;
         }
-        // * create documents and add new _id s
+        // * create or update documents
         for (let index = 0; index < Docs.length; index++) {
-            // TODO => when user can import existing doc =>  if is new create , else update
             const doc = Docs[index];
-            if (typeof doc._id == "number") {
+            if (typeof doc._id === "number") {
                 const created_doc = await dispatch("Create_this_Document", doc);
                 if (!created_doc) return false;
+
+                // *  add new _id s
                 await commit("ADD_NEW_ID", {
                     doc,
                     _id: created_doc._id,
                 });
+
                 verb = "ساخته شد";
             } else {
                 const updated_doc = await dispatch("Update_this_Document", doc);
                 if (!updated_doc) return false;
+
                 verb = "بروزرسانی شد";
             }
         }
@@ -110,18 +110,13 @@ export default {
     get_relationship_list({ state }) {
         const Docs = state.newDocs;
         let list = [];
-        Docs.forEach((doc) => {
-            const obj = {
-                new_id: doc._id,
-                childs: [],
-            };
-            if (!doc.childs_id.length) return;
 
-            doc.childs_id.forEach((child_id) => {
-                const new_child = Docs.filter((doc) => doc._id == child_id);
-                if (new_child.length) obj.childs.push(new_child[0]._id);
+        Docs.forEach((doc) => {
+            if (!doc.childs_id.length) return;
+            list.push({
+                new_id: doc._id,
+                childs: doc.childs_id,
             });
-            list.push(obj);
         });
         return list;
     },
@@ -132,9 +127,7 @@ export default {
 
         const data = await axios
             .post(url, list)
-            .then((res) => {
-                if (res.status == 201) return res.data;
-            })
+            .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error);
                 Vue.toasted.success("ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...");
@@ -144,26 +137,26 @@ export default {
     },
     // !  get_User_Cat_and_Tags
     async get_User_Taxonomies({ state, dispatch }) {
-        const url = `/documents`,
-            options = {
-                params: {
-                    root: true,
-                    "user._id": state.user._id,
-                    $select: ["tags", "categories"],
-                },
-            };
+        const options = {
+            params: {
+                root: true,
+                "user._id": state.user._id,
+                $select: ["tags", "categories"],
+            },
+        };
         const taxonomies = await axios
-            .get(url, options)
+            .get("/documents", options)
             .then((res) => res.data.data)
             .catch((error) => dispatch("handleAxiosError", error));
         return taxonomies;
     },
     // !  getAllDocs
     async getAllDocs({ commit, dispatch }, taxonomies = {}) {
-        const url = `/documents`;
         const options = {
             params: {
                 root: true,
+                vitrine: true,
+                situation: "publish",
                 "$sort[createdAt]": -1,
             },
         };
@@ -173,13 +166,14 @@ export default {
         if (taxonomies.category) options.params.categories = taxonomies.category;
 
         const docs = await axios
-            .get(url, options)
+            .get("/documents", options)
             .then((res) => res.data)
             .catch((error) => dispatch("handleAxiosError", error));
         if (!docs) return;
 
         const decoded_docs = await dispatch("decode_the_docs", { docs });
         docs.data = decoded_docs;
+
         await commit("SET_DOCS_TO", {
             decoded_docs: docs,
             list: "allDocs",
@@ -196,6 +190,7 @@ export default {
                 },
             },
             options = is_doc_ids_array ? obj : {};
+
         const docs = await axios
             .get(url, options)
             .then(async (res) => res.data)
@@ -227,8 +222,10 @@ export default {
             const IMC = docLayer.tools[0].coordinates;
             const isIndexMarketDefault = IMC[0] == "0" && IMC[1] == "0";
             if (isIndexMarketDefault) errors.push("برای آیکون شاخص مختصات مشخص کنید");
+
             const tags = docLayer.tags.length;
             if (!tags) errors.push("حداقل یک تگ انتخاب کنید");
+
             const categories = docLayer.categories.length;
             if (!categories) errors.push(" یک دسته بندی انتخاب کنید");
         }
@@ -282,9 +279,35 @@ export default {
                 list: "newDocs",
                 merge: false,
             });
+            await dispatch("get_all_childs", decode_doc || doc);
+        } else {
+            Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
+            commit("LOGOUT");
+        }
+    },
+    async get_all_childs({ dispatch, commit }, doc) {
+        const father = Array.isArray(doc) ? doc[0] : doc;
+        if (!father.childs_id.length) return;
 
-            await dispatch("get_childs");
-        } else return;
+        const childs_ids = [...father.childs_id];
+        let childs = [];
+
+        for (let index = 0; index < childs_ids.length; index++) {
+            const child_id = childs_ids[index];
+            const child = await dispatch("get_this_docs", child_id);
+            childs.push(child);
+            child.childs_id.forEach((c_id) => childs_ids.push(c_id));
+        }
+
+        const decoded_childs = await dispatch("decode_the_docs", {
+            docs: childs,
+        });
+
+        await commit("SET_DOCS_TO", {
+            decoded_docs: decoded_childs,
+            list: "newDocs",
+            merge: true,
+        });
     },
     // !  ready_document_for_send
     ready_document_for_send(store, docLayer) {
@@ -306,8 +329,6 @@ export default {
         let fakeElement = document.createElement("textarea");
         fakeElement.innerHTML = excerpt;
         excerpt = fakeElement.value;
-        // TODO => remove bottom line
-        // excerpt += " ...";
         doc.excerpt = excerpt;
 
         if (doc.root) {
@@ -358,7 +379,7 @@ export default {
     handleAxiosError({ commit }, error) {
         let msg;
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
-        else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
+        // else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
         else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
         else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد";
         else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است";
@@ -375,9 +396,10 @@ export default {
     },
     // !  read_this_doc
     async read_this_doc({ state, commit, dispatch }, id) {
-        console.log("read_this_doc");
         const _id = id || router.currentRoute.params._id;
         let doc, already_Decoded, decoded_docs;
+
+        // * set doc if already exist in state
         if (state.allDocs.data.length) {
             doc = await state.allDocs.data.filter((doc) => doc._id === _id)[0];
             if (doc) already_Decoded = true;
@@ -386,6 +408,7 @@ export default {
             doc = await state.readDoc.filter((doc) => doc._id === _id)[0];
             if (doc) already_Decoded = true;
         }
+        // * not exist , get doc from server
         if (!doc) doc = await dispatch("get_this_docs", _id);
         if (!doc) return;
 
@@ -393,6 +416,7 @@ export default {
             decoded_docs = await dispatch("decode_the_docs", {
                 docs: [doc],
             });
+
         await commit("SET_DOCS_TO", {
             decoded_docs: decoded_docs || [doc],
             list: "readDoc",
@@ -402,6 +426,8 @@ export default {
         dispatch("flyToThisDoc", decoded_docs ? decoded_docs[0] : doc);
 
         await commit("CHANGE_MAP_LAYERS");
+
+        // * get childs , if have any
         if (!doc.childs_id.length) return;
         const childs = await dispatch("get_this_docs", doc.childs_id);
         if (!childs) return;
@@ -410,6 +436,7 @@ export default {
             docs: childs,
             deleteRoot: true,
         });
+
         await commit("SET_DOCS_TO", {
             decoded_docs: decoded_childs,
             list: "readDoc",

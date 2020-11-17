@@ -73,47 +73,53 @@ export default {
         const routeName = router.currentRoute.name;
         if (["create doc", "update doc"].includes(routeName)) docLayer(state).map_animate.layerIndex = layerIndex;
     },
-    async REMOVE_THIS_DOC(state, _id) {
-        if (state.allDocs.data) {
-            //  ? delete from allDocs
-            let Docs = state.allDocs.data;
-            let doc_index = await Docs.findIndex((doc) => doc._id === _id);
-            if (doc_index > -1) Docs.splice(doc_index, 1);
+    REMOVE_THIS_DOC(state, _id) {
+        let doc_index;
+        const equal_id = (id) => (doc) => doc._id === id;
+        // ? remove from profile page
+        const profilePageDocs = state.profilePage.docs.data;
+        if (profilePageDocs && profilePageDocs.length) {
+            doc_index = profilePageDocs.findIndex(equal_id(_id));
+            if (doc_index !== -1) profilePageDocs.splice(doc_index, 1);
         }
-
+        // ? remove from edit page
         let Docs = state.newDocs;
-        let doc_index = await Docs.findIndex((doc) => doc._id === _id);
-        if (doc_index < 0) return;
+        if (!Docs.length) return;
 
-        // ? delete child from current doc
-        const currentDoc = docLayer(state);
-        const child_index = currentDoc.childs_id.findIndex((child_id) => child_id === _id);
-        currentDoc.childs_id.splice(child_index, 1);
+        doc_index = Docs.findIndex(equal_id(_id));
+        if (doc_index === -1) return;
 
         const doc = Docs[doc_index];
-        if (!doc.childs_id.length) {
-            // ? if dosent have child , just delete document
-            Docs.splice(doc_index, 1);
-            return;
-        } else {
-            let childs_index = [];
-            for (let index = 0; index < doc.childs_id.length; index++) {
-                const child_id = doc.childs_id[index];
-                const doc_index = await Docs.findIndex((doc) => doc._id === child_id);
-                // ? get all childs index in newDocs
-                if (doc_index > -1) childs_index.push(doc_index);
+
+        function remove_id_from_childs() {
+            for (let i = 0; i < Docs.length; i++) {
+                const doc = Docs[i];
+                const child_index = doc.childs_id.findIndex((child_id) => child_id === _id);
+                if (child_index === -1) continue;
+                doc.childs_id.splice(child_index, 1);
+                break;
             }
-            if (!childs_index.length) return;
-            for (let index = 0; index < childs_index.length; index++) {
-                const child_index = childs_index[index];
-                if (!Docs[child_index].childs_id.length) continue;
-                const doc_index = await Docs.findIndex((doc) => doc._id === Docs[child_index]._id);
-                // ? get all of grandsons
-                if (doc_index > -1) childs_index.push(doc_index);
-            }
-            // ? delete all of sons and grandsons in newDocs
-            childs_index.forEach((child_index) => Docs.splice(child_index, 1));
         }
+
+        // * if dosent have child , just delete document and done
+        if (!doc.childs_id.length) {
+            Docs.splice(doc_index, 1);
+            remove_id_from_childs();
+            return;
+        }
+        // * delete all of related
+        const childs_IDs = [doc._id];
+        for (let index = 0; index < childs_IDs.length; index++) {
+            doc_index = Docs.findIndex(equal_id(childs_IDs[index]));
+            if (doc_index === -1) continue;
+            Docs[doc_index].childs_id.forEach((child_id) => childs_IDs.push(child_id));
+        }
+        // * delete all of sons and grandsons in newDocs
+        childs_IDs.forEach((id) => {
+            const doc_index = Docs.findIndex(equal_id(id));
+            if (doc_index !== -1) Docs.splice(doc_index, 1);
+        });
+        remove_id_from_childs();
     },
     CHANGE_POLYLINE_DECORATOR(state, { $event, index, type }) {
         const thisTool = docLayer(state).tools[index];
@@ -258,11 +264,13 @@ export default {
             newDocObj.categories = [];
             newDocObj.root = true;
             newDocObj.zoomLevel = 4;
+            newDocObj.situation = "publish";
+            newDocObj.read = false;
+            newDocObj.star = false;
         }
         state.newDocs.push(newDocObj);
     },
     ADD_NEW_ID(state, { doc, _id }) {
-        console.log("ADD_NEW_ID");
         const fakeID = doc._id;
         state.newDocs.forEach((doc) => {
             const index = doc.childs_id.findIndex((child_id) => child_id == fakeID);

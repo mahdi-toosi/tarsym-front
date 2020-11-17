@@ -62,12 +62,7 @@ export default {
             // if (this.$route.name == "all docs")
             this.$router.push(`/read/${doc._id}`);
         },
-        ...mapActions([
-            "getAllDocs",
-            "addNewDoc",
-            "Delete_this_Document",
-            "searchData",
-        ]),
+        ...mapActions(["getAllDocs", "addNewDoc", "searchData"]),
         filterdate(val) {
             const day = String(val).slice(-2);
             const month = String(val).slice(-4, -2);
