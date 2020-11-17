@@ -20,8 +20,9 @@ export default {
     },
     CHANGE_VISIBILITY_FOR_THIS_DOC(state, _id) {
         const invisibleDocs = state.DocProp.invisibleDocs;
+        console.log({ invisibleDocs }, { _id });
         const isInvisible = invisibleDocs.indexOf(_id);
-        if (isInvisible >= 0) invisibleDocs.splice(isInvisible, 1);
+        if (isInvisible !== -1) invisibleDocs.splice(isInvisible, 1);
         else invisibleDocs.push(_id);
     },
     CHANGE_VISIBILITY(state, index) {
@@ -177,15 +178,15 @@ export default {
             secondaryColor: "#23A9AEFF",
             visible: true,
         };
-        if (type == "Point") {
-            const isSearcheable = currentDoc.root && currentDoc.tools.length < 1;
+        if (type === "Point") {
+            const isSearcheable = currentDoc.root && !currentDoc.tools.length;
             if (isSearcheable) obj.searchable = true;
             obj.iconName = null;
             obj.coordinates = isSearcheable ? ["0", "0"] : state.map.center;
             obj.angle = 0;
             obj.iconSize = 35;
         }
-        if (type == "Textbox") {
+        if (type === "Textbox") {
             obj.coordinates = state.map.center;
             obj.width = 200;
             obj.height = 100;
@@ -193,7 +194,7 @@ export default {
             obj.color = "#E6E6E6FF";
             obj.secondaryColor = "#4C4C4CFF";
         }
-        if (type == "Polyline") {
+        if (type === "Polyline") {
             obj.showIcon = false;
             obj.showArrow = false;
             obj.iconName = "fa fa-plane";
@@ -225,11 +226,11 @@ export default {
             }
         }
     },
-    UPDATE_THIS_POINT_COORDINATE(state, clicked) {
-        const coordinates = [clicked.lat, clicked.lng];
-        const index = state.DocProp.OnTool.index;
-        if (index < 0) return;
-        docLayer(state).tools[index].coordinates = coordinates;
+    UPDATE_THIS_POINT_COORDINATE(state, { $event, tool }) {
+        if (["Textbox", "Point"].includes(tool.type) && tool.isOn) {
+            const coordinates = [$event.lat, $event.lng];
+            tool.coordinates = coordinates;
+        }
     },
     UPDATE_DOC_INDEX(state) {
         const doc_id = router.currentRoute.params._id;
@@ -285,6 +286,7 @@ export default {
         state.DocProp = {
             index: 0,
             _id: 0,
+            invisibleDocs: [],
             OnTool: {
                 condition: false,
                 index: -1,

@@ -28,7 +28,7 @@
                     <div v-if="tool.type === 'Polygon'">
                         <l-polygon
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
-                            v-if="DocProp.OnTool.condition && tool.isOn"
+                            v-if="OnTool && tool.isOn"
                             :dashArray="'10,10'"
                             :opacity="0.5"
                             :color="tool.color.hex8 || tool.color"
@@ -54,7 +54,7 @@
                         <l-polyline
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
                             :color="tool.color.hex8 || tool.color"
-                            v-if="DocProp.OnTool.condition && tool.isOn"
+                            v-if="OnTool && tool.isOn"
                             :dashArray="'10,10'"
                             :opacity="0.5"
                             :fill="false"
@@ -72,9 +72,9 @@
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
-                            <l-tooltip v-if="tool.tooltip">{{
-                                tool.tooltip
-                            }}</l-tooltip>
+                            <l-tooltip v-if="tool.tooltip">
+                                {{ tool.tooltip }}
+                            </l-tooltip>
                         </l-polyline>
                         <polyline-decorator
                             @click="goToThisDoc(tool._id)"
@@ -101,7 +101,9 @@
                         <l-marker
                             :lat-lng="tool.coordinates"
                             :draggable="tool.isOn"
-                            @update:latLng="UPDATE_THIS_POINT_COORDINATE"
+                            @update:latLng="
+                                UPDATE_THIS_POINT_COORDINATE({ $event, tool })
+                            "
                             :icon="defaultIcon"
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
@@ -142,7 +144,9 @@
                             :lat-lng="tool.coordinates"
                             :draggable="tool.isOn"
                             :icon="CircleIcon"
-                            @update:latLng="UPDATE_THIS_POINT_COORDINATE"
+                            @update:latLng="
+                                UPDATE_THIS_POINT_COORDINATE({ $event, tool })
+                            "
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
@@ -177,7 +181,7 @@
 
             <div v-if="searchPolygon">
                 <l-polygon
-                    :lat-lngs="searchPolygonSimolationCoordinates"
+                    :lat-lngs="polygonOrPolylineSimolationCoordinates"
                     v-if="searchPolygon.isOn"
                     :dashArray="'10,10'"
                     :opacity="0.5"
@@ -198,7 +202,7 @@
             <l-control-polyline-measure
                 :options="{ showUnitControl: true }"
                 position="bottomright"
-                v-if="!DocProp.OnTool.condition && !searchPolygon.isOn"
+                v-if="!OnTool && !searchPolygon.isOn"
             />
             <l-control position="bottomright" class="leaflet-control mapmaker">
                 <a @click="undoTools" v-if="undoCondition">
@@ -281,45 +285,31 @@ export default {
     computed: {
         ...mapState(["map", "DocProp", "searchPolygon"]),
         ...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
+        OnTool() {
+            const OnTool = this.DocProp.OnTool;
+            if (OnTool.condition) return this.DocLayer.tools[OnTool.index];
+            else return false;
+        },
         undoCondition() {
             if (this.searchPolygon.isOn) return true;
-            const onTool = this.DocProp.OnTool;
-            if (!onTool.condition) return false;
             if (!this.DocLayer) return false;
-            const thisTool = this.DocLayer.tools[onTool.index];
-            if (thisTool.type !== "Point" && thisTool.type !== "Textbox")
-                return true;
+
+            const thisTool = this.OnTool;
+            if (thisTool) return false;
+
+            if (!["Point", "Textbox"].includes(thisTool.type)) return true;
             else return false;
         },
         polygonOrPolylineSimolationCoordinates() {
-            const OnToolProp = this.DocProp.OnTool,
-                OnTool = this.DocLayer.tools[OnToolProp.index],
-                isPolygonOrPolylineOn =
-                    OnTool.type === "Polygon" || OnTool.type === "Polyline",
-                MouseCoordinate = this.map.MouseCoordinate;
-            if (!isPolygonOrPolylineOn && !MouseCoordinate) return [];
-            if (!OnTool.coordinates.length) return [];
-            const coordinates = [
-                ...OnTool.coordinates,
-                {
-                    lat: MouseCoordinate.lat,
-                    lng: MouseCoordinate.lng,
-                },
-            ];
-            return coordinates;
-        },
-        searchPolygonSimolationCoordinates() {
-            const searchPolygon = this.searchPolygon;
-            const MouseCoordinate = this.map.MouseCoordinate;
-            if (!MouseCoordinate) return [];
-            if (!searchPolygon.coordinates.length) return [];
-            const coordinates = [
-                ...searchPolygon.coordinates,
-                {
-                    lat: MouseCoordinate.lat,
-                    lng: MouseCoordinate.lng,
-                },
-            ];
+            const tool = this.OnTool || this.searchPolygon;
+            // if (!OnTool) return;
+            // const isPolygonOrPolylineOn =
+            //     OnTool.type === "Polygon" || OnTool.type === "Polyline";
+
+            // if (!isPolygonOrPolylineOn) return [];
+            if (!tool.coordinates.length) return [];
+
+            const coordinates = [...tool.coordinates, this.map.MouseCoordinate];
             return coordinates;
         },
     },
@@ -329,7 +319,6 @@ export default {
             "UPDATE_THIS_POINT_COORDINATE",
             "CHANGE_LAYER_INDEX",
             "UPDATE_MAP_ZOOM",
-            "TOGGLE_SHOW_ALL_TOOLTIPS",
         ]),
         dynamicSize(iconSize) {
             return [iconSize, iconSize * 1.15];
@@ -342,27 +331,27 @@ export default {
                 this.searchPolygon.coordinates.push(c.latlng);
                 return;
             }
-            const OnTool = this.DocProp.OnTool;
-            if (!OnTool.condition) return;
-            const thisTool = this.DocLayer.tools[OnTool.index];
-            if (thisTool.type === "Textbox") return;
-            if (thisTool.type === "Point") {
+            const thisTool = this.OnTool;
+            if (!thisTool) return;
+
+            if (thisTool.type === "Point" || thisTool.type === "Textbox") {
                 thisTool.coordinates = [c.latlng.lat, c.latlng.lng];
                 return;
             }
             thisTool.coordinates.push(c.latlng);
         },
         goToThisDoc(_id) {
-            const router = this.$router;
-            const currentRoute = router.currentRoute;
+            const currentRoute = this.$router.currentRoute;
             const condition = ["create doc", "update doc"].includes(
                 currentRoute.name
             );
+
             const pathThing = condition
                 ? currentRoute.path.split("/")[1]
                 : "read";
+
             const path = `/${pathThing}/${_id}`;
-            if (path != currentRoute.fullPath) router.push(path);
+            if (path != currentRoute.fullPath) this.$router.push(path);
         },
         setMouseCoordinate(coordinates) {
             this.map.MouseCoordinate = coordinates.latlng;
@@ -372,9 +361,7 @@ export default {
                 this.searchPolygon.coordinates.pop();
                 return;
             }
-            const OnTool = this.DocProp.OnTool;
-            if (OnTool.condition)
-                this.DocLayer.tools[OnTool.index].coordinates.pop();
+            this.OnTool.coordinates.pop();
         },
         toggleShowAllToolips() {
             this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
