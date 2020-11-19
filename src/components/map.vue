@@ -1,6 +1,6 @@
 <template>
     <div>
-        <l-map
+        <LMap
             :icon="defaultIcon"
             class="map"
             :zoom="map.zoom"
@@ -13,8 +13,8 @@
             :minZoom="4"
             ref="LeafletMap"
         >
-            <l-control-layers position="bottomright"></l-control-layers>
-            <l-tile-layer
+            <LControlLayers position="bottomright"></LControlLayers>
+            <LTileLayer
                 v-for="tileProvider in map.tileProviders"
                 :key="tileProvider.name"
                 :name="tileProvider.name"
@@ -26,15 +26,15 @@
             <div v-if="docs_list.length">
                 <div v-for="(tool, index) in DocWithChildsTools" :key="index">
                     <div v-if="tool.type === 'Polygon'">
-                        <l-polygon
+                        <LPolygon
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
-                            v-if="OnTool && tool.isOn"
+                            v-if="tool.isOn"
                             :dashArray="'10,10'"
                             :opacity="0.5"
                             :color="tool.color.hex8 || tool.color"
                             :fill="false"
                         />
-                        <l-polygon
+                        <LPolygon
                             :fillOpacity="0.4"
                             :fillColor="
                                 tool.secondaryColor.hex8 || tool.secondaryColor
@@ -44,39 +44,39 @@
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
-                            <l-tooltip v-if="tool.tooltip">{{
-                                tool.tooltip
-                            }}</l-tooltip>
-                        </l-polygon>
+                            <LTooltip v-if="tool.tooltip">
+                                {{ tool.tooltip }}
+                            </LTooltip>
+                        </LPolygon>
                     </div>
                     <!-- end Polygon -->
                     <div v-if="tool.type === 'Polyline'">
-                        <l-polyline
+                        <LPolyline
                             :lat-lngs="polygonOrPolylineSimolationCoordinates"
                             :color="tool.color.hex8 || tool.color"
-                            v-if="OnTool && tool.isOn"
+                            v-if="tool.isOn"
                             :dashArray="'10,10'"
                             :opacity="0.5"
                             :fill="false"
                         />
-                        <!-- <l-marker
+                        <!-- <LMarker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
 								:key="index"
 								:icon="CircleIcon"
                         />-->
-                        <l-polyline
+                        <LPolyline
                             :lat-lngs="tool.coordinates"
                             :color="tool.color.hex8 || tool.color"
                             :dashArray="tool.dashed ? '10,10' : ''"
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
-                            <l-tooltip v-if="tool.tooltip">
+                            <LTooltip v-if="tool.tooltip">
                                 {{ tool.tooltip }}
-                            </l-tooltip>
-                        </l-polyline>
-                        <polyline-decorator
+                            </LTooltip>
+                        </LPolyline>
+                        <PolylineDecorator
                             @click="goToThisDoc(tool._id)"
                             :lat-lngs="tool.coordinates"
                             :icon-size="tool.iconSize"
@@ -98,7 +98,7 @@
                             tool.type === 'Point' && tool.coordinates[1] != '0'
                         "
                     >
-                        <l-marker
+                        <LMarker
                             :lat-lng="tool.coordinates"
                             :draggable="tool.isOn"
                             @update:latLng="
@@ -108,7 +108,7 @@
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
-                            <l-icon
+                            <LIcon
                                 :icon-size="dynamicSize(tool.iconSize)"
                                 :icon-anchor="dynamicAnchor(tool.iconSize)"
                                 v-if="tool.iconName"
@@ -127,20 +127,20 @@
                                         position: 'absolute',
                                     }"
                                 />
-                            </l-icon>
-                            <l-tooltip
+                            </LIcon>
+                            <LTooltip
                                 v-if="tool.tooltip"
                                 :options="tooltipOptions"
                                 @click="goToThisDoc(tool._id)"
                                 :key="mmmm"
                             >
                                 {{ tool.tooltip }}
-                            </l-tooltip>
-                        </l-marker>
+                            </LTooltip>
+                        </LMarker>
                     </div>
                     <!-- end Point -->
                     <div v-if="tool.type === 'Textbox'">
-                        <l-marker
+                        <LMarker
                             :lat-lng="tool.coordinates"
                             :draggable="tool.isOn"
                             :icon="CircleIcon"
@@ -150,7 +150,7 @@
                             @click="goToThisDoc(tool._id)"
                             :visible="tool.visible"
                         >
-                            <l-icon
+                            <LIcon
                                 v-if="tool.tooltip"
                                 :icon-size="[tool.width, tool.height]"
                                 :icon-anchor="[tool.width / 2, tool.height / 2]"
@@ -171,16 +171,27 @@
                                 >
                                     {{ tool.tooltip }}
                                 </div>
-                            </l-icon>
-                        </l-marker>
+                            </LIcon>
+                        </LMarker>
                     </div>
                     <!-- end Textbox  -->
+
+                    <div v-if="tool.type === 'Heatmap' && tool.visible">
+                        <LeafletHeatmap
+                            :key="tool.key"
+                            :lat-lng="tool.coordinates"
+                            :radius="20"
+                            :min-opacity="0.75"
+                            :blur="17"
+                            @click="goToThisDoc(tool._id)"
+                        />
+                    </div>
                 </div>
             </div>
             <!-- end docs_list -->
 
             <div v-if="searchPolygon">
-                <l-polygon
+                <LPolygon
                     :lat-lngs="polygonOrPolylineSimolationCoordinates"
                     v-if="searchPolygon.isOn"
                     :dashArray="'10,10'"
@@ -188,7 +199,7 @@
                     :color="searchPolygon.color"
                     :fill="false"
                 />
-                <l-polygon
+                <LPolygon
                     :fillOpacity="0.2"
                     :fillColor="searchPolygon.secondaryColor"
                     :color="searchPolygon.color"
@@ -196,25 +207,25 @@
                 />
             </div>
 
-            <v-geosearch :options="geosearchOptions"></v-geosearch>
+            <VGeosearch :options="geosearchOptions"></VGeosearch>
 
-            <l-control-zoom position="bottomright"></l-control-zoom>
-            <l-control-polyline-measure
+            <LControlZoom position="bottomright"></LControlZoom>
+            <LControlPolylineMeasure
                 :options="{ showUnitControl: true }"
                 position="bottomright"
                 v-if="!OnTool && !searchPolygon.isOn"
             />
-            <l-control position="bottomright" class="leaflet-control mapmaker">
+            <LControl position="bottomright" class="leaflet-control mapmaker">
                 <a @click="undoTools" v-if="undoCondition">
                     <i class="fa fa-undo" aria-hidden="true"></i>
                 </a>
-            </l-control>
-            <l-control position="bottomright" class="leaflet-control mapmaker">
+            </LControl>
+            <LControl position="bottomright" class="leaflet-control mapmaker">
                 <a @click="toggleShowAllToolips()">
                     <i class="far fa-comment-alt"></i>
                 </a>
-            </l-control>
-        </l-map>
+            </LControl>
+        </LMap>
     </div>
 </template>
 <script>
@@ -234,7 +245,8 @@ import {
 } from "vue2-leaflet";
 require("leaflet-easyprint");
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
-import polylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
+import PolylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
+import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHeatmap.common.js";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
@@ -283,10 +295,10 @@ export default {
         };
     },
     computed: {
-        ...mapState(["map", "DocProp", "searchPolygon"]),
+        ...mapState(["map", "searchPolygon"]),
         ...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
         OnTool() {
-            const OnTool = this.DocProp.OnTool;
+            const OnTool = this.$store.state.DocProp.OnTool;
             if (OnTool.condition) return this.DocLayer.tools[OnTool.index];
             else return false;
         },
@@ -295,7 +307,7 @@ export default {
             if (!this.DocLayer) return false;
 
             const thisTool = this.OnTool;
-            if (thisTool) return false;
+            if (!thisTool) return false;
 
             if (!["Point", "Textbox"].includes(thisTool.type)) return true;
             else return false;
@@ -326,19 +338,34 @@ export default {
         dynamicAnchor(iconSize) {
             return [iconSize / 2, iconSize * 1.15];
         },
-        setClickCoordinates(c) {
+        setClickCoordinates({ latlng }) {
             if (this.searchPolygon.isOn) {
-                this.searchPolygon.coordinates.push(c.latlng);
+                this.searchPolygon.coordinates.push(latlng);
                 return;
             }
             const thisTool = this.OnTool;
             if (!thisTool) return;
 
             if (thisTool.type === "Point" || thisTool.type === "Textbox") {
-                thisTool.coordinates = [c.latlng.lat, c.latlng.lng];
+                thisTool.coordinates = latlng;
                 return;
             }
-            thisTool.coordinates.push(c.latlng);
+            const coor = thisTool.coordinates;
+            if (thisTool.type === "Heatmap") {
+                if (coor.length) {
+                    // dont repeat coordinate
+                    const lastCoor = coor[coor.length - 1];
+                    if (
+                        lastCoor[0] === latlng.lat &&
+                        lastCoor[1] === latlng.lng
+                    )
+                        return;
+                }
+                coor.push([latlng.lat, latlng.lng, 1]);
+                ++thisTool.key; // * rebuild the Heatmap
+                return;
+            }
+            thisTool.coordinates.push(latlng);
         },
         goToThisDoc(_id) {
             const currentRoute = this.$router.currentRoute;
@@ -353,8 +380,8 @@ export default {
             const path = `/${pathThing}/${_id}`;
             if (path != currentRoute.fullPath) this.$router.push(path);
         },
-        setMouseCoordinate(coordinates) {
-            this.map.MouseCoordinate = coordinates.latlng;
+        setMouseCoordinate({ latlng }) {
+            this.map.MouseCoordinate = latlng;
         },
         undoTools() {
             if (this.searchPolygon.isOn) {
@@ -362,10 +389,11 @@ export default {
                 return;
             }
             this.OnTool.coordinates.pop();
+            if (this.OnTool.type === "Heatmap") ++this.OnTool.key; // * rebuild the Heatmap
         },
         toggleShowAllToolips() {
             this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
-            this.mmmm = Math.ceil(Math.random() * 100);
+            this.mmmm = new Date().getTime();
         },
     },
     mounted() {
@@ -418,10 +446,11 @@ export default {
         LControl,
         LControlZoom,
         LControlPolylineMeasure,
-        polylineDecorator,
+        PolylineDecorator,
         LTooltip,
         LControlLayers,
         VGeosearch,
+        LeafletHeatmap,
     },
 };
 </script>

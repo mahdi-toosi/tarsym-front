@@ -25,6 +25,9 @@
             <button class="menu-item" @click="setTool('Textbox')">
                 <i class="far fa-comment-alt"></i>
             </button>
+            <button class="menu-item" @click="setTool('Heatmap')">
+                <i class="fas fa-fire-alt"></i>
+            </button>
         </nav>
         <!-- filters -->
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1">

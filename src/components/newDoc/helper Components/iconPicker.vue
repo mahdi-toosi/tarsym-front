@@ -1,7 +1,7 @@
 <template>
     <div class="icons_box_wrapper" ref="iconpicker">
         <i
-            :class="logo || 'fas fa-map-marker-alt'"
+            :class="tool.iconName || 'fas fa-map-marker-alt'"
             :style="{ color: logoColor }"
             @click="togglePicker()"
         />
@@ -39,7 +39,7 @@
 import icons from "@/assets/icons.json";
 import debounce from "v-debounce";
 export default {
-    props: ["index"],
+    props: ["index", "tool"],
     directives: { debounce },
     data() {
         return {
@@ -57,17 +57,9 @@ export default {
             });
             return filteredIcons;
         },
-        DocLayer() {
-            return this.$store.getters.DocLayer;
-        },
-        logo() {
-            const thisTool = this.DocLayer.tools[this.index];
-            return thisTool.iconName;
-        },
         logoColor() {
-            const thisTool = this.DocLayer.tools[this.index];
-            if (this.logo) {
-                return thisTool.secondaryColor.hex8;
+            if (this.tool.iconName) {
+                return this.tool.secondaryColor.hex8;
             } else return "#277696";
         },
     },

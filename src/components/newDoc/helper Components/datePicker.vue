@@ -181,7 +181,7 @@ export default {
 				${picked.year.replace(/[-]/gi, "")}`;
         },
         picked() {
-            return this.$store.state.newDocs[this.docLayer].date_props;
+            return this.$store.getters.DocLayer.date_props;
         },
         curentMonthName() {
             const pickedMonth = Number(this.picked.month - 1);
@@ -204,7 +204,6 @@ export default {
             }
             return centurys;
         },
-
         calcMonths() {
             const ThisType = this.calendar.curentType;
             const months = this.calendar.types[ThisType].months;

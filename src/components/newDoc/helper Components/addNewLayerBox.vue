@@ -1,6 +1,6 @@
 <template>
     <div class="addNewLayerBox">
-        <v-select
+        <VSelect
             :options="searchBoxOptions"
             @search="onSearch"
             v-model="searchedDoc"
@@ -19,13 +19,13 @@
                     <p>{{ option.excerpt }}</p>
                 </div>
             </template>
-        </v-select>
+        </VSelect>
         <button @click="addChild()" class="btn btn-blue addNewLayer">+</button>
     </div>
 </template>
 
 <script>
-import vSelect from "vue-select";
+import VSelect from "vue-select";
 export default {
     data() {
         return {
@@ -78,7 +78,7 @@ export default {
         },
     },
     components: {
-        vSelect,
+        VSelect,
     },
 };
 function debounce(func, wait, immediate) {

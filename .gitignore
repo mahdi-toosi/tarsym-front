@@ -6,7 +6,7 @@ public/mahdi.js
 public/dist
 
 package-lock.json
-
+.env.production
 # local env files
 .env
 .env.local

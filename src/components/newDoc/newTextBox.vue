@@ -14,24 +14,16 @@
 
             <button
                 class="editIcon"
-                @click="toolSwitch(index)"
-                :class="
-                    $store.state.DocProp.OnTool.index == index
-                        ? 'tool_is_on'
-                        : ''
-                "
+                @click="toolSwitch({ tool, index })"
+                :class="tool.isOn ? 'tool_is_on' : ''"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
-            <button
-                class="visibility"
-                @click="CHANGE_VISIBILITY(index)"
-                v-if="index != 0"
-            >
+            <button class="visibility" @click="CHANGE_VISIBILITY(index)">
                 <i
                     class="far"
-                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
                 ></i>
             </button>
 
@@ -46,7 +38,7 @@
         <div class="tool_body">
             <div class="backColor">
                 <label for="backColor">رنگ زمینه:</label>
-                <color-picker
+                <ColorPicker
                     id="backColor"
                     :value="tool.color"
                     :index="index"
@@ -55,7 +47,7 @@
 
             <div class="fontColor">
                 <label for="fontColor">رنگ فونت:</label>
-                <color-picker
+                <ColorPicker
                     id="fontColor"
                     :value="tool.secondaryColor"
                     :index="index"
@@ -103,44 +95,14 @@
 </template>
 
 <script>
-import colorPicker from "@/components/newDoc/helper Components/colorPicker";
-import { mapActions, mapMutations } from "vuex";
-import VueSlider from "vue-slider-component";
-
+import mixins from "./mixins";
 export default {
-    name: "newPoint",
-    props: ["tool", "index"],
-    methods: {
-        ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-        ...mapMutations([
-            "CHANGE_TOOLTIP",
-            "CHANGE_VISIBILITY",
-            "CHANGE_RANG_INPUT",
-        ]),
-    },
+    name: "newTextBox",
+    mixins: [mixins],
     computed: {
-        DocLayer() {
-            return this.$store.getters.DocLayer;
-        },
-        visibility() {
-            return this.$store.getters.visibility;
-        },
-        logo() {
-            const thisTool = this.DocLayer.tools[this.index];
-            return thisTool.iconName;
-        },
-        toolTipModel: {
-            get() {
-                return this.$store.getters.tooltipData(this.index);
-            },
-            set(val) {
-                const index = this.index;
-                this.CHANGE_TOOLTIP({ index, val });
-            },
-        },
         TextBoxfontSize: {
             get() {
-                return this.DocLayer.tools[this.index].fontSize;
+                return this.tool.fontSize;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -152,7 +114,7 @@ export default {
         },
         TextBoxHeight: {
             get() {
-                return this.DocLayer.tools[this.index].height;
+                return this.tool.height;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -164,7 +126,7 @@ export default {
         },
         TextBoxWidth: {
             get() {
-                return this.DocLayer.tools[this.index].width;
+                return this.tool.width;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -175,12 +137,5 @@ export default {
             },
         },
     },
-    components: {
-        VueSlider,
-        colorPicker,
-    },
 };
 </script>
-
-<style>
-</style>

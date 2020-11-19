@@ -70,7 +70,6 @@ export default {
         return All_childs;
     },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
-    visibility: (state, getters) => (index) => getters.DocLayer.tools[index].visible,
     isAuthenticated: (state) => state.user.username,
     DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],
 };

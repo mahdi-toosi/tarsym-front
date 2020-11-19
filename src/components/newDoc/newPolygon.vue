@@ -15,12 +15,8 @@
 
             <button
                 class="editIcon"
-                @click="toolSwitch(index)"
-                :class="
-                    $store.state.DocProp.OnTool.index == index
-                        ? 'tool_is_on'
-                        : ''
-                "
+                @click="toolSwitch({ tool, index })"
+                :class="tool.isOn ? 'tool_is_on' : ''"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
@@ -32,7 +28,7 @@
             >
                 <i
                     class="far"
-                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
                 ></i>
             </button>
 
@@ -43,7 +39,7 @@
         <div class="tool_body">
             <div class="polygonColor">
                 <label for="polygonColor">رنگ بیرونی:</label>
-                <color-picker
+                <ColorPicker
                     :value="tool.color"
                     id="polygonColor"
                     :index="index"
@@ -51,7 +47,7 @@
             </div>
             <div class="polygonSencondaryColor">
                 <label for="polygonSencondaryColor">رنگ داخلی</label>
-                <color-picker
+                <ColorPicker
                     :value="tool.secondaryColor"
                     id="polygonSencondaryColor"
                     :index="index"
@@ -63,13 +59,13 @@
 </template>
 
 <script>
-import colorPicker from "@/components/newDoc/helper Components/colorPicker";
+import ColorPicker from "@/components/newDoc/helper Components/colorPicker";
 import { mapActions, mapMutations } from "vuex";
 export default {
     name: "newPolygon",
     props: ["tool", "index"],
     methods: {
-        ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
+        ...mapActions(["deleteTool", "toolSwitch"]),
         ...mapMutations(["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
     },
     computed: {
@@ -78,8 +74,7 @@ export default {
                 return this.$store.getters.tooltipData(this.index);
             },
             set(val) {
-                const index = this.index;
-                this.CHANGE_TOOLTIP({ index, val });
+                this.CHANGE_TOOLTIP({ index: this.index, val });
             },
         },
         visibility() {
@@ -87,7 +82,7 @@ export default {
         },
     },
     components: {
-        colorPicker,
+        ColorPicker,
     },
 };
 </script>

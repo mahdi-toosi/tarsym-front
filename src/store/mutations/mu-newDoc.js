@@ -200,6 +200,9 @@ export default {
             obj.angle = 0;
             obj.iconRepeat = 30;
         }
+        if (type === "Heatmap") {
+            obj.key = new Date().getTime();
+        }
         currentDoc.tools.push(obj);
     },
     OFF_THE_ON_TOOL(state) {

@@ -1,7 +1,7 @@
 <template>
     <div class="newPolyline">
         <div class="tool_header">
-            <icon-picker :index="index" v-if="tool.showIcon" />
+            <IconPicker :index="index" :tool="tool" v-if="tool.showIcon" />
             <i
                 class="fas fa-long-arrow-alt-up"
                 style="font-size: 25px; padding: 3px 5px"
@@ -17,12 +17,8 @@
 
             <button
                 class="editIcon"
-                @click="toolSwitch(index)"
-                :class="
-                    $store.state.DocProp.OnTool.index == index
-                        ? 'tool_is_on'
-                        : ''
-                "
+                @click="toolSwitch({ tool, index })"
+                :class="tool.isOn ? 'tool_is_on' : ''"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
@@ -34,7 +30,7 @@
             >
                 <i
                     class="far"
-                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
                 ></i>
             </button>
 
@@ -45,7 +41,7 @@
         <div class="tool_body">
             <div class="lineColor">
                 <label for="lineColor">رنگ خط:</label>
-                <color-picker
+                <ColorPicker
                     id="lineColor"
                     :value="tool.color"
                     :index="index"
@@ -98,7 +94,7 @@
             </div>
             <div class="lineIconsColor" v-if="tool.showIcon">
                 <label for="lineIconsColor">رنگ آیکن:</label>
-                <color-picker
+                <ColorPicker
                     id="lineIconsColor"
                     :value="tool.secondaryColor"
                     :index="index"
@@ -144,49 +140,17 @@
 </template>
 
 <script>
-import colorPicker from "@/components/newDoc/helper Components/colorPicker";
-import iconPicker from "@/components/newDoc/helper Components/iconPicker";
-import { mapActions, mapGetters, mapMutations } from "vuex";
-import VueSlider from "vue-slider-component";
+import mixins from "./mixins";
+import IconPicker from "@/components/newDoc/helper Components/iconPicker";
 
 export default {
     name: "newPolyline",
-    props: ["tool", "index"],
-    methods: {
-        ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-        ...mapMutations([
-            "CHANGE_TOOLTIP",
-            "CHANGE_VISIBILITY",
-            "CHANGE_RANG_INPUT",
-            "CHANGE_POLYLINE_DECORATOR",
-        ]),
-    },
+    mixins: [mixins],
+    components: { IconPicker },
     computed: {
-        ...mapGetters(["DocLayer", "visibility"]),
-        toolTipModel: {
-            get() {
-                return this.$store.getters.tooltipData(this.index);
-            },
-            set(val) {
-                const index = this.index;
-                this.CHANGE_TOOLTIP({ index, val });
-            },
-        },
-        IconSizeModel: {
-            get() {
-                return this.DocLayer.tools[this.index].iconSize;
-            },
-            set(val) {
-                this.CHANGE_RANG_INPUT({
-                    index: this.index,
-                    val,
-                    type: "iconSize",
-                });
-            },
-        },
         IconRepeatModel: {
             get() {
-                return this.DocLayer.tools[this.index].iconRepeat;
+                return this.tool.iconRepeat;
             },
             set(val) {
                 this.CHANGE_RANG_INPUT({
@@ -196,26 +160,6 @@ export default {
                 });
             },
         },
-        iconDegreeModel: {
-            get() {
-                return this.DocLayer.tools[this.index].angel;
-            },
-            set(val) {
-                this.CHANGE_RANG_INPUT({
-                    index: this.index,
-                    val,
-                    type: "angle",
-                });
-            },
-        },
-    },
-    components: {
-        VueSlider,
-        colorPicker,
-        iconPicker,
     },
 };
 </script>
-
-<style>
-</style>

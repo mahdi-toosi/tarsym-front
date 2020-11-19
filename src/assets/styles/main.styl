@@ -165,11 +165,31 @@ button
                 &:hover
                     color: red
             time
+                display flex
                 position: absolute;
                 right: 11%;
                 top: 101%;
                 font-size: 90%
                 letter-spacing: 2px;
+                .negetiveYear
+                    position relative
+                    margin-left: 8px;
+                    &::before
+                        content: '-'
+                        position absolute
+                        left: -7px;
+                .FullDate
+                    display flex
+                    margin: 0
+                    padding: 0
+                    direction: ltr
+                    li
+                        list-style none
+                        margin-right: 6px 
+                        &:not(:last-child)::after
+                            content: '/'
+                            position absolute
+
             .nameandsituation
                 display inline-block
                 margin-right: 10px

@@ -42,21 +42,17 @@ export default {
         await store.commit("DELETE_TOOL", index);
         await store.commit("UPDATE_ON_TOOL");
     },
-    async toolSwitch(store, index) {
-        const thisTool = docLayer(store.state).tools[index];
-        if (thisTool.isOn) {
+    toolSwitch({ commit }, { tool, index }) {
+        if (tool.isOn) {
+            commit("OFF_THE_ON_TOOL");
             // if is on turned off
-            await store.commit("OFF_THE_ON_TOOL");
-            await store.commit("UPDATE_ON_TOOL");
+            commit("UPDATE_ON_TOOL");
             return;
         } else {
-            await store.dispatch("makeToolOn", index);
+            commit("OFF_THE_ON_TOOL");
+            commit("MAKE_TOOL_ON", index);
+            commit("UPDATE_ON_TOOL");
         }
-    },
-    async makeToolOn({ commit }, index) {
-        await commit("OFF_THE_ON_TOOL");
-        await commit("MAKE_TOOL_ON", index);
-        await commit("UPDATE_ON_TOOL");
     },
     async setTool({ commit }, type) {
         await commit("OFF_THE_ON_TOOL");

@@ -1,7 +1,7 @@
 <template>
     <div class="newPoint">
         <div class="tool_header">
-            <icon-picker :index="index" />
+            <IconPicker :index="index" :tool="tool" />
             <input
                 type="text"
                 class="tooltip"
@@ -11,12 +11,8 @@
 
             <button
                 class="editIcon"
-                @click="toolSwitch(index)"
-                :class="
-                    $store.state.DocProp.OnTool.index == index
-                        ? 'tool_is_on'
-                        : ''
-                "
+                @click="toolSwitch({ tool, index })"
+                :class="tool.isOn ? 'tool_is_on' : ''"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
@@ -28,7 +24,7 @@
             >
                 <i
                     class="far"
-                    :class="visibility(index) ? 'fa-eye' : 'fa-eye-slash'"
+                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
                 ></i>
             </button>
 
@@ -56,10 +52,10 @@
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>
-        <div class="tool_body" v-if="logo">
+        <div class="tool_body" v-if="tool.iconName">
             <div class="iconColor">
                 <label for="iconColor">رنگ آیکن:</label>
-                <color-picker
+                <ColorPicker
                     id="iconColor"
                     :value="tool.secondaryColor"
                     :index="index"
@@ -95,86 +91,22 @@
 </template>
 
 <script>
-import iconPicker from "@/components/newDoc/helper Components/iconPicker";
-import colorPicker from "@/components/newDoc/helper Components/colorPicker";
-import { mapActions, mapMutations } from "vuex";
-import VueSlider from "vue-slider-component";
+import mixins from "./mixins";
+import IconPicker from "@/components/newDoc/helper Components/iconPicker";
 
 export default {
     name: "newPoint",
-    props: ["tool", "index"],
-    data() {
-        return {
-            value: 30,
-        };
-    },
-    methods: {
-        ...mapActions(["deleteTool", "makeToolOn", "toolSwitch"]),
-        ...mapMutations([
-            "CHANGE_RANG_INPUT",
-            "CHANGE_TOOLTIP",
-            "SET_ZOOM_LEVEL",
-            "CHANGE_VISIBILITY",
-        ]),
-    },
+    mixins: [mixins],
+    components: { IconPicker },
     computed: {
-        DocLayer() {
-            return this.$store.getters.DocLayer;
-        },
-        visibility() {
-            return this.$store.getters.visibility;
-        },
-        computedTool() {
-            return this.DocLayer.tools[this.index];
-        },
-        logo() {
-            return this.computedTool.iconName;
-        },
-        toolTipModel: {
-            get() {
-                return this.$store.getters.tooltipData(this.index);
-            },
-            set(val) {
-                this.CHANGE_TOOLTIP({ index: this.index, val });
-            },
-        },
-        IconSizeModel: {
-            get() {
-                return this.computedTool.iconSize;
-            },
-            set(val) {
-                this.CHANGE_RANG_INPUT({
-                    index: this.index,
-                    val,
-                    type: "iconSize",
-                });
-            },
-        },
-        iconDegreeModel: {
-            get() {
-                return this.computedTool.angle;
-            },
-            set(val) {
-                this.CHANGE_RANG_INPUT({
-                    index: this.index,
-                    val,
-                    type: "angle",
-                });
-            },
-        },
         zoomLevel: {
             get() {
-                return this.DocLayer.zoomLevel;
+                return this.$store.getters.DocLayer.zoomLevel;
             },
             set(val) {
                 this.SET_ZOOM_LEVEL(val);
             },
         },
-    },
-    components: {
-        iconPicker,
-        colorPicker,
-        VueSlider,
     },
 };
 </script>

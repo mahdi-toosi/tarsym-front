@@ -97,28 +97,21 @@ export default {
             "getUserDocs",
             "addNewDoc",
             "Delete_this_Document",
-            "searchData",
             "setUserProfileAndGet_id",
         ]),
         filterdate(val) {
             const day = String(val).slice(-2);
             const month = String(val).slice(-4, -2);
             const year = String(val).slice(0, -4);
-            const yearIsNegetive = /[-]/.test(year);
-            const currectYear = yearIsNegetive
-                ? year.replace(/[-]/gi, "")
-                : year;
-            const JustYear = `سال ${year.replace(/[-]/gi, "")}${
-                yearIsNegetive ? "<span>-</span>" : ""
-            }<span> ه‍.ق</span>`;
-            const FullDate = `${month}/${day}/${
-                yearIsNegetive
-                    ? "<span style='display: inline-block; direction: ltr;'>-" +
-                      currectYear +
-                      "</span>"
-                    : currectYear
-            }<span> ه‍.ق</span>`;
-            return month == "00" ? JustYear : FullDate;
+
+            const JustYear = `<span ${
+                /[-]/.test(year) ? "class='negetiveYear'" : ""
+            }>${year.replace(/[-]/gi, "")}</span>`;
+
+            const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
+
+            const date = month === "00" ? JustYear : FullDate;
+            return date + `<span> ه‍.ق</span>`;
         },
     },
     beforeRouteEnter(to, from, next) {
@@ -145,7 +138,7 @@ export default {
         const user_id = await this.setUserProfileAndGet_id(username);
         if (!user_id) return;
         this.getUserDocs(user_id);
-        this.$store.state.map.zoom = 5;
+        if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
     },
 };
 </script>

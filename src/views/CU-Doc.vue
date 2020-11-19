@@ -73,7 +73,7 @@
                     dir="rtl"
                     v-if="DocLayer.root"
                 />
-                <date-picker class="datepicker" :docLayer="DocProp.index" />
+                <date-picker class="datepicker" />
             </section>
             <section class="tools shadow">
                 <br />
@@ -99,25 +99,31 @@
                                 <NewPoint
                                     :tool="tool"
                                     :index="index"
-                                    v-if="tool.type == 'Point'"
+                                    v-if="tool.type === 'Point'"
                                     class="tool"
                                 />
                                 <NewPolygon
                                     :tool="tool"
                                     :index="index"
-                                    v-if="tool.type == 'Polygon'"
+                                    v-if="tool.type === 'Polygon'"
                                     class="tool"
                                 />
                                 <NewPolyline
                                     :tool="tool"
                                     :index="index"
-                                    v-if="tool.type == 'Polyline'"
+                                    v-if="tool.type === 'Polyline'"
                                     class="tool"
                                 />
                                 <NewTextBox
                                     :tool="tool"
                                     :index="index"
-                                    v-if="tool.type == 'Textbox'"
+                                    v-if="tool.type === 'Textbox'"
+                                    class="tool"
+                                />
+                                <NewHeatmap
+                                    :tool="tool"
+                                    :index="index"
+                                    v-if="tool.type === 'Heatmap'"
                                     class="tool"
                                 />
                             </li>
@@ -153,6 +159,7 @@ import NewPoint from "@/components/newDoc/newPoint";
 import NewPolygon from "@/components/newDoc/newPolygon";
 import NewPolyline from "@/components/newDoc/newPolyline";
 import NewTextBox from "@/components/newDoc/newTextBox";
+import NewHeatmap from "@/components/newDoc/newHeatmap";
 import datePicker from "@/components/newDoc/helper Components/datePicker";
 import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
 import AddNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
@@ -351,6 +358,7 @@ export default {
         NewPolygon,
         NewPolyline,
         NewTextBox,
+        NewHeatmap,
         AddNewLayerBox,
         LayersRelationshipTree,
     },
