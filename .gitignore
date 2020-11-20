@@ -6,11 +6,9 @@ public/mahdi.js
 public/dist
 
 package-lock.json
-.env.production
 # local env files
 .env
-.env.local
-.env.*.local
+.env.*
 
 # Log files
 npm-debug.log*

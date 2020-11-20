@@ -76,7 +76,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
-            if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
+            if (vm.$store.state.map.zoom > 5) vm.$store.state.map.zoom = 5;
             if (to.name === "all docs") await vm.getAllDocs();
             if (to.name === "list Docs with category")
                 await vm.getAllDocs({ category: to.params.name });

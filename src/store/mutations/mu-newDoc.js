@@ -269,6 +269,7 @@ export default {
             newDocObj.situation = "publish";
             newDocObj.read = false;
             newDocObj.star = false;
+            newDocObj.vitrine = false;
         }
         state.newDocs.push(newDocObj);
     },

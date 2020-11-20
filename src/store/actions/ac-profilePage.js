@@ -35,6 +35,7 @@ export default {
         const options = {
             params: {
                 root: true,
+                vitrine: false,
                 "user._id": user_id,
                 "$sort[createdAt]": -1,
             },
