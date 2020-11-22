@@ -92,41 +92,52 @@
                 <div class="content">
                     <div class="tools-content" v-show="tabContent == 'tools'">
                         <ul class="tools">
-                            <li
-                                v-for="(tool, index) in DocLayer.tools"
-                                :key="index"
+                            <Draggable
+                                v-model="DocTools"
+                                handle=".fa-grip-vertical"
                             >
-                                <NewPoint
-                                    :tool="tool"
-                                    :index="index"
-                                    v-if="tool.type === 'Point'"
-                                    class="tool"
-                                />
-                                <NewPolygon
-                                    :tool="tool"
-                                    :index="index"
-                                    v-if="tool.type === 'Polygon'"
-                                    class="tool"
-                                />
-                                <NewPolyline
-                                    :tool="tool"
-                                    :index="index"
-                                    v-if="tool.type === 'Polyline'"
-                                    class="tool"
-                                />
-                                <NewTextBox
-                                    :tool="tool"
-                                    :index="index"
-                                    v-if="tool.type === 'Textbox'"
-                                    class="tool"
-                                />
-                                <NewHeatmap
-                                    :tool="tool"
-                                    :index="index"
-                                    v-if="tool.type === 'Heatmap'"
-                                    class="tool"
-                                />
-                            </li>
+                                <li
+                                    v-for="(tool, index) in DocTools"
+                                    :key="index"
+                                >
+                                    <i class="fas fa-grip-vertical"></i>
+                                    <NewPoint
+                                        :tool="tool"
+                                        :index="index"
+                                        v-if="tool.type === 'Point'"
+                                        class="tool"
+                                        :class="{ active: tool.isOn }"
+                                    />
+                                    <NewPolygon
+                                        :tool="tool"
+                                        :index="index"
+                                        v-if="tool.type === 'Polygon'"
+                                        class="tool"
+                                        :class="{ active: tool.isOn }"
+                                    />
+                                    <NewPolyline
+                                        :tool="tool"
+                                        :index="index"
+                                        v-if="tool.type === 'Polyline'"
+                                        class="tool"
+                                        :class="{ active: tool.isOn }"
+                                    />
+                                    <NewTextBox
+                                        :tool="tool"
+                                        :index="index"
+                                        v-if="tool.type === 'Textbox'"
+                                        class="tool"
+                                        :class="{ active: tool.isOn }"
+                                    />
+                                    <NewHeatmap
+                                        :tool="tool"
+                                        :index="index"
+                                        v-if="tool.type === 'Heatmap'"
+                                        class="tool"
+                                        :class="{ active: tool.isOn }"
+                                    />
+                                </li>
+                            </Draggable>
                         </ul>
                         <GooeyMenu />
                     </div>
@@ -143,6 +154,9 @@
 </template>
 
 <script>
+// * VUEX
+import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
+
 // * quill Editor
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -155,6 +169,10 @@ import "vue-slider-component/theme/antd.css";
 // * components
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+
+// * Vue draggable
+import Draggable from "vuedraggable";
+
 import NewPoint from "@/components/newDoc/newPoint";
 import NewPolygon from "@/components/newDoc/newPolygon";
 import NewPolyline from "@/components/newDoc/newPolyline";
@@ -164,8 +182,6 @@ import datePicker from "@/components/newDoc/helper Components/datePicker";
 import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
 import AddNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
 import LayersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
-// * VUEX
-import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
     name: "newDoc",
@@ -202,7 +218,12 @@ export default {
         };
     },
     methods: {
-        ...mapMutations(["CLEAR_NEW_DOC", "SET_Taxonomie_in_Doc"]),
+        ...mapMutations([
+            "CLEAR_NEW_DOC",
+            "SET_Taxonomie_in_Doc",
+            "DRAG_TOOL_UPDATE",
+            "OFF_THE_ON_TOOL",
+        ]),
         ...mapActions([
             "Create_or_Update_Documents",
             "addNewDoc",
@@ -211,6 +232,9 @@ export default {
             "get_childs",
             "get_User_Taxonomies",
         ]),
+        onUpdate: function (event) {
+            console.log({ event });
+        },
         insertImage() {
             // manipulate the DOM to do a click on hidden input
             this.$refs.quillimageInput.click();
@@ -292,6 +316,15 @@ export default {
     computed: {
         ...mapState(["newDocs", "DocProp", "user"]),
         ...mapGetters(["DocLayer"]),
+        DocTools: {
+            get() {
+                return this.DocLayer.tools;
+            },
+            set(value) {
+                this.OFF_THE_ON_TOOL();
+                this.DRAG_TOOL_UPDATE(value);
+            },
+        },
         newPointTitle: {
             get() {
                 return this.DocLayer.title;
@@ -353,6 +386,7 @@ export default {
         vSelect,
         datePicker,
         quillEditor,
+        Draggable,
         GooeyMenu,
         NewPoint,
         NewPolygon,

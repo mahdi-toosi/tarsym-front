@@ -3,14 +3,14 @@ export default {
         const routeName = state.route.name;
         if (["all docs", "list Docs with tag", "list Docs with category"].includes(routeName))
             return state.allDocs.data || [];
-        else if (routeName == "read doc") return state.readDoc || [];
-        else if (routeName == "profile") return state.profilePage.docs.data || [];
-        else if (routeName == "update doc" || routeName == "create doc") return state.newDocs || [];
+        else if (routeName === "read doc") return state.readDoc || [];
+        else if (routeName === "profile") return state.profilePage.docs.data || [];
+        else if (routeName === "update doc" || routeName === "create doc") return state.newDocs || [];
         else return [];
     },
     DocWithChildsTools: (state, getters) => {
         const routeName = state.route.name,
-            EditRoutes = routeName == "update doc" || routeName == "create doc",
+            EditRoutes = routeName === "update doc" || routeName === "create doc",
             ListRoutes = ["all docs", "profile", "list Docs with tag", "list Docs with category"].includes(routeName),
             map_ZL = state.map.zoom;
         let tools = [];
@@ -18,9 +18,9 @@ export default {
             getters.docs_list.forEach((doc) => {
                 const doc_ZL = doc.zoomLevel;
                 if (doc.root && doc_ZL <= map_ZL) {
-                    let rootTools = doc.tools.filter((tool) => tool.searchable);
-                    rootTools.forEach((tool) => (tool._id = doc._id));
-                    tools = tools.concat(rootTools);
+                    const rootTool = doc.tools.filter((tool) => tool.searchable)[0];
+                    rootTool._id = doc._id;
+                    tools = tools.push(rootTool);
                 }
             });
             return tools;
@@ -35,7 +35,7 @@ export default {
                 });
             }
             return tools;
-        } else if (routeName == "read doc") {
+        } else if (routeName === "read doc") {
             const docLayer = getters.DocLayer;
             const doc_ZL = docLayer.zoomLevel;
             if (docLayer.root ? doc_ZL <= map_ZL : true) {

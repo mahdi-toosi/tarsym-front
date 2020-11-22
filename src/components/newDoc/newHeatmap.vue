@@ -13,11 +13,7 @@
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
-            <button
-                class="visibility"
-                @click="CHANGE_VISIBILITY(index)"
-                v-if="!tool.searchable"
-            >
+            <button class="visibility" @click="CHANGE_VISIBILITY(index)">
                 <i
                     class="far"
                     :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"

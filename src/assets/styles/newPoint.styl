@@ -30,66 +30,85 @@
         background: white;
         margin: 20px 10px;
         border-radius: 6px;
-        .tool
-            margin: 5px;
-            padding: 10px;
-            list-style-type: none;
-            border-right: #898888 solid 2px;
-            transition: .3s
-            &:hover
-                border-right-color: #35f63b
-
-        .tool_header
-            display: flex
-            pre
-                margin-right: auto;
-            .icons_box_wrapper
-                margin: 5px
-            #zoomLevel 
-                cursor: pointer;
-                border: none;
-                border-bottom: 1px solid #acacac
-            .tooltip
-                border: none 
-                border-bottom: 1px gray solid
-                height: 30px;
-                background: transparent
-            textarea.tooltip
-                width: 300px 
-                line-height: 25px;
-                height: 50px;
-            .editIcon
-                cursor pointer
-                transition: .2s
-                margin-right: auto; 
-                &:hover
-                    color: #0ce509;
-            .visibility
-                width: 32px
-                cursor: pointer
-                .fa-eye:hover
-                    color: red
-                .fa-eye-slash:hover
-                    color: #0ce509
-            .tool_is_on
-                color: #0ce509;
-            .delete_button
-                transition: .2s
-                cursor pointer
-                background: transparent
-                border none
-                &:hover
-                    color red
-        .tool_body
-            margin: 10px 5px 5px 5px
-            div
-                display inline-block
         .tools-content
             overflow hidden
             .tools
                 padding: 0px;
-                li
-                    padding: 2px 10px 2px 5px
+                .flip-list-move 
+                    transition: transform 0.5s
+                .no-move
+                    transition: transform 0s;
+                & >div>li
+                    padding: 2px 2px 2px 5px
+                    display flex
+                    align-items: center
+                    .fa-grip-vertical
+                        cursor grab
+                    .tool
+                        width: 100%
+                        margin: 5px;
+                        padding: 5px 10px 10px 10px;
+                        list-style-type: none;
+                        border-right: #898888 solid 2px;
+                        transition: .3s
+                        overflow hidden
+                        &:hover
+                            border-right-color: #35f63b
+                        .tool_body
+                            margin: 0px
+                            opacity 0
+                            max-height: 0
+                            transition: .3s
+                            div
+                                display inline-block
+                        &.active > .tool_body
+                            margin: 10px 5px 5px 5px
+                            max-height: 100vh
+                            opacity 1
+                        .tool_header
+                            display: flex
+                            pre
+                                margin-right: auto;
+                            .icons_box_wrapper
+                                margin: 5px
+                            #zoomLevel 
+                                cursor: pointer;
+                                border: none;
+                                border-bottom: 1px solid #acacac
+                            .tooltip
+                                border: none 
+                                border-bottom: 1px gray solid
+                                height: 30px;
+                                background: transparent
+                                &::placeholder
+                                    user-select none
+                            textarea.tooltip
+                                width: 300px 
+                                line-height: 25px;
+                                height: 50px;
+                            .editIcon
+                                cursor pointer
+                                transition: .2s
+                                margin-right: auto; 
+                                &:hover
+                                    color: #0ce509;
+                            .visibility
+                                width: 32px
+                                cursor: pointer
+                                .fa-eye:hover
+                                    color: red
+                                .fa-eye-slash:hover
+                                    color: #0ce509
+                            .tool_is_on
+                                color: #0ce509;
+                            .delete_button
+                                transition: .2s
+                                cursor pointer
+                                background: transparent
+                                border none
+                                &:hover
+                                    color red
+
                 label 
                     font-size: 15px
                     padding: 2px 5px 2px 10px
@@ -99,6 +118,7 @@
                     user-select: none;
                 input[type='checkbox']
                     cursor pointer
+        
     .tags
         width: 70%;
         display: inline-block;

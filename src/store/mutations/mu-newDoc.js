@@ -4,6 +4,9 @@ import Vue from "vue";
 const docLayer = (state) => state.newDocs[state.DocProp.index];
 
 export default {
+    DRAG_TOOL_UPDATE(state, newSort) {
+        docLayer(state).tools = newSort;
+    },
     SET_Taxonomie_in_Doc(state, { $event, cats }) {
         if ($event.length && $event[$event.length - 1].length < 3) {
             Vue.toasted.error(`${cats ? "دسته بندی" : "تگ"} باید حداقل 4 حرف داشته باشد`);
