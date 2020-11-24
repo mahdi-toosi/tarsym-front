@@ -20,7 +20,7 @@ export default {
                 if (doc.root && doc_ZL <= map_ZL) {
                     const rootTool = doc.tools.filter((tool) => tool.searchable)[0];
                     rootTool._id = doc._id;
-                    tools = tools.push(rootTool);
+                    tools.push(rootTool);
                 }
             });
             return tools;

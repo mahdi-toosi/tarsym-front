@@ -2,7 +2,11 @@
     <div class="icons_box_wrapper" ref="iconpicker">
         <i
             :class="tool.iconName || 'fas fa-map-marker-alt'"
-            :style="{ color: logoColor }"
+            :style="{
+                color: tool.iconName
+                    ? tool.secondaryColor.hex8 || tool.secondaryColor
+                    : '#277696',
+            }"
             @click="togglePicker()"
         />
         <div class="icons_box" :class="displayPicker ? 'show' : ''">
@@ -50,17 +54,11 @@ export default {
     },
     computed: {
         filteredicons() {
-            const filteredIcons = this.icons.filter((name) => {
-                const icon = name.toLowerCase();
-                const char = this.search.toLowerCase();
-                return icon.includes(char);
-            });
+            const searchedCharacters = this.search.toLowerCase();
+            const filteredIcons = this.icons.filter((iconName) =>
+                iconName.includes(searchedCharacters)
+            );
             return filteredIcons;
-        },
-        logoColor() {
-            if (this.tool.iconName) {
-                return this.tool.secondaryColor.hex8;
-            } else return "#277696";
         },
     },
     methods: {

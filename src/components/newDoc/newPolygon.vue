@@ -3,6 +3,7 @@
         <div class="tool_header">
             <i
                 class="fas fa-draw-polygon"
+                :style="{ color: tool.color.hex8 || tool.color }"
                 style="font-size: 24px; padding: 3px 4px"
             ></i>
 

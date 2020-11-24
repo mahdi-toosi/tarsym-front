@@ -4,6 +4,7 @@
             <IconPicker :index="index" :tool="tool" v-if="tool.showIcon" />
             <i
                 class="fas fa-long-arrow-alt-up"
+                :style="{ color: tool.color.hex8 || tool.color }"
                 style="font-size: 25px; padding: 3px 5px"
                 v-else
             />

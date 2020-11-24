@@ -100,7 +100,10 @@
                                     v-for="(tool, index) in DocTools"
                                     :key="index"
                                 >
-                                    <i class="fas fa-grip-vertical"></i>
+                                    <i
+                                        class="fas fa-grip-vertical"
+                                        v-if="tool.isOn"
+                                    ></i>
                                     <NewPoint
                                         :tool="tool"
                                         :index="index"
@@ -222,7 +225,7 @@ export default {
             "CLEAR_NEW_DOC",
             "SET_Taxonomie_in_Doc",
             "DRAG_TOOL_UPDATE",
-            "OFF_THE_ON_TOOL",
+            "UPDATE_ON_TOOL",
         ]),
         ...mapActions([
             "Create_or_Update_Documents",
@@ -321,8 +324,8 @@ export default {
                 return this.DocLayer.tools;
             },
             set(value) {
-                this.OFF_THE_ON_TOOL();
                 this.DRAG_TOOL_UPDATE(value);
+                this.UPDATE_ON_TOOL();
             },
         },
         newPointTitle: {
@@ -330,7 +333,7 @@ export default {
                 return this.DocLayer.title;
             },
             set(val) {
-                return (this.DocLayer.title = val);
+                this.DocLayer.title = val;
             },
         },
         newPointDescription: {
@@ -338,7 +341,7 @@ export default {
                 return this.DocLayer.description;
             },
             set(val) {
-                return (this.DocLayer.description = val);
+                this.DocLayer.description = val;
             },
         },
         quillInstance() {

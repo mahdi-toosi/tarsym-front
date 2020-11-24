@@ -112,6 +112,7 @@ export default {
         },
         hidePicker() {
             document.removeEventListener("click", this.documentClick);
+            this.ADD_COLOR(this.colors);
             this.displayPicker = false;
         },
         togglePicker() {
@@ -127,7 +128,7 @@ export default {
     },
     mounted() {
         // const color = this.colors.hex8;
-        this.ADD_COLOR(this.colors);
+        // this.ADD_COLOR(this.colors);
     },
 };
 </script>
