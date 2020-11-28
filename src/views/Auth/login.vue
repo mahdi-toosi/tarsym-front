@@ -12,7 +12,7 @@
                 placeholder="رمز عبور"
                 v-model="user.password"
             />
-            <input class="btn btn-green" type="submit" value="ورود" />
+            <button class="btn btn-green" type="submit">ورود</button>
         </form>
         <router-link to="/Auth/signup">ثبت نام</router-link>
         <router-link to="/Auth/reset-password">فراموشی رمز عبور</router-link>

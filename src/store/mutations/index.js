@@ -5,11 +5,11 @@ import profilePage from "./profilePage";
 export default {
     ...newDoc,
     ...profilePage,
-    LOGOUT(state) {
+    LOGOUT(state, redirect) {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         state.user = {};
-        router.push("/Auth");
+        router.push({ path: "/Auth", query: { redirect } });
         setTimeout(() => (state.showSidebarNav = false), 600);
     },
     CHANGE_SEARCH_POLYGON_SITUATION(state) {

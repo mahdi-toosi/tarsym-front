@@ -1,0 +1,71 @@
+
+.registrationForm input, .registrationForm button 
+    display: block
+    margin: 20px auto
+    text-align: left
+    border-radius: 3px
+    direction: ltr
+
+
+.auth 
+    text-align: center
+    display: flex
+    flex-direction: column
+    align-items: center
+    max-height: 99vh;
+    overflow: auto;
+
+    .profileAvatar
+        position relative
+        img
+            width: 90px
+            height: 90px
+            overflow: hidden
+            border-radius: 90px
+            border: 5px solid gainsboro;
+        .image_input
+            position absolute
+            right: 35%;
+            bottom: 0px;
+            cursor pointer
+            .file-upload
+                display none
+    //     .image
+    
+    
+    input, a 
+        display: block
+        margin: 20px auto
+        text-align: left
+        border-radius: 3px
+        direction: ltr
+    
+    a 
+        text-align: right
+    
+    button
+        margin-bottom: 1rem 
+
+    input
+        text-align: right
+        direction: rtl
+        border-radius: 0
+        background: transparent
+        border: none
+        border-bottom: 2px solid #cacaca
+        line-height: 1.5
+        padding: 3px 10px
+    
+    input[type='number']
+        text-align: left
+        direction: ltr
+        -moz-appearance: textfield;
+        &::placeholder
+            text-align: right
+        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button 
+            -webkit-appearance: none;
+            margin: 0;
+
+    h1 
+        margin: 2.5rem
+    

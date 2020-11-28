@@ -7,7 +7,7 @@
             <h1>ریست پسورد</h1>
             <form @submit.prevent="resetPassword()">
                 <input type="text" placeholder="username" v-model="username" />
-                <input class="btn btn-green" type="submit" value="ارسال" />
+                <button class="btn btn-green" type="submit">ارسال</button>
             </form>
         </div>
         <div class="sendverifyCode">
@@ -22,7 +22,7 @@
                     />
                     <span>{{ timeLeft }}</span>
                 </div>
-                <input class="btn btn-blue" type="submit" value="ارسال کد" />
+                <button class="btn btn-blue" type="submit">ارسال کد</button>
             </form>
             <button
                 :class="timeLeft == '00:00' ? 'active' : ''"
@@ -53,11 +53,10 @@ export default {
             timeLeft: "00:00",
         };
     },
-    methods: {
+    _methods: {
         resetPassword() {
-            const url = "/reset-password";
             this.$axios
-                .post(url, { username: this.username })
+                .post("/reset-password", { username: this.username })
                 .then((res) => {
                     console.log({ res });
                     this.$toasted.info(res.data.msg);
@@ -82,32 +81,26 @@ export default {
                 });
         },
         sendCode() {
-            const url = "/reset-password",
-                options = {
-                    params: {
-                        username: this.username,
-                        random_num: String(this.verifyCode),
-                    },
-                };
+            const params = {
+                username: this.username,
+                random_num: String(this.verifyCode),
+            };
 
             this.$axios
-                .delete(url, options)
+                .delete("/reset-password", { params })
                 .then(async ({ data }) => {
                     await this.$store.dispatch(
                         "addDataToAxiosAndLocalStorage",
                         data
                     );
-                    this.$router.push(
-                        `/profile/${this.username}/change-password`
-                    );
+                    this.$router.push(`/profile/${this.username}/setting`);
+                    this.$toasted.info("پسورد خود را تغییر دهید ...");
                 })
                 .catch((error) => {
                     if (error.response.data.message == "validation failed") {
                         this.$toasted.error("درخواست شما معتبر نمیباشد ...");
                         return;
-                    } else {
-                        this.$store.dispatch("handleAxiosError", error);
-                    }
+                    } else this.$store.dispatch("handleAxiosError", error);
                 });
         },
         setTime(seconds) {
@@ -141,6 +134,12 @@ export default {
 
             this.timeLeft = `${zeroPadded(minutes)}:${zeroPadded(seconds)}`;
         },
+    },
+    get methods() {
+        return this._methods;
+    },
+    set methods(value) {
+        this._methods = value;
     },
 };
 function zeroPadded(num) {

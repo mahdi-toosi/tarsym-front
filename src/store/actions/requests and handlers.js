@@ -253,10 +253,11 @@ export default {
             return false;
         }
     },
-    // !  update_this_doc
-    async update_this_doc({ state, commit, dispatch }, doc_id) {
+    // !  get_this_doc_for_update
+    async get_this_doc_for_update({ state, commit, dispatch }, doc_id) {
         let doc, already_Decoded, decode_doc;
-        const profileDocs = state.profilePage.docs.data;
+        const profileDocs = state.profilePage.docs.data,
+            user = state.user;
 
         if (profileDocs && profileDocs.length) {
             // * load from profile page
@@ -266,11 +267,11 @@ export default {
         if (!doc) doc = await dispatch("get_this_docs", doc_id);
 
         if (!doc) {
-            router.push(`/profile/${state.user.username}`);
+            router.push(`/profile/${user.username}`);
             return;
         }
 
-        if (state.user.role >= 48 || doc.user._id === state.user._id) {
+        if (user.role >= 48 || doc.user._id === user._id) {
             if (!already_Decoded)
                 decode_doc = await dispatch("decode_the_docs", {
                     docs: [doc],
@@ -284,7 +285,7 @@ export default {
             await dispatch("get_all_childs", decode_doc || doc);
         } else {
             Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
-            commit("LOGOUT");
+            commit("LOGOUT", `/profile/${user.username}`);
         }
     },
     async get_all_childs({ dispatch, commit }, doc) {

@@ -220,11 +220,11 @@
                     <i class="fa fa-undo" aria-hidden="true"></i>
                 </a>
             </LControl>
-            <LControl position="bottomright" class="leaflet-control mapmaker">
+            <!-- <LControl position="bottomright" class="leaflet-control mapmaker">
                 <a @click="toggleShowAllToolips()">
                     <i class="far fa-comment-alt"></i>
                 </a>
-            </LControl>
+            </LControl> -->
         </LMap>
     </div>
 </template>
@@ -391,10 +391,10 @@ export default {
             this.OnTool.coordinates.pop();
             if (this.OnTool.type === "Heatmap") ++this.OnTool.key; // * rebuild the Heatmap
         },
-        toggleShowAllToolips() {
-            this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
-            this.mmmm = new Date().getTime();
-        },
+        // toggleShowAllToolips() {
+        //     this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
+        //     this.mmmm = new Date().getTime();
+        // },
     },
     mounted() {
         const mapObject = this.$refs.LeafletMap.mapObject;

@@ -14,28 +14,32 @@ export default {
             .post(url, data)
             .then(async (res) => {
                 // * suspension
-                if (res.data.user.role == 1) {
-                    const msg = "در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده";
-                    Vue.toasted.error(msg);
+                if (res.data.user.role === 1) {
+                    Vue.toasted.error("در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده");
                     return;
                 }
 
                 await dispatch("addDataToAxiosAndLocalStorage", res.data);
 
-                await router.push("/");
+                await router.push(router.currentRoute.query.redirect || "/");
 
                 state.showSidebarNav = true;
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 401") {
-                    const msg = "نام کاربری یا رمز عبور اشتباه است ...";
-                    Vue.toasted.error(msg);
+                    Vue.toasted.error("نام کاربری یا رمز عبور اشتباه است ...");
                     return;
                 }
                 dispatch("handleAxiosError", error);
             });
     },
     addDataToAxiosAndLocalStorage(store, data) {
+        // * clean the data
+        delete data.authentication;
+        ["createdAt", "updatedAt", "__v"].forEach((element) => {
+            delete data.user[element];
+        });
+        // * add Data To Axios And Local Storage
         const day = 60 * 60 * 1000 * 24; //* 24 hours
         data.expire = new Date().getTime() + day;
         localStorage.setItem("sjufNEbjDmE", JSON.stringify(data)); //* sjufNEbjDmE = userData
@@ -43,9 +47,8 @@ export default {
         axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
     },
     async signup({ dispatch }, userData) {
-        let url = "/users";
         await axios
-            .post(url, userData)
+            .post("/users", userData)
             .then(async () => await dispatch("login", userData))
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
