@@ -22,7 +22,7 @@ function beforeEach() {
             }
             next();
             return;
-        } else store.commit("LOGOUT");
+        } else store.commit("LOGOUT", to.path);
     };
 }
 function afterEach() {

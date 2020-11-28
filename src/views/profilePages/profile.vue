@@ -2,7 +2,7 @@
     <div class="profilePage">
         <header>
             <div class="profileData">
-                <img src="@/assets/profileAvatar.png" />
+                <img :src="avatar || '/img/profileAvatar.png'" />
                 <span>
                     {{ profile.user.name }} <br />
                     {{ profile.user.username }}
@@ -90,6 +90,12 @@ export default {
         },
         profile() {
             return this.$store.state.profilePage;
+        },
+        avatar() {
+            const avatar = this.profile.user.avatar;
+            if (!avatar) return false;
+            if (process.env.NODE_ENV === "production") return avatar;
+            return process.env.VUE_APP_DOMAIN + avatar;
         },
     },
     methods: {

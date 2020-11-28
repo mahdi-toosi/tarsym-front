@@ -40,8 +40,9 @@ const routes = [
         },
     },
     {
-        path: "/profile/:username/change-password",
-        component: () => import("@/views/profilePages/changePassword.vue"),
+        path: "/profile/:username/setting",
+        component: () => import("@/views/profilePages/setting.vue"),
+        name: "profile setting",
         meta: {
             minimumRole: 3,
         },

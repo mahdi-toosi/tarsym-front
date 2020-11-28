@@ -22,7 +22,7 @@
                 placeholder="تکرار رمز عبور"
                 v-model="user.rpassword"
             />
-            <input class="btn btn-blue" type="submit" value="ثبت نام" />
+            <button class="btn btn-blue" type="submit">ثبت نام</button>
         </form>
         <router-link to="/Auth">قبلا ثبت نام کردم</router-link>
     </div>
@@ -59,12 +59,8 @@ export default {
             // this.validLength(user.name) &&
             // user.imgURL &&
             if (!errors.length) return true;
-            else {
-                errors.forEach((error) => {
-                    this.$toasted.error(error);
-                });
-                return false;
-            }
+            errors.forEach((error) => this.$toasted.error(error));
+            return false;
         },
         TrimUserData() {
             const user = this.user;

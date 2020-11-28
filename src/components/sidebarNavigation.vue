@@ -55,12 +55,12 @@ export default {
                     icon: "far fa-user",
                     class: "profile",
                 },
-                // {
-                //     name: "تنظیمات اکانت",
-                //     addr: ``,
-                //     icon: "fas fa-cogs",
-                //     class: "options",
-                // },
+                {
+                    name: "تنظیمات حساب کاربری",
+                    addr: `/profile/${username}/setting`,
+                    icon: "fas fa-cogs",
+                    class: "options",
+                },
             ];
             return routes;
         },

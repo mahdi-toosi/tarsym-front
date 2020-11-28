@@ -11,7 +11,7 @@
                 <i class="fas fa-times"></i>
             </button>
             <button class="btn btn-green" @click="Create_or_Update_Documents()">
-                {{ $route.name == "create doc" ? "ثبت" : "بروزرسانی" }}
+                {{ $route.name === "create doc" ? "ثبت" : "بروزرسانی" }}
                 <i class="fas fa-save"></i>
             </button>
             <!-- back button -->
@@ -47,17 +47,19 @@
                         گزینه ای برای پیشنهاد نیست، دسته بندی جدیدی بسازید...
                     </template>
                 </v-select>
-                <quill-editor
+
+                <QuillEditor
                     v-model="newPointDescription"
                     :options="quillEditorOptions"
                     ref="quillEditor"
                 />
+
                 <input
                     ref="quillimageInput"
                     style="display: none"
                     type="file"
                     accept="image/gif, image/jpeg, image/png"
-                    @change="_doImageUpload"
+                    @change="quillUploadImage"
                 />
             </section>
             <section class="tag_date_section">
@@ -189,25 +191,24 @@ import LayersRelationshipTree from "@/components/newDoc/helper Components/layers
 export default {
     name: "newDoc",
     data() {
-        const toolbarOptions = [
-            ["blockquote", "italic", "underline", "bold"], // toggled buttons
-            [
-                "image",
-                { background: [] },
-                { color: [] },
-                { align: [] },
-                { direction: "rtl" },
-            ],
-            [{ header: [2, 3, false] }],
-            ["clean"],
-        ];
         return {
             tabContent: "tools",
             // customModulesForEditor: [{ alias: "imageDrop", module: ImageDrop }],
             quillEditorOptions: {
                 modules: {
                     toolbar: {
-                        container: toolbarOptions,
+                        container: [
+                            ["blockquote", "italic", "underline", "bold"], // toggled buttons
+                            [
+                                "image",
+                                { background: [] },
+                                { color: [] },
+                                { align: [] },
+                                { direction: "rtl" },
+                            ],
+                            [{ header: [2, 3, false] }],
+                            ["clean"],
+                        ],
                         handlers: {
                             image: this.insertImage,
                         },
@@ -231,7 +232,7 @@ export default {
             "Create_or_Update_Documents",
             "addNewDoc",
             "goBackToParent",
-            "update_this_doc",
+            "get_this_doc_for_update",
             "get_childs",
             "get_User_Taxonomies",
         ]),
@@ -242,23 +243,25 @@ export default {
             // manipulate the DOM to do a click on hidden input
             this.$refs.quillimageInput.click();
         },
-        async _doImageUpload(event) {
+        async quillUploadImage(event) {
             // for simplicity I only upload the first image
             const file = event.target.files[0];
-            // 1e+6 == 1MB
-            if (file && file.size > 1e6) {
-                this.$toasted.error("حجم عکس حداکثر 1mb میتوانید باشد");
+            if (file && file.size > 2e5) {
+                this.$toasted.error("حجم عکس حداکثر 200kb میتواند باشد");
                 return;
             }
             // create form data
             const fd = new FormData();
             // just add file instance to form data normally
-            fd.append("image", file);
+            fd.append("docImage", file);
             // I use axios here, should be obvious enough
             console.log("fd => ", fd);
-            const url = "/upload-images";
             const response = await this.$axios
-                .post(url, fd)
+                .post("/uploadDocImage", fd, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
                 .then((res) => res.data)
                 .catch((error) => {
                     this.$store.dispatch("handleAxiosError", error);
@@ -374,7 +377,7 @@ export default {
             if (Number(route_id) !== lastAddedDocID) await this.addNewDoc();
             return;
         } else if (routeName === "update doc")
-            await this.update_this_doc(route_id);
+            await this.get_this_doc_for_update(route_id);
         // document.addEventListener("keyup", this.keyPressed);
     },
     mounted() {
@@ -388,7 +391,7 @@ export default {
     components: {
         vSelect,
         datePicker,
-        quillEditor,
+        QuillEditor: quillEditor,
         Draggable,
         GooeyMenu,
         NewPoint,
