@@ -2,7 +2,7 @@
     <div class="profilePage">
         <header>
             <div class="profileData">
-                <img :src="avatar || '/img/profileAvatar.png'" />
+                <img :src="avatar || '/imgs/profileAvatar.png'" />
                 <span>
                     {{ profile.user.name }} <br />
                     {{ profile.user.username }}

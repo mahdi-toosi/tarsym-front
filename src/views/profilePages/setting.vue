@@ -5,7 +5,7 @@
             <div class="profileAvatar">
                 <img
                     class="profile-pic"
-                    :src="avatar || '/img/profileAvatar.png'"
+                    :src="avatar || '/imgs/profileAvatar.png'"
                 />
                 <div class="image_input">
                     <i
