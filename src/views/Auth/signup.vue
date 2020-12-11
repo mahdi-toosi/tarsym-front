@@ -10,7 +10,13 @@
             <input
                 type="text"
                 placeholder="نام کاربری"
+                name="username"
                 v-model="user.username"
+            />
+            <input
+                type="text"
+                placeholder="شماره تلفن همراه"
+                v-model="user.mobile"
             />
             <input
                 type="password"
@@ -35,6 +41,7 @@ export default {
             user: {
                 name: "",
                 username: "",
+                mobile: "",
                 password: "",
                 rpassword: "",
             },
@@ -49,9 +56,12 @@ export default {
             const user = this.user;
             let errors = [];
             this.TrimUserData();
-            if (user.name.length < 5) errors.push("نام معتبر نمی باشد");
+            if (user.name.length < 5)
+                errors.push("نام و نام خانوادگی معتبر نمی باشد");
             if (user.username.length < 5)
                 errors.push("نام کاربری حداقل 6 کاراکتر باید داشته باشد");
+            if (!user.mobile.match(/^(\+98|0)?9\d{9}$/g))
+                errors.push("شماره تلفن همراه معتبر نمیباشد");
             if (user.password.length < 5)
                 errors.push("پسورد به اندازه کافی قوی نیست");
             if (user.password !== user.rpassword)

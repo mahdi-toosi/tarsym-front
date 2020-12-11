@@ -5,13 +5,12 @@ import axios from "axios";
 export default {
     async login({ dispatch, state }, user) {
         const data = {
-                strategy: "local",
-                ...user,
-            },
-            url = "/authentication";
+            strategy: "local",
+            ...user,
+        };
 
         await axios
-            .post(url, data)
+            .post("/authentication", data)
             .then(async (res) => {
                 // * suspension
                 if (res.data.user.role === 1) {

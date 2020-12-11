@@ -104,7 +104,7 @@
                                 >
                                     <i
                                         class="fas fa-grip-vertical"
-                                        v-if="tool.isOn"
+                                        v-if="tool.isOn && index !== 0"
                                     ></i>
                                     <NewPoint
                                         :tool="tool"

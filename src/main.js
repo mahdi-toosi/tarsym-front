@@ -12,10 +12,16 @@ axios.interceptors.request.use((config) => {
     NProgress.start();
     return config;
 });
-axios.interceptors.response.use((response) => {
-    NProgress.done();
-    return response;
-});
+axios.interceptors.response.use(
+    (response) => {
+        NProgress.done();
+        return response;
+    },
+    (error) => {
+        NProgress.done();
+        return Promise.reject(error);
+    }
+);
 Vue.prototype.$axios = axios;
 
 // * vue toasted

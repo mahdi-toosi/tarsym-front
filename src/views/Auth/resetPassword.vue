@@ -56,49 +56,60 @@ export default {
     _methods: {
         resetPassword() {
             this.$axios
-                .post("/reset-password", { username: this.username })
+                .post("/expiring-data", { username: this.username })
                 .then((res) => {
-                    console.log({ res });
                     this.$toasted.info(res.data.msg);
                     this.resetPasswordPage = false;
                     this.setTime(120);
                 })
                 .catch((error) => {
-                    const msg = error.response.data.message;
-                    if (msg == "id: value already exists.") {
-                        this.$toasted.info(
-                            "کد اعتبار سنجی قبلا برای شما ارسال شده است ..."
-                        );
+                    const errMsg = error.response.data.message;
+                    const alreadysended =
+                        "کد اعتبار سنجی قبلا برای شما ارسال شده است ...";
+
+                    if (errMsg == "id: value already exists.") {
+                        this.$toasted.info(alreadysended);
+                        this.resetPasswordPage = false;
                         return;
-                    } else if (msg == "username not found") {
+                    } else if (errMsg == "username not found") {
                         this.$toasted.info(
                             "با این نام کاربری ثبت نام نکرده اید"
                         );
                         return;
-                    } else {
-                        this.$store.dispatch("handleAxiosError", error);
-                    }
+                    } else if (
+                        error == "Error: Request failed with status code 409"
+                    ) {
+                        this.$toasted.info(alreadysended);
+                        this.resetPasswordPage = false;
+                        return;
+                    } else this.$store.dispatch("handleAxiosError", error);
                 });
         },
         sendCode() {
             const params = {
                 username: this.username,
-                random_num: String(this.verifyCode),
+                code: String(this.verifyCode),
             };
-
             this.$axios
-                .delete("/reset-password", { params })
+                .delete("/expiring-data", { params })
                 .then(async ({ data }) => {
+                    // * login
                     await this.$store.dispatch(
                         "addDataToAxiosAndLocalStorage",
                         data
                     );
                     this.$router.push(`/profile/${this.username}/setting`);
+                    this.$store.showSidebarNav = true;
+
                     this.$toasted.info("پسورد خود را تغییر دهید ...");
                 })
                 .catch((error) => {
-                    if (error.response.data.message == "validation failed") {
+                    const errMsg = error.response.data.message;
+                    if (errMsg == "validation failed") {
                         this.$toasted.error("درخواست شما معتبر نمیباشد ...");
+                        return;
+                    } else if (errMsg == "Error 9568") {
+                        this.$toasted.error("درخواست شما نامعتبر است");
                         return;
                     } else this.$store.dispatch("handleAxiosError", error);
                 });
@@ -160,7 +171,7 @@ function zeroPadded(num) {
     text-align: center;
     transition: transform 0.6s;
     transform-style: preserve-3d;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    // box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .flip-card {
