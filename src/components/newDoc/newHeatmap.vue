@@ -34,8 +34,8 @@ export default {
     name: "newPoint",
     props: ["tool", "index"],
     methods: {
-        ...mapActions(["deleteTool", "toolSwitch"]),
-        ...mapMutations(["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
+        ...mapActions("docs", ["deleteTool", "toolSwitch"]),
+        ...mapMutations("docs", ["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
     },
     components: {},
 };

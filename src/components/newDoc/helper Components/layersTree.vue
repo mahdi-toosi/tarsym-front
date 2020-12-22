@@ -37,11 +37,11 @@ export default {
             return this.$store.getters.DocChilds(this.father);
         },
         invisibleDocs() {
-            return this.$store.state.DocProp.invisibleDocs || [];
+            return this.$store.state.docs.DocProp.invisibleDocs || [];
         },
     },
     methods: {
-        ...mapActions(["goToChild", "Delete_this_Document"]),
+        ...mapActions("docs", ["goToChild", "Delete_this_Document"]),
         changeVisibility(_id) {
             this.$store.commit("docs/CHANGE_VISIBILITY_doc", _id);
         },

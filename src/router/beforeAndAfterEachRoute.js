@@ -9,7 +9,7 @@ function beforeEach() {
             return;
         } else if (checkForAuth(to.meta.minimumRole)) {
             if (to.name === "forward profile") {
-                next(`/profile/${store.state.user.username}`);
+                next(`/profile/${store.state.auth.user.username}`);
                 return;
             }
             // * check authenticate
@@ -17,40 +17,40 @@ function beforeEach() {
             return;
         } else if (set_user_if_exist(to.meta.minimumRole)) {
             if (to.name === "forward profile") {
-                next(`/profile/${store.state.user.username}`);
+                next(`/profile/${store.state.auth.user.username}`);
                 return;
             }
             next();
             return;
-        } else store.commit("LOGOUT", to.path);
+        } else store.dispatch("auth/logout", to.path);
     };
 }
 function afterEach() {
     return async (to) => {
         const RN = to.name; // * route name
         if (RN === "read doc") {
-            await store.dispatch("read_this_doc");
+            await store.dispatch("docs/read_this_doc");
 
-            if (store.state.readDoc.length) store.commit("UPDATE_DOC_INDEX");
+            if (store.state.docs.readDoc.length) store.commit("docs/UPDATE_DOC_INDEX");
 
-            store.commit("CHANGE_MAP_LAYERS");
+            store.dispatch("change_map_layers");
             return;
         } else if (RN === "create doc" || RN === "update doc") {
-            if (store.state.newDocs.length) store.commit("UPDATE_DOC_INDEX");
+            if (store.state.docs.newDocs.length) store.commit("docs/UPDATE_DOC_INDEX");
 
             // * show document items if invisible
             const _id = to.params._id;
-            const invisibleDocs = store.state.DocProp.invisibleDocs || [];
+            const invisibleDocs = store.state.docs.DocProp.invisibleDocs || [];
             const indexOfDoc = invisibleDocs.indexOf(_id);
             if (indexOfDoc > -1) invisibleDocs.splice(indexOfDoc, 1);
 
             // * flyToThisDoc
             setTimeout(() => {
-                store.commit("CHANGE_MAP_LAYERS");
-                store.dispatch("flyToThisDoc");
+                store.dispatch("change_map_layers");
+                store.dispatch("docs/flyToThisDoc");
             }, 300);
             return;
-        } else store.commit("CHANGE_MAP_LAYERS", true); // mainMap = true
+        } else store.dispatch("change_map_layers", true); // mainMap = true
     };
 }
 export default {
@@ -65,10 +65,10 @@ function set_user_if_exist(minimumRole) {
     const now = new Date().getTime();
     if (userData && userData.expire > now) {
         // * add user
-        store.commit("SET_USER", userData.user);
-        store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
+        store.commit("auth/SET_USER", userData.user);
+        store.commit("auth/SET_USER_ACCESS_TOKEN", userData.accessToken);
         // * validate user role for route
-        if (minimumRole <= store.state.user.role) return true;
+        if (minimumRole <= store.state.auth.user.role) return true;
         else {
             // Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
             return false;
@@ -80,7 +80,7 @@ function set_user_if_exist(minimumRole) {
 function checkForAuth(minimumRole) {
     // * validate user role for route if exist
     if (store.getters.isAuthenticated) {
-        if (minimumRole <= store.state.user.role) return true;
+        if (minimumRole <= store.state.auth.user.role) return true;
         else {
             Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت  ...");
             return false;

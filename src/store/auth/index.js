@@ -3,7 +3,7 @@ import router from "../../router";
 import axios from "axios";
 
 export default {
-    namespace: true,
+    namespaced: true,
     state: {
         user: {},
     },
@@ -16,6 +16,13 @@ export default {
         },
         CLEAR_USER(state) {
             state.user = {};
+        },
+        UPDATE_USER(state, data) {
+            state.user = { ...state.user, ...data };
+            // * add to localStorage
+            const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
+            userData.user = { ...userData.user, ...data };
+            localStorage.setItem("sjufNEbjDmE", JSON.stringify(userData));
         },
     },
     actions: {
@@ -72,6 +79,13 @@ export default {
                     }
                     dispatch("handleAxiosError", error, { root: true });
                 });
+        },
+        logout({ commit }, redirect) {
+            localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
+            localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
+            commit("CLEAR_USER");
+            router.push({ path: "/Auth", query: { redirect } });
+            commit("HIDE_SIDEBAR", null, { root: true });
         },
     },
 };

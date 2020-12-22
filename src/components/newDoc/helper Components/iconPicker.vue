@@ -67,11 +67,11 @@ export default {
                 iconName: name,
                 index: this.index,
             };
-            this.$store.commit("ADD_ICON", data);
+            this.$store.commit("docs/ADD_ICON", data);
             this.hidePicker();
         },
         REMOVE_ICON() {
-            this.$store.commit("REMOVE_ICON", this.index);
+            this.$store.commit("docs/REMOVE_ICON", this.index);
             this.hidePicker();
         },
         showPicker() {

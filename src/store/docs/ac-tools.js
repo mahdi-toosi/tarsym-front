@@ -13,10 +13,10 @@ export default {
         commit("UPDATE_ON_TOOL");
         return;
     },
-    async setTool({ commit }, type) {
+    async setTool({ commit, rootState }, type) {
         await commit("OFF_THE_ON_TOOL");
         await commit("UPDATE_ON_TOOL");
-        await commit("SET_TOOL", type);
+        await commit("SET_TOOL", { type, map: rootState.map });
         await commit("UPDATE_ON_TOOL");
     },
 };

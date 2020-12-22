@@ -5,19 +5,13 @@
     </div>
 </template>
 <script>
-import { mapState, mapActions } from "vuex";
-
 export default {
     name: "sidebar",
     props: {},
     data() {
         return {};
     },
-    computed: {
-        ...mapState(["User"]),
-    },
     methods: {
-        ...mapActions(["getAllCategories", "getTheCurrentUser"]),
         mediaText(media) {
             switch (media) {
                 case "img":
@@ -42,11 +36,6 @@ export default {
                     return "video";
             }
         },
-    },
-
-    async created() {
-        // await this.getAllCategories();
-        // await this.getTheCurrentUser();
     },
 };
 </script>

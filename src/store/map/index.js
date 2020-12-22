@@ -45,5 +45,18 @@ export default {
         UPDATE_LAYER(state, layerIndex) {
             state.layerIndex = layerIndex;
         },
+        UPDATE_MOUSE_COOR(state, { latlng }) {
+            state.MouseCoordinate = latlng;
+        },
+        SET_MAIN_LAYER(state) {
+            state.tileProviders.forEach((tileProvider) => (tileProvider.visible = false));
+            state.tileProviders[0].visible = true;
+        },
+        SET_THIS_LAYER(state, layer_index) {
+            state.tileProviders.forEach((tileProvider, index) => {
+                if (layer_index === index) tileProvider.visible = true;
+                else tileProvider.visible = false;
+            });
+        },
     },
 };

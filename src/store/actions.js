@@ -1,4 +1,3 @@
-import axios from "axios";
 import Vue from "vue";
 import router from "../router";
 
@@ -15,15 +14,19 @@ export default {
         commit("map/UPDATE_LAYER", layerIndex);
         commit("docs/UPDATE_LAYER", layerIndex);
     },
-    logout({ commit }, redirect) {
-        localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
-        localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
-        commit("auth/CLEAR_USER");
-        router.push({ path: "/Auth", query: { redirect } });
-        commit("HIDE_SIDEBAR");
+    change_map_layers({ commit, state }, mainMap) {
+        if (mainMap) {
+            commit("map/SET_MAIN_LAYER");
+            return;
+        }
+        const docs = router.currentRoute.name === "read doc" ? state.docs.readDoc : state.docs.newDocs;
+        const doc = docs[state.docs.DocProp.index];
+        if (!doc) return;
+
+        commit("map/SET_THIS_LAYER", doc.map_animate.layerIndex);
     },
     // !  handleAxiosError
-    handleAxiosError({ commit }, error) {
+    handleAxiosError({ dispatch }, error) {
         let msg;
         if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
         // else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
@@ -33,33 +36,12 @@ export default {
         else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ...";
         else if (error == "Error: Request failed with status code 401") {
             // msg = "نام کاربری یا رمز عبور اشتباه است"
-            commit("LOGOUT");
+            dispatch("auth/logout");
         } else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
             console.log("request get error => ", msg);
         }
         Vue.toasted.error(msg);
-    },
-
-    // !  searchData
-    async searchData(store) {
-        const route = router.currentRoute;
-        const url = "/searchInDocs";
-        const options = {
-            params: {},
-        };
-        if (route.query.area) options.params.area = route.query.area;
-        if (route.query.text) options.params.text = route.query.text;
-        await axios
-            .get(url, options)
-            .then((response) => console.log("response.data => ", response.data))
-            .catch((error) => {
-                if (error == "Error: Request failed with status code 415") {
-                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
-                    return;
-                }
-                store.dispatch("handleAxiosError", error);
-            });
     },
 };

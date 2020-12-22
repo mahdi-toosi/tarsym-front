@@ -54,11 +54,11 @@ export default {
     name: "ListDocs",
     computed: {
         allDocs() {
-            return this.$store.state.allDocs;
+            return this.$store.state.docs.vitrineDocs;
         },
     },
     methods: {
-        ...mapActions(["getAllDocs", "searchData"]),
+        ...mapActions("docs", ["getAllDocs", "searchData"]),
         filterdate(val) {
             const day = String(val).slice(-2);
             const month = String(val).slice(-4, -2);

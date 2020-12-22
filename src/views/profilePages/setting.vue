@@ -112,7 +112,7 @@ export default {
                     nationalCode,
                 })
                 .then(({ data }) => {
-                    this.storeUserData(data);
+                    this.updateUser(data);
                     // * show result message
                     let msg;
                     if (role < 35)
@@ -172,8 +172,8 @@ export default {
                 .patch(`/users/${this.user._id}`, { password })
                 .then(() => {
                     this.$toasted.success("پسورد با موفقیت تغییر کرد");
-                    this.$store.commit(
-                        "LOGOUT",
+                    this.$store.dispatch(
+                        "auth/logout",
                         `/profile/${this.user.username}`
                     );
                 })
@@ -199,7 +199,7 @@ export default {
                         "Content-Type": "multipart/form-data",
                     },
                 })
-                .then(({ data }) => this.storeUserData({ avatar: data.url }))
+                .then(({ data }) => this.updateUser({ avatar: data.url }))
                 .catch(() => {
                     this.$toasted.error(
                         "آپلود عکس با مشکل روبرو شده. لطفا دوباره امتحان کنید ..."
@@ -209,17 +209,13 @@ export default {
             // clear input value to make selecting the same image work
             event.target.value = "";
         },
-        storeUserData(data) {
+        updateUser(data) {
             this.user = { ...this.user, ...data };
-            this.$store.state.user = { ...this.$store.state.user, ...data };
-            // * add to localStorage
-            const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
-            userData.user = { ...userData.user, ...data };
-            localStorage.setItem("sjufNEbjDmE", JSON.stringify(userData));
+            this.$store.commit("auth/UPDATE_USER", data);
         },
     },
     mounted() {
-        this.user = { ...this.user, ...this.$store.state.user };
+        this.user = { ...this.user, ...this.$store.state.auth.user };
         delete this.user.accessToken;
         const routeUsername = this.$router.currentRoute.params.username;
         if (this.user.username !== routeUsername)

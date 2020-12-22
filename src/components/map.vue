@@ -9,7 +9,7 @@
             @update:zoom="update_zoom"
             :options="{ zoomControl: false }"
             @update:center="update_center"
-            @mousemove="setMouseCoordinate"
+            @mousemove="UPDATE_MOUSE_COOR"
             :minZoom="4"
             ref="LeafletMap"
         >
@@ -244,13 +244,19 @@ import {
     LControlLayers,
 } from "vue2-leaflet";
 require("leaflet-easyprint");
+
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
+
 import PolylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
+
 import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHeatmap.common.js";
+
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
+
 import { mapMutations, mapState, mapGetters, mapActions } from "vuex";
+
 export default {
     name: "Map",
     data() {
@@ -298,7 +304,7 @@ export default {
         ...mapState(["map", "searchPolygon"]),
         ...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
         OnTool() {
-            const OnTool = this.$store.state.DocProp.OnTool;
+            const OnTool = this.$store.state.docs.DocProp.OnTool;
             if (OnTool.condition) return this.DocLayer.tools[OnTool.index];
             else return false;
         },
@@ -326,7 +332,8 @@ export default {
         },
     },
     methods: {
-        ...mapMutations(["UPDATE_THIS_POINT_COORDINATE"]),
+        ...mapMutations("docs", ["UPDATE_THIS_POINT_COORDINATE"]),
+        ...mapMutations("map", ["UPDATE_MOUSE_COOR"]),
         ...mapActions(["update_zoom", "update_center", "update_layer"]),
         dynamicSize(iconSize) {
             return [iconSize, iconSize * 1.15];
@@ -376,9 +383,6 @@ export default {
             const path = `/${pathThing}/${_id}`;
             if (path != currentRoute.fullPath) this.$router.push(path);
         },
-        setMouseCoordinate({ latlng }) {
-            this.map.MouseCoordinate = latlng;
-        },
         undoTools() {
             if (this.searchPolygon.isOn) {
                 this.searchPolygon.coordinates.pop();
@@ -393,8 +397,6 @@ export default {
         // },
     },
     mounted() {
-        console.log({ store: this.$store });
-
         const mapObject = this.$refs.LeafletMap.mapObject;
         L.easyPrint({
             position: "bottomleft",

@@ -9,8 +9,8 @@ export default {
         VueSlider,
     },
     methods: {
-        ...mapActions(["deleteTool", "toolSwitch"]),
-        ...mapMutations([
+        ...mapActions("docs", ["deleteTool", "toolSwitch"]),
+        ...mapMutations("docs", [
             "CHANGE_RANG_INPUT",
             "CHANGE_TOOLTIP",
             "SET_ZOOM_LEVEL",

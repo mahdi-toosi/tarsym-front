@@ -58,12 +58,13 @@
 <script>
 import ColorPicker from "@/components/newDoc/helper Components/colorPicker";
 import { mapActions, mapMutations } from "vuex";
+
 export default {
     name: "newPolygon",
     props: ["tool", "index"],
     methods: {
-        ...mapActions(["deleteTool", "toolSwitch"]),
-        ...mapMutations(["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
+        ...mapActions("docs", ["deleteTool", "toolSwitch"]),
+        ...mapMutations("docs", ["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
     },
     computed: {
         toolTipModel: {
@@ -78,9 +79,7 @@ export default {
             return this.$store.getters.visibility;
         },
     },
-    components: {
-        ColorPicker,
-    },
+    components: { ColorPicker },
 };
 </script>
 

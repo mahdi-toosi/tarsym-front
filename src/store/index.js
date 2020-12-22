@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
+Vue.use(Vuex);
+
 import getters from "./getters";
 import actions from "./actions";
 import mutations from "./mutations";
-import map from "./map";
-import docs from "./docs";
 
-Vue.use(Vuex);
+import map from "./map/";
+import docs from "./docs/";
+import auth from "./auth/";
 
 export default new Vuex.Store({
     state: {
@@ -21,5 +23,5 @@ export default new Vuex.Store({
     getters,
     mutations,
     actions,
-    modules: { map, docs },
+    modules: { map, docs, auth },
 });

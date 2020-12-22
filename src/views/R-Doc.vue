@@ -72,7 +72,7 @@ export default {
         },
     },
     destroyed() {
-        this.$store.commit("CLEAR_READ_DOC");
+        this.$store.commit("docs/CLEAR_READ_DOC");
     },
 };
 </script>

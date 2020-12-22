@@ -8,7 +8,7 @@
         <span
             class="clearDate"
             v-if="picked.month != '00'"
-            @click="$store.commit('CLEAR_DATE')"
+            @click="$store.commit('docs/CLEAR_DATE')"
         >
             <i class="fas fa-times"></i>
         </span>
@@ -91,6 +91,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 const calendar = {
     curentType: 0,
     curentName: "قمری",
@@ -218,6 +220,7 @@ export default {
         },
     },
     methods: {
+        ...mapMutations("docs", ["ADD_DATE"]),
         changeType() {
             const type = this.calendar;
             if (type.curentType < type.types.length - 1) {
@@ -247,7 +250,7 @@ export default {
             }
         },
         async pickCentury(century) {
-            this.$store.commit("ADD_DATE", { century });
+            this.ADD_DATE({ century });
             await this.fillYears();
             this.changePage("years");
         },
@@ -260,9 +263,7 @@ export default {
             }
         },
         pickYear(year) {
-            this.$store.commit("ADD_DATE", {
-                year: year.toString(),
-            });
+            this.ADD_DATE({ year: year.toString() });
             this.changePage("months");
         },
         zeroCheck(num) {
@@ -273,11 +274,11 @@ export default {
         pickMonth(index) {
             this.calendar.curentMonthIndex = index;
             const num = index + 1;
-            this.$store.commit("ADD_DATE", { month: this.zeroCheck(num) });
+            this.ADD_DATE({ month: this.zeroCheck(num) });
             this.changePage("days");
         },
         async pickDay(day) {
-            this.$store.commit("ADD_DATE", { day: this.zeroCheck(day) });
+            this.ADD_DATE({ day: this.zeroCheck(day) });
             this.hidePicker();
             setTimeout(() => {
                 this.changePage("centurys");

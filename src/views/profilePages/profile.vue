@@ -86,10 +86,10 @@ export default {
     name: "Profile",
     computed: {
         user() {
-            return this.$store.state.user;
+            return this.$store.state.auth.user;
         },
         profile() {
-            return this.$store.state.profilePage;
+            return this.$store.state.docs.profilePage;
         },
         avatar() {
             const avatar = this.profile.user.avatar;
@@ -99,7 +99,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions([
+        ...mapActions("docs", [
             "getUserDocs",
             "addNewDoc",
             "Delete_this_Document",

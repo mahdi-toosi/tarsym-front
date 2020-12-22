@@ -26,6 +26,7 @@
 
 <script>
 import VSelect from "vue-select";
+
 export default {
     data() {
         return {
@@ -53,7 +54,7 @@ export default {
             let filteredData = [];
             if (!searchedData.length) return filteredData;
             await searchedData.forEach((data) => {
-                const newDocs = this.$store.state.newDocs;
+                const newDocs = this.$store.state.docs.newDocs;
                 const alreadyThere = newDocs.filter(
                     (doc) => doc._id == data._id
                 );
@@ -64,10 +65,10 @@ export default {
         async addChild() {
             if (this.searchedDoc._id) {
                 await this.$store.dispatch(
-                    "addExistingDoc",
+                    "docs/addExistingDoc",
                     this.searchedDoc._id
                 );
-            } else await this.$store.dispatch("addNewDoc", false);
+            } else await this.$store.dispatch("docs/addNewDoc", false);
             this.$emit("childAdded");
             this.searchedDoc = [];
         },
@@ -77,9 +78,7 @@ export default {
             this.searchRequest(search, loading, this);
         },
     },
-    components: {
-        VSelect,
-    },
+    components: { VSelect },
 };
 function debounce(func, wait, immediate) {
     var timeout;

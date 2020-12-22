@@ -1,5 +1,5 @@
 // const CompressionPlugin = require('compression-webpack-plugin');
-// const FileManagerPlugin = require("filemanager-webpack-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 module.exports = {
     publicPath: process.env.NODE_ENV === "production" ? "/statics/" : "/",
@@ -34,14 +34,14 @@ module.exports = {
         //         },
         //     },
         plugins: [
-            // new FileManagerPlugin({
-            //     events: {
-            //         onEnd: {
-            //             delete: ["./statics.zip"],
-            //             archive: [{ source: "statics", destination: "statics.zip" }],
-            //         },
-            //     },
-            // }),
+            new FileManagerPlugin({
+                events: {
+                    onEnd: {
+                        delete: ["./statics.zip"],
+                        archive: [{ source: "statics", destination: "statics.zip" }],
+                    },
+                },
+            }),
         ],
     },
 };

@@ -92,7 +92,7 @@ export default {
                 index: this.index,
                 secondaryColor: this.secondaryColor,
             };
-            this.$store.commit("ADD_COLOR", data);
+            this.$store.commit("docs/ADD_COLOR", data);
         },
         childChange(data) {
             this.colorChange(data);
@@ -125,10 +125,6 @@ export default {
                 this.hidePicker();
             }
         },
-    },
-    mounted() {
-        // const color = this.colors.hex8;
-        // this.ADD_COLOR(this.colors);
     },
 };
 </script>

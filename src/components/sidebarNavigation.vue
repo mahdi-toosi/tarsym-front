@@ -20,7 +20,7 @@
                 >
                     {{ nav.name }} <i :class="nav.icon"></i>
                 </router-link>
-                <li @click="$store.commit('LOGOUT')">
+                <li @click="$store.dispatch('auth/logout')">
                     خروج
                     <i class="fas fa-sign-out-alt"></i>
                 </li>
@@ -38,7 +38,7 @@ export default {
     },
     computed: {
         user() {
-            return this.$store.state.user;
+            return this.$store.state.auth.user;
         },
         routes() {
             const username = this.user.username;

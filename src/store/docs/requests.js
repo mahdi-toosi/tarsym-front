@@ -132,7 +132,7 @@ export default {
         const decoded_docs = await dispatch("decode_the_docs", { docs });
         docs.data = decoded_docs;
 
-        await commit("SET_DOCS_TO", { decoded_docs: docs, list: "allDocs", merge: false });
+        await commit("SET_DOCS_TO", { decoded_docs: docs, list: "vitrineDocs", merge: false });
     },
     // !  get_this_docs
     async get_this_docs({ dispatch }, doc_ids) {
@@ -175,7 +175,7 @@ export default {
             await dispatch("get_all_childs", decode_doc || doc);
         } else {
             Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
-            dispatch("logout", `/profile/${user.username}`);
+            dispatch("auth/logout", `/profile/${user.username}`, { root: true });
         }
     },
     // ! get_all_childs
@@ -204,8 +204,8 @@ export default {
         let doc, already_Decoded, decoded_docs;
 
         // * set doc if already exist in state
-        if (state.allDocs.data.length) {
-            doc = await state.allDocs.data.filter((doc) => doc._id === _id)[0];
+        if (state.vitrineDocs.data.length) {
+            doc = await state.vitrineDocs.data.filter((doc) => doc._id === _id)[0];
             if (doc) already_Decoded = true;
         }
         if (!doc && state.readDoc.length) {
@@ -222,7 +222,7 @@ export default {
 
         dispatch("flyToThisDoc", decoded_docs ? decoded_docs[0] : doc);
 
-        await commit("CHANGE_MAP_LAYERS");
+        await dispatch("change_map_layers", null, { root: true });
 
         // * get childs , if have any
         if (!doc.childs_id.length) return;
@@ -248,11 +248,11 @@ export default {
         return result;
     },
     // !  get_User_Cat_and_Tags
-    async get_User_Taxonomies({ state, dispatch }) {
+    async get_User_Taxonomies({ dispatch, rootState }) {
         const options = {
             params: {
                 root: true,
-                "user._id": state.user._id,
+                "user._id": rootState.auth.user._id,
                 $select: ["tags", "categories"],
             },
         };
@@ -264,5 +264,25 @@ export default {
                 return false;
             });
         return taxonomies;
+    },
+    // !  searchData
+    async searchData(store) {
+        const route = router.currentRoute;
+        const url = "/searchInDocs";
+        const options = {
+            params: {},
+        };
+        if (route.query.area) options.params.area = route.query.area;
+        if (route.query.text) options.params.text = route.query.text;
+        await axios
+            .get(url, options)
+            .then((response) => console.log("response.data => ", response.data))
+            .catch((error) => {
+                if (error == "Error: Request failed with status code 415") {
+                    Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
+                    return;
+                }
+                store.dispatch("handleAxiosError", error);
+            });
     },
 };

@@ -34,15 +34,15 @@ export default {
     mutations: {
         ...mu_tools,
         UPDATE_ZOOM(state, zoom) {
-            if (!isEditMode) return;
+            if (!isEditMode()) return;
             docLayer(state).map_animate.zoom = zoom;
         },
         UPDATE_CENTER(state, center) {
-            if (!isEditMode) return;
+            if (!isEditMode()) return;
             docLayer(state).map_animate.coordinates = center;
         },
         UPDATE_LAYER(state, layerIndex) {
-            if (!isEditMode) return;
+            if (!isEditMode()) return;
             docLayer(state).map_animate.layerIndex = layerIndex;
         },
         ADD_TAXONOMY(state, { $event, cats }) {
@@ -57,7 +57,7 @@ export default {
         SET_ZOOM_LEVEL(state, val) {
             state.newDocs[0].zoomLevel = val;
         },
-        SET_NEW_DOCUMENT(state, { fake_id, root, date_props }) {
+        SET_NEW_DOCUMENT(state, { fake_id, root, date_props, map }) {
             const newDocObj = {
                 _id: fake_id,
                 title: "",
@@ -71,9 +71,9 @@ export default {
                 },
                 childs_id: [],
                 map_animate: {
-                    zoom: state.map.zoom,
-                    layerIndex: state.map.layerIndex,
-                    coordinates: state.map.center,
+                    zoom: map.zoom,
+                    layerIndex: map.layerIndex,
+                    coordinates: map.center,
                 },
             };
             if (root) {
@@ -216,7 +216,7 @@ export default {
             remove_id_from_childs();
         },
         SET_User_to_Profile(state, user) {
-            state.docs.profilePage.user = user;
+            state.profilePage.user = user;
         },
     },
 };

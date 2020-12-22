@@ -222,16 +222,13 @@ export default {
         };
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations("docs", [
             "CLEAR_NEW_DOC",
-            "SET_Taxonomie_in_Doc",
             "DRAG_TOOL_UPDATE",
             "UPDATE_ON_TOOL",
+            "ADD_TAXONOMY",
         ]),
-        ...mapMutations({
-            ADD_TAXONOMY: "docs/ADD_TAXONOMY",
-        }),
-        ...mapActions([
+        ...mapActions("docs", [
             "Create_or_Update_Documents",
             "addNewDoc",
             "goBackToParent",
@@ -296,7 +293,7 @@ export default {
             this.quillInstance.setSelection(currentIndex + 1, 0);
         },
         lastAddedDocID() {
-            const Docs = this.$store.state.newDocs;
+            const Docs = this.newDocs;
             if (Docs.length) {
                 const lastDoc = Docs[Docs.length - 1];
                 return lastDoc._id;
@@ -323,7 +320,11 @@ export default {
         // },
     },
     computed: {
-        ...mapState(["newDocs", "DocProp", "user"]),
+        ...mapState({
+            newDocs: (state) => state.docs.newDocs,
+            DocProp: (state) => state.docs.DocProp,
+            user: (state) => state.auth.user,
+        }),
         ...mapGetters(["DocLayer"]),
         DocTools: {
             get() {

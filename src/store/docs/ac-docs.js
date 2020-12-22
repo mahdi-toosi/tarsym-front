@@ -43,15 +43,12 @@ export default {
         });
     },
     // ! addNewDoc
-    async addNewDoc({ commit, state, dispatch }, root = true) {
+    async addNewDoc({ commit, state, dispatch, rootState }, root = true) {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
 
         const fake_id = new Date().getTime();
-        const payload = {
-            fake_id,
-            root,
-        };
+        const payload = { fake_id, root, map: rootState.map };
         if (!root) {
             const father_doc = docLayer(state);
             father_doc.childs_id.push(fake_id);
@@ -59,7 +56,7 @@ export default {
         }
         commit("SET_NEW_DOCUMENT", payload);
 
-        const path = `/${state.route.name == "update doc" ? "update" : "create"}/${fake_id}`;
+        const path = `/${rootState.route.name == "update doc" ? "update" : "create"}/${fake_id}`;
         await router.push(path);
 
         if (root) await dispatch("setTool", "Point");

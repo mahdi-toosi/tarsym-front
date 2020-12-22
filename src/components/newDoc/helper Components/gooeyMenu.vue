@@ -78,12 +78,9 @@
 export default {
     methods: {
         async setTool(tool) {
-            await this.$store.dispatch("setTool", tool);
+            await this.$store.dispatch("docs/setTool", tool);
             document.getElementById("menu-open").checked = false;
         },
     },
 };
 </script>
-
-<style>
-</style>
