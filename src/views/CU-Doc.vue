@@ -34,7 +34,7 @@
                 <v-select
                     :options="validCats"
                     :value="DocLayer.categories"
-                    @input="SET_Taxonomie_in_Doc({ $event, cats: true })"
+                    @input="ADD_TAXONOMY({ $event, cats: true })"
                     placeholder="دسته بندی ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -66,7 +66,7 @@
                 <v-select
                     :options="taxonomies.tags"
                     :value="DocLayer.tags"
-                    @input="SET_Taxonomie_in_Doc({ $event, cats: false })"
+                    @input="ADD_TAXONOMY({ $event, cats: false })"
                     placeholder="تگ ..."
                     multiple
                     :taggable="35 <= user.role"
@@ -228,6 +228,9 @@ export default {
             "DRAG_TOOL_UPDATE",
             "UPDATE_ON_TOOL",
         ]),
+        ...mapMutations({
+            ADD_TAXONOMY: "docs/ADD_TAXONOMY",
+        }),
         ...mapActions([
             "Create_or_Update_Documents",
             "addNewDoc",

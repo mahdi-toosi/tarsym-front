@@ -43,7 +43,7 @@ export default {
     methods: {
         ...mapActions(["goToChild", "Delete_this_Document"]),
         changeVisibility(_id) {
-            this.$store.commit("CHANGE_VISIBILITY_FOR_THIS_DOC", _id);
+            this.$store.commit("docs/CHANGE_VISIBILITY_doc", _id);
         },
         goToThisChildMethod(_id) {
             if (this.$route.params._id == _id) return;

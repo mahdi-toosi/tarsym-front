@@ -2,10 +2,10 @@ export default {
     docs_list: (state) => {
         const routeName = state.route.name;
         if (["all docs", "list Docs with tag", "list Docs with category"].includes(routeName))
-            return state.allDocs.data || [];
-        else if (routeName === "read doc") return state.readDoc || [];
-        else if (routeName === "profile") return state.profilePage.docs.data || [];
-        else if (routeName === "update doc" || routeName === "create doc") return state.newDocs || [];
+            return state.docs.vitrineDocs.data || [];
+        else if (routeName === "read doc") return state.docs.readDoc || [];
+        else if (routeName === "profile") return state.docs.profilePage.docs.data || [];
+        else if (routeName === "update doc" || routeName === "create doc") return state.docs.newDocs || [];
         else return [];
     },
     DocWithChildsTools: (state, getters) => {
@@ -25,9 +25,9 @@ export default {
             });
             return tools;
         } else if (EditRoutes) {
-            if (state.newDocs[0].zoomLevel <= map_ZL) {
-                const invisibleDocs = state.DocProp.invisibleDocs;
-                state.newDocs.forEach((doc) => {
+            if (state.docs.newDocs[0].zoomLevel <= map_ZL) {
+                const invisibleDocs = state.docs.DocProp.invisibleDocs;
+                state.docs.newDocs.forEach((doc) => {
                     if (invisibleDocs && invisibleDocs.includes(doc._id)) return;
                     let thisDocTools = doc.tools;
                     thisDocTools.forEach((tool) => (tool._id = doc._id));
@@ -70,6 +70,6 @@ export default {
         return All_childs;
     },
     tooltipData: (state, getters) => (index) => getters.DocLayer.tools[index].tooltip,
-    isAuthenticated: (state) => state.user.username,
-    DocLayer: (state, getters) => getters.docs_list[state.DocProp.index],
+    isAuthenticated: (state) => state.auth.user.username,
+    DocLayer: (state, getters) => getters.docs_list[state.docs.DocProp.index],
 };

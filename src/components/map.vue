@@ -6,9 +6,9 @@
             :zoom="map.zoom"
             :center="map.center"
             @click="setClickCoordinates"
-            @update:zoom="UPDATE_MAP_ZOOM"
+            @update:zoom="update_zoom"
             :options="{ zoomControl: false }"
-            @update:center="UPDATE_MAP_CENTER"
+            @update:center="update_center"
             @mousemove="setMouseCoordinate"
             :minZoom="4"
             ref="LeafletMap"
@@ -250,7 +250,7 @@ import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHea
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
-import { mapMutations, mapState, mapGetters } from "vuex";
+import { mapMutations, mapState, mapGetters, mapActions } from "vuex";
 export default {
     name: "Map",
     data() {
@@ -326,12 +326,8 @@ export default {
         },
     },
     methods: {
-        ...mapMutations([
-            "UPDATE_MAP_CENTER",
-            "UPDATE_THIS_POINT_COORDINATE",
-            "CHANGE_LAYER_INDEX",
-            "UPDATE_MAP_ZOOM",
-        ]),
+        ...mapMutations(["UPDATE_THIS_POINT_COORDINATE"]),
+        ...mapActions(["update_zoom", "update_center", "update_layer"]),
         dynamicSize(iconSize) {
             return [iconSize, iconSize * 1.15];
         },
@@ -397,6 +393,8 @@ export default {
         // },
     },
     mounted() {
+        console.log({ store: this.$store });
+
         const mapObject = this.$refs.LeafletMap.mapObject;
         L.easyPrint({
             position: "bottomleft",
@@ -422,7 +420,7 @@ export default {
             const layerIndex = this.map.tileProviders.findIndex(
                 (el) => el.name === Layer.name
             );
-            this.CHANGE_LAYER_INDEX(layerIndex);
+            this.update_layer(layerIndex);
         });
 
         // * edit search in map
