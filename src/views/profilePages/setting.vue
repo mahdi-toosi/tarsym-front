@@ -102,10 +102,11 @@ export default {
     methods: {
         async updateUserData() {
             if (!this.validateSignupForm()) return;
-            const { _id, city, job, nationalCode, role } = this.user;
+            const { _id, name, city, job, nationalCode, role } = this.user;
             await this.$axios
                 .patch(`/users/${_id}`, {
                     _id,
+                    name,
                     city,
                     job,
                     nationalCode,
