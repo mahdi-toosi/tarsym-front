@@ -133,10 +133,9 @@ export default {
             if (state.DocProp._id == fakeID) state.DocProp._id = _id;
         },
         UPDATE_DOC_INDEX(state) {
-            // TODO => can you use state.route ? 👇👇
-            const doc_id = router.currentRoute.params._id;
-            const routeName = router.currentRoute.name;
-            const Docs = routeName === "read doc" ? state.readDoc : state.newDocs;
+            const route = router.currentRoute;
+            const Docs = route.name === "read doc" ? state.readDoc : state.newDocs;
+            const doc_id = route.params._id;
             const index = Docs.findIndex((obj) => obj._id == doc_id); // * should be == (for make number to string)
 
             state.DocProp.index = index;

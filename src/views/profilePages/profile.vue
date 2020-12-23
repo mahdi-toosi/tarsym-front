@@ -86,7 +86,7 @@ export default {
     name: "Profile",
     computed: {
         user() {
-            return this.$store.state.auth.user;
+            return this.$store.state.user;
         },
         profile() {
             return this.$store.state.docs.profilePage;

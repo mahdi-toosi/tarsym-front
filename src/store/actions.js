@@ -1,5 +1,6 @@
 import Vue from "vue";
 import router from "../router";
+import axios from "axios";
 
 export default {
     update_zoom({ commit }, zoom) {
@@ -14,12 +15,12 @@ export default {
         commit("map/UPDATE_LAYER", layerIndex);
         commit("docs/UPDATE_LAYER", layerIndex);
     },
-    change_map_layers({ commit, state }, mainMap) {
+    change_map_layers({ commit, state, rootState }, mainMap) {
         if (mainMap) {
             commit("map/SET_MAIN_LAYER");
             return;
         }
-        const docs = router.currentRoute.name === "read doc" ? state.docs.readDoc : state.docs.newDocs;
+        const docs = rootState.route.name === "read doc" ? state.docs.readDoc : state.docs.newDocs;
         const doc = docs[state.docs.DocProp.index];
         if (!doc) return;
 
@@ -36,12 +37,73 @@ export default {
         else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ...";
         else if (error == "Error: Request failed with status code 401") {
             // msg = "نام کاربری یا رمز عبور اشتباه است"
-            dispatch("auth/logout");
+            dispatch("logout");
         } else {
             msg = error;
             // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
             console.log("request get error => ", msg);
         }
         Vue.toasted.error(msg);
+    },
+    async login({ dispatch, commit }, user) {
+        const data = {
+            strategy: "local",
+            ...user,
+        };
+
+        await axios
+            .post("/authentication", data)
+            .then(async (res) => {
+                // * suspension
+                if (res.data.user.role === 1) {
+                    Vue.toasted.error("در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده");
+                    return;
+                }
+
+                await dispatch("addDataToAxiosAndLocalStorage", res.data);
+
+                await router.push(router.currentRoute.query.redirect || "/");
+
+                commit("SHOW_SIDEBAR", null, { root: true });
+            })
+            .catch((error) => {
+                if (error == "Error: Request failed with status code 401") {
+                    Vue.toasted.error("نام کاربری یا رمز عبور اشتباه است ...");
+                    return;
+                }
+                dispatch("handleAxiosError", error, { root: true });
+            });
+    },
+    addDataToAxiosAndLocalStorage(store, data) {
+        // * clean the data
+        delete data.authentication;
+        ["createdAt", "updatedAt", "__v"].forEach((element) => {
+            delete data.user[element];
+        });
+        // * add Data To Axios And Local Storage
+        const day = 60 * 60 * 1000 * 24; //* 24 hours
+        data.expire = new Date().getTime() + day;
+        localStorage.setItem("sjufNEbjDmE", JSON.stringify(data)); //* sjufNEbjDmE = userData
+        localStorage.setItem("kemskDJobjgR", data.accessToken); //* kemskDJobjgR = access key
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
+    },
+    async signup({ dispatch }, userData) {
+        await axios
+            .post("/users", userData)
+            .then(async () => await dispatch("login", userData))
+            .catch((error) => {
+                if (error == "Error: Request failed with status code 409") {
+                    Vue.toasted.error("نام کاربری قبلا به ثبت رسیده است");
+                    return;
+                }
+                dispatch("handleAxiosError", error, { root: true });
+            });
+    },
+    logout({ commit }, redirect) {
+        localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
+        localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
+        commit("CLEAR_USER");
+        router.push({ path: "/Auth", query: { redirect } });
+        commit("HIDE_SIDEBAR", null, { root: true });
     },
 };

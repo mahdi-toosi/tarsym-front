@@ -43,10 +43,8 @@ export default {
             } else commit("REMOVE_THIS_DOC", _id);
 
             // * redirect if need
-            //  TODO can you use state.route 👇
-            const route = rootState.route.name;
             const root_id = state.newDocs[0]._id;
-            const path = `/${route === "create doc" ? "create" : "update"}/${root_id}`;
+            const path = `/${rootState.route.name === "create doc" ? "create" : "update"}/${root_id}`;
             router.push(path);
             return;
         }
@@ -100,12 +98,12 @@ export default {
         if (!create_relationships) return;
 
         await commit("CLEAR_NEW_DOC");
-        await router.push(`/profile/${rootState.auth.user.username}`);
+        await router.push(`/profile/${rootState.user.username}`);
         Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`);
     },
     // !  getAllDocs
     async getAllDocs({ commit, dispatch, rootState }, taxonomies = {}) {
-        if (!rootState.auth.user.username) return; // if authenticated continue
+        if (!rootState.user.username) return; // if authenticated continue
 
         const options = {
             params: {
@@ -175,7 +173,7 @@ export default {
             await dispatch("get_all_childs", decode_doc || doc);
         } else {
             Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
-            dispatch("auth/logout", `/profile/${user.username}`, { root: true });
+            dispatch("logout", `/profile/${user.username}`, { root: true });
         }
     },
     // ! get_all_childs
@@ -198,9 +196,8 @@ export default {
         await commit("SET_DOCS_TO", { decoded_docs: decoded_childs, list: "newDocs", merge: true });
     },
     // !  read_this_doc
-    async read_this_doc({ state, commit, dispatch }, id) {
-        // TODO can you use state.route ? 👇
-        const _id = id || router.currentRoute.params._id;
+    async read_this_doc({ state, commit, dispatch, rootState }, id) {
+        const _id = id || rootState.route.params._id;
         let doc, already_Decoded, decoded_docs;
 
         // * set doc if already exist in state
@@ -252,7 +249,7 @@ export default {
         const options = {
             params: {
                 root: true,
-                "user._id": rootState.auth.user._id,
+                "user._id": rootState.user._id,
                 $select: ["tags", "categories"],
             },
         };
@@ -260,29 +257,24 @@ export default {
             .get("/documents", options)
             .then((res) => res.data.data)
             .catch((error) => {
-                dispatch("handleAxiosError", error);
+                dispatch("handleAxiosError", error, { root: true });
                 return false;
             });
         return taxonomies;
     },
     // !  searchData
-    async searchData(store) {
-        const route = router.currentRoute;
+    async searchData({ dispatch, rootState }) {
+        const queries = rootState.route.query;
         const url = "/searchInDocs";
-        const options = {
-            params: {},
-        };
-        if (route.query.area) options.params.area = route.query.area;
-        if (route.query.text) options.params.text = route.query.text;
         await axios
-            .get(url, options)
-            .then((response) => console.log("response.data => ", response.data))
+            .get(url, { params: { ...queries } })
+            .then((res) => console.log("res.data => ", res.data))
             .catch((error) => {
                 if (error == "Error: Request failed with status code 415") {
                     Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
                     return;
                 }
-                store.dispatch("handleAxiosError", error);
+                dispatch("handleAxiosError", error, { root: true });
             });
     },
 };

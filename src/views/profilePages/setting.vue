@@ -173,7 +173,7 @@ export default {
                 .then(() => {
                     this.$toasted.success("پسورد با موفقیت تغییر کرد");
                     this.$store.dispatch(
-                        "auth/logout",
+                        "logout",
                         `/profile/${this.user.username}`
                     );
                 })
@@ -211,11 +211,11 @@ export default {
         },
         updateUser(data) {
             this.user = { ...this.user, ...data };
-            this.$store.commit("auth/UPDATE_USER", data);
+            this.$store.commit("UPDATE_USER", data);
         },
     },
     mounted() {
-        this.user = { ...this.user, ...this.$store.state.auth.user };
+        this.user = { ...this.user, ...this.$store.state.user };
         delete this.user.accessToken;
         const routeUsername = this.$router.currentRoute.params.username;
         if (this.user.username !== routeUsername)

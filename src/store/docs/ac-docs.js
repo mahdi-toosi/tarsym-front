@@ -82,21 +82,21 @@ export default {
         await router.push(path);
     },
     // ! goBackToParent
-    async goBackToParent({ state, commit }) {
+    async goBackToParent({ state, commit, rootState }) {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
 
         const doc_id = state.DocProp._id;
         const father = await state.newDocs.filter((el) => el.childs_id.includes(doc_id))[0];
-        const path = `/${state.route.name == "create doc" ? "create" : "update"}/${father._id}`;
+        const path = `/${rootState.route.name == "create doc" ? "create" : "update"}/${father._id}`;
         await router.push(path);
     },
     // ! goToChild
-    async goToChild({ commit }, _id) {
+    async goToChild({ commit, rootState }, _id) {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
 
-        const routeName = router.currentRoute.name;
+        const routeName = rootState.route.name;
         const path = `/${routeName == "create doc" ? "create" : "update"}/${_id}`;
         await router.push(path);
         return;
@@ -133,7 +133,7 @@ export default {
         return list;
     },
     // !  is_this_Doc_valid
-    is_this_Doc_valid({ commit }, docLayer) {
+    is_this_Doc_valid({ commit, rootState }, docLayer) {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
 
@@ -143,7 +143,7 @@ export default {
             description = docLayer.description.length > 20,
             tools = docLayer.tools.length,
             date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
-            currentRoute = router.currentRoute;
+            route = rootState.route;
 
         if (!title) errors.push("عنوان کافی نیست");
         if (!description) errors.push("توضیحات کافی نیست");
@@ -168,8 +168,7 @@ export default {
                 {
                     text: "داکیومنت",
                     onClick: async (e, toastObject) => {
-                        const routeName = currentRoute.name;
-                        const path = `/${routeName == "create doc" ? "create" : "update"}/${docLayer._id}`;
+                        const path = `/${route.name == "create doc" ? "create" : "update"}/${docLayer._id}`;
                         await router.push(path);
                         toastObject.goAway(0);
                     },
@@ -177,7 +176,7 @@ export default {
             ];
             errors.forEach((msg) => {
                 Vue.toasted.error(msg, {
-                    action: currentRoute.params._id == docLayer._id ? [] : action,
+                    action: route.params._id == docLayer._id ? [] : action,
                 });
             });
             return false;

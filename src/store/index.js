@@ -8,7 +8,6 @@ import mutations from "./mutations";
 
 import map from "./map/";
 import docs from "./docs/";
-import auth from "./auth/";
 
 export default new Vuex.Store({
     state: {
@@ -19,9 +18,10 @@ export default new Vuex.Store({
             isOn: false,
         },
         showSidebarNav: false,
+        user: {},
     },
     getters,
     mutations,
     actions,
-    modules: { map, docs, auth },
+    modules: { map, docs },
 });

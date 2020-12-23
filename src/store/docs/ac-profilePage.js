@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
     // !  setUserProfileAndGet_id
     async setUserProfileAndGet_id({ dispatch, commit, rootState }, username) {
-        const currentUser = rootState.auth.user;
+        const currentUser = rootState.user;
         if (username === currentUser.username) {
             commit("SET_User_to_Profile", currentUser);
             return currentUser._id;

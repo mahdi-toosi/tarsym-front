@@ -29,7 +29,7 @@ export default {
     methods: {
         async login() {
             if (!this.validateLoginForm()) return;
-            this.$store.dispatch("auth/login", this.user);
+            this.$store.dispatch("login", this.user);
         },
         validateLoginForm() {
             const user = this.user;

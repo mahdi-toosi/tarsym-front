@@ -323,7 +323,7 @@ export default {
         ...mapState({
             newDocs: (state) => state.docs.newDocs,
             DocProp: (state) => state.docs.DocProp,
-            user: (state) => state.auth.user,
+            user: (state) => state.user,
         }),
         ...mapGetters(["DocLayer"]),
         DocTools: {
