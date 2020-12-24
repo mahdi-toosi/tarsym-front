@@ -48,7 +48,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions("docs", ["goToChild", "Delete_this_Document"]),
+        ...mapActions("docs", ["goToChild"]),
         changeVisibility(_id) {
             this.$store.commit("docs/CHANGE_VISIBILITY_doc", _id);
         },
@@ -56,9 +56,6 @@ export default {
             if (this.$route.params._id == _id) return;
             this.goToChild(_id);
             this.$emit("childClicked");
-        },
-        async delete_this_child(child_id) {
-            await this.Delete_this_Document(child_id);
         },
     },
 };

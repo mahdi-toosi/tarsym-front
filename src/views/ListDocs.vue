@@ -60,18 +60,16 @@ export default {
     methods: {
         ...mapActions("docs", ["getAllDocs", "searchData"]),
         filterdate(val) {
-            const day = String(val).slice(-2);
-            const month = String(val).slice(-4, -2);
-            const year = String(val).slice(0, -4);
-
-            const JustYear = `<span ${
-                /[-]/.test(year) ? "class='negetiveYear'" : ""
-            }>${year.replace(/[-]/gi, "")}</span>`;
-
-            const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
-
-            const date = month === "00" ? JustYear : FullDate;
-            return date + `<span> ه‍.ق</span>`;
+            return new Date(val).toLocaleDateString("fa-IR");
+            // const day = String(val).slice(-2);
+            // const month = String(val).slice(-4, -2);
+            // const year = String(val).slice(0, -4);
+            // const JustYear = `<span ${
+            //     /[-]/.test(year) ? "class='negetiveYear'" : ""
+            // }>${year.replace(/[-]/gi, "")}</span>`;
+            // const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
+            // const date = month === "00" ? JustYear : FullDate;
+            // return date + `<span> ه‍.ق</span>`;
         },
     },
     beforeRouteEnter(to, from, next) {

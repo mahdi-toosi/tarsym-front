@@ -1,3 +1,4 @@
+import webpack from "webpack";
 // const CompressionPlugin = require('compression-webpack-plugin');
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 
@@ -42,6 +43,7 @@ module.exports = {
                     },
                 },
             }),
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         ],
     },
 };

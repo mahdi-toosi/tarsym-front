@@ -9,7 +9,7 @@
             @update:zoom="update_zoom"
             :options="{ zoomControl: false }"
             @update:center="update_center"
-            @mousemove="UPDATE_MOUSE_COOR"
+            @mousemove="update_mouse_coor"
             :minZoom="4"
             ref="LeafletMap"
         >
@@ -335,6 +335,13 @@ export default {
         ...mapMutations("docs", ["UPDATE_THIS_POINT_COORDINATE"]),
         ...mapMutations("map", ["UPDATE_MOUSE_COOR"]),
         ...mapActions(["update_zoom", "update_center", "update_layer"]),
+        update_mouse_coor(obj) {
+            const editMode = ["update doc", "create doc"].includes(
+                this.$router.currentRoute.name
+            );
+            if (!editMode) return;
+            this.UPDATE_MOUSE_COOR(obj);
+        },
         dynamicSize(iconSize) {
             return [iconSize, iconSize * 1.15];
         },

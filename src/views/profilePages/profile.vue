@@ -57,7 +57,7 @@
                         <i class="far fa-edit"></i>
                     </button>
                     <button
-                        @click.stop="Delete_this_Document(doc._id)"
+                        @click.stop="Delete_this_Document({ doc, root: true })"
                         class="deleteDoc"
                         v-if="profile.user._id === user._id"
                     >
@@ -106,18 +106,19 @@ export default {
             "setUserProfileAndGet_id",
         ]),
         filterdate(val) {
-            const day = String(val).slice(-2);
-            const month = String(val).slice(-4, -2);
-            const year = String(val).slice(0, -4);
+            return new Date(val).toLocaleDateString("fa-IR");
+            // const day = String(val).slice(-2);
+            // const month = String(val).slice(-4, -2);
+            // const year = String(val).slice(0, -4);
 
-            const JustYear = `<span ${
-                /[-]/.test(year) ? "class='negetiveYear'" : ""
-            }>${year.replace(/[-]/gi, "")}</span>`;
+            // const JustYear = `<span ${
+            //     /[-]/.test(year) ? "class='negetiveYear'" : ""
+            // }>${year.replace(/[-]/gi, "")}</span>`;
 
-            const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
+            // const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
 
-            const date = month === "00" ? JustYear : FullDate;
-            return date + `<span> ه‍.ق</span>`;
+            // const date = month === "00" ? JustYear : FullDate;
+            // return date + `<span> ه‍.ق</span>`;
         },
     },
     beforeRouteEnter(to, from, next) {

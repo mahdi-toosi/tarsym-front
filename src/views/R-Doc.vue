@@ -57,18 +57,20 @@ export default {
             return window.history.length > 2;
         },
         filterdate(val) {
-            const day = String(val).slice(-2);
-            const month = String(val).slice(-4, -2);
-            const year = String(val).slice(0, -4);
+            return new Date(val).toLocaleDateString("fa-IR");
 
-            const JustYear = `<span ${
-                /[-]/.test(year) ? "class='negetiveYear'" : ""
-            }>${year.replace(/[-]/gi, "")}</span>`;
+            // const day = String(val).slice(-2);
+            // const month = String(val).slice(-4, -2);
+            // const year = String(val).slice(0, -4);
 
-            const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
+            // const JustYear = `<span ${
+            //     /[-]/.test(year) ? "class='negetiveYear'" : ""
+            // }>${year.replace(/[-]/gi, "")}</span>`;
 
-            const date = month === "00" ? JustYear : FullDate;
-            return date + `<span> ه‍.ق</span>`;
+            // const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
+
+            // const date = month === "00" ? JustYear : FullDate;
+            // return date + `<span> ه‍.ق</span>`;
         },
     },
     destroyed() {

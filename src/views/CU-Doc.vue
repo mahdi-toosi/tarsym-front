@@ -75,7 +75,12 @@
                     dir="rtl"
                     v-if="DocLayer.root"
                 />
-                <date-picker class="datepicker" />
+                <DatePicker
+                    v-model="date"
+                    format="YYYY-MM-DD"
+                    displayFormat="jYYYY/jMM/jDD"
+                    color="#00acc1"
+                />
             </section>
             <section class="tools shadow">
                 <br />
@@ -183,7 +188,8 @@ import NewPolygon from "@/components/newDoc/newPolygon";
 import NewPolyline from "@/components/newDoc/newPolyline";
 import NewTextBox from "@/components/newDoc/newTextBox";
 import NewHeatmap from "@/components/newDoc/newHeatmap";
-import datePicker from "@/components/newDoc/helper Components/datePicker";
+// import datePicker from "@/components/newDoc/helper Components/datePicker";
+import VuePersianDatetimePicker from "vue-persian-datetime-picker";
 import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
 import AddNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
 import LayersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
@@ -227,6 +233,9 @@ export default {
             "DRAG_TOOL_UPDATE",
             "UPDATE_ON_TOOL",
             "ADD_TAXONOMY",
+            "SET_DATE",
+            "SET_TITLE",
+            "SET_DESCRIPTION",
         ]),
         ...mapActions("docs", [
             "Create_or_Update_Documents",
@@ -335,12 +344,20 @@ export default {
                 this.UPDATE_ON_TOOL();
             },
         },
+        date: {
+            get() {
+                return this.DocLayer.date;
+            },
+            set(val) {
+                this.SET_DATE(val);
+            },
+        },
         newPointTitle: {
             get() {
                 return this.DocLayer.title;
             },
             set(val) {
-                this.DocLayer.title = val;
+                this.SET_TITLE(val);
             },
         },
         newPointDescription: {
@@ -348,7 +365,7 @@ export default {
                 return this.DocLayer.description;
             },
             set(val) {
-                this.DocLayer.description = val;
+                this.SET_DESCRIPTION(val);
             },
         },
         quillInstance() {
@@ -394,7 +411,7 @@ export default {
     },
     components: {
         vSelect,
-        datePicker,
+        DatePicker: VuePersianDatetimePicker,
         QuillEditor: quillEditor,
         Draggable,
         GooeyMenu,

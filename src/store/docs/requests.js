@@ -30,38 +30,50 @@ export default {
         return newID;
     },
     // !  Delete_this_Document
-    async Delete_this_Document({ state, commit, dispatch, rootState }, _id) {
+    async Delete_this_Document({ state, commit, dispatch }, { doc, root }) {
         const areYouSure = confirm("بابت حدف این داکیومنت مطمئنید ؟");
         if (!areYouSure) return;
-
-        if (typeof _id === "number") {
-            const doc = state.newDocs.filter((el) => el._id === _id)[0];
-
-            if (doc.childs_id.length) {
-                const remove_childs = confirm("این داکیومنت دارای داکیومنت زیرمجموعه میباشد، حذف شود؟");
-                if (remove_childs) commit("REMOVE_THIS_DOC", _id);
-            } else commit("REMOVE_THIS_DOC", _id);
-
+        if (doc.childs_id.length) {
+            const remove_children = confirm(
+                "این داکیومنت دارای داکیومنت زیرمجموعه میباشد، بابت حدف این داکیومنت مطمئنید ؟"
+            );
+            if (!remove_children) return;
+        }
+        if (typeof doc._id === "number") {
+            commit("REMOVE_THIS_DOC", doc._id);
             // * redirect if need
             const root_id = state.newDocs[0]._id;
-            const path = `/${rootState.route.name === "create doc" ? "create" : "update"}/${root_id}`;
+            const path = `/${router.currentRoute.name === "create doc" ? "create" : "update"}/${root_id}`;
             router.push(path);
             return;
         }
-        const remove_childs = confirm("در صورتی که این داکیومنت دارای زیرمجموعه باشد آنها هم حذف میشوند");
-        if (!remove_childs) return;
+        // should be before REMOVE_THIS_DOC mutation
+        const father_index = state.newDocs.findIndex((d) => d.childs_id.includes(doc._id));
 
-        const newID = await axios
-            .delete(`/documents/${_id}`)
-            .then((res) => {
-                commit("REMOVE_THIS_DOC", _id);
-                return res; // remember this set value for newID
+        const success = await axios
+            .delete(`/documents/${doc._id}`)
+            .then(() => {
+                commit("REMOVE_THIS_DOC", doc._id);
+                return true;
             })
             .catch((error) => {
+                if (error.response.data.message === "documents has 2 fathers") {
+                    commit("REMOVE_THIS_DOC", doc._id);
+                    return true;
+                }
                 dispatch("handleAxiosError", error, { root: true });
                 return false;
             });
-        return newID;
+
+        if (success && !root) {
+            const father = state.newDocs[father_index];
+            await axios
+                .patch(`/documents/${father._id}`, { childs_id: father.childs_id })
+                .then()
+                .catch((error) => {
+                    dispatch("handleAxiosError", error, { root: true });
+                });
+        }
     },
     // !  Create_or_Update_Documents
     async Create_or_Update_Documents({ state, dispatch, commit, rootState }) {
@@ -149,10 +161,10 @@ export default {
         return docs;
     },
     // !  get_this_doc_for_update
-    async get_this_doc_for_update({ state, commit, dispatch }, doc_id) {
+    async get_this_doc_for_update({ state, commit, dispatch, rootState }, doc_id) {
         let doc, already_Decoded, decode_doc;
         const profileDocs = state.profilePage.docs.data,
-            user = state.user;
+            user = rootState.user;
 
         if (profileDocs && profileDocs.length) {
             // * load from profile page
@@ -187,6 +199,8 @@ export default {
         for (let index = 0; index < childs_ids.length; index++) {
             const child_id = childs_ids[index];
             const child = await dispatch("get_this_docs", child_id);
+            if (!child) return;
+
             childs.push(child);
             child.childs_id.forEach((c_id) => childs_ids.push(c_id));
         }
@@ -196,8 +210,8 @@ export default {
         await commit("SET_DOCS_TO", { decoded_docs: decoded_childs, list: "newDocs", merge: true });
     },
     // !  read_this_doc
-    async read_this_doc({ state, commit, dispatch, rootState }, id) {
-        const _id = id || rootState.route.params._id;
+    async read_this_doc({ state, commit, dispatch }, id) {
+        const _id = id || router.currentRoute.params._id;
         let doc, already_Decoded, decoded_docs;
 
         // * set doc if already exist in state

@@ -45,6 +45,15 @@ export default {
             if (!isEditMode()) return;
             docLayer(state).map_animate.layerIndex = layerIndex;
         },
+        SET_TITLE(state, title) {
+            docLayer(state).title = title;
+        },
+        SET_DESCRIPTION(state, description) {
+            docLayer(state).description = description;
+        },
+        SET_DATE(state, date) {
+            docLayer(state).date = date;
+        },
         ADD_TAXONOMY(state, { $event, cats }) {
             if ($event.length && $event[$event.length - 1].length < 3) {
                 Vue.toasted.error(`${cats ? "دسته بندی" : "تگ"} باید حداقل 4 حرف داشته باشد`);
@@ -57,18 +66,28 @@ export default {
         SET_ZOOM_LEVEL(state, val) {
             state.newDocs[0].zoomLevel = val;
         },
-        SET_NEW_DOCUMENT(state, { fake_id, root, date_props, map }) {
-            const newDocObj = {
+        SET_NEW_DOCUMENT(
+            state,
+            {
+                fake_id,
+                root,
+                date,
+                // date_props,
+                map,
+            }
+        ) {
+            const newDoc = {
                 _id: fake_id,
                 title: "",
                 description: "",
                 tools: [],
-                date_props: date_props || {
-                    century: null,
-                    year: null,
-                    month: "00",
-                    day: "00",
-                },
+                date,
+                // date_props: date_props || {
+                //     century: null,
+                //     year: null,
+                //     month: "00",
+                //     day: "00",
+                // },
                 childs_id: [],
                 map_animate: {
                     zoom: map.zoom,
@@ -77,16 +96,16 @@ export default {
                 },
             };
             if (root) {
-                newDocObj.tags = [];
-                newDocObj.categories = [];
-                newDocObj.root = true;
-                newDocObj.zoomLevel = 4;
-                newDocObj.situation = "publish";
-                newDocObj.read = false;
-                newDocObj.star = false;
-                newDocObj.vitrine = false;
+                newDoc.tags = [];
+                newDoc.categories = [];
+                newDoc.root = true;
+                newDoc.zoomLevel = 4;
+                newDoc.situation = "publish";
+                newDoc.read = false;
+                newDoc.star = false;
+                newDoc.vitrine = false;
             }
-            state.newDocs.push(newDocObj);
+            state.newDocs.push(newDoc);
         },
         CLEAR_NEW_DOC(state) {
             state.newDocs = [];
@@ -179,12 +198,7 @@ export default {
             let Docs = state.newDocs;
             if (!Docs.length) return;
 
-            doc_index = Docs.findIndex(equal_id(_id));
-            if (doc_index === -1) return;
-
-            const doc = Docs[doc_index];
-
-            function remove_id_from_childs() {
+            function remove_id_from_father() {
                 for (let i = 0; i < Docs.length; i++) {
                     const doc = Docs[i];
                     const child_index = doc.childs_id.findIndex((child_id) => child_id === _id);
@@ -194,25 +208,29 @@ export default {
                 }
             }
 
+            doc_index = Docs.findIndex(equal_id(_id));
+            if (doc_index === -1) return;
+
+            const doc = Docs[doc_index];
+
             // * if dosent have child , just delete document and done
             if (!doc.childs_id.length) {
                 Docs.splice(doc_index, 1);
-                remove_id_from_childs();
-                return;
+                return remove_id_from_father();
             }
-            // * delete all of related
+            // * find all of related
             const childs_IDs = [doc._id];
             for (let index = 0; index < childs_IDs.length; index++) {
                 doc_index = Docs.findIndex(equal_id(childs_IDs[index]));
                 if (doc_index === -1) continue;
                 Docs[doc_index].childs_id.forEach((child_id) => childs_IDs.push(child_id));
             }
-            // * delete all of sons and grandsons in newDocs
+            // * delete all of related
             childs_IDs.forEach((id) => {
                 const doc_index = Docs.findIndex(equal_id(id));
                 if (doc_index !== -1) Docs.splice(doc_index, 1);
             });
-            remove_id_from_childs();
+            return remove_id_from_father();
         },
         SET_User_to_Profile(state, user) {
             state.profilePage.user = user;

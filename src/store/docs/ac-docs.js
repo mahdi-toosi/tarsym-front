@@ -52,11 +52,12 @@ export default {
         if (!root) {
             const father_doc = docLayer(state);
             father_doc.childs_id.push(fake_id);
-            payload.date_props = father_doc.date_props;
+            // payload.date_props = father_doc.date_props;
+            payload.date = father_doc.date;
         }
         commit("SET_NEW_DOCUMENT", payload);
 
-        const path = `/${rootState.route.name == "update doc" ? "update" : "create"}/${fake_id}`;
+        const path = `/${rootState.route.name === "update doc" ? "update" : "create"}/${fake_id}`;
         await router.push(path);
 
         if (root) await dispatch("setTool", "Point");
@@ -112,7 +113,7 @@ export default {
                 ...doc,
                 ...junk,
             };
-            decoded_Doc.date = decoded_Doc.date - 2000000;
+            // decoded_Doc.date = decoded_Doc.date - 2000000;
             if (deleteRoot && decoded_Doc.root) delete decoded_Doc.root;
             newData.push(decoded_Doc);
         });
@@ -138,17 +139,15 @@ export default {
         commit("UPDATE_ON_TOOL");
 
         let errors = [];
-        // validate conditions
+        // * validate conditions
         const title = docLayer.title.length > 5,
             description = docLayer.description.length > 20,
-            tools = docLayer.tools.length,
-            date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
+            // date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
             route = rootState.route;
 
         if (!title) errors.push("عنوان کافی نیست");
         if (!description) errors.push("توضیحات کافی نیست");
-        if (!date) errors.push("تاریخ انتخاب کنید");
-        if (!tools) errors.push("حداقل از یک ابزار استفاده کنید");
+        // if (!date) errors.push("تاریخ انتخاب کنید");
         if (docLayer.root) {
             //  IMC == Index Marker Coordinates
             const IMC = docLayer.tools[0].coordinates;
@@ -217,18 +216,18 @@ export default {
             if (tool.secondaryColor.hex8) tool.secondaryColor = tool.secondaryColor.hex8;
         });
 
-        // * make valid date for database
-        const year = doc.date_props.year,
-            month = doc.date_props.month,
-            day = doc.date_props.day;
-        doc.date = year + month + day;
-        doc.date = Number(doc.date) + 2 * 1000 * 1000;
+        // // * make valid date for database
+        // const year = doc.date_props.year,
+        //     month = doc.date_props.month,
+        //     day = doc.date_props.day;
+        // doc.date = year + month + day;
+        // doc.date = Number(doc.date) + 2 * 1000 * 1000;
 
         // *  make junk field
         const make_junk_with_this_items = [
             "tools",
             "imgsCount",
-            "date_props",
+            // "date_props",
             "description",
             "layerIndex",
             "map_animate",

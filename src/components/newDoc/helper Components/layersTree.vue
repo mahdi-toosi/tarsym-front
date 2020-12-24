@@ -18,7 +18,7 @@
                     "
                 ></i>
             </button>
-            <button @click="delete_this_child(child._id)" class="delete_button">
+            <button @click="delete_this_child(child)" class="delete_button">
                 <i class="far fa-trash-alt"></i>
             </button>
             <Layer-childs v-if="child.childs_id.length" :father="child" />
@@ -50,8 +50,8 @@ export default {
             this.goToChild(_id);
             this.$emit("childClicked");
         },
-        async delete_this_child(child_id) {
-            await this.Delete_this_Document(child_id);
+        async delete_this_child(child) {
+            await this.Delete_this_Document({ doc: child, root: false });
         },
     },
 };
