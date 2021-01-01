@@ -75,6 +75,28 @@ export default {
                 });
         }
     },
+    async delete_deletedImgs({ state, dispatch }) {
+        const Docs = state.newDocs;
+        const removedImgs = [];
+        //* prepared list
+        for (let index = 0; index < Docs.length; index++) {
+            const doc = Docs[index];
+            const addedImgs = [...doc.imgs];
+            const currentImgs = await dispatch("getAllDocImages", doc.description);
+            addedImgs.forEach((img) => {
+                if (!currentImgs.includes(img)) removedImgs.push(img);
+            });
+        }
+        console.log({ removedImgs });
+        //* delete from server if list have value
+        if (!removedImgs.length) return;
+        await axios
+            .post("/documents/remove/imgs", { removedImgs })
+            .then()
+            .catch((error) => {
+                dispatch("handleAxiosError", error, { root: true });
+            });
+    },
     // !  Create_or_Update_Documents
     async Create_or_Update_Documents({ state, dispatch, commit, rootState }) {
         const Docs = state.newDocs;
@@ -84,6 +106,7 @@ export default {
             const is_this_Doc_valid = await dispatch("is_this_Doc_valid", Docs[index]);
             if (!is_this_Doc_valid) return false;
         }
+        await dispatch("delete_deletedImgs");
         // * create or update documents
         for (let index = 0; index < Docs.length; index++) {
             const doc = Docs[index];
@@ -249,7 +272,7 @@ export default {
         if (!list.length) return true;
 
         const result = await axios
-            .post("/create/documents/relationship", list)
+            .post("/documents/create/relationship", list)
             .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });

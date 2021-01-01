@@ -102,21 +102,34 @@ export default {
         await router.push(path);
         return;
     },
+    // ! getAllDocImages
+    getAllDocImages(ctx, description) {
+        let regex = new RegExp('/UPLOADS/documents/(.*?)"', "gi"),
+            result,
+            imgs = [];
+        while ((result = regex.exec(description))) {
+            imgs.push(result[1]);
+        }
+        return imgs;
+    },
     // ! decode_the_docs
-    decode_the_docs(store, { docs, deleteRoot }) {
+    async decode_the_docs({ dispatch }, { docs, deleteRoot }) {
         const Docs = docs.data || docs;
         const newData = [];
-        Docs.forEach((doc) => {
+        for (let index = 0; index < Docs.length; index++) {
+            const doc = Docs[index];
             const junk = JSON.parse(doc.junk);
             delete doc.junk;
+            const imgs = await dispatch("getAllDocImages", junk.description);
             const decoded_Doc = {
                 ...doc,
+                imgs,
                 ...junk,
             };
             // decoded_Doc.date = decoded_Doc.date - 2000000;
             if (deleteRoot && decoded_Doc.root) delete decoded_Doc.root;
             newData.push(decoded_Doc);
-        });
+        }
         return newData;
     },
     // !  get_relationship_list
@@ -203,12 +216,6 @@ export default {
         excerpt = fakeElement.value;
         doc.excerpt = excerpt;
 
-        if (doc.root) {
-            // * count imgs in description
-            const imgs = doc.description.match(/<img/gm);
-            doc.imgsCount = (imgs || []).length;
-        }
-
         // * remove unnecessary items form tools
         doc.tools.forEach((tool) => {
             if (tool._id) delete tool._id;
@@ -226,10 +233,8 @@ export default {
         // *  make junk field
         const make_junk_with_this_items = [
             "tools",
-            "imgsCount",
             // "date_props",
             "description",
-            "layerIndex",
             "map_animate",
             "zoomLevel",
         ];

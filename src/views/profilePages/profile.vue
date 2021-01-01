@@ -67,9 +67,9 @@
                 <main v-text="doc.excerpt + ' ...'"></main>
                 <footer>
                     <ul>
-                        <li v-if="doc.imgsCount">
+                        <li v-if="doc.imgs.length">
                             <i class="far fa-images" />
-                            <span v-text="doc.imgsCount"></span>
+                            <span v-text="doc.imgs.length"></span>
                             تصویر
                         </li>
                     </ul>

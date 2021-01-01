@@ -236,6 +236,7 @@ export default {
             "SET_DATE",
             "SET_TITLE",
             "SET_DESCRIPTION",
+            "SET_IMG",
         ]),
         ...mapActions("docs", [
             "Create_or_Update_Documents",
@@ -260,18 +261,18 @@ export default {
                 return;
             }
             // create form data
-            const fd = new FormData();
+            const formData = new FormData();
             // just add file instance to form data normally
-            fd.append("docImage", file);
+            formData.append("docImage", file);
             // I use axios here, should be obvious enough
-            console.log("fd => ", fd);
             const response = await this.$axios
-                .post("/uploadDocImage", fd, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
+                .post("/uploadDocImage", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
                 })
-                .then((res) => res.data)
+                .then((res) => {
+                    this.SET_IMG(res.data);
+                    return res.data;
+                })
                 .catch((error) => {
                     this.$store.dispatch("handleAxiosError", error);
                     return false;
@@ -282,7 +283,6 @@ export default {
                 this.$toasted.error(msg);
                 return;
             }
-            console.log("response => ", response);
             // clear input value to make selecting the same image work
             event.target.value = "";
             // get current index of the cursor

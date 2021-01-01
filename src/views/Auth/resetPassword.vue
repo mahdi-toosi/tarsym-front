@@ -134,6 +134,7 @@ export default {
 
                 if (secondsLeft < 0) {
                     clearInterval(intervalTimer);
+                    this.resetPasswordPage = true;
                     return;
                 }
                 this.displayTimeLeft(secondsLeft);

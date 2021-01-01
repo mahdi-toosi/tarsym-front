@@ -1,4 +1,4 @@
-import webpack from "webpack";
+const webpack = require("webpack");
 // const CompressionPlugin = require('compression-webpack-plugin');
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 

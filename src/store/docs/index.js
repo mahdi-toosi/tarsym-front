@@ -82,6 +82,7 @@ export default {
                 description: "",
                 tools: [],
                 date,
+                imgs: [],
                 // date_props: date_props || {
                 //     century: null,
                 //     year: null,
@@ -234,6 +235,12 @@ export default {
         },
         SET_User_to_Profile(state, user) {
             state.profilePage.user = user;
+        },
+        SET_IMG(state, img) {
+            const split = img.url.split("/");
+            const imgName = split[split.length - 1];
+            docLayer(state).imgs.push(imgName);
+            console.log("doc imgs =>  ", docLayer(state).imgs);
         },
     },
 };
