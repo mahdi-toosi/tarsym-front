@@ -45,7 +45,7 @@ export default {
         }
         Vue.toasted.error(msg);
     },
-    async login({ dispatch, commit }, user) {
+    async login({ dispatch }, user) {
         const data = {
             strategy: "local",
             ...user,
@@ -56,15 +56,14 @@ export default {
             .then(async (res) => {
                 // * suspension
                 if (res.data.user.role === 1) {
-                    Vue.toasted.error("در حال حاضر اکانت شما توسط ادمین به حالت تعلیق در آمده");
+                    Vue.toasted.error("در حال حاضر حساب کاربری شما به حالت تعلیق در آمده");
                     return;
                 }
 
-                await dispatch("addDataToAxiosAndLocalStorage", res.data);
+                await dispatch("set_user_data", res.data);
 
-                await router.push(router.currentRoute.query.redirect || "/");
-
-                commit("SHOW_SIDEBAR", null, { root: true });
+                //  router.currentRoute.query.redirect ||
+                await router.push("/");
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 401") {
@@ -74,7 +73,7 @@ export default {
                 dispatch("handleAxiosError", error, { root: true });
             });
     },
-    addDataToAxiosAndLocalStorage(store, data) {
+    set_user_data({ commit }, data) {
         // * clean the data
         delete data.authentication;
         ["createdAt", "updatedAt", "__v"].forEach((element) => {
@@ -86,6 +85,9 @@ export default {
         localStorage.setItem("sjufNEbjDmE", JSON.stringify(data)); //* sjufNEbjDmE = userData
         localStorage.setItem("kemskDJobjgR", data.accessToken); //* kemskDJobjgR = access key
         axios.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
+
+        commit("SET_USER", data.user);
+        commit("SET_USER_ACCESS_TOKEN", data.accessToken);
     },
     async signup({ dispatch }, userData) {
         await axios
@@ -104,6 +106,5 @@ export default {
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         commit("CLEAR_USER");
         router.push({ path: "/Auth", query: { redirect } });
-        commit("HIDE_SIDEBAR", null, { root: true });
     },
 };

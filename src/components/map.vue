@@ -1,232 +1,231 @@
 <template>
-    <div>
-        <LMap
-            :icon="defaultIcon"
-            class="map"
-            :zoom="map.zoom"
-            :center="map.center"
-            @click="setClickCoordinates"
-            @update:zoom="update_zoom"
-            :options="{ zoomControl: false }"
-            @update:center="update_center"
-            @mousemove="update_mouse_coor"
-            :minZoom="4"
-            ref="LeafletMap"
-        >
-            <LControlLayers position="bottomright"></LControlLayers>
-            <LTileLayer
-                v-for="tileProvider in map.tileProviders"
-                :key="tileProvider.name"
-                :name="tileProvider.name"
-                :visible="tileProvider.visible"
-                :url="tileProvider.url"
-                layer-type="base"
-            />
+    <LMap
+        :icon="defaultIcon"
+        class="map"
+        :zoom="map.zoom"
+        :center="map.center"
+        @click="setClickCoordinates"
+        @update:zoom="update_zoom"
+        :options="{ zoomControl: false }"
+        @update:center="update_center"
+        @mousemove="update_mouse_coor"
+        :minZoom="4"
+        ref="LeafletMap"
+    >
+        <LTileLayer
+            v-for="tileProvider in map.tileProviders"
+            :key="tileProvider.name"
+            :name="tileProvider.name"
+            :visible="tileProvider.visible"
+            :url="tileProvider.url"
+            layer-type="base"
+        />
 
-            <div v-if="docs_list.length">
-                <div v-for="(tool, index) in DocWithChildsTools" :key="index">
-                    <div v-if="tool.type === 'Polygon'">
-                        <LPolygon
-                            :lat-lngs="polygonOrPolylineSimolationCoordinates"
-                            v-if="tool.isOn"
-                            :dashArray="'10,10'"
-                            :opacity="0.5"
-                            :color="tool.color.hex8 || tool.color"
-                            :fill="false"
-                        />
-                        <LPolygon
-                            :fillOpacity="0.4"
-                            :fillColor="
-                                tool.secondaryColor.hex8 || tool.secondaryColor
-                            "
-                            :color="tool.color.hex8 || tool.color"
-                            :lat-lngs="tool.coordinates"
-                            @click="goToThisDoc(tool._id)"
-                            :visible="tool.visible"
-                        >
-                            <LTooltip v-if="tool.tooltip">
-                                {{ tool.tooltip }}
-                            </LTooltip>
-                        </LPolygon>
-                    </div>
-                    <!-- end Polygon -->
-                    <div v-if="tool.type === 'Polyline'">
-                        <LPolyline
-                            :lat-lngs="polygonOrPolylineSimolationCoordinates"
-                            :color="tool.color.hex8 || tool.color"
-                            v-if="tool.isOn"
-                            :dashArray="'10,10'"
-                            :opacity="0.5"
-                            :fill="false"
-                        />
-                        <!-- <LMarker
+        <div v-if="docs_list.length">
+            <div v-for="(tool, index) in DocWithChildsTools" :key="index">
+                <div v-if="tool.type === 'Polygon'">
+                    <LPolygon
+                        :lat-lngs="polygonOrPolylineSimolationCoordinates"
+                        v-if="tool.isOn"
+                        :dashArray="'10,10'"
+                        :opacity="0.5"
+                        :color="tool.color.hex8 || tool.color"
+                        :fill="false"
+                    />
+                    <LPolygon
+                        :fillOpacity="0.4"
+                        :fillColor="
+                            tool.secondaryColor.hex8 || tool.secondaryColor
+                        "
+                        :color="tool.color.hex8 || tool.color"
+                        :lat-lngs="tool.coordinates"
+                        @click="goToThisDoc(tool._id)"
+                        :visible="tool.visible"
+                    >
+                        <LTooltip v-if="tool.tooltip">
+                            {{ tool.tooltip }}
+                        </LTooltip>
+                    </LPolygon>
+                </div>
+                <!-- end Polygon -->
+                <div v-if="tool.type === 'Polyline'">
+                    <LPolyline
+                        :lat-lngs="polygonOrPolylineSimolationCoordinates"
+                        :color="tool.color.hex8 || tool.color"
+                        v-if="tool.isOn"
+                        :dashArray="'10,10'"
+                        :opacity="0.5"
+                        :fill="false"
+                    />
+                    <!-- <LMarker
 								v-for="(coordinate, index) in tool.coordinates"
 								:lat-lng="coordinate"
 								:key="index"
 								:icon="CircleIcon"
                         />-->
-                        <LPolyline
-                            :lat-lngs="tool.coordinates"
-                            :color="tool.color.hex8 || tool.color"
-                            :dashArray="tool.dashed ? '10,10' : ''"
-                            @click="goToThisDoc(tool._id)"
-                            :visible="tool.visible"
-                        >
-                            <LTooltip v-if="tool.tooltip">
-                                {{ tool.tooltip }}
-                            </LTooltip>
-                        </LPolyline>
-                        <PolylineDecorator
-                            @click="goToThisDoc(tool._id)"
-                            :lat-lngs="tool.coordinates"
-                            :icon-size="tool.iconSize"
-                            :icon-name="tool.iconName"
-                            :icon-color="
-                                tool.secondaryColor.hex8 || tool.secondaryColor
-                            "
-                            :icon-rotate="tool.angle"
-                            :icon-repeat="tool.iconRepeat"
-                            :arrow-color="tool.color.hex8 || tool.color"
-                            :show-icon="tool.showIcon"
-                            :show-arrow="tool.showArrow"
-                            v-if="tool.visible"
-                        />
-                    </div>
-                    <!-- end Polyline -->
-                    <div
-                        v-if="
-                            tool.type === 'Point' && tool.coordinates[1] != '0'
-                        "
+                    <LPolyline
+                        :lat-lngs="tool.coordinates"
+                        :color="tool.color.hex8 || tool.color"
+                        :dashArray="tool.dashed ? '10,10' : ''"
+                        @click="goToThisDoc(tool._id)"
+                        :visible="tool.visible"
                     >
-                        <LMarker
-                            :lat-lng="tool.coordinates"
-                            :draggable="tool.isOn"
-                            @update:latLng="
-                                UPDATE_THIS_POINT_COORDINATE({ $event, tool })
-                            "
-                            :icon="defaultIcon"
-                            @click="goToThisDoc(tool._id)"
-                            :visible="tool.visible"
+                        <LTooltip v-if="tool.tooltip">
+                            {{ tool.tooltip }}
+                        </LTooltip>
+                    </LPolyline>
+                    <PolylineDecorator
+                        @click="goToThisDoc(tool._id)"
+                        :lat-lngs="tool.coordinates"
+                        :icon-size="tool.iconSize"
+                        :icon-name="tool.iconName"
+                        :icon-color="
+                            tool.secondaryColor.hex8 || tool.secondaryColor
+                        "
+                        :icon-rotate="tool.angle"
+                        :icon-repeat="tool.iconRepeat"
+                        :arrow-color="tool.color.hex8 || tool.color"
+                        :show-icon="tool.showIcon"
+                        :show-arrow="tool.showArrow"
+                        v-if="tool.visible"
+                    />
+                </div>
+                <!-- end Polyline -->
+                <div v-if="tool.type === 'Point' && tool.coordinates[1] != '0'">
+                    <LMarker
+                        :lat-lng="tool.coordinates"
+                        :draggable="tool.isOn"
+                        @update:latLng="
+                            UPDATE_THIS_POINT_COORDINATE({ $event, tool })
+                        "
+                        :icon="defaultIcon"
+                        @click="goToThisDoc(tool._id)"
+                        :visible="tool.visible"
+                    >
+                        <LIcon
+                            :icon-size="dynamicSize(tool.iconSize)"
+                            :icon-anchor="dynamicAnchor(tool.iconSize)"
+                            v-if="tool.iconName"
                         >
-                            <LIcon
-                                :icon-size="dynamicSize(tool.iconSize)"
-                                :icon-anchor="dynamicAnchor(tool.iconSize)"
-                                v-if="tool.iconName"
-                            >
-                                <!-- if tool is on , this span make ripple wave effect -->
-                                <span></span>
-                                <i
-                                    :class="tool.iconName"
-                                    :style="{
-                                        fontSize: `${tool.iconSize}px`,
-                                        color:
-                                            tool.secondaryColor.hex8 ||
-                                            tool.secondaryColor,
-                                        transform:
-                                            'rotate(' + tool.angle + 'deg)',
-                                        position: 'absolute',
-                                    }"
-                                />
-                            </LIcon>
-                            <LTooltip
+                            <!-- if tool is on , this span make ripple wave effect -->
+                            <span></span>
+                            <i
+                                :class="tool.iconName"
+                                :style="{
+                                    fontSize: `${tool.iconSize}px`,
+                                    color:
+                                        tool.secondaryColor.hex8 ||
+                                        tool.secondaryColor,
+                                    transform: 'rotate(' + tool.angle + 'deg)',
+                                    position: 'absolute',
+                                }"
+                            />
+                        </LIcon>
+                        <LTooltip
+                            v-if="tool.tooltip"
+                            :options="tooltipOptions"
+                            @click="goToThisDoc(tool._id)"
+                            :key="mmmm"
+                        >
+                            {{ tool.tooltip }}
+                        </LTooltip>
+                    </LMarker>
+                </div>
+                <!-- end Point -->
+                <div v-if="tool.type === 'Textbox'">
+                    <LMarker
+                        :lat-lng="tool.coordinates"
+                        :draggable="tool.isOn"
+                        :icon="CircleIcon"
+                        @update:latLng="
+                            UPDATE_THIS_POINT_COORDINATE({ $event, tool })
+                        "
+                        @click="goToThisDoc(tool._id)"
+                        :visible="tool.visible"
+                    >
+                        <LIcon
+                            v-if="tool.tooltip"
+                            :icon-size="[tool.width, tool.height]"
+                            :icon-anchor="[tool.width / 2, tool.height / 2]"
+                        >
+                            <div
+                                class="textBoxTool_inMap"
                                 v-if="tool.tooltip"
-                                :options="tooltipOptions"
-                                @click="goToThisDoc(tool._id)"
-                                :key="mmmm"
+                                :style="{
+                                    width: `${tool.width}px`,
+                                    height: `${tool.height}px`,
+                                    background: tool.color.hex8 || tool.color,
+                                    fontSize: `${tool.fontSize}px`,
+                                    color:
+                                        tool.secondaryColor.hex8 ||
+                                        tool.secondaryColor,
+                                }"
                             >
                                 {{ tool.tooltip }}
-                            </LTooltip>
-                        </LMarker>
-                    </div>
-                    <!-- end Point -->
-                    <div v-if="tool.type === 'Textbox'">
-                        <LMarker
-                            :lat-lng="tool.coordinates"
-                            :draggable="tool.isOn"
-                            :icon="CircleIcon"
-                            @update:latLng="
-                                UPDATE_THIS_POINT_COORDINATE({ $event, tool })
-                            "
-                            @click="goToThisDoc(tool._id)"
-                            :visible="tool.visible"
-                        >
-                            <LIcon
-                                v-if="tool.tooltip"
-                                :icon-size="[tool.width, tool.height]"
-                                :icon-anchor="[tool.width / 2, tool.height / 2]"
-                            >
-                                <div
-                                    class="textBoxTool_inMap"
-                                    v-if="tool.tooltip"
-                                    :style="{
-                                        width: `${tool.width}px`,
-                                        height: `${tool.height}px`,
-                                        background:
-                                            tool.color.hex8 || tool.color,
-                                        fontSize: `${tool.fontSize}px`,
-                                        color:
-                                            tool.secondaryColor.hex8 ||
-                                            tool.secondaryColor,
-                                    }"
-                                >
-                                    {{ tool.tooltip }}
-                                </div>
-                            </LIcon>
-                        </LMarker>
-                    </div>
-                    <!-- end Textbox  -->
+                            </div>
+                        </LIcon>
+                    </LMarker>
+                </div>
+                <!-- end Textbox  -->
 
-                    <div v-if="tool.type === 'Heatmap' && tool.visible">
-                        <LeafletHeatmap
-                            :key="tool.key"
-                            :lat-lng="tool.coordinates"
-                            :radius="20"
-                            :min-opacity="0.75"
-                            :blur="17"
-                            @click="goToThisDoc(tool._id)"
-                        />
-                    </div>
+                <div v-if="tool.type === 'Heatmap' && tool.visible">
+                    <LeafletHeatmap
+                        :key="tool.key"
+                        :lat-lng="tool.coordinates"
+                        :radius="20"
+                        :min-opacity="0.75"
+                        :blur="17"
+                        @click="goToThisDoc(tool._id)"
+                    />
                 </div>
             </div>
-            <!-- end docs_list -->
+        </div>
+        <!-- end docs_list -->
 
-            <div v-if="searchPolygon">
-                <LPolygon
-                    :lat-lngs="polygonOrPolylineSimolationCoordinates"
-                    v-if="searchPolygon.isOn"
-                    :dashArray="'10,10'"
-                    :opacity="0.5"
-                    :color="searchPolygon.color"
-                    :fill="false"
-                />
-                <LPolygon
-                    :fillOpacity="0.2"
-                    :fillColor="searchPolygon.secondaryColor"
-                    :color="searchPolygon.color"
-                    :lat-lngs="searchPolygon.coordinates"
-                />
-            </div>
-
-            <VGeosearch :options="geosearchOptions"></VGeosearch>
-
-            <LControlZoom position="bottomright"></LControlZoom>
-            <LControlPolylineMeasure
-                :options="{ showUnitControl: true }"
-                position="bottomright"
-                v-if="!OnTool && !searchPolygon.isOn"
+        <div v-if="searchPolygon">
+            <LPolygon
+                :lat-lngs="polygonOrPolylineSimolationCoordinates"
+                v-if="searchPolygon.isOn"
+                :dashArray="'10,10'"
+                :opacity="0.5"
+                :color="searchPolygon.color"
+                :fill="false"
             />
-            <LControl position="bottomright" class="leaflet-control mapmaker">
-                <a @click="undoTools" v-if="undoCondition">
-                    <i class="fa fa-undo" aria-hidden="true"></i>
-                </a>
-            </LControl>
-            <!-- <LControl position="bottomright" class="leaflet-control mapmaker">
+            <LPolygon
+                :fillOpacity="0.2"
+                :fillColor="searchPolygon.secondaryColor"
+                :color="searchPolygon.color"
+                :lat-lngs="searchPolygon.coordinates"
+            />
+        </div>
+
+        <VGeosearch :options="geosearchOptions"></VGeosearch>
+
+        <LControl position="bottomright" class="waterMark">
+            <a href="https://tarsym.ir" target="blank">
+                <strong>TARSYM.IR</strong>
+            </a>
+        </LControl>
+
+        <LControlLayers position="bottomright"></LControlLayers>
+
+        <LControlZoom position="bottomright"></LControlZoom>
+        <LControlPolylineMeasure
+            :options="{ showUnitControl: true }"
+            position="bottomright"
+            v-if="!OnTool && !searchPolygon.isOn"
+        />
+        <LControl position="bottomright" class="leaflet-control mapmaker">
+            <a @click="undoTools" v-if="undoCondition">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+            </a>
+        </LControl>
+        <!-- <LControl position="bottomright" class="leaflet-control mapmaker">
                 <a @click="toggleShowAllToolips()">
                     <i class="far fa-comment-alt"></i>
                 </a>
             </LControl> -->
-        </LMap>
-    </div>
+    </LMap>
 </template>
 <script>
 import L from "leaflet";

@@ -22,17 +22,25 @@
                     />
                     <span>{{ timeLeft }}</span>
                 </div>
-                <button class="btn btn-blue" type="submit">ارسال کد</button>
+                <button
+                    class="btn btn-blue"
+                    type="submit"
+                    :disabled="!verifyCode"
+                >
+                    ارسال کد
+                </button>
             </form>
             <button
                 :class="timeLeft == '00:00' ? 'active' : ''"
                 @click="resetPassword()"
+                :disabled="!buttonsSituation"
             >
                 ارسال دوباره کد
             </button>
             <button
                 :class="timeLeft == '00:00' ? 'active' : ''"
-                @click="resetPasswordPage = timeLeft == '00:00' ? true : false"
+                @click="resetPasswordPage = true"
+                :disabled="!buttonsSituation"
             >
                 تغییر نام کاربری
             </button>
@@ -47,10 +55,11 @@ export default {
     data() {
         return {
             username: "",
-            verifyCode: "",
+            verifyCode: null,
             resetPasswordPage: true,
             selectedTime: 0,
             timeLeft: "00:00",
+            buttonsSituation: false,
         };
     },
     _methods: {
@@ -58,9 +67,10 @@ export default {
             this.$axios
                 .post("/expiring-data", { username: this.username })
                 .then((res) => {
-                    this.$toasted.info(res.data.msg);
                     this.resetPasswordPage = false;
                     this.setTime(120);
+                    console.log(res);
+                    this.$toasted[res.data.type](res.data.msg);
                 })
                 .catch((error) => {
                     const errMsg = error.response.data.message;
@@ -82,36 +92,35 @@ export default {
                         this.$toasted.info(alreadysended);
                         this.resetPasswordPage = false;
                         return;
-                    } else this.$store.dispatch("handleAxiosError", error);
+                    }
+                    this.$store.dispatch("handleAxiosError", error);
                 });
         },
         sendCode() {
+            if (!this.verifyCode) return;
             const params = {
                 username: this.username,
-                code: String(this.verifyCode),
+                code: String(this.verifyCode).trim(),
             };
             this.$axios
                 .delete("/expiring-data", { params })
                 .then(async ({ data }) => {
                     // * login
-                    await this.$store.dispatch(
-                        "addDataToAxiosAndLocalStorage",
-                        data
-                    );
+                    await this.$store.dispatch("set_user_data", data);
                     this.$router.push(`/profile/${this.username}/setting`);
-                    this.$store.showSidebarNav = true;
 
                     this.$toasted.info("پسورد خود را تغییر دهید ...");
                 })
                 .catch((error) => {
                     const errMsg = error.response.data.message;
-                    if (errMsg == "validation failed") {
+                    if (
+                        errMsg == "validation failed" ||
+                        errMsg == "Error 9568"
+                    ) {
                         this.$toasted.error("درخواست شما معتبر نمیباشد ...");
                         return;
-                    } else if (errMsg == "Error 9568") {
-                        this.$toasted.error("درخواست شما نامعتبر است");
-                        return;
-                    } else this.$store.dispatch("handleAxiosError", error);
+                    }
+                    this.$store.dispatch("handleAxiosError", error);
                 });
         },
         setTime(seconds) {
@@ -128,13 +137,14 @@ export default {
             this.countdown(end);
         },
         countdown(end) {
+            this.buttonsSituation = false;
             // this.initialTime = this.selectedTime;
             intervalTimer = setInterval(() => {
                 const secondsLeft = Math.round((end - Date.now()) / 1000);
 
                 if (secondsLeft < 0) {
                     clearInterval(intervalTimer);
-                    this.resetPasswordPage = true;
+                    this.buttonsSituation = true;
                     return;
                 }
                 this.displayTimeLeft(secondsLeft);
@@ -182,6 +192,10 @@ function zeroPadded(num) {
 
 .flip-card-inner.sendverifyCodePage {
     transform: rotateY(180deg);
+
+    .resetPassword {
+        z-index: -1;
+    }
 }
 
 .resetPassword, .sendverifyCode {

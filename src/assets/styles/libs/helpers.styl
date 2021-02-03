@@ -3,12 +3,16 @@
 .btn 
     padding: 12px 30px
     border-radius: 5px
-    color: white
+    color: white !important
     border 0px
     cursor pointer
     box-shadow: 0px 0px 16px 0px rgba(5, 108, 158, 0.52);
+    filter: brightness(1);
+    transition: 0.3s;
     &[disabled='disabled']
         opacity: .7;
+    &:hover
+        filter: brightness(1.2);
 .btn-blue
     background-image: linear-gradient(to right, #48c6ef 0%, #6f86d6 100%);
 .btn-red
@@ -25,7 +29,7 @@
     height: 48px;
     padding: 10px;
     box-shadow: none;
-    color: #798193;
+    color: #798193 !important;
     .fas
         margin-right: 0rem !important;
 

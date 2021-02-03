@@ -1,11 +1,7 @@
 <template>
     <div class="sidebarNavigation" ref="sidebarNav">
         <img src="@/assets/apple-touch-icon-120x120.png" @click="toggleNav()" />
-        <div
-            class="sidebar"
-            :class="displayNav ? 'show' : ''"
-            v-show="$store.state.showSidebarNav"
-        >
+        <div class="sidebar" :class="displayNav ? 'show' : ''">
             <div class="header">
                 <div></div>
                 <header>{{ user.name }} <br />{{ user.username }}</header>
@@ -20,7 +16,7 @@
                 >
                     {{ nav.name }} <i :class="nav.icon"></i>
                 </router-link>
-                <li @click="$store.dispatch('logout')">
+                <li @click="$store.dispatch('logout')" v-if="user.role">
                     خروج
                     <i class="fas fa-sign-out-alt"></i>
                 </li>
@@ -41,7 +37,7 @@ export default {
             return this.$store.state.user;
         },
         routes() {
-            const username = this.user.username;
+            const user = this.user;
             const routes = [
                 {
                     name: "صفحه نخست",
@@ -51,13 +47,13 @@ export default {
                 },
                 {
                     name: "پروفایل",
-                    addr: `/profile/${username}`,
+                    addr: `/profile/${user.username}`,
                     icon: "far fa-user",
                     class: "profile",
                 },
                 {
                     name: "تنظیمات حساب کاربری",
-                    addr: `/profile/${username}/setting`,
+                    addr: `/profile/${user.username}/setting`,
                     icon: "fas fa-cogs",
                     class: "options",
                 },
@@ -86,14 +82,13 @@ export default {
         },
     },
     created() {
-        if (this.user.username) this.$store.state.showSidebarNav = true;
-
         setTimeout(() => {
             const navMenu = document.querySelectorAll(".navigation_items li");
             navMenu.forEach((element) => {
                 element.addEventListener("click", () => this.hideNav());
             });
         }, 2000);
+        console.log(this.user);
     },
 };
 </script>

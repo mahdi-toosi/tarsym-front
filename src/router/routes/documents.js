@@ -4,7 +4,7 @@ const documentsRoutes = [
         name: "read doc",
         component: () => import("@/views/R-Doc.vue"),
         meta: {
-            minimumRole: 3,
+            withoutAuth: true,
         },
     },
     {
@@ -12,7 +12,7 @@ const documentsRoutes = [
         name: "list Docs with tag",
         component: () => import("@/views/ListDocs.vue"),
         meta: {
-            minimumRole: 3,
+            withoutAuth: true,
         },
     },
     {
@@ -20,7 +20,7 @@ const documentsRoutes = [
         name: "list Docs with category",
         component: () => import("@/views/ListDocs.vue"),
         meta: {
-            minimumRole: 3,
+            withoutAuth: true,
         },
     },
     {
@@ -28,7 +28,7 @@ const documentsRoutes = [
         name: "search",
         component: () => import("@/views/ListDocs.vue"),
         meta: {
-            minimumRole: 3,
+            withoutAuth: true,
         },
     },
     {

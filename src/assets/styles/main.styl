@@ -1,6 +1,6 @@
 // @import './libs/resetAndHelpers.styl'
 @import 'libs/normalize'
-*
+// *
     // border 1px #ff000070 dashed
 //     transition: all 0.5s ease
 * , *:focus
@@ -9,6 +9,7 @@
 
 *::-webkit-scrollbar {
     width: 7px
+    height: 7px
 	background-color: #F5F5F5
 }
 
@@ -51,18 +52,20 @@ button
 input[disabled="disabled"]
     cursor: not-allowed;
 
+#app 
+    display flex
 
-// panel
+//*  panel
 .panel
     z-index: 1001;
     // outline: 1px dashed red
-    position fixed
-    right 0px
-    top: 0px
-    padding: 9px;
-    width: 100%;
+    width: 50%;
+    min-width: 530px;
+    overflow auto
     max-width: 530px;
-    height: 100vh;
+    box-sizing: border-box
+    padding: 15px;
+    height: 100vh; 
     background: #f4f3fb;
     header
         display flex
@@ -82,6 +85,7 @@ input[disabled="disabled"]
                 border 0px
                 top: calc(115% - 1px);
                 border-radius: 0px 0px 15px 15px;
+                
             .vs__dropdown-option
                 padding: 3px 33px 3px 20px;
             .vs__actions
@@ -89,7 +93,7 @@ input[disabled="disabled"]
             .vs__search 
                 padding: 10px 3px 10px 20px;
     .allpoints
-        height 90%
+        // height 90%
         direction: rtl;
         h1
             font-size: 50px
@@ -127,8 +131,7 @@ input[disabled="disabled"]
         
     .points
         margin-top: 4px
-        overflow-y: auto;
-        height: calc(100vh - 85px) ;
+        overflow: auto;
         direction: ltr
         padding-right: 1rem;
         // margin-right: -1rem;
@@ -149,6 +152,8 @@ input[disabled="disabled"]
         margin: 1rem ;
         margin-right: 3px;
         header
+            i
+                margin-right: 0px
             .logo
                 font-size: 35px
             .editDoc
@@ -203,6 +208,7 @@ input[disabled="disabled"]
                     margin-top: 10px
                     color: #2a8bf2
                     font-size: 85%
+                    line-height: 1.5;
                     &:first-child
                         color: black
                         font-size: 100%

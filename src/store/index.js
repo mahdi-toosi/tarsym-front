@@ -17,7 +17,6 @@ export default new Vuex.Store({
             secondaryColor: "#23A9AEFF",
             isOn: false,
         },
-        showSidebarNav: false,
         user: {},
     },
     getters,

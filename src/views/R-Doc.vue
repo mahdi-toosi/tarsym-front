@@ -82,7 +82,6 @@ export default {
 <style lang="stylus">
 .ReadDoc_wrapper {
     direction: ltr;
-    height: 95vh;
     overflow-y: auto;
     border-radius: 5px;
     background: #fff;

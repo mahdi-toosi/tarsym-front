@@ -37,7 +37,7 @@
                     @input="ADD_TAXONOMY({ $event, cats: true })"
                     placeholder="دسته بندی ..."
                     multiple
-                    :taggable="35 <= user.role"
+                    :taggable="user.role >= 35"
                     push-tags
                     class="tags categories"
                     dir="rtl"
@@ -69,7 +69,7 @@
                     @input="ADD_TAXONOMY({ $event, cats: false })"
                     placeholder="تگ ..."
                     multiple
-                    :taggable="35 <= user.role"
+                    :taggable="user.role >= 35"
                     push-tags
                     class="tags"
                     dir="rtl"
@@ -224,7 +224,20 @@ export default {
                 placeholder: "توضیحات ...",
             },
             defaultColor: "#FF0000",
-            taxonomies: { categories: [], tags: [] },
+            taxonomies: {
+                categories: [
+                    ["تاریخی", "دفاع مقدس"],
+                    ["تاریخی", "انقلاب اسلامی"],
+                    ["خبری", "نظامی"],
+                    ["خبری", "سیاست خارجی"],
+                    ["خبری", "محیط زیست"],
+                    ["خبری", "ورزشی"],
+                    ["آبادانی", "عمرانی"],
+                    ["آبادانی", "کارآفرینی"],
+                    ["آبادانی", "خیریه"],
+                ],
+                tags: [],
+            },
         };
     },
     methods: {
@@ -318,7 +331,10 @@ export default {
                 cats.push(el.categories);
             });
             this.taxonomies.tags = [...new Set(tags)];
-            this.taxonomies.categories = cats;
+            this.taxonomies.categories = [
+                ...this.taxonomies.categories,
+                ...cats,
+            ];
         },
         // keyPressed(e) {
         // 	const OnTool = this.DocProp.OnTool;

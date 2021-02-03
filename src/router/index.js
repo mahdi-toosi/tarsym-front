@@ -20,7 +20,7 @@ const routes = [
         name: "all docs",
         component: () => import("@/views/ListDocs.vue"),
         meta: {
-            minimumRole: 3,
+            withoutAuth: true,
         },
     },
     ...documentsRoutes,
