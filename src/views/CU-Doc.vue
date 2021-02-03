@@ -1,12 +1,7 @@
 <template>
     <div class="newpoint">
         <header>
-            <button
-                class="btn btn-red ml1"
-                @click="
-                    CLEAR_NEW_DOC(), $router.push(`/profile/${user.username}`)
-                "
-            >
+            <button class="btn btn-red ml1" @click="quite_creating()">
                 منصرف شدم
                 <i class="fas fa-times"></i>
             </button>
@@ -258,6 +253,7 @@ export default {
             "get_this_doc_for_update",
             "get_childs",
             "get_User_Taxonomies",
+            "quite_creating",
         ]),
         onUpdate: function (event) {
             console.log({ event });
@@ -336,6 +332,7 @@ export default {
                 ...cats,
             ];
         },
+
         // keyPressed(e) {
         // 	const OnTool = this.DocProp.OnTool;
         // 	if (e.keyCode === 27 && OnTool.condition) {

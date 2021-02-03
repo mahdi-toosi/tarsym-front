@@ -16,9 +16,9 @@ export default {
     CHANGE_POLYLINE_DECORATOR(state, { $event, index, type }) {
         const thisTool = docLayer(state).tools[index];
         const val = $event.target.checked;
-        if (type == "arrow") thisTool.showArrow = val;
-        if (type == "icon") thisTool.showIcon = val;
-        if (type == "dashed") thisTool.dashed = val;
+        if (type === "arrow") thisTool.showArrow = val;
+        if (type === "icon") thisTool.showIcon = val;
+        if (type === "dashed") thisTool.dashed = val;
     },
     CHANGE_TOOLTIP(state, { index, val }) {
         const thisTool = docLayer(state).tools[index];

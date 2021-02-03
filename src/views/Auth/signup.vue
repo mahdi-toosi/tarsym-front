@@ -28,9 +28,13 @@
                 placeholder="تکرار رمز عبور"
                 v-model="user.rpassword"
             />
+            <p>
+                شما با ثبت نام در ترسیم،
+                <a href="#">شرایط استفاده از خدمات</a> را می‌پذیرید.
+            </p>
             <button class="btn btn-blue" type="submit">ثبت نام</button>
         </form>
-        <router-link to="/Auth">قبلا ثبت نام کردم</router-link>
+        <router-link to="/Auth" tag="button">قبلا ثبت نام کردم</router-link>
     </div>
 </template>
 

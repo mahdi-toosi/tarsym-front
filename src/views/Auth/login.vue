@@ -14,8 +14,10 @@
             />
             <button class="btn btn-green" type="submit">ورود</button>
         </form>
-        <router-link to="/Auth/signup">ثبت نام</router-link>
-        <router-link to="/Auth/reset-password">فراموشی رمز عبور</router-link>
+        <router-link to="/Auth/signup" tag="button">ثبت نام</router-link>
+        <router-link to="/Auth/reset-password" tag="button">
+            فراموشی رمز عبور
+        </router-link>
     </div>
 </template>
 

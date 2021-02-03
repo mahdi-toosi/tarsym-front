@@ -201,7 +201,7 @@ export default {
             junk: {},
         };
 
-        if (typeof doc._id == "number") delete doc._id;
+        if (typeof doc._id === "number") delete doc._id;
 
         doc.title = doc.title.trim();
 

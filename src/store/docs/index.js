@@ -240,7 +240,6 @@ export default {
             const split = img.url.split("/");
             const imgName = split[split.length - 1];
             docLayer(state).imgs.push(imgName);
-            console.log("doc imgs =>  ", docLayer(state).imgs);
         },
     },
 };

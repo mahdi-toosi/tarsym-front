@@ -88,7 +88,6 @@ export default {
                 element.addEventListener("click", () => this.hideNav());
             });
         }, 2000);
-        console.log(this.user);
     },
 };
 </script>

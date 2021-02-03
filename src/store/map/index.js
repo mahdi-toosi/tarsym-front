@@ -29,7 +29,7 @@ export default {
                 url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
             },
             {
-                name: "هوایی به همراه نام ها",
+                name: "هوایی به همراه تیتر",
                 visible: false,
                 url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
             },

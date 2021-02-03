@@ -87,7 +87,6 @@ export default {
                 if (!currentImgs.includes(img)) removedImgs.push(img);
             });
         }
-        console.log({ removedImgs });
         //* delete from server if list have value
         if (!removedImgs.length) return;
         await axios
@@ -96,6 +95,35 @@ export default {
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
             });
+    },
+    async quite_creating({ state, commit, dispatch, rootState }) {
+        const Docs = state.newDocs;
+
+        let removeThisImgs = [];
+        for (let index = 0; index < Docs.length; index++) {
+            const doc = Docs[index];
+            if (typeof doc._id === "number") {
+                // if doc is not created
+                removeThisImgs = [...removeThisImgs, ...doc.imgs];
+                continue;
+            }
+            const addedImgs = [...doc.imgs];
+            const currentImgs = await dispatch("getAllDocImages", doc.description);
+            addedImgs.forEach((img) => {
+                if (!currentImgs.includes(img)) removeThisImgs.push(img);
+            });
+        }
+        //* delete from server if list have value
+        if (removeThisImgs.length) {
+            await axios
+                .post("/documents/remove/imgs", { removedImgs: removeThisImgs })
+                .then()
+                .catch((error) => {
+                    dispatch("handleAxiosError", error, { root: true });
+                });
+        }
+        commit("CLEAR_NEW_DOC");
+        router.push(`/profile/${rootState.user.username}`);
     },
     // !  Create_or_Update_Documents
     async Create_or_Update_Documents({ state, dispatch, commit, rootState }) {
@@ -106,7 +134,9 @@ export default {
             const is_this_Doc_valid = await dispatch("is_this_Doc_valid", Docs[index]);
             if (!is_this_Doc_valid) return false;
         }
+
         await dispatch("delete_deletedImgs");
+
         // * create or update documents
         for (let index = 0; index < Docs.length; index++) {
             const doc = Docs[index];
