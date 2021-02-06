@@ -20,9 +20,12 @@ export default {
         if (type === "icon") thisTool.showIcon = val;
         if (type === "dashed") thisTool.dashed = val;
     },
-    CHANGE_TOOLTIP(state, { index, val }) {
+    CHANGE_TOOLTIP(state, { index, val, type }) {
         const thisTool = docLayer(state).tools[index];
-        thisTool.tooltip = val;
+        if (type === "image" && process.env.NODE_ENV === "development" && val !== null) {
+            val = process.env.VUE_APP_DOMAIN + val;
+        }
+        thisTool.tooltip[type] = val;
     },
     DELETE_TOOL(state, index) {
         const onTool = state.DocProp.OnTool;
@@ -52,7 +55,7 @@ export default {
         const obj = {
             isOn: true,
             type: type,
-            tooltip: null,
+            tooltip: { text: null, image: null },
             coordinates: [],
             color: "#23A9AEFF",
             colorpicker: false,

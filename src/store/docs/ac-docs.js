@@ -46,7 +46,6 @@ export default {
     async addNewDoc({ commit, state, dispatch, rootState }, root = true) {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
-
         const fake_id = new Date().getTime();
         const payload = { fake_id, root, map: rootState.map };
         if (!root) {
@@ -103,14 +102,22 @@ export default {
         return;
     },
     // ! getAllDocImages
-    getAllDocImages(ctx, description) {
+    getAllDocImages(ctx, doc) {
         let regex = new RegExp('/UPLOADS/documents/(.*?)"', "gi"),
-            result,
-            imgs = [];
-        while ((result = regex.exec(description))) {
-            imgs.push(result[1]);
+            desc_imgs = [],
+            result = [];
+        while ((result = regex.exec(doc.description))) {
+            desc_imgs.push(result[1]);
         }
-        return imgs;
+        const tools_imgs = [];
+        doc.tools.forEach((tool) => {
+            if (tool.tooltip.image) {
+                while ((result = regex.exec(tool.tooltip.image + '"'))) {
+                    desc_imgs.push(result[1]);
+                }
+            }
+        });
+        return { desc_imgs, tools_imgs, all_Images: [...desc_imgs, ...tools_imgs] };
     },
     // ! decode_the_docs
     async decode_the_docs({ dispatch }, { docs, deleteRoot }) {
@@ -120,10 +127,11 @@ export default {
             const doc = Docs[index];
             const junk = JSON.parse(doc.junk);
             delete doc.junk;
-            const imgs = await dispatch("getAllDocImages", junk.description);
+            const { desc_imgs, all_Images } = await dispatch("getAllDocImages", junk);
             const decoded_Doc = {
                 ...doc,
-                imgs,
+                desc_imgs,
+                all_Images,
                 ...junk,
             };
             // decoded_Doc.date = decoded_Doc.date - 2000000;
@@ -245,11 +253,52 @@ export default {
             }
         });
         delete doc.childs_id;
+        delete doc.desc_imgs;
+        delete doc.all_Images;
 
         // const videos = doc.description.match(/<iframe/gm);
         // console.log('videos', (videos || []).length);
 
         doc.junk = JSON.stringify(doc.junk);
         return doc;
+    },
+    async delete_deletedImgs({ state, dispatch }) {
+        const Docs = state.newDocs;
+        const removedImgs = [];
+        //* prepared list
+        for (let index = 0; index < Docs.length; index++) {
+            const doc = Docs[index];
+            const addedImgs = [...doc.all_Images];
+            const { all_Images } = await dispatch("getAllDocImages", doc); // current imgs
+            addedImgs.forEach((img) => {
+                if (!all_Images.includes(img)) removedImgs.push(img);
+            });
+        }
+        //* delete from server if list have value
+        if (!removedImgs.length) return;
+        await dispatch("removeThisImgs", removedImgs);
+    },
+    async quite_creating({ state, commit, dispatch }) {
+        commit("OFF_THE_ON_TOOL");
+        commit("UPDATE_ON_TOOL");
+
+        const Docs = state.newDocs;
+        let removeThisImgs = [];
+        for (let index = 0; index < Docs.length; index++) {
+            const doc = Docs[index];
+            const { all_Images } = await dispatch("getAllDocImages", doc); // current imgs
+            if (typeof doc._id === "number") {
+                removeThisImgs = [...removeThisImgs, ...all_Images];
+                continue;
+            }
+            doc.all_Images.forEach((img) => {
+                if (!all_Images.includes(img)) removeThisImgs.push(img);
+            });
+        }
+        //* delete from server if list have value
+        if (removeThisImgs.length) {
+            await dispatch("removeThisImgs", removeThisImgs);
+        }
+        commit("CLEAR_NEW_DOC");
     },
 };

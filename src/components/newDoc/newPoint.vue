@@ -2,12 +2,7 @@
     <div class="newPoint">
         <div class="tool_header">
             <IconPicker :index="index" :tool="tool" />
-            <input
-                type="text"
-                class="tooltip"
-                placeholder="توضیح کوتاه آیکن"
-                v-model="toolTipModel"
-            />
+            <Tooltip :index="index" placeholder="توضیح کوتاه آیکن" />
 
             <button
                 class="editIcon"
@@ -64,7 +59,7 @@
                     <vue-slider
                         id="iconSize"
                         v-model="IconSizeModel"
-                        :width="120"
+                        :width="100"
                         :height="6"
                         :min="10"
                         :max="45"
@@ -75,7 +70,7 @@
                     <vue-slider
                         id="iconDegree"
                         v-model="iconDegreeModel"
-                        :width="120"
+                        :width="100"
                         :height="6"
                         :min="0"
                         :max="360"

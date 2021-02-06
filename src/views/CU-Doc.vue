@@ -1,7 +1,10 @@
 <template>
     <div class="newpoint">
         <header>
-            <button class="btn btn-red ml1" @click="quite_creating()">
+            <button
+                class="btn btn-red ml1"
+                @click="$router.push(`/profile/${user.username}`)"
+            >
                 منصرف شدم
                 <i class="fas fa-times"></i>
             </button>
@@ -264,15 +267,16 @@ export default {
         },
         async quillUploadImage(event) {
             // for simplicity I only upload the first image
-            const file = event.target.files[0];
-            if (file && file.size > 2e5) {
+            const image = event.target.files[0];
+            if (image && image.size > 2e5) {
                 this.$toasted.error("حجم عکس حداکثر 200kb میتواند باشد");
                 return;
             }
+            event.target.value = "";
             // create form data
             const formData = new FormData();
             // just add file instance to form data normally
-            formData.append("docImage", file);
+            formData.append("docImage", image);
             // I use axios here, should be obvious enough
             const response = await this.$axios
                 .post("/uploadDocImage", formData, {
@@ -400,6 +404,9 @@ export default {
             });
             return [...new Set(validCats)];
         },
+    },
+    async beforeDestroy() {
+        this.quite_creating();
     },
     async created() {
         this.getAndSetTaxonomies();

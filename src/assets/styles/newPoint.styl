@@ -7,7 +7,7 @@
         margin: 1rem;
     section
         direction: rtl
-        padding: 10px 5%;
+        padding: 10px;
         background: #fff;
         border-radius: 5px;
         margin: 0 10px;
@@ -38,7 +38,6 @@
                 .no-move
                     transition: transform 0s;
                 & >div>li
-                    padding: 2px 2px 2px 5px
                     display flex
                     align-items: center
                     .fa-grip-vertical
@@ -46,23 +45,25 @@
                     .tool
                         width: 100%
                         margin: 5px;
-                        padding: 5px 10px 10px 10px;
+                        padding: 5px 3px 10px;
                         list-style-type: none;
                         border-right: #898888 solid 2px;
                         transition: .3s
                         overflow hidden
                         &:hover
                             border-right-color: #35f63b
-                        &> .tool_body
+                        &>.tool_body
                             margin: 0px
                             opacity 0
                             max-height: 0
                             transition: .3s
+                            &>div
+                                margin: 5px 10px
                             div
                                 display inline-block
                         &.active > .tool_body
                             margin: 10px 5px 5px 5px
-                            max-height: 100vh
+                            max-height: 300px
                             opacity 1
                         .tool_header
                             display: flex
@@ -74,17 +75,39 @@
                                 cursor: pointer;
                                 border: none;
                                 border-bottom: 1px solid #acacac
-                            .tooltip
-                                border: none 
-                                border-bottom: 1px gray solid
-                                height: 30px;
-                                background: transparent
-                                &::placeholder
-                                    user-select none
+                            .tooltipbox
+                                display flex
+                                input
+                                    border: none 
+                                    border-bottom: 1px gray solid
+                                    height: 30px;
+                                    background: transparent
+                                    padding-left: 30px;
+                                    min-width: 160px;
+                                    &::placeholder
+                                        // user-select none
+                                .tooltipImage
+                                    position relative
+                                    left: 24px;
+                                    top: 8px
+                                    i 
+                                        width: 20px
+                                        height: 20px
+                                        position absolute
+                                        cursor pointer
+                                    .fa-slash
+                                        transform: rotate(100deg);
+                                        position: relative;
+                                        top: -3px;
+                                        &:hover
+                                            color: red
                             textarea.tooltip
+                                border: none 
+                                border-bottom: 1px gray solid   
                                 width: 300px 
                                 line-height: 25px;
                                 height: 50px;
+                                
                             .editIcon
                                 cursor pointer
                                 transition: .2s

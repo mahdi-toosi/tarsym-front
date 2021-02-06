@@ -55,27 +55,27 @@
                 />
             </div>
 
-            <div class="fontSize">
-                <label for="fontSize">سایز فونت:</label>
-                <vue-slider
-                    id="fontSize"
-                    v-model="TextBoxfontSize"
-                    :width="120"
-                    :height="6"
-                    :min="14"
-                    :max="30"
-                />
-            </div>
-
             <div class="heightOfbox">
                 <label for="heightOfbox">عرض باکس:</label>
                 <vue-slider
                     id="heightOfbox"
                     v-model="TextBoxHeight"
-                    :width="120"
+                    :width="100"
                     :height="6"
                     :min="30"
                     :max="300"
+                />
+            </div>
+
+            <div class="fontSize">
+                <label for="fontSize">سایز فونت:</label>
+                <vue-slider
+                    id="fontSize"
+                    v-model="TextBoxfontSize"
+                    :width="100"
+                    :height="6"
+                    :min="14"
+                    :max="30"
                 />
             </div>
 
@@ -84,7 +84,7 @@
                 <vue-slider
                     id="widthOfBox"
                     v-model="TextBoxWidth"
-                    :width="120"
+                    :width="100"
                     :height="6"
                     :min="100"
                     :max="350"
@@ -101,6 +101,18 @@ export default {
     name: "newTextBox",
     mixins: [mixins],
     computed: {
+        toolTipModel: {
+            get() {
+                return this.$store.getters.tooltipData(this.index).text;
+            },
+            set(val) {
+                this.$store.commit("docs/CHANGE_TOOLTIP", {
+                    index: this.index,
+                    val,
+                    type: "text",
+                });
+            },
+        },
         TextBoxfontSize: {
             get() {
                 return this.tool.fontSize;

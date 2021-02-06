@@ -15,7 +15,7 @@ function beforeEach() {
             // * check authenticate
             next();
             return;
-        } else if (set_user_if_exist(to.meta.minimumRole)) {
+        } else if (store.dispatch("set_user_if_exist", to.meta.minimumRole)) {
             if (to.name === "forward profile") {
                 next(`/profile/${store.state.user.username}`);
                 return;
@@ -37,7 +37,6 @@ function afterEach() {
             return;
         } else if (RN === "create doc" || RN === "update doc") {
             if (store.state.docs.newDocs.length) store.commit("docs/UPDATE_DOC_INDEX");
-
             // * show document items if invisible
             const _id = to.params._id;
             const invisibleDocs = store.state.docs.DocProp.invisibleDocs || [];
@@ -59,23 +58,6 @@ export default {
 };
 
 // * Helper Functions
-function set_user_if_exist(minimumRole) {
-    const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
-    if (!userData) return false;
-    const now = new Date().getTime();
-    if (userData && userData.expire > now) {
-        // * add user
-        store.commit("SET_USER", userData.user);
-        store.commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
-        // * validate user role for route
-        if (minimumRole <= store.state.user.role) return true;
-        else {
-            // Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
-            return false;
-        }
-    }
-    return false;
-}
 
 function checkForAuth(minimumRole) {
     // * validate user role for route if exist

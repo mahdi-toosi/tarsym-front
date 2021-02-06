@@ -35,7 +35,7 @@ export default {
     props: ["tool", "index"],
     methods: {
         ...mapActions("docs", ["deleteTool", "toolSwitch"]),
-        ...mapMutations("docs", ["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
+        ...mapMutations("docs", ["CHANGE_VISIBILITY"]),
     },
     components: {},
 };

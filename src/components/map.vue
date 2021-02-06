@@ -42,8 +42,12 @@
                         @click="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
-                        <LTooltip v-if="tool.tooltip">
-                            {{ tool.tooltip }}
+                        <LTooltip v-if="tool.tooltip.text">
+                            <p>{{ tool.tooltip.text }}</p>
+                            <img
+                                v-if="tool.tooltip.image"
+                                :src="tool.tooltip.image"
+                            />
                         </LTooltip>
                     </LPolygon>
                 </div>
@@ -70,8 +74,12 @@
                         @click="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
-                        <LTooltip v-if="tool.tooltip">
-                            {{ tool.tooltip }}
+                        <LTooltip v-if="tool.tooltip.text">
+                            <p>{{ tool.tooltip.text }}</p>
+                            <img
+                                v-if="tool.tooltip.image"
+                                :src="tool.tooltip.image"
+                            />
                         </LTooltip>
                     </LPolyline>
                     <PolylineDecorator
@@ -122,12 +130,16 @@
                             />
                         </LIcon>
                         <LTooltip
-                            v-if="tool.tooltip"
+                            v-if="tool.tooltip.text"
                             :options="tooltipOptions"
                             @click="goToThisDoc(tool._id)"
                             :key="mmmm"
                         >
-                            {{ tool.tooltip }}
+                            <p>{{ tool.tooltip.text }}</p>
+                            <img
+                                v-if="tool.tooltip.image"
+                                :src="tool.tooltip.image"
+                            />
                         </LTooltip>
                     </LMarker>
                 </div>
@@ -144,13 +156,13 @@
                         :visible="tool.visible"
                     >
                         <LIcon
-                            v-if="tool.tooltip"
+                            v-if="tool.tooltip.text"
                             :icon-size="[tool.width, tool.height]"
                             :icon-anchor="[tool.width / 2, tool.height / 2]"
                         >
                             <div
                                 class="textBoxTool_inMap"
-                                v-if="tool.tooltip"
+                                v-if="tool.tooltip.text"
                                 :style="{
                                     width: `${tool.width}px`,
                                     height: `${tool.height}px`,
@@ -161,7 +173,11 @@
                                         tool.secondaryColor,
                                 }"
                             >
-                                {{ tool.tooltip }}
+                                <p>{{ tool.tooltip.text }}</p>
+                                <img
+                                    v-if="tool.tooltip.image"
+                                    :src="tool.tooltip.image"
+                                />
                             </div>
                         </LIcon>
                     </LMarker>
@@ -304,7 +320,7 @@ export default {
         ...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
         OnTool() {
             const OnTool = this.$store.state.docs.DocProp.OnTool;
-            if (OnTool.condition) return this.DocLayer.tools[OnTool.index];
+            if (OnTool.condition) return this.DocLayer?.tools[OnTool.index];
             else return false;
         },
         undoCondition() {

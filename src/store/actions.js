@@ -1,6 +1,7 @@
 import Vue from "vue";
 import router from "../router";
 import axios from "axios";
+import NProgress from "nprogress";
 
 export default {
     update_zoom({ commit }, zoom) {
@@ -28,22 +29,37 @@ export default {
     },
     // !  handleAxiosError
     handleAxiosError({ dispatch }, error) {
+        NProgress.done();
+        console.log(error);
         let msg;
-        if (error == "Error: Network Error") msg = "مشکل در برقراری ارتباط با سرور";
-        // else if (error == "Error: Request failed with status code 409") msg = "مختصات شاخص قبلا به ثبت رسیده است";
-        else if (error == "Error: Request failed with status code 503") msg = "مشکل در برقراری ارتباط با سرور";
-        else if (error == "Error: Request failed with status code 400") msg = "درخواست شما معتبر نمیباشد";
-        else if (error == "Error: Request failed with status code 500") msg = "مشکلی در سرور بوجود آمده است";
-        else if (error == "Error: Request failed with status code 404") msg = "دیتای درخواستی پیدا نشد ...";
-        else if (error == "Error: Request failed with status code 401") {
-            // msg = "نام کاربری یا رمز عبور اشتباه است"
-            dispatch("logout");
-        } else {
-            msg = error;
-            // msg = "مشکلی در ارتباط با سرور بوجود آمده، لطفا چند دقیقه بعد دوباره امتحان کنید";
-            console.log("request get error => ", msg);
+        if (error == "Error: Network Error") {
+            msg = "مشکل در برقراری ارتباط با سرور";
+            Vue.toasted.error(msg);
+            return;
         }
-        Vue.toasted.error(msg);
+        if (error.response) {
+            const { status } = error.response;
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            if (status >= 500) msg = "مشکل در برقراری ارتباط با سرور";
+            else if (status == 400) msg = "درخواست شما معتبر نمیباشد";
+            else if (status == 404) msg = "دیتای درخواستی پیدا نشد ...";
+            else if (status == 401) {
+                msg = "شما دسترسی لازم را ندارید ...";
+                dispatch("logout");
+            } else {
+                msg = "response get error , check the console";
+                console.log("response get error => ", error);
+            }
+            Vue.toasted.error(msg);
+        } else if (error.request) {
+            msg = "request get error , check the console";
+            console.log("request get error => ", error);
+            Vue.toasted.error(msg);
+        } else {
+            console.log("Error", error);
+            Vue.toasted.error("check the console");
+        }
     },
     async login({ dispatch }, user) {
         const data = {
@@ -106,5 +122,23 @@ export default {
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         commit("CLEAR_USER");
         router.push({ path: "/Auth", query: { redirect } });
+    },
+    set_user_if_exist({ state, commit }, minimumRole) {
+        const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
+        if (!userData) return false;
+        const now = new Date().getTime();
+        commit("SET_USER", userData.user);
+        commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
+
+        if (userData && userData.expire > now) {
+            // * add user
+            // * validate user role for route
+            if (minimumRole <= state.user.role) return true;
+            else {
+                // Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
+                return false;
+            }
+        }
+        return false;
     },
 };

@@ -9,12 +9,7 @@
                 v-else
             />
 
-            <input
-                type="text"
-                class="tooltip"
-                placeholder="توضیح کوتاه خط"
-                v-model="toolTipModel"
-            />
+            <Tooltip :index="index" placeholder="توضیح کوتاه خط" />
 
             <button
                 class="editIcon"
@@ -103,7 +98,7 @@
                 <vue-slider
                     id="lineIconSize"
                     v-model="IconSizeModel"
-                    :width="120"
+                    :width="100"
                     :height="6"
                     :min="10"
                     :max="45"
@@ -114,7 +109,7 @@
                 <vue-slider
                     id="lineIconRepeat"
                     v-model="IconRepeatModel"
-                    :width="120"
+                    :width="100"
                     :height="6"
                     :min="2"
                     :max="100"
@@ -126,7 +121,7 @@
                 <vue-slider
                     id="lineIconDegree"
                     v-model="iconDegreeModel"
-                    :width="120"
+                    :width="100"
                     :height="6"
                     :min="0"
                     :max="360"

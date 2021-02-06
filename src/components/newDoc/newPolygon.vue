@@ -7,12 +7,7 @@
                 style="font-size: 24px; padding: 3px 4px"
             ></i>
 
-            <input
-                type="text"
-                class="tooltip"
-                placeholder="توضیح کوتاه چند ضلعی"
-                v-model="toolTipModel"
-            />
+            <Tooltip :index="index" placeholder="توضیح کوتاه چند ضلعی" />
 
             <button
                 class="editIcon"
@@ -64,17 +59,9 @@ export default {
     props: ["tool", "index"],
     methods: {
         ...mapActions("docs", ["deleteTool", "toolSwitch"]),
-        ...mapMutations("docs", ["CHANGE_TOOLTIP", "CHANGE_VISIBILITY"]),
+        ...mapMutations("docs", ["CHANGE_VISIBILITY"]),
     },
     computed: {
-        toolTipModel: {
-            get() {
-                return this.$store.getters.tooltipData(this.index);
-            },
-            set(val) {
-                this.CHANGE_TOOLTIP({ index: this.index, val });
-            },
-        },
         visibility() {
             return this.$store.getters.visibility;
         },

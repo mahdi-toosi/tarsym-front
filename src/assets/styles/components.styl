@@ -209,12 +209,30 @@
 
 .leaflet-tooltip
     direction: rtl
+    white-space: normal !important
+    opacity 1 !important
+    background-color: #ffffffe6 
+    p
+        margin: 0px
+        min-width 120px
+        max-width 350px
+        overflow hidden
+    img
+        border-radius: 4px
+        display block
+        max-width: 300px
+        max-height: 400px
+        margin: 6px auto 0px;
 
 .textBoxTool_inMap
     direction: rtl
     border-radius: 5px
     padding: 5px
     box-shadow: #8b8b8bb5 0 3px 9px -1px;
+    box-sizing: border-box
+    overflow auto
+    p
+        margin: 0px
 
 .leaflet-control-attribution
     display none

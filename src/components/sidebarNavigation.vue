@@ -44,21 +44,31 @@ export default {
                     addr: "/",
                     icon: "far fa-circle",
                     class: "home",
+                    show: true,
                 },
                 {
                     name: "پروفایل",
                     addr: `/profile/${user.username}`,
                     icon: "far fa-user",
                     class: "profile",
+                    show: user.username,
                 },
                 {
                     name: "تنظیمات حساب کاربری",
                     addr: `/profile/${user.username}/setting`,
                     icon: "fas fa-cogs",
                     class: "options",
+                    show: user.username,
+                },
+                {
+                    name: "ورود",
+                    addr: `/auth`,
+                    icon: "fas fa-sign-in-alt",
+                    class: "login",
+                    show: !user.username,
                 },
             ];
-            return routes;
+            return routes.filter((route) => route.show);
         },
     },
     methods: {
@@ -76,7 +86,12 @@ export default {
         documentClick(e) {
             var el = this.$refs.sidebarNav,
                 target = e.target;
-            if (el !== target && !el.contains(target)) {
+            if (
+                !el ||
+                target.className ===
+                    "router-link-exact-active router-link-active options" ||
+                (el !== target && !el.contains(target))
+            ) {
                 this.hideNav();
             }
         },

@@ -82,7 +82,8 @@ export default {
                 description: "",
                 tools: [],
                 date,
-                imgs: [],
+                desc_imgs: [],
+                all_Images: [],
                 // date_props: date_props || {
                 //     century: null,
                 //     year: null,

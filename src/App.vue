@@ -17,7 +17,9 @@ export default {
         Sidebar,
         SidebarNavigation,
     },
-    async mounted() {},
+    async mounted() {
+        await this.$store.dispatch("set_user_if_exist", 3);
+    },
     created() {
         document.addEventListener("PWAupdatefound", () => {
             let msg = "آپدیتی برای اپلیکیشن ارائه شد. در حال دانلود ...";
