@@ -25,6 +25,7 @@ export default {
             },
         },
         vitrineDocs: { data: [] },
+        searchedDocs: { data: [] },
         readDoc: [],
         profilePage: {
             user: {},

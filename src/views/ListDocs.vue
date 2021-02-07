@@ -1,6 +1,6 @@
 <template>
     <div class="allpoints">
-        <search-field />
+        <SearchField />
         <section class="points">
             <span v-if="!allDocs.data.length" class="notingToShow"
                 >داکیومنتی برای نمایش دادن نیست</span
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import searchField from "@/components/searchField";
+import SearchField from "@/components/searchField";
 import { mapActions } from "vuex";
 
 export default {
@@ -58,18 +58,9 @@ export default {
         },
     },
     methods: {
-        ...mapActions("docs", ["getAllDocs", "searchData"]),
+        ...mapActions("docs", ["getAllDocs"]),
         filterdate(val) {
             return new Date(val).toLocaleDateString("fa-IR");
-            // const day = String(val).slice(-2);
-            // const month = String(val).slice(-4, -2);
-            // const year = String(val).slice(0, -4);
-            // const JustYear = `<span ${
-            //     /[-]/.test(year) ? "class='negetiveYear'" : ""
-            // }>${year.replace(/[-]/gi, "")}</span>`;
-            // const FullDate = `<ul class="FullDate"><li>${JustYear}</li><li>${month}</li><li>${day}</li></ul>`;
-            // const date = month === "00" ? JustYear : FullDate;
-            // return date + `<span> ه‍.ق</span>`;
         },
     },
     beforeRouteEnter(to, from, next) {
@@ -82,6 +73,6 @@ export default {
                 await vm.getAllDocs({ tag: to.params.name });
         });
     },
-    components: { searchField },
+    components: { SearchField },
 };
 </script>

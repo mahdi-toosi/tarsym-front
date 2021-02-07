@@ -19,6 +19,7 @@
             :visible="tileProvider.visible"
             :url="tileProvider.url"
             layer-type="base"
+            attribution="<a class='attr' href='https://tarsym.com'><strong>TARSYM.COM</strong></a>"
         />
 
         <div v-if="docs_list.length">
@@ -217,12 +218,6 @@
 
         <VGeosearch :options="geosearchOptions"></VGeosearch>
 
-        <LControl position="bottomright" class="waterMark">
-            <a href="https://tarsym.ir" target="blank">
-                <strong>TARSYM.IR</strong>
-            </a>
-        </LControl>
-
         <LControlLayers position="bottomright"></LControlLayers>
 
         <LControlZoom position="bottomright"></LControlZoom>
@@ -231,8 +226,12 @@
             position="bottomright"
             v-if="!OnTool && !searchPolygon.isOn"
         />
-        <LControl position="bottomright" class="leaflet-control mapmaker">
-            <a @click="undoTools" v-if="undoCondition">
+        <LControl
+            position="bottomright"
+            class="leaflet-control mapmaker"
+            v-if="undoCondition"
+        >
+            <a @click="undoTools">
                 <i class="fa fa-undo" aria-hidden="true"></i>
             </a>
         </LControl>

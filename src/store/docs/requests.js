@@ -290,12 +290,12 @@ export default {
         return taxonomies;
     },
     // !  searchData
-    async searchData({ dispatch, rootState }) {
+    async searchData({ dispatch, rootState, commit }) {
         const queries = rootState.route.query;
         const url = "/searchInDocs";
-        await axios
+        const searchedDocs = await axios
             .get(url, { params: { ...queries } })
-            .then((res) => console.log("res.data => ", res.data))
+            .then((res) => res.data)
             .catch((error) => {
                 if (error == "Error: Request failed with status code 415") {
                     Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
@@ -303,5 +303,9 @@ export default {
                 }
                 dispatch("handleAxiosError", error, { root: true });
             });
+        const decoded_docs = await dispatch("decode_the_docs", { docs: searchedDocs });
+
+        const docs = { data: decoded_docs };
+        await commit("SET_DOCS_TO", { decoded_docs: docs, list: "searchedDocs", merge: false });
     },
 };

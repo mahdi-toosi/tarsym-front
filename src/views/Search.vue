@@ -1,0 +1,74 @@
+<template>
+    <div class="allpoints">
+        <SearchField />
+        <section class="points">
+            <span v-if="!searchedDocs.data.length" class="notingToShow">
+                داکیومنتی برای نمایش دادن نیست
+            </span>
+            <div
+                class="point shadow"
+                v-for="doc in searchedDocs.data"
+                :key="doc._id"
+                @click="$router.push(`/read/${doc._id}`)"
+            >
+                <header>
+                    <i
+                        class="logo"
+                        :class="
+                            doc.tools[0].iconName || 'fas fa-map-marker-alt'
+                        "
+                        :style="{
+                            color: doc.tools[0].iconName
+                                ? doc.tools[0].secondaryColor.hex8 ||
+                                  doc.tools[0].secondaryColor
+                                : '#277696',
+                        }"
+                        aria-hidden="true"
+                    />
+                    <div class="nameandsituation">
+                        <a href="#" v-text="doc.title"></a>
+                        <!-- <a href="#" v-text="point.user.situation"></a> -->
+                    </div>
+                    <time v-html="filterdate(doc.date)"></time>
+                </header>
+                <main v-text="doc.excerpt + ' ...'"></main>
+                <footer>
+                    <ul>
+                        <li v-if="doc.desc_imgs.length">
+                            <i class="far fa-images" />
+                            <span v-text="doc.desc_imgs.length"></span>
+                            تصویر
+                        </li>
+                    </ul>
+                </footer>
+            </div>
+        </section>
+    </div>
+</template>
+
+<script>
+import SearchField from "@/components/searchField";
+import { mapActions } from "vuex";
+
+export default {
+    name: "SearchedDocs",
+    computed: {
+        searchedDocs() {
+            return this.$store.state.docs.searchedDocs;
+        },
+    },
+    methods: {
+        ...mapActions("docs", ["searchData"]),
+        filterdate(val) {
+            return new Date(val).toLocaleDateString("fa-IR");
+        },
+    },
+    beforeRouteEnter(to, from, next) {
+        next(async (vm) => {
+            if (vm.$store.state.map.zoom > 5) vm.$store.state.map.zoom = 5;
+            if (to.name === "search") await vm.searchData();
+        });
+    },
+    components: { SearchField },
+};
+</script>

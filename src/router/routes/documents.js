@@ -26,7 +26,7 @@ const documentsRoutes = [
     {
         path: "/search",
         name: "search",
-        component: () => import("@/views/ListDocs.vue"),
+        component: () => import("@/views/Search.vue"),
         meta: {
             withoutAuth: true,
         },

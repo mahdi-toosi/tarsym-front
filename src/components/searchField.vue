@@ -1,11 +1,11 @@
 <template>
-    <section class="searchbar shadow">
+    <form class="searchbar shadow" @submit.prevent="fetchSearchResult()">
         <div class="searchInput">
-            <button style="font-size: 22px" @click="fetchSearchResult()">
+            <button style="font-size: 22px" type="submit">
                 <i class="fas fa-search" />
             </button>
             <input
-                type="search"
+                type="text"
                 placeholder="جستجو ..."
                 class="searchBox"
                 v-model.lazy="search"
@@ -14,16 +14,16 @@
                     borderBottom: showOptions ? '1px solid silver' : 'none',
                 }"
             />
-            <button style="font-size: 25px" @click="showOptions = !showOptions">
+            <!-- <button style="font-size: 25px" @click="showOptions = !showOptions">
                 <i class="fas fa-sliders-h"></i>
-            </button>
+            </button> -->
         </div>
         <div class="options" v-show="showOptions">
             <button @click="$store.commit('CHANGE_SEARCH_POLYGON_SITUATION')">
                 select polygon
             </button>
         </div>
-    </section>
+    </form>
 </template>
 
 <script>
@@ -43,8 +43,15 @@ export default {
     methods: {
         fetchSearchResult() {
             const query = {};
-            const searchedText = new String(this.search.trim());
-            if (searchedText.length > 4) query.text = this.search.trim();
+            const searchedText = this.search.trim();
+            if (searchedText.length < 4) {
+                //  searchedText.length > 0 &&
+                this.$toasted.info(
+                    "کلمه جستجو شده حداقال 4 کاراکتر باید داشته باشد ..."
+                );
+                return;
+            }
+            query.text = searchedText;
 
             const polygonCoordinates = this.$store.state.searchPolygon
                 .coordinates;
@@ -55,9 +62,7 @@ export default {
                     query.area.push(coordinate.lng);
                 });
             }
-            this.$router.push({ path: "search", query });
-            if (this.$router.currentRoute.name == "search")
-                this.$store.dispatch("searchData");
+            this.$router.push({ path: "/search", query });
         },
     },
     computed: {
