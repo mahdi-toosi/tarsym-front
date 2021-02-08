@@ -31,7 +31,10 @@ export default {
     methods: {
         async login() {
             if (!this.validateLoginForm()) return;
-            this.$store.dispatch("login", this.user);
+            this.$store.dispatch("login", {
+                userData: this.user,
+                redirectTo: "/",
+            });
         },
         validateLoginForm() {
             const user = this.user;

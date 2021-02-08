@@ -61,10 +61,10 @@ export default {
             Vue.toasted.error("check the console");
         }
     },
-    async login({ dispatch }, user) {
+    async login({ dispatch }, { userData, redirectTo }) {
         const data = {
             strategy: "local",
-            ...user,
+            ...userData,
         };
 
         await axios
@@ -78,15 +78,39 @@ export default {
 
                 await dispatch("set_user_data", res.data);
 
-                //  router.currentRoute.query.redirect ||
-                await router.push("/");
+                await router.push(redirectTo);
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 401") {
                     Vue.toasted.error("نام کاربری یا رمز عبور اشتباه است ...");
                     return;
                 }
-                dispatch("handleAxiosError", error, { root: true });
+                dispatch("handleAxiosError", error);
+            });
+    },
+    async sendVerifyCode({ dispatch }, { username, mobile }) {
+        return await axios
+            .post("/expiring-data", { username, mobile })
+            .then(({ data }) => {
+                Vue.toasted[data.type](data.msg);
+                return true;
+            })
+            .catch((error) => {
+                const errMsg = error.response.data.message;
+                const alreadysended = "کد اعتبار سنجی قبلا برای شما ارسال شده است ...";
+
+                if (errMsg == "id: value already exists.") {
+                    Vue.toasted.info(alreadysended);
+                    return false;
+                } else if (errMsg == "username not found") {
+                    Vue.toasted.info("با این نام کاربری ثبت نام نکرده اید");
+                    return false;
+                } else if (error == "Error: Request failed with status code 409") {
+                    Vue.toasted.info(alreadysended);
+                    return false;
+                }
+                dispatch("handleAxiosError", error);
+                return false;
             });
     },
     set_user_data({ commit }, data) {
@@ -108,14 +132,16 @@ export default {
     async signup({ dispatch }, userData) {
         await axios
             .post("/users", userData)
-            .then(async () => await dispatch("login", userData))
+            .then()
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
                     Vue.toasted.error("نام کاربری قبلا به ثبت رسیده است");
                     return;
                 }
-                dispatch("handleAxiosError", error, { root: true });
+                dispatch("handleAxiosError", error);
             });
+
+        await dispatch("login", { userData, redirectTo: "/verify-mobile" });
     },
     logout({ commit }, redirect) {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData

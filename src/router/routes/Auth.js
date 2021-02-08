@@ -17,6 +17,7 @@ const AuthRoutes = [
             },
             {
                 path: "verify-mobile",
+                name: "verifyMobile",
                 component: () => import("@/views/Auth/verifyMobile.vue"),
             },
             {

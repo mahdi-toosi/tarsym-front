@@ -50,11 +50,7 @@
             ></button>
         </form>
         <form @submit.prevent="changeMobileNum()" class="changePassFrom">
-            <input
-                type="password"
-                placeholder="شماره موبایل"
-                v-model="mobile"
-            />
+            <input placeholder="شماره موبایل" v-model="mobile" />
             <button class="btn btn-blue" type="submit">
                 تغییر شماره موبایل
             </button>
@@ -100,6 +96,24 @@ export default {
         },
     },
     methods: {
+        async changeMobileNum() {
+            const mobile = this.mobile;
+            const username = this.user.username;
+            if (!mobile.match(/^(\+98|0)?9\d{9}$/g)) {
+                this.$toasted.error("شماره تلفن همراه معتبر نمیباشد");
+                return;
+            }
+            const res = await this.$store.dispatch("sendVerifyCode", {
+                username,
+                mobile,
+            });
+            if (!res) return;
+
+            this.$router.push({
+                path: "/auth/verify-mobile",
+                query: { username },
+            });
+        },
         async updateUserData() {
             if (!this.validateSignupForm()) return;
             const { _id, name, city, job, nationalCode, role } = this.user;
@@ -169,7 +183,10 @@ export default {
                 return;
             }
             this.$axios
-                .patch(`/users/${this.user._id}`, { password })
+                .patch(`/users/${this.user._id}`, {
+                    _id: this.user._id,
+                    password,
+                })
                 .then(() => {
                     this.$toasted.success("پسورد با موفقیت تغییر کرد");
                     this.$store.dispatch(
