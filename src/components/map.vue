@@ -40,7 +40,7 @@
                         "
                         :color="tool.color.hex8 || tool.color"
                         :lat-lngs="tool.coordinates"
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
                         <LTooltip v-if="tool.tooltip.text">
@@ -72,7 +72,7 @@
                         :lat-lngs="tool.coordinates"
                         :color="tool.color.hex8 || tool.color"
                         :dashArray="tool.dashed ? '10,10' : ''"
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
                         <LTooltip v-if="tool.tooltip.text">
@@ -84,7 +84,7 @@
                         </LTooltip>
                     </LPolyline>
                     <PolylineDecorator
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                         :lat-lngs="tool.coordinates"
                         :icon-size="tool.iconSize"
                         :icon-name="tool.iconName"
@@ -108,7 +108,7 @@
                             UPDATE_THIS_POINT_COORDINATE({ $event, tool })
                         "
                         :icon="defaultIcon"
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
                         <LIcon
@@ -133,7 +133,7 @@
                         <LTooltip
                             v-if="tool.tooltip.text"
                             :options="tooltipOptions"
-                            @click="goToThisDoc(tool._id)"
+                            @dblclick="goToThisDoc(tool._id)"
                             :key="mmmm"
                         >
                             <p>{{ tool.tooltip.text }}</p>
@@ -153,7 +153,7 @@
                         @update:latLng="
                             UPDATE_THIS_POINT_COORDINATE({ $event, tool })
                         "
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                         :visible="tool.visible"
                     >
                         <LIcon
@@ -192,7 +192,7 @@
                         :radius="20"
                         :min-opacity="0.75"
                         :blur="17"
-                        @click="goToThisDoc(tool._id)"
+                        @dblclick="goToThisDoc(tool._id)"
                     />
                 </div>
             </div>
@@ -216,7 +216,7 @@
             />
         </div>
 
-        <VGeosearch :options="geosearchOptions"></VGeosearch>
+        <VGeosearch :options="geosearchOptions" />
 
         <LControlLayers position="bottomright"></LControlLayers>
 
@@ -228,10 +228,9 @@
         />
         <LControl
             position="bottomright"
-            class="leaflet-control mapmaker"
-            v-if="undoCondition"
+            class="leaflet-control mapmaker undoControl"
         >
-            <a @click="undoTools">
+            <a @click="undoTools" v-if="undoCondition">
                 <i class="fa fa-undo" aria-hidden="true"></i>
             </a>
         </LControl>
@@ -346,7 +345,11 @@ export default {
         },
     },
     methods: {
-        ...mapMutations("docs", ["UPDATE_THIS_POINT_COORDINATE"]),
+        ...mapMutations("docs", [
+            "UPDATE_THIS_POINT_COORDINATE",
+            "OFF_THE_ON_TOOL",
+            "UPDATE_ON_TOOL",
+        ]),
         ...mapMutations("map", ["UPDATE_MOUSE_COOR"]),
         ...mapActions(["update_zoom", "update_center", "update_layer"]),
         update_mouse_coor(obj) {
@@ -421,9 +424,24 @@ export default {
         const mapObject = this.$refs.LeafletMap.mapObject;
         L.easyPrint({
             position: "bottomleft",
-            sizeModes: ["Current"],
+            sizeModes: [
+                {
+                    width: mapObject._size.x,
+                    height: mapObject._size.y,
+                    className: "currentSizeClass",
+                    tooltip: "عکس برداری از نقشه",
+                },
+            ],
             exportOnly: true,
             filename: "tarsym",
+            hideControlContainer: false,
+            hideClasses: [
+                "leaflet-control-easyPrint",
+                "leaflet-control-layers",
+                "leaflet-control-zoom",
+                "undoControl",
+                "leaflet-bar",
+            ],
         }).addTo(mapObject);
 
         document.addEventListener(
@@ -456,6 +474,14 @@ export default {
             closeIcon.classList.add("fas", "fa-times");
             button.appendChild(closeIcon);
         }, 2000);
+
+        document.onkeydown = (evt) => {
+            evt = evt || window.event;
+            if (evt.keyCode === 27) {
+                this.OFF_THE_ON_TOOL();
+                this.UPDATE_ON_TOOL();
+            }
+        };
     },
     components: {
         LMap,

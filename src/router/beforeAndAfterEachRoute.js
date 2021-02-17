@@ -1,8 +1,12 @@
 import Vue from "vue";
 import store from "../store/";
+import NProgress from "nprogress";
 
 function beforeEach() {
     return async (to, from, next) => {
+        if (to.path) {
+            NProgress.start();
+        }
         if (to.matched.some((record) => record.meta.withoutAuth)) {
             // * scape authenticate
             next();
@@ -27,6 +31,7 @@ function beforeEach() {
 }
 function afterEach() {
     return async (to) => {
+        NProgress.done();
         const RN = to.name; // * route name
         if (RN === "read doc") {
             await store.dispatch("docs/read_this_doc");

@@ -25,7 +25,14 @@ export default {
         if (type === "image" && process.env.NODE_ENV === "development" && val !== null) {
             val = process.env.VUE_APP_DOMAIN + val;
         }
-        thisTool.tooltip[type] = val;
+        // thisTool.tooltip[type] = val;
+
+        if (type === "image") thisTool.tooltip[type] = val;
+        if (type === "text") {
+            const trim_val = val.trim();
+            if (trim_val === "") thisTool.tooltip[type] = null;
+            else thisTool.tooltip[type] = trim_val;
+        }
     },
     DELETE_TOOL(state, index) {
         const onTool = state.DocProp.OnTool;
@@ -94,8 +101,8 @@ export default {
     OFF_THE_ON_TOOL(state) {
         const onTool = state.DocProp.OnTool;
         if (!onTool.condition) return;
-        const OnToolinDoc = docLayer(state).tools[onTool.index];
-        OnToolinDoc.isOn = false;
+        const OnTool = docLayer(state).tools[onTool.index];
+        OnTool.isOn = false;
     },
     UPDATE_ON_TOOL(state) {
         const Docs = state.newDocs;
@@ -104,9 +111,9 @@ export default {
         onTool.index = -1;
         for (let i = 0; i < Docs.length; i++) {
             const docLayer = Docs[i];
-            const OnToolindex = docLayer.tools.findIndex((tool) => tool.isOn == true);
-            const weHaveOnTool = OnToolindex > -1;
-            if (weHaveOnTool) {
+            const OnToolindex = docLayer.tools.findIndex((tool) => tool.isOn === true);
+            const haveAnOnTool = OnToolindex > -1;
+            if (haveAnOnTool) {
                 onTool.condition = true;
                 onTool.index = OnToolindex;
                 break;

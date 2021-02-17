@@ -6,6 +6,8 @@ import Helpers from "./beforeAndAfterEachRoute";
 import AuthRoutes from "./routes/Auth";
 import documentsRoutes from "./routes/documents";
 
+import VueAnalytics from "vue-analytics";
+
 Vue.use(VueRouter);
 
 // * USERS ROLES
@@ -65,5 +67,12 @@ const router = new VueRouter({
 
 router.beforeEach(Helpers.beforeEach());
 router.afterEach(Helpers.afterEach());
+
+// const isProd = process.env.NODE_ENV === "production";
+Vue.use(VueAnalytics, {
+    id: "G-8JCJM8RJ9E",
+    router,
+    // debug: { enabled: !isProd, sendHitTask: isProd },
+});
 
 export default router;

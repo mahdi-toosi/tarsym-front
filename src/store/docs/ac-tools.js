@@ -3,15 +3,13 @@ export default {
         await store.commit("DELETE_TOOL", index);
         await store.commit("UPDATE_ON_TOOL");
     },
-    toolSwitch({ commit }, { tool, index }) {
+    async toolSwitch({ commit }, { tool, index }) {
         const tool_is_on = tool.isOn;
 
-        commit("OFF_THE_ON_TOOL");
+        await commit("OFF_THE_ON_TOOL");
+        if (!tool_is_on) await commit("MAKE_TOOL_ON", index);
 
-        if (!tool_is_on) commit("MAKE_TOOL_ON", index);
-
-        commit("UPDATE_ON_TOOL");
-        return;
+        await commit("UPDATE_ON_TOOL");
     },
     async setTool({ commit, rootState }, type) {
         await commit("OFF_THE_ON_TOOL");

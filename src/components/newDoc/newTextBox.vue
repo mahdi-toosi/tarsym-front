@@ -86,7 +86,7 @@
                     v-model="TextBoxWidth"
                     :width="100"
                     :height="6"
-                    :min="100"
+                    :min="50"
                     :max="350"
                 />
             </div>

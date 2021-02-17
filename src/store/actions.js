@@ -53,9 +53,8 @@ export default {
             }
             Vue.toasted.error(msg);
         } else if (error.request) {
-            msg = "request get error , check the console";
             console.log("request get error => ", error);
-            Vue.toasted.error(msg);
+            Vue.toasted.error("request get error , check the console");
         } else {
             console.log("Error", error);
             Vue.toasted.error("check the console");
