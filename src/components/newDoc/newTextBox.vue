@@ -16,11 +16,16 @@
                 class="editIcon"
                 @click="toolSwitch({ tool, index })"
                 :class="tool.isOn ? 'tool_is_on' : ''"
+                title="ویرایش ابزار"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
-            <button class="visibility" @click="CHANGE_VISIBILITY(index)">
+            <button
+                class="visibility"
+                @click="CHANGE_VISIBILITY(index)"
+                title="نمایش / عدم نمایش"
+            >
                 <i
                     class="far"
                     :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
@@ -31,6 +36,7 @@
                 @click="deleteTool(index)"
                 class="delete_button"
                 v-if="!tool.searchable"
+                title="حذف ابزار"
             >
                 <i class="far fa-trash-alt"></i>
             </button>
@@ -86,7 +92,7 @@
                     v-model="TextBoxWidth"
                     :width="100"
                     :height="6"
-                    :min="50"
+                    :min="30"
                     :max="350"
                 />
             </div>

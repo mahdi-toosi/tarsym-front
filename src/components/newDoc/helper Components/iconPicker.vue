@@ -8,6 +8,7 @@
                     : '#277696',
             }"
             @click="togglePicker()"
+            title="انتخاب آیکون"
         />
         <div class="icons_box" :class="displayPicker ? 'show' : ''">
             <i

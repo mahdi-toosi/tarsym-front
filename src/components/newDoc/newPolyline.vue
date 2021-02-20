@@ -15,18 +15,27 @@
                 class="editIcon"
                 @click="toolSwitch({ tool, index })"
                 :class="tool.isOn ? 'tool_is_on' : ''"
+                title="ویرایش ابزار"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>
 
-            <button class="visibility" @click="CHANGE_VISIBILITY(index)">
+            <button
+                class="visibility"
+                @click="CHANGE_VISIBILITY(index)"
+                title="نمایش / عدم نمایش"
+            >
                 <i
                     class="far"
                     :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
                 ></i>
             </button>
 
-            <button @click="deleteTool(index)" class="delete_button">
+            <button
+                @click="deleteTool(index)"
+                class="delete_button"
+                title="حذف ابزار"
+            >
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>

@@ -48,11 +48,11 @@ export default {
                 visible: false,
                 url: "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
             },
-            // {
-            //     name: "Watercolor",
-            //     visible: false,
-            //     url: "http://tile.stamen.com/watercolor/{z}/{x}/{y}.png",
-            // },
+            {
+                name: "Watercolor",
+                visible: false,
+                url: "http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+            },
         ],
     },
     mutations: {
