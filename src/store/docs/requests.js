@@ -158,20 +158,54 @@ export default {
         await commit("SET_DOCS_TO", { decoded_docs: docs, list: "vitrineDocs", merge: false });
     },
     // !  get_this_docs
-    async get_this_docs({ dispatch }, doc_ids) {
-        const is_doc_ids_array = Array.isArray(doc_ids),
-            url = `/documents/${is_doc_ids_array ? "" : doc_ids}`,
-            obj = { params: { "_id[$in]": doc_ids } },
-            options = is_doc_ids_array ? obj : {};
+    async get_this_docs({ state, dispatch }, doc_ids) {
+        doc_ids = Array.isArray(doc_ids) ? doc_ids : [doc_ids];
+        let docs = [],
+            local_databases = ["vitrineDocs", "readDoc"],
+            already_fetchedDocs_ids = [];
 
-        const docs = await axios
-            .get(url, options)
-            .then((res) => res.data)
+        // * set doc if already exist in state
+        doc_ids.forEach((_id) => {
+            for (let i = 0; i < local_databases.length; i++) {
+                const database = Array.isArray(state[local_databases[i]])
+                    ? state[local_databases[i]]
+                    : state[local_databases[i]].data;
+                const doc = database.find((doc) => doc._id === _id);
+                if (doc) {
+                    doc.already_fetched = true;
+                    already_fetchedDocs_ids.push(doc._id);
+                    docs.push(doc);
+                    return;
+                }
+            }
+        });
+
+        already_fetchedDocs_ids.forEach((id) => {
+            let index = doc_ids.indexOf(id);
+            if (index > -1) doc_ids.splice(index, 1);
+        });
+        if (doc_ids.length === 0) {
+            if (docs.length === 1) return docs[0];
+            else return docs;
+        }
+
+        const id_isJustOne = doc_ids.length === 1,
+            obj = { params: { "_id[$in]": doc_ids } },
+            options = id_isJustOne ? {} : obj;
+
+        await axios
+            .get(`/documents/${id_isJustOne ? doc_ids[0] : ""}`, options)
+            .then(({ data }) => {
+                if (Array.isArray(data)) docs = [...docs, ...data];
+                else docs.push(data);
+            })
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
                 return false;
             });
-        return docs;
+
+        if (docs.length === 1) return docs[0];
+        else return docs;
     },
     // !  get_this_doc_for_update
     async get_this_doc_for_update({ state, commit, dispatch, rootState }, doc_id) {
@@ -223,24 +257,15 @@ export default {
         await commit("SET_DOCS_TO", { decoded_docs: decoded_childs, list: "newDocs", merge: true });
     },
     // !  read_this_doc
-    async read_this_doc({ state, commit, dispatch }, id) {
+    async read_this_doc({ commit, dispatch }, id) {
         const _id = id || router.currentRoute.params._id;
-        let doc, already_Decoded, decoded_docs;
+        let doc, decoded_docs;
 
-        // * set doc if already exist in state
-        if (state.vitrineDocs.data.length) {
-            doc = await state.vitrineDocs.data.filter((doc) => doc._id === _id)[0];
-            if (doc) already_Decoded = true;
-        }
-        if (!doc && state.readDoc.length) {
-            doc = await state.readDoc.filter((doc) => doc._id === _id)[0];
-            if (doc) already_Decoded = true;
-        }
         // * not exist , get doc from server
-        if (!doc) doc = await dispatch("get_this_docs", _id);
+        doc = await dispatch("get_this_docs", _id);
         if (!doc) return;
 
-        if (!already_Decoded) decoded_docs = await dispatch("decode_the_docs", { docs: [doc] });
+        decoded_docs = await dispatch("decode_the_docs", { docs: [doc] });
 
         await commit("SET_DOCS_TO", { decoded_docs: decoded_docs || [doc], list: "readDoc", merge: true });
 

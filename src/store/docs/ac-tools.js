@@ -17,4 +17,10 @@ export default {
         await commit("SET_TOOL", { type, map: rootState.map });
         await commit("UPDATE_ON_TOOL");
     },
+    async copy_tool({ commit }, index) {
+        await commit("OFF_THE_ON_TOOL");
+        await commit("COPY_TOOL", index);
+        await commit("MAKE_TOOL_ON", index + 1);
+        await commit("UPDATE_ON_TOOL");
+    },
 };

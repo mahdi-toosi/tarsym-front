@@ -134,7 +134,6 @@
                             v-if="tool.tooltip.text"
                             :options="tooltipOptions"
                             @dblclick="goToThisDoc(tool._id)"
-                            :key="mmmm"
                         >
                             <p>{{ tool.tooltip.text }}</p>
                             <img
@@ -185,7 +184,7 @@
                 </div>
                 <!-- end Textbox  -->
 
-                <div v-if="tool.type === 'Heatmap' && tool.visible">
+                <!-- <div v-if="tool.type === 'Heatmap' && tool.visible">
                     <LeafletHeatmap
                         :key="tool.key"
                         :lat-lng="tool.coordinates"
@@ -194,7 +193,7 @@
                         :blur="17"
                         @dblclick="goToThisDoc(tool._id)"
                     />
-                </div>
+                </div> -->
             </div>
         </div>
         <!-- end docs_list -->
@@ -262,7 +261,7 @@ import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 
 import PolylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
 
-import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHeatmap.common.js";
+// import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHeatmap.common.js";
 
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
@@ -310,7 +309,6 @@ export default {
                 autoClose: true,
             },
             tooltipOptions: { permanent: false },
-            mmmm: 54825,
         };
     },
     computed: {
@@ -377,21 +375,21 @@ export default {
                 thisTool.coordinates = latlng;
                 return;
             }
-            const coor = thisTool.coordinates;
-            if (thisTool.type === "Heatmap") {
-                if (coor.length) {
-                    // dont repeat coordinate
-                    const lastCoor = coor[coor.length - 1];
-                    if (
-                        lastCoor[0] === latlng.lat &&
-                        lastCoor[1] === latlng.lng
-                    )
-                        return;
-                }
-                coor.push([latlng.lat, latlng.lng, 1]);
-                ++thisTool.key; // * rebuild the Heatmap
-                return;
-            }
+            // const coor = thisTool.coordinates;
+            // if (thisTool.type === "Heatmap") {
+            //     if (coor.length) {
+            //         // dont repeat coordinate
+            //         const lastCoor = coor[coor.length - 1];
+            //         if (
+            //             lastCoor[0] === latlng.lat &&
+            //             lastCoor[1] === latlng.lng
+            //         )
+            //             return;
+            //     }
+            //     coor.push([latlng.lat, latlng.lng, 1]);
+            //     ++thisTool.key; // * rebuild the Heatmap
+            //     return;
+            // }
             thisTool.coordinates.push(latlng);
         },
         goToThisDoc(_id) {
@@ -413,7 +411,7 @@ export default {
                 return;
             }
             this.OnTool.coordinates.pop();
-            if (this.OnTool.type === "Heatmap") ++this.OnTool.key; // * rebuild the Heatmap
+            // if (this.OnTool.type === "Heatmap") ++this.OnTool.key; // * rebuild the Heatmap
         },
         // toggleShowAllToolips() {
         //     this.tooltipOptions.permanent = !this.tooltipOptions.permanent;
@@ -497,7 +495,7 @@ export default {
         LTooltip,
         LControlLayers,
         VGeosearch,
-        LeafletHeatmap,
+        // LeafletHeatmap,
     },
 };
 </script>

@@ -6,27 +6,34 @@
                 type="text"
                 placeholder="نام و نام خانوادگی"
                 v-model="user.name"
+                name="name"
+                autocomplete="name"
+                autofocus
+                required
             />
             <input
                 type="text"
                 placeholder="نام کاربری"
-                name="username"
                 v-model="user.username"
+                name="username"
+                autocomplete="username"
+                required
             />
             <input
-                type="text"
+                type="tel"
                 placeholder="شماره تلفن همراه"
                 v-model="user.mobile"
+                name="mobile"
+                autocomplete="tel"
+                required
             />
             <input
                 type="password"
                 placeholder="رمز عبور"
                 v-model="user.password"
-            />
-            <input
-                type="password"
-                placeholder="تکرار رمز عبور"
-                v-model="user.rpassword"
+                name="new-password"
+                autocomplete="new-password"
+                required
             />
             <p>
                 شما با ثبت نام در ترسیم،
@@ -47,7 +54,6 @@ export default {
                 username: "",
                 mobile: "",
                 password: "",
-                rpassword: "",
             },
         };
     },
@@ -68,8 +74,6 @@ export default {
                 errors.push("شماره تلفن همراه معتبر نمیباشد");
             if (user.password.length < 5)
                 errors.push("پسورد به اندازه کافی قوی نیست");
-            if (user.password !== user.rpassword)
-                errors.push("فیلد های پسورد یکسان نیستند");
             // this.validLength(user.name) &&
             // user.imgURL &&
             if (!errors.length) return true;

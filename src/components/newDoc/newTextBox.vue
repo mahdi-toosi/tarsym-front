@@ -33,6 +33,14 @@
             </button>
 
             <button
+                @click="copy_tool(index)"
+                class="copy_button"
+                v-if="!tool.searchable"
+            >
+                <i class="far fa-copy"></i>
+            </button>
+
+            <button
                 @click="deleteTool(index)"
                 class="delete_button"
                 v-if="!tool.searchable"

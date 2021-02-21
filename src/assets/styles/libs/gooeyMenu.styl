@@ -8,7 +8,7 @@
     font-size: 20px
     text-align: right 
     i 
-        margin-top: 2px
+        margin-top: 3px
 
 .menu-item, .menu-open-button 
     background: #00bcd4
@@ -39,9 +39,12 @@
     font-size: 25px
     line-height: 25px
     font-weight: 200
+    margin-top: 2px;
 
 .menu-item
     cursor pointer
+    i
+        margin-top: 6px
     &:hover 
         background: white
         color: #00bcd4
@@ -53,8 +56,8 @@
         transition-duration: 600ms
     &:nth-child(6) 
         transition-duration: 700ms
-    &:nth-child(7) 
-        transition-duration: 800ms
+    // &:nth-child(7) 
+    //     transition-duration: 800ms
 
 
 .menu-open-button 
@@ -91,7 +94,7 @@
     transition-duration: 600ms
     transform: translate3d(-200px, 0, 0)
 
-.menu-open:checked ~ .menu-item:nth-child(7) 
-    transition-duration: 700ms
-    transform: translate3d(-250px, 0, 0)
+// .menu-open:checked ~ .menu-item:nth-child(7) 
+//     transition-duration: 700ms
+//     transform: translate3d(-250px, 0, 0)
 

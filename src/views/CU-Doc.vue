@@ -137,13 +137,13 @@
                                         class="tool"
                                         :class="{ active: tool.isOn }"
                                     />
-                                    <NewHeatmap
+                                    <!-- <NewHeatmap
                                         :tool="tool"
                                         :index="index"
                                         v-if="tool.type === 'Heatmap'"
                                         class="tool"
                                         :class="{ active: tool.isOn }"
-                                    />
+                                    /> -->
                                 </li>
                             </Draggable>
                         </ul>
@@ -185,7 +185,7 @@ import NewPoint from "@/components/newDoc/newPoint";
 import NewPolygon from "@/components/newDoc/newPolygon";
 import NewPolyline from "@/components/newDoc/newPolyline";
 import NewTextBox from "@/components/newDoc/newTextBox";
-import NewHeatmap from "@/components/newDoc/newHeatmap";
+// import NewHeatmap from "@/components/newDoc/newHeatmap";
 // import datePicker from "@/components/newDoc/helper Components/datePicker";
 import VuePersianDatetimePicker from "vue-persian-datetime-picker";
 import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
@@ -439,7 +439,7 @@ export default {
         NewPolygon,
         NewPolyline,
         NewTextBox,
-        NewHeatmap,
+        // NewHeatmap,
         AddNewLayerBox,
         LayersRelationshipTree,
     },

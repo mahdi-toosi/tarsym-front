@@ -5,13 +5,19 @@
             <div class="verifyCode">
                 <input
                     type="text"
+                    inputmode="numeric"
                     placeholder="code ..."
                     v-model="verifyCode"
                     maxlength="8"
+                    autocomplete="one-time-code"
                 />
                 <span>{{ timeLeft }}</span>
             </div>
-            <button class="btn btn-blue" type="submit" :disabled="!verifyCode">
+            <button
+                class="btn btn-blue"
+                type="submit"
+                :disabled="verifyCode.length < 6"
+            >
                 ارسال کد
             </button>
         </form>
@@ -40,7 +46,7 @@ export default {
         return {
             status: null,
             username: null,
-            verifyCode: null,
+            verifyCode: "",
             selectedTime: 0,
             timeLeft: "00:00",
             buttonsSituation: false,
@@ -48,10 +54,10 @@ export default {
     },
     methods: {
         async sendCode() {
-            if (!this.verifyCode) return;
+            if (this.verifyCode.length < 6) return;
             const params = {
                 username: this.username,
-                code: String(this.verifyCode).trim(),
+                code: this.verifyCode.trim(),
             };
             await this.$axios
                 .delete("/expiring-data", { params })
@@ -135,6 +141,8 @@ function zeroPadded(num) {
         input {
             display: inline-block;
             letter-spacing: 10px;
+            text-align: left;
+            direction: ltr;
 
             &::placeholder {
                 letter-spacing: 1px;

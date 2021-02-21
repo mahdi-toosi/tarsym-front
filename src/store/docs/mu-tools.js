@@ -126,4 +126,9 @@ export default {
             tool.coordinates = coordinates;
         }
     },
+    COPY_TOOL(state, index) {
+        const tools = docLayer(state).tools;
+        // deep copy
+        tools.splice(index, 0, JSON.parse(JSON.stringify(tools[index])));
+    },
 };

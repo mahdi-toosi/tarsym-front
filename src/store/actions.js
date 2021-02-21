@@ -131,7 +131,9 @@ export default {
     async signup({ dispatch }, userData) {
         await axios
             .post("/users", userData)
-            .then()
+            .then(async () => {
+                await dispatch("login", { userData, redirectTo: "/verify-mobile" });
+            })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
                     Vue.toasted.error("نام کاربری قبلا به ثبت رسیده است");
@@ -139,8 +141,6 @@ export default {
                 }
                 dispatch("handleAxiosError", error);
             });
-
-        await dispatch("login", { userData, redirectTo: "/verify-mobile" });
     },
     logout({ commit }, redirect) {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData

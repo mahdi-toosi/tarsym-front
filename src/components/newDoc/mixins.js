@@ -11,7 +11,7 @@ export default {
         Tooltip,
     },
     methods: {
-        ...mapActions("docs", ["deleteTool", "toolSwitch"]),
+        ...mapActions("docs", ["deleteTool", "toolSwitch", "copy_tool"]),
         ...mapMutations("docs", [
             "CHANGE_RANG_INPUT",
             "SET_ZOOM_LEVEL",

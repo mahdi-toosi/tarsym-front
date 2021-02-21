@@ -125,6 +125,10 @@ export default {
         const newData = [];
         for (let index = 0; index < Docs.length; index++) {
             const doc = Docs[index];
+            if (doc.already_fetched) {
+                newData.push(doc);
+                continue;
+            }
             const junk = JSON.parse(doc.junk);
             delete doc.junk;
             const { desc_imgs, all_Images } = await dispatch("getAllDocImages", junk);

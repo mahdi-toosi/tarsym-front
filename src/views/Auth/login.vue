@@ -2,15 +2,26 @@
     <div class="loginForm">
         <h1>ورود به ترسیم</h1>
         <form @submit.prevent="login()">
+            <!-- <div class="text-field"> -->
+            <!-- <label for="username">نام کاربری</label> -->
             <input
                 type="text"
-                placeholder="نام کاربری"
+                id="username"
+                placeholder="mahditoosi"
                 v-model="user.username"
+                dir="auto"
+                name="username"
+                autocomplete="username"
+                autofocus
+                required
             />
             <input
                 type="password"
                 placeholder="رمز عبور"
                 v-model="user.password"
+                name="current-password"
+                autocomplete="current-password"
+                required
             />
             <button class="btn btn-green" type="submit">ورود</button>
         </form>
