@@ -17,5 +17,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+    name: "404Page",
+    metaInfo() {
+        return {
+            title: `ترسیم - 404`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
+};
 </script>

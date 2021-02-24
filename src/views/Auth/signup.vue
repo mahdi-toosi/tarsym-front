@@ -47,6 +47,13 @@
 
 <script>
 export default {
+    name: "signupPage",
+    metaInfo() {
+        return {
+            title: `ترسیم - ثبت نام`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             user: {

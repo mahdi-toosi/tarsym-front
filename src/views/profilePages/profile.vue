@@ -2,20 +2,23 @@
     <div class="profilePage">
         <header>
             <div class="profileData">
-                <img :src="avatar || '/imgs/profileAvatar.png'" />
+                <img
+                    :src="avatar || '/imgs/profileAvatar.png'"
+                    :alt="avatar ? profile.user.name : 'عکس پروفایل'"
+                />
                 <span>
                     {{ profile.user.name }} <br />
                     {{ profile.user.username }}
                 </span>
             </div>
-            <a
+            <button
                 class="btn btn-blue"
                 @click="addNewDoc()"
                 v-if="profile.user.role >= 35"
             >
                 نقطه ی جدید ایجاد کن
                 <i class="fas fa-plus" />
-            </a>
+            </button>
         </header>
         <section class="points">
             <span v-if="!profile.user._id" class="notingToShow">
@@ -25,11 +28,12 @@
             <span v-if="!profile.docs.data" class="notingToShow">
                 داکیومنتی برای نمایش دادن نیست
             </span>
-            <div
+            <a
                 class="point shadow"
                 v-for="doc in profile.docs.data"
                 :key="doc._id"
-                @click="$router.push(`/read/${doc._id}`)"
+                :href="`https://tarsym.com/read/${doc._id}`"
+                @click.prevent="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -46,13 +50,14 @@
                         aria-hidden="true"
                     />
                     <div class="nameandsituation">
-                        <a href="#" v-text="doc.title"></a>
+                        <h1 href="#" v-text="doc.title"></h1>
+                        <time v-html="filterdate(doc.date)"></time>
                     </div>
-                    <time v-html="filterdate(doc.date)"></time>
                     <button
                         class="editDoc"
                         @click.stop="$router.push(`/update/${doc._id}`)"
                         v-if="profile.user._id === user._id"
+                        title="تغییر داکیومنت"
                     >
                         <i class="far fa-edit"></i>
                     </button>
@@ -60,6 +65,7 @@
                         @click.stop="Delete_this_Document({ doc, root: true })"
                         class="deleteDoc"
                         v-if="profile.user._id === user._id"
+                        title="حذف داکیومنت"
                     >
                         <i class="far fa-trash-alt"></i>
                     </button>
@@ -74,7 +80,7 @@
                         </li>
                     </ul>
                 </footer>
-            </div>
+            </a>
         </section>
     </div>
 </template>
@@ -160,7 +166,6 @@ export default {
 
         .btn {
             margin-right: auto;
-            height: 22px;
         }
     }
 

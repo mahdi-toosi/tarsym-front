@@ -9,7 +9,7 @@
                 id="menu-open"
             />
             <label class="menu-open-button" for="menu-open">
-                <a class="plus">
+                <a class="plus" rel="nofollow">
                     <i class="fa fa-plus"></i>
                 </a>
             </label>

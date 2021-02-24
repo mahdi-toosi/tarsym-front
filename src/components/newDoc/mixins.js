@@ -1,14 +1,11 @@
 import { mapActions, mapMutations } from "vuex";
-import ColorPicker from "@/components/newDoc/helper Components/colorPicker";
-import Tooltip from "@/components/newDoc/helper Components/tooltip";
-import VueSlider from "vue-slider-component";
 
 export default {
     props: ["tool", "index"],
     components: {
-        ColorPicker,
-        VueSlider,
-        Tooltip,
+        ColorPicker: () => import("@/components/newDoc/helper Components/colorPicker"),
+        VueSlider: () => import("vue-slider-component"),
+        Tooltip: () => import("@/components/newDoc/helper Components/tooltip"),
     },
     methods: {
         ...mapActions("docs", ["deleteTool", "toolSwitch", "copy_tool"]),

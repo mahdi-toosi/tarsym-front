@@ -12,6 +12,19 @@ import SidebarNavigation from "@/components/sidebarNavigation";
 
 export default {
     name: "app",
+    metaInfo() {
+        return {
+            title: `ترسیم`,
+            meta: [
+                {
+                    name: "description",
+                    content: this.DocLayer?.title,
+                },
+                { property: "og:url", content: "https://tarsym.com" },
+                { name: "robots", content: "index, follow" },
+            ],
+        };
+    },
     components: {
         TarsymMap,
         Sidebar,

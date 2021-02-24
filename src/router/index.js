@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import VueMeta from "vue-meta";
 
 import Helpers from "./beforeAndAfterEachRoute";
 
@@ -9,6 +10,7 @@ import documentsRoutes from "./routes/documents";
 import VueAnalytics from "vue-analytics";
 
 Vue.use(VueRouter);
+Vue.use(VueMeta);
 
 // * USERS ROLES
 // *  admin: 48,
@@ -68,11 +70,12 @@ const router = new VueRouter({
 router.beforeEach(Helpers.beforeEach());
 router.afterEach(Helpers.afterEach());
 
-// const isProd = process.env.NODE_ENV === "production";
-Vue.use(VueAnalytics, {
-    id: "G-8JCJM8RJ9E",
-    router,
-    // debug: { enabled: !isProd, sendHitTask: isProd },
-});
+const isProd = process.env.NODE_ENV === "production";
+if (isProd)
+    Vue.use(VueAnalytics, {
+        id: "G-8JCJM8RJ9E",
+        router,
+        // debug: { enabled: !isProd, sendHitTask: isProd },
+    });
 
 export default router;

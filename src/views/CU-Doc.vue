@@ -171,29 +171,26 @@ import "quill/dist/quill.snow.css";
 import { quillEditor } from "vue-quill-editor";
 // TODO => fix the quill-image-drop errors
 
-// *  vue slider styles
+// *  vue slider and select styles
 import "vue-slider-component/theme/antd.css";
-
-// * components
-import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 
-// * Vue draggable
-import Draggable from "vuedraggable";
-
+// * components
 import NewPoint from "@/components/newDoc/newPoint";
 import NewPolygon from "@/components/newDoc/newPolygon";
 import NewPolyline from "@/components/newDoc/newPolyline";
 import NewTextBox from "@/components/newDoc/newTextBox";
 // import NewHeatmap from "@/components/newDoc/newHeatmap";
 // import datePicker from "@/components/newDoc/helper Components/datePicker";
-import VuePersianDatetimePicker from "vue-persian-datetime-picker";
-import GooeyMenu from "@/components/newDoc/helper Components/gooeyMenu";
-import AddNewLayerBox from "@/components/newDoc/helper Components/addNewLayerBox";
-import LayersRelationshipTree from "@/components/newDoc/helper Components/layersRelationshipTree";
 
 export default {
     name: "newDoc",
+    metaInfo() {
+        return {
+            title: `ترسیم - ادیت داکیومنت`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             tabContent: "tools",
@@ -430,18 +427,26 @@ export default {
         // });
     },
     components: {
-        vSelect,
-        DatePicker: VuePersianDatetimePicker,
+        vSelect: () => import("vue-select"),
+        DatePicker: () => import("vue-persian-datetime-picker"),
         QuillEditor: quillEditor,
-        Draggable,
-        GooeyMenu,
+        Draggable: () => import("vuedraggable"),
+        GooeyMenu: () =>
+            import("@/components/newDoc/helper Components/gooeyMenu"),
         NewPoint,
         NewPolygon,
         NewPolyline,
         NewTextBox,
         // NewHeatmap,
-        AddNewLayerBox,
-        LayersRelationshipTree,
+        AddNewLayerBox: () =>
+            import("@/components/newDoc/helper Components/addNewLayerBox"),
+        LayersRelationshipTree: () =>
+            import(
+                "@/components/newDoc/helper Components/layersRelationshipTree"
+            ),
     },
 };
 </script>
+<style lang="stylus">
+@import '../assets/styles/newpoint.styl';
+</style>

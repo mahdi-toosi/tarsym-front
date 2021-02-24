@@ -1,7 +1,7 @@
 <template>
     <form class="searchbar shadow" @submit.prevent="fetchSearchResult()">
         <div class="searchInput">
-            <button style="font-size: 22px" type="submit">
+            <button style="font-size: 22px" type="submit" aria-label="جستجو">
                 <i class="fas fa-search" />
             </button>
             <input
@@ -32,7 +32,6 @@ import debounce from "v-debounce";
 export default {
     name: "searchComponent",
     directives: { debounce },
-
     data() {
         return {
             search: "",
@@ -78,6 +77,7 @@ export default {
     padding: 9px 15px;
     background: white;
     border-radius: 5px;
+    direction: rtl;
 
     .searchInput {
         width: 100%;

@@ -150,12 +150,14 @@
 
 <script>
 import mixins from "./mixins";
-import IconPicker from "@/components/newDoc/helper Components/iconPicker";
 
 export default {
     name: "newPolyline",
     mixins: [mixins],
-    components: { IconPicker },
+    components: {
+        IconPicker: () =>
+            import("@/components/newDoc/helper Components/iconPicker"),
+    },
     computed: {
         IconRepeatModel: {
             get() {

@@ -10,6 +10,13 @@
 
 <script>
 export default {
+    name: "resetPassword",
+    metaInfo() {
+        return {
+            title: `ترسیم - ریست رمز عبور`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             username: "",
