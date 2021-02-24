@@ -124,11 +124,13 @@ export default {
 
         await commit("CLEAR_NEW_DOC");
         await router.push(`/profile/${rootState.user.username}`);
-        Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`);
+        Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`, {
+            icon: "fa-check-circle",
+        });
     },
     // !  getAllDocs
-    async getAllDocs({ commit, dispatch, rootState }, taxonomies = {}) {
-        if (!rootState.user.username) return; // if authenticated continue
+    async getAllDocs({ commit, dispatch }, taxonomies = {}) {
+        // if (!rootState.user.username) return; // if authenticated continue
 
         const options = {
             params: {
@@ -159,13 +161,13 @@ export default {
     },
     // !  get_this_docs
     async get_this_docs({ state, dispatch }, doc_ids) {
-        doc_ids = Array.isArray(doc_ids) ? doc_ids : [doc_ids];
+        const copy_ids = Array.isArray(doc_ids) ? [...doc_ids] : [doc_ids];
         let docs = [],
             local_databases = ["vitrineDocs", "readDoc"],
             already_fetchedDocs_ids = [];
 
         // * set doc if already exist in state
-        doc_ids.forEach((_id) => {
+        copy_ids.forEach((_id) => {
             for (let i = 0; i < local_databases.length; i++) {
                 const database = Array.isArray(state[local_databases[i]])
                     ? state[local_databases[i]]
@@ -181,20 +183,20 @@ export default {
         });
 
         already_fetchedDocs_ids.forEach((id) => {
-            let index = doc_ids.indexOf(id);
-            if (index > -1) doc_ids.splice(index, 1);
+            let index = copy_ids.indexOf(id);
+            if (index > -1) copy_ids.splice(index, 1);
         });
-        if (doc_ids.length === 0) {
+        if (copy_ids.length === 0) {
             if (docs.length === 1) return docs[0];
             else return docs;
         }
 
-        const id_isJustOne = doc_ids.length === 1,
-            obj = { params: { "_id[$in]": doc_ids } },
+        const id_isJustOne = copy_ids.length === 1,
+            obj = { params: { "_id[$in]": copy_ids } },
             options = id_isJustOne ? {} : obj;
 
         await axios
-            .get(`/documents/${id_isJustOne ? doc_ids[0] : ""}`, options)
+            .get(`/documents/${id_isJustOne ? copy_ids[0] : ""}`, options)
             .then(({ data }) => {
                 if (Array.isArray(data)) docs = [...docs, ...data];
                 else docs.push(data);
@@ -291,7 +293,9 @@ export default {
             .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
-                Vue.toasted.success("ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...");
+                Vue.toasted.success("ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...", {
+                    icon: "fa-check-circle",
+                });
                 return false;
             });
         return result;

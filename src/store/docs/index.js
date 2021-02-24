@@ -168,11 +168,11 @@ export default {
                 state[list] = decoded_docs;
                 return;
             }
-
-            if (state[list].data) {
-                state[list].data = state[list].data.concat(decoded_docs);
-                return;
-            } else state[list] = state[list].concat(decoded_docs);
+            const dataSet = Array.isArray(state[list]) ? state[list] : state[list].data;
+            decoded_docs.forEach((doc) => {
+                const isThere = dataSet.findIndex((d) => d._id == doc._id);
+                if (isThere === -1) dataSet.push(doc);
+            });
         },
         SET_DOCS_TO_Profile_Page(state, docs) {
             state.profilePage.docs = docs;

@@ -11,6 +11,8 @@ export default {};
 </script>
 
 <style lang="stylus">
+@import '../../assets/styles/libs/auth';
+
 // *  vue router animation
 .fade-enter-active, .fade-leave-active {
     transition-duration: 0.3s;

@@ -39,6 +39,12 @@ export default {
             //     url: "http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             // },
             {
+                name: "World Imagery",
+                visible: false,
+                // url: "https://vec01.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}",
+                url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            },
+            {
                 name: "Positron",
                 visible: false,
                 url: "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
@@ -51,7 +57,8 @@ export default {
             {
                 name: "Watercolor",
                 visible: false,
-                url: "http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+                // url: "http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+                url: "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
             },
         ],
     },
@@ -68,15 +75,14 @@ export default {
         UPDATE_MOUSE_COOR(state, { latlng }) {
             state.MouseCoordinate = latlng;
         },
-        SET_MAIN_LAYER(state) {
-            state.tileProviders.forEach((tileProvider) => (tileProvider.visible = false));
-            state.tileProviders[0].visible = true;
-        },
         SET_THIS_LAYER(state, layer_index) {
             state.tileProviders.forEach((tileProvider, index) => {
-                if (layer_index === index) tileProvider.visible = true;
-                else tileProvider.visible = false;
+                if (layer_index !== index) {
+                    tileProvider.visible = false;
+                    return;
+                } else tileProvider.visible = true;
             });
+            state.layerIndex = layer_index;
         },
     },
 };

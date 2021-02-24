@@ -5,11 +5,12 @@
             <span v-if="!searchedDocs.data.length" class="notingToShow">
                 داکیومنتی برای نمایش دادن نیست
             </span>
-            <div
+            <a
                 class="point shadow"
                 v-for="doc in searchedDocs.data"
                 :key="doc._id"
-                @click="$router.push(`/read/${doc._id}`)"
+                :href="`https://tarsym.com/read/${doc._id}`"
+                @click.prevent="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -26,10 +27,10 @@
                         aria-hidden="true"
                     />
                     <div class="nameandsituation">
-                        <a href="#" v-text="doc.title"></a>
+                        <h1 href="#" v-text="doc.title"></h1>
                         <!-- <a href="#" v-text="point.user.situation"></a> -->
+                        <time v-html="filterdate(doc.date)"></time>
                     </div>
-                    <time v-html="filterdate(doc.date)"></time>
                 </header>
                 <main v-text="doc.excerpt + ' ...'"></main>
                 <footer>
@@ -41,13 +42,12 @@
                         </li>
                     </ul>
                 </footer>
-            </div>
+            </a>
         </section>
     </div>
 </template>
 
 <script>
-import SearchField from "@/components/searchField";
 import { mapActions } from "vuex";
 
 export default {
@@ -69,6 +69,6 @@ export default {
             if (to.name === "search") await vm.searchData();
         });
     },
-    components: { SearchField },
+    components: { SearchField: () => import("@/components/searchField") },
 };
 </script>

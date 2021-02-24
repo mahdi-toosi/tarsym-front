@@ -45,7 +45,7 @@ vuexSyncWithRouter.sync(store, router);
 // * add PWA
 import "./registerServiceWorker";
 
-Vue.config.devtools = true;
+// Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 // * add root component and

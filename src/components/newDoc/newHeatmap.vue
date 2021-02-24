@@ -9,6 +9,7 @@
                 class="editIcon"
                 @click="toolSwitch({ tool, index })"
                 :class="tool.isOn ? 'tool_is_on' : ''"
+                aria-label="تغییر"
             >
                 <i class="fas fa-pencil-alt"></i>
             </button>

@@ -18,13 +18,12 @@ export default {
     },
     change_map_layers({ commit, state, rootState }, mainMap) {
         if (mainMap) {
-            commit("map/SET_MAIN_LAYER");
+            commit("map/SET_THIS_LAYER", 0);
             return;
         }
         const docs = rootState.route.name === "read doc" ? state.docs.readDoc : state.docs.newDocs;
         const doc = docs[state.docs.DocProp.index];
         if (!doc) return;
-
         commit("map/SET_THIS_LAYER", doc.map_animate.layerIndex);
     },
     // !  handleAxiosError

@@ -7,7 +7,7 @@
             <input
                 type="text"
                 id="username"
-                placeholder="mahditoosi"
+                placeholder="نام کاربری"
                 v-model="user.username"
                 dir="auto"
                 name="username"
@@ -34,6 +34,13 @@
 
 <script>
 export default {
+    name: "loginPage",
+    metaInfo() {
+        return {
+            title: `ترسیم - ورود`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             user: { username: null, password: null },

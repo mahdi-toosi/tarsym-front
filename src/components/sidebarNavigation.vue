@@ -1,6 +1,10 @@
 <template>
     <div class="sidebarNavigation" ref="sidebarNav">
-        <img src="@/assets/apple-touch-icon-120x120.png" @click="toggleNav()" />
+        <img
+            src="@/assets/apple-touch-icon-120x120.png"
+            @click="toggleNav()"
+            alt=" لوگو ترسیم"
+        />
         <div class="sidebar" :class="displayNav ? 'show' : ''">
             <div class="header">
                 <div></div>

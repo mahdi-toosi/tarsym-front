@@ -1,11 +1,6 @@
 @import 'libs/helpers'
-@import 'libs/colorPicker'
 // @import 'libs/datePicker'
-@import 'libs/iconPicker'
-@import 'libs/gooeyMenu'
 @import 'libs/sidebarNavigation'
-@import 'libs/auth'
-@import 'newPoint'
 
 
 // * VUE DATE PICKER
@@ -106,6 +101,7 @@
 .map 
     font-family: 'iranSans'
     height: 100vh !important;
+    color #8d96ac
     // width: 67% !important;
     position: relative;
     overflow: hidden;
@@ -113,6 +109,27 @@
     outline: none;
     // border: red dashed 1px;
     direction: ltr;
+    .layerPicker
+        background: white
+        padding: 5px 10px
+        box-shadow 0px 1px 4px rgba(255, 255, 255 , 84%);
+        border-radius: 4px
+        .radiobox   
+            display: none
+        i
+            font-size: 20px
+        &:hover 
+            .radiobox
+                display: flex
+            i
+                display none
+        label , input
+            cursor pointer
+        label 
+            width: 100%;
+            margin-right: 5px
+    .leaflet-bar 
+        box-shadow: 0px 1px 4px #ffffffd6 
     .leaflet-marker-pane
         position relative
     .leafletDefaultIcon
@@ -238,6 +255,7 @@
 .leaflet-control-attribution
     font-size: 0px !important
     border-radius: 3px;
+    background: rgba(255, 255, 255, 0.85) !important;
     a:first-child 
         display none
     .attr

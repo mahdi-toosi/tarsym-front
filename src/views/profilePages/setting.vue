@@ -6,6 +6,7 @@
                 <img
                     class="profile-pic"
                     :src="avatar || '/imgs/profileAvatar.png'"
+                    :alt="avatar ? user.name : 'پروفایل ترسیم'"
                 />
                 <div class="image_input">
                     <i
@@ -70,6 +71,12 @@
 <script>
 export default {
     name: "SettingPage",
+    metaInfo() {
+        return {
+            title: `ترسیم - تنظیمات حساب کاربری`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             user: {
@@ -133,7 +140,9 @@ export default {
                         msg =
                             "پس از بررسی اطلاعات شما ، شما به نقشه ساز ارتقاء خواهید یافت";
                     else msg = "اطلاعات شما با موفقیت بروزرسانی شد";
-                    this.$toasted.success(msg);
+                    this.$toasted.success(msg, {
+                        icon: "fa-check-circle",
+                    });
                 })
                 .catch((error) => {
                     if (
@@ -188,7 +197,9 @@ export default {
                     password,
                 })
                 .then(() => {
-                    this.$toasted.success("پسورد با موفقیت تغییر کرد");
+                    this.$toasted.success("پسورد با موفقیت تغییر کرد", {
+                        icon: "fa-check-circle",
+                    });
                     this.$store.dispatch(
                         "logout",
                         `/profile/${this.user.username}`

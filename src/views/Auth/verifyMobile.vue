@@ -42,6 +42,13 @@
 let intervalTimer;
 
 export default {
+    name: "verifyMobilePage",
+    metaInfo() {
+        return {
+            title: `ترسیم - تایید شماره همراه`,
+            meta: [{ name: "robots", content: "noindex, nofollow" }],
+        };
+    },
     data() {
         return {
             status: null,

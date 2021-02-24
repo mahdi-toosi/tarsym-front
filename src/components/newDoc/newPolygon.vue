@@ -68,9 +68,7 @@
 </template>
 
 <script>
-import ColorPicker from "@/components/newDoc/helper Components/colorPicker";
 import { mapActions, mapMutations } from "vuex";
-import Tooltip from "@/components/newDoc/helper Components/tooltip.vue";
 
 export default {
     name: "newPolygon",
@@ -84,7 +82,12 @@ export default {
             return this.$store.getters.visibility;
         },
     },
-    components: { ColorPicker, Tooltip },
+    components: {
+        ColorPicker: () =>
+            import("@/components/newDoc/helper Components/colorPicker"),
+        Tooltip: () =>
+            import("@/components/newDoc/helper Components/tooltip.vue"),
+    },
 };
 </script>
 
