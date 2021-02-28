@@ -161,7 +161,7 @@ export default {
     },
     // !  get_this_docs
     async get_this_docs({ state, dispatch }, doc_ids) {
-        const copy_ids = Array.isArray(doc_ids) ? [...doc_ids] : [doc_ids];
+        const copy_ids = [...doc_ids];
         let docs = [],
             local_databases = ["vitrineDocs", "readDoc"],
             already_fetchedDocs_ids = [];
@@ -187,27 +187,44 @@ export default {
             if (index > -1) copy_ids.splice(index, 1);
         });
         if (copy_ids.length === 0) {
-            if (docs.length === 1) return docs[0];
-            else return docs;
+            return docs;
         }
 
-        const id_isJustOne = copy_ids.length === 1,
-            obj = { params: { "_id[$in]": copy_ids } },
-            options = id_isJustOne ? {} : obj;
+        await axios
+            .get("/documents/", { params: { "_id[$in]": copy_ids } })
+            .then(({ data }) => {
+                docs = [...docs, ...data.data];
+            })
+            .catch((error) => {
+                dispatch("handleAxiosError", error, { root: true });
+            });
+        return docs;
+    },
+    // !  get_this_doc
+    async get_this_doc({ state, dispatch }, _id) {
+        let local_databases = ["vitrineDocs", "readDoc"];
+        let doc;
+        for (let i = 0; i < local_databases.length; i++) {
+            const database = Array.isArray(state[local_databases[i]])
+                ? state[local_databases[i]]
+                : state[local_databases[i]].data;
+            doc = database.find((doc) => doc._id === _id);
+            if (doc) {
+                doc.already_fetched = true;
+                return doc;
+            }
+        }
 
         await axios
-            .get(`/documents/${id_isJustOne ? copy_ids[0] : ""}`, options)
+            .get(`/documents/${_id}`)
             .then(({ data }) => {
-                if (Array.isArray(data)) docs = [...docs, ...data];
-                else docs.push(data);
+                doc = data;
             })
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
                 return false;
             });
-
-        if (docs.length === 1) return docs[0];
-        else return docs;
+        return doc;
     },
     // !  get_this_doc_for_update
     async get_this_doc_for_update({ state, commit, dispatch, rootState }, doc_id) {
@@ -220,7 +237,7 @@ export default {
             doc = await profileDocs.filter((doc) => doc._id === doc_id)[0];
             if (doc) already_Decoded = true;
         }
-        if (!doc) doc = await dispatch("get_this_docs", doc_id);
+        if (!doc) doc = await dispatch("get_this_doc", doc_id);
 
         if (!doc) {
             router.push(`/profile/${user.username}`);
@@ -245,14 +262,8 @@ export default {
         const childs_ids = [...father.childs_id];
         let childs = [];
 
-        for (let index = 0; index < childs_ids.length; index++) {
-            const child_id = childs_ids[index];
-            const child = await dispatch("get_this_docs", child_id);
-            if (!child) return;
-
-            childs.push(child);
-            child.childs_id.forEach((c_id) => childs_ids.push(c_id));
-        }
+        childs = await dispatch("get_this_docs", childs_ids);
+        if (!childs) return;
 
         const decoded_childs = await dispatch("decode_the_docs", { docs: childs });
 
@@ -264,9 +275,8 @@ export default {
         let doc, decoded_docs;
 
         // * not exist , get doc from server
-        doc = await dispatch("get_this_docs", _id);
+        doc = await dispatch("get_this_doc", _id);
         if (!doc) return;
-
         decoded_docs = await dispatch("decode_the_docs", { docs: [doc] });
 
         await commit("SET_DOCS_TO", { decoded_docs: decoded_docs || [doc], list: "readDoc", merge: true });

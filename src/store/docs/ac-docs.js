@@ -66,7 +66,7 @@ export default {
         commit("OFF_THE_ON_TOOL");
         commit("UPDATE_ON_TOOL");
 
-        const existingDoc = await dispatch("get_this_docs", _id);
+        const existingDoc = await dispatch("get_this_doc", _id);
         if (!existingDoc) return false;
         docLayer(state).childs_id.push(_id);
 
@@ -168,11 +168,12 @@ export default {
         const title = docLayer.title.length > 5,
             description = docLayer.description.length > 20,
             // date = docLayer.date_props.year && docLayer.date_props.month && docLayer.date_props.day,
+            date = typeof docLayer.date === "string" && docLayer.date.length > 8,
             route = rootState.route;
 
         if (!title) errors.push("عنوان کافی نیست");
         if (!description) errors.push("توضیحات کافی نیست");
-        // if (!date) errors.push("تاریخ انتخاب کنید");
+        if (!date) errors.push("تاریخ انتخاب کنید");
         if (docLayer.root) {
             //  IMC == Index Marker Coordinates
             const IMC = docLayer.tools[0].coordinates;

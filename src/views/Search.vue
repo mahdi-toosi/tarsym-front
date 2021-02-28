@@ -5,12 +5,11 @@
             <span v-if="!searchedDocs.data.length" class="notingToShow">
                 داکیومنتی برای نمایش دادن نیست
             </span>
-            <a
+            <router-link
+                :to="`/read/${doc._id}`"
                 class="point shadow"
                 v-for="doc in searchedDocs.data"
                 :key="doc._id"
-                :href="`https://tarsym.com/read/${doc._id}`"
-                @click.prevent="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -42,7 +41,7 @@
                         </li>
                     </ul>
                 </footer>
-            </a>
+            </router-link>
         </section>
     </div>
 </template>

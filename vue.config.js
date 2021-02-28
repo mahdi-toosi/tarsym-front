@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-const CompressionPlugin = require("compression-webpack-plugin");
+// const CompressionPlugin = require("compression-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
@@ -15,7 +15,7 @@ module.exports = {
     },
     chainWebpack(config) {
         config.plugins.delete("prefetch");
-        config.plugin("CompressionPlugin").use(CompressionPlugin);
+        // config.plugin("CompressionPlugin").use(CompressionPlugin);
     },
     configureWebpack: {
         optimization: {

@@ -5,6 +5,8 @@
                 <img
                     :src="avatar || '/imgs/profileAvatar.png'"
                     :alt="avatar ? profile.user.name : 'عکس پروفایل'"
+                    width="60"
+                    height="60"
                 />
                 <span>
                     {{ profile.user.name }} <br />
@@ -28,12 +30,11 @@
             <span v-if="!profile.docs.data" class="notingToShow">
                 داکیومنتی برای نمایش دادن نیست
             </span>
-            <a
+            <router-link
+                :to="`/read/${doc._id}`"
                 class="point shadow"
                 v-for="doc in profile.docs.data"
                 :key="doc._id"
-                :href="`https://tarsym.com/read/${doc._id}`"
-                @click.prevent="$router.push(`/read/${doc._id}`)"
             >
                 <header>
                     <i
@@ -53,16 +54,19 @@
                         <h1 href="#" v-text="doc.title"></h1>
                         <time v-html="filterdate(doc.date)"></time>
                     </div>
-                    <button
+                    <router-link
+                        :to="`/update/${doc._id}`"
                         class="editDoc"
-                        @click.stop="$router.push(`/update/${doc._id}`)"
                         v-if="profile.user._id === user._id"
+                        tag="button"
                         title="تغییر داکیومنت"
                     >
                         <i class="far fa-edit"></i>
-                    </button>
+                    </router-link>
                     <button
-                        @click.stop="Delete_this_Document({ doc, root: true })"
+                        @click.stop.prevent="
+                            Delete_this_Document({ doc, root: true })
+                        "
                         class="deleteDoc"
                         v-if="profile.user._id === user._id"
                         title="حذف داکیومنت"
@@ -80,7 +84,7 @@
                         </li>
                     </ul>
                 </footer>
-            </a>
+            </router-link>
         </section>
     </div>
 </template>

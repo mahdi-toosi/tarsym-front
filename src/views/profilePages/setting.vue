@@ -7,6 +7,8 @@
                     class="profile-pic"
                     :src="avatar || '/imgs/profileAvatar.png'"
                     :alt="avatar ? user.name : 'پروفایل ترسیم'"
+                    width="90"
+                    height="90"
                 />
                 <div class="image_input">
                     <i
@@ -251,4 +253,6 @@ export default {
     },
 };
 </script>
-
+<style lang="stylus">
+@import '../../assets/styles/libs/auth';
+</style>

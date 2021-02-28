@@ -14,7 +14,7 @@ export default {
     name: "app",
     metaInfo() {
         return {
-            title: `ترسیم`,
+            title: process.env.VUE_APP_TITLE,
             meta: [
                 {
                     name: "description",
