@@ -50,11 +50,7 @@
         <div class="tool_body">
             <div class="lineColor">
                 <label for="lineColor">رنگ خط:</label>
-                <ColorPicker
-                    id="lineColor"
-                    :value="tool.color"
-                    :index="index"
-                />
+                <ColorPicker id="lineColor" :value="tool.color" :tool="tool" />
             </div>
             <div class="addIcon">
                 <label :for="'addIcon' + index">آیکن:</label>
@@ -65,7 +61,7 @@
                     @input="
                         CHANGE_POLYLINE_DECORATOR({
                             $event,
-                            index,
+                            tool,
                             type: 'icon',
                         })
                     "
@@ -80,7 +76,7 @@
                     @input="
                         CHANGE_POLYLINE_DECORATOR({
                             $event,
-                            index,
+                            tool,
                             type: 'dashed',
                         })
                     "
@@ -95,7 +91,7 @@
                     @input="
                         CHANGE_POLYLINE_DECORATOR({
                             $event,
-                            index,
+                            tool,
                             type: 'arrow',
                         })
                     "
@@ -106,7 +102,7 @@
                 <ColorPicker
                     id="lineIconsColor"
                     :value="tool.secondaryColor"
-                    :index="index"
+                    :tool="tool"
                     :secondaryColor="true"
                 />
             </div>
@@ -149,6 +145,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import mixins from "./mixins";
 
 export default {
@@ -157,6 +154,9 @@ export default {
     components: {
         IconPicker: () =>
             import("@/components/newDoc/helper Components/iconPicker"),
+    },
+    methods: {
+        ...mapMutations("docs", ["CHANGE_POLYLINE_DECORATOR"]),
     },
     computed: {
         IconRepeatModel: {

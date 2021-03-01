@@ -41,9 +41,12 @@
                     transition: transform 0.5s
                 .no-move
                     transition: transform 0s;
-                & >div>li
+                &>div>li
                     display flex
                     align-items: center
+                    border-radius: 4px
+                    &:first-child
+                        background: #eee
                     .fa-grip-vertical
                         cursor grab
                     .tool
@@ -75,10 +78,6 @@
                                 margin-right: auto;
                             .icons_box_wrapper
                                 margin: 5px
-                            #zoomLevel 
-                                cursor: pointer;
-                                border: none;
-                                border-bottom: 1px solid #acacac
                             .tooltipbox
                                 display flex
                                 input
@@ -203,7 +202,19 @@
             padding: 4px 15px
             cursor pointer
             margin: 10px 15px
+            &:first-child
+                padding-right: 5px
+                margin-right: 5px
     .content
+        .publish-layer
+            padding: 20px 8px 10px
+            display: flex
+            flex-flow: column
+            #zoomLevel 
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid #acacac
+                margin-right: 20px 
         .layers-content
             padding: 15px 5px
             ul

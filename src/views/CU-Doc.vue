@@ -80,83 +80,8 @@
                     color="#00acc1"
                 />
             </section>
-            <section class="tools shadow">
-                <br />
-                <div class="tabs">
-                    <span
-                        @click="tabContent = 'tools'"
-                        :class="tabContent == 'tools' ? 'activeTab' : ''"
-                        >ابزار ها</span
-                    >
-                    <span
-                        @click="tabContent = 'layers'"
-                        :class="tabContent == 'layers' ? 'activeTab' : ''"
-                        >لایه ها</span
-                    >
-                </div>
-                <div class="content">
-                    <div class="tools-content" v-show="tabContent == 'tools'">
-                        <ul class="tools">
-                            <Draggable
-                                v-model="DocTools"
-                                handle=".fa-grip-vertical"
-                            >
-                                <li
-                                    v-for="(tool, index) in DocTools"
-                                    :key="index"
-                                >
-                                    <i
-                                        class="fas fa-grip-vertical"
-                                        v-if="tool.isOn && index !== 0"
-                                    ></i>
-                                    <NewPoint
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Point'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    />
-                                    <NewPolygon
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Polygon'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    />
-                                    <NewPolyline
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Polyline'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    />
-                                    <NewTextBox
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Textbox'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    />
-                                    <!-- <NewHeatmap
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Heatmap'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    /> -->
-                                </li>
-                            </Draggable>
-                        </ul>
-                        <GooeyMenu />
-                    </div>
-                    <div class="layers-content" v-show="tabContent == 'layers'">
-                        <LayersRelationshipTree
-                            @childClicked="tabContent = 'tools'"
-                        />
-                        <AddNewLayerBox @childAdded="tabContent = 'tools'" />
-                    </div>
-                </div>
-            </section>
+
+            <Options-section />
         </div>
     </div>
 </template>
@@ -169,19 +94,9 @@ import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import { quillEditor } from "vue-quill-editor";
-// TODO => fix the quill-image-drop errors
 
-// *  vue slider and select styles
-import "vue-slider-component/theme/antd.css";
+// *  vue select styles
 import "vue-select/dist/vue-select.css";
-
-// * components
-import NewPoint from "@/components/newDoc/newPoint";
-import NewPolygon from "@/components/newDoc/newPolygon";
-import NewPolyline from "@/components/newDoc/newPolyline";
-import NewTextBox from "@/components/newDoc/newTextBox";
-// import NewHeatmap from "@/components/newDoc/newHeatmap";
-// import datePicker from "@/components/newDoc/helper Components/datePicker";
 
 export default {
     name: "newDoc",
@@ -193,7 +108,6 @@ export default {
     },
     data() {
         return {
-            tabContent: "tools",
             // customModulesForEditor: [{ alias: "imageDrop", module: ImageDrop }],
             quillEditorOptions: {
                 modules: {
@@ -237,9 +151,6 @@ export default {
     },
     methods: {
         ...mapMutations("docs", [
-            "CLEAR_NEW_DOC",
-            "DRAG_TOOL_UPDATE",
-            "UPDATE_ON_TOOL",
             "ADD_TAXONOMY",
             "SET_DATE",
             "SET_TITLE",
@@ -349,15 +260,6 @@ export default {
             user: (state) => state.user,
         }),
         ...mapGetters(["DocLayer"]),
-        DocTools: {
-            get() {
-                return this.DocLayer.tools;
-            },
-            set(value) {
-                this.DRAG_TOOL_UPDATE(value);
-                this.UPDATE_ON_TOOL();
-            },
-        },
         date: {
             get() {
                 return this.DocLayer.date;
@@ -430,20 +332,7 @@ export default {
         vSelect: () => import("vue-select"),
         DatePicker: () => import("vue-persian-datetime-picker"),
         QuillEditor: quillEditor,
-        Draggable: () => import("vuedraggable"),
-        GooeyMenu: () =>
-            import("@/components/newDoc/helper Components/gooeyMenu"),
-        NewPoint,
-        NewPolygon,
-        NewPolyline,
-        NewTextBox,
-        // NewHeatmap,
-        AddNewLayerBox: () =>
-            import("@/components/newDoc/helper Components/addNewLayerBox"),
-        LayersRelationshipTree: () =>
-            import(
-                "@/components/newDoc/helper Components/layersRelationshipTree"
-            ),
+        OptionsSection: () => import("@/components/newDoc/Options-section"),
     },
 };
 </script>

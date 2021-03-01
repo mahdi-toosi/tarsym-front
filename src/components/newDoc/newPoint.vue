@@ -24,22 +24,6 @@
                 ></i>
             </button>
 
-            <label for="zoomLevel" style="top: 4px" v-if="tool.searchable"
-                >سطح زوم:</label
-            >
-            <select
-                id="zoomLevel"
-                v-if="tool.searchable"
-                v-model="zoomLevel"
-                title="سطح زوم 5 بیشترین مقدار زوم است"
-            >
-                <option :value="4">1</option>
-                <option :value="6">2</option>
-                <option :value="8">3</option>
-                <option :value="10">4</option>
-                <option :value="13">5</option>
-            </select>
-
             <button
                 @click="copy_tool(index)"
                 class="copy_button"
@@ -56,17 +40,21 @@
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>
-        <div class="tool_body" v-if="tool.iconName">
-            <div class="iconColor">
+        <div class="tool_body">
+            <div class="iconColor" v-if="tool.iconName">
                 <label for="iconColor">رنگ آیکن:</label>
                 <ColorPicker
                     id="iconColor"
                     :value="tool.secondaryColor"
-                    :index="index"
+                    :tool="tool"
                     :secondaryColor="true"
                 />
             </div>
-            <div class="tool_body">
+            <div class="iconAlarm" v-if="!tool.searchable && tool.iconName">
+                <label for="iconAlarm">آلارم آیکن:</label>
+                <input type="checkbox" name="" id="iconAlarm" v-model="alarm" />
+            </div>
+            <div class="tool_body" v-if="tool.iconName">
                 <div class="iconSize">
                     <label for="iconSize">سایز آیکن:</label>
                     <vue-slider
@@ -95,8 +83,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import mixins from "./mixins";
-
 export default {
     name: "newPoint",
     mixins: [mixins],
@@ -104,13 +92,16 @@ export default {
         IconPicker: () =>
             import("@/components/newDoc/helper Components/iconPicker"),
     },
+    methods: {
+        ...mapMutations("docs", ["SET_ALARM_SITUATION"]),
+    },
     computed: {
-        zoomLevel: {
+        alarm: {
             get() {
-                return this.$store.getters.DocLayer.zoomLevel;
+                return this.tool.alarm;
             },
             set(val) {
-                this.SET_ZOOM_LEVEL(val);
+                this.SET_ALARM_SITUATION({ tool: this.tool, val });
             },
         },
     },

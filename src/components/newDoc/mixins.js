@@ -9,12 +9,7 @@ export default {
     },
     methods: {
         ...mapActions("docs", ["deleteTool", "toolSwitch", "copy_tool"]),
-        ...mapMutations("docs", [
-            "CHANGE_RANG_INPUT",
-            "SET_ZOOM_LEVEL",
-            "CHANGE_VISIBILITY",
-            "CHANGE_POLYLINE_DECORATOR",
-        ]),
+        ...mapMutations("docs", ["CHANGE_RANG_INPUT", "CHANGE_VISIBILITY"]),
     },
     computed: {
         IconSizeModel: {

@@ -9,7 +9,7 @@
             <div
                 class="vc-chrome"
                 :class="displayPicker ? 'show' : ''"
-                @click="ADD_COLOR(colors)"
+                @click="add_color(colors)"
             >
                 <div class="vc-chrome-saturation-wrap">
                     <saturation v-model="colors" @change="childChange" />
@@ -65,7 +65,7 @@ export default {
     name: "Chrome",
     mixins: [colorMixin],
     props: {
-        index: Number,
+        tool: Object,
         secondaryColor: { type: Boolean, default: false },
     },
     components: {
@@ -86,10 +86,10 @@ export default {
         },
     },
     methods: {
-        ADD_COLOR(color) {
+        add_color(color) {
             const data = {
+                tool: this.tool,
                 color,
-                index: this.index,
                 secondaryColor: this.secondaryColor,
             };
             this.$store.commit("docs/ADD_COLOR", data);
@@ -104,7 +104,7 @@ export default {
                 hex: data.hex,
                 source: "hex",
             });
-            this.ADD_COLOR(this.colors);
+            this.add_color(this.colors);
         },
         showPicker() {
             document.addEventListener("click", this.documentClick);
@@ -112,7 +112,7 @@ export default {
         },
         hidePicker() {
             document.removeEventListener("click", this.documentClick);
-            this.ADD_COLOR(this.colors);
+            this.add_color(this.colors);
             this.displayPicker = false;
         },
         togglePicker() {

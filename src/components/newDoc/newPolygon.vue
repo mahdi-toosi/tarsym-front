@@ -51,7 +51,7 @@
                 <ColorPicker
                     :value="tool.color"
                     id="polygonColor"
-                    :index="index"
+                    :tool="tool"
                 />
             </div>
             <div class="polygonSencondaryColor">
@@ -59,7 +59,7 @@
                 <ColorPicker
                     :value="tool.secondaryColor"
                     id="polygonSencondaryColor"
-                    :index="index"
+                    :tool="tool"
                     :secondaryColor="true"
                 />
             </div>

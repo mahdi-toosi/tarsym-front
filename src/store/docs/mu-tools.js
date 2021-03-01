@@ -13,12 +13,11 @@ export default {
         const tool = docLayer(state).tools[index];
         tool.visible = !tool.visible;
     },
-    CHANGE_POLYLINE_DECORATOR(state, { $event, index, type }) {
-        const thisTool = docLayer(state).tools[index];
+    CHANGE_POLYLINE_DECORATOR(state, { $event, tool, type }) {
         const val = $event.target.checked;
-        if (type === "arrow") thisTool.showArrow = val;
-        if (type === "icon") thisTool.showIcon = val;
-        if (type === "dashed") thisTool.dashed = val;
+        if (type === "arrow") tool.showArrow = val;
+        if (type === "icon") tool.showIcon = val;
+        if (type === "dashed") tool.dashed = val;
     },
     CHANGE_TOOLTIP(state, { index, val, type }) {
         const thisTool = docLayer(state).tools[index];
@@ -43,19 +42,16 @@ export default {
         const thisTool = docLayer(state).tools[obj.index];
         thisTool[obj.type] = obj.val;
     },
-    REMOVE_ICON(state, index) {
-        const thisTool = docLayer(state).tools[index];
-        thisTool.iconName = null;
+    REMOVE_ICON(state, tool) {
+        tool.iconName = null;
     },
-    ADD_ICON(state, { iconName, index }) {
-        const thisTool = docLayer(state).tools[index];
-        thisTool.iconName = iconName;
+    ADD_ICON(state, { iconName, tool }) {
+        tool.iconName = iconName;
     },
-    ADD_COLOR(state, obj) {
-        const thisTool = docLayer(state).tools[obj.index];
-        if (obj.secondaryColor) {
-            thisTool.secondaryColor = obj.color;
-        } else thisTool.color = obj.color;
+    ADD_COLOR(state, { tool, color, secondaryColor }) {
+        if (secondaryColor) {
+            tool.secondaryColor = color;
+        } else tool.color = color;
     },
     SET_TOOL(state, { type, map }) {
         const currentDoc = docLayer(state);
@@ -76,6 +72,7 @@ export default {
             obj.coordinates = isSearcheable ? ["0", "0"] : map.center;
             obj.angle = 0;
             obj.iconSize = 35;
+            obj.alarm = false;
         }
         if (type === "Textbox") {
             obj.coordinates = map.center;
@@ -130,5 +127,8 @@ export default {
         const tools = docLayer(state).tools;
         // deep copy
         tools.splice(index, 0, JSON.parse(JSON.stringify(tools[index])));
+    },
+    SET_ALARM_SITUATION(state, { tool, val }) {
+        tool.alarm = val;
     },
 };

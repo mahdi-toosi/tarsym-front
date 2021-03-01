@@ -64,15 +64,14 @@ export default {
     },
     methods: {
         ADD_ICON(name) {
-            const data = {
+            this.$store.commit("docs/ADD_ICON", {
                 iconName: name,
-                index: this.index,
-            };
-            this.$store.commit("docs/ADD_ICON", data);
+                tool: this.tool,
+            });
             this.hidePicker();
         },
         REMOVE_ICON() {
-            this.$store.commit("docs/REMOVE_ICON", this.index);
+            this.$store.commit("docs/REMOVE_ICON", this.tool);
             this.hidePicker();
         },
         showPicker() {
