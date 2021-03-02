@@ -66,6 +66,7 @@ export default {
         next(async (vm) => {
             if (vm.$store.state.map.zoom > 5) vm.$store.state.map.zoom = 5;
             if (to.name === "search") await vm.searchData();
+            vm.$store.dispatch("change_map_layers", true); // mainMap = true
         });
     },
     components: { SearchField: () => import("@/components/searchField") },

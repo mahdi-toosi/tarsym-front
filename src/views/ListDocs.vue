@@ -70,6 +70,8 @@ export default {
                 await vm.getAllDocs({ category: to.params.name });
             if (to.name === "list Docs with tag")
                 await vm.getAllDocs({ tag: to.params.name });
+
+            vm.$store.dispatch("change_map_layers", true); // mainMap = true
         });
     },
     components: { SearchField: () => import("@/components/searchField") },

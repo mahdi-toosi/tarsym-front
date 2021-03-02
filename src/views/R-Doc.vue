@@ -127,6 +127,21 @@ export default {
                 icon: "fa-copy",
             });
         },
+        async read_this_doc() {
+            await this.$store.dispatch("docs/read_this_doc");
+            if (this.$store.state.docs.readDoc.length)
+                this.$store.commit("docs/UPDATE_DOC_INDEX");
+
+            await this.$store.dispatch("change_map_layers");
+        },
+    },
+    watch: {
+        $route: "read_this_doc",
+    },
+    beforeRouteEnter(to, from, next) {
+        next(async (vm) => {
+            await vm.read_this_doc();
+        });
     },
     destroyed() {
         this.$store.commit("docs/CLEAR_READ_DOC");
@@ -135,119 +150,5 @@ export default {
 </script>
 
 <style lang="stylus">
-.ReadDoc_wrapper {
-    direction: ltr;
-    overflow-y: auto;
-    border-radius: 5px;
-    background: #fff;
-}
-
-.point.readPoint {
-    margin: 10px;
-    margin-top: 0px;
-    padding-top: 0px;
-    color: #37383a;
-    cursor: auto;
-
-    &:hover {
-        transform: none;
-    }
-
-    header {
-        display: block;
-        margin-bottom: 0px;
-        margin-top: -1rem;
-
-        div {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    }
-
-    main {
-        margin-right: 0px;
-    }
-
-    time {
-        position: unset;
-        letter-spacing: 2px;
-    }
-
-    h1 {
-        font-size: 26px;
-        margin-top: 0px;
-        margin-bottom: 10px;
-    }
-
-    h4 {
-        font-size: 15px;
-        font-weight: normal;
-        margin: 5px;
-        display: flex;
-
-        i {
-            margin-left: 10px;
-            margin-right: 0px;
-        }
-
-        span {
-            display: block;
-            position: relative;
-            margin-left: 15px;
-            cursor: pointer;
-
-            &:not(:last-child)::after {
-                display: block;
-                content: '/';
-                position: absolute;
-                right: 100%;
-                top: -2px;
-                font-size: 22px;
-                color: #a3a3a3;
-            }
-        }
-    }
-
-    footer {
-        direction: rtl;
-        display: flex;
-        align-items: center;
-
-        .share {
-            margin-right: auto;
-
-            li {
-                background: white;
-            }
-
-            button {
-                font-size: 17px;
-            }
-        }
-
-        .tags {
-            li {
-                display: inline-block;
-                padding: 0 0 0 8px;
-                margin: 0px 0px 0px 15px;
-                background: #8caebb;
-                color: #fff;
-                cursor: pointer;
-            }
-
-            i {
-                margin-left: 5px;
-                border-radius: 99px;
-                font-size: 20px;
-                margin-right: 0px;
-                color: #fdfdfd;
-                top: 0px;
-                padding: 2px;
-                line-height: 20px;
-                vertical-align: middle;
-            }
-        }
-    }
-}
+@import '../assets/styles/readDoc';
 </style>

@@ -30,31 +30,8 @@ function beforeEach() {
     };
 }
 function afterEach() {
-    return async (to) => {
+    return async () => {
         NProgress.done();
-        const RN = to.name; // * route name
-        if (RN === "read doc") {
-            await store.dispatch("docs/read_this_doc");
-
-            if (store.state.docs.readDoc.length) store.commit("docs/UPDATE_DOC_INDEX");
-
-            store.dispatch("change_map_layers");
-            return;
-        } else if (RN === "create doc" || RN === "update doc") {
-            if (store.state.docs.newDocs.length) store.commit("docs/UPDATE_DOC_INDEX");
-            // * show document items if invisible
-            const _id = to.params._id;
-            const invisibleDocs = store.state.docs.DocProp.invisibleDocs || [];
-            const indexOfDoc = invisibleDocs.indexOf(_id);
-            if (indexOfDoc > -1) invisibleDocs.splice(indexOfDoc, 1);
-
-            // * flyToThisDoc
-            setTimeout(() => {
-                store.dispatch("change_map_layers");
-                store.dispatch("docs/flyToThisDoc");
-            }, 300);
-            return;
-        } else store.dispatch("change_map_layers", true); // mainMap = true
     };
 }
 export default {

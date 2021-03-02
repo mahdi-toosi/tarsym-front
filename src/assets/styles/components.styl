@@ -130,6 +130,7 @@
             margin-right: 5px
     .leaflet-bar 
         box-shadow: 0px 1px 4px #ffffffd6 
+        border unset !important
         a 
             cursor pointer
     .leaflet-marker-pane
@@ -324,3 +325,8 @@
         top: 17px;
         left: 13px;
         width: 10px;
+
+
+@media only screen and (max-width: 950px) 
+    .map
+        max-height: 80vh

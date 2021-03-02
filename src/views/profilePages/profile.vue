@@ -156,6 +156,7 @@ export default {
         if (!user_id) return;
         this.getUserDocs(user_id);
         if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
+        this.$store.dispatch("change_map_layers", true); // mainMap = true
     },
 };
 </script>
@@ -183,6 +184,14 @@ export default {
             height: 60px;
             border-radius: 100%;
             margin-left: 6px;
+        }
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .profilePage {
+        .btn.btn-blue, .editDoc, .deleteDoc {
+            display: none;
         }
     }
 }

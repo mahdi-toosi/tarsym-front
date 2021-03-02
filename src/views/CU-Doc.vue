@@ -156,6 +156,7 @@ export default {
             "SET_TITLE",
             "SET_DESCRIPTION",
             "SET_IMG",
+            "UPDATE_DOC_INDEX",
         ]),
         ...mapActions("docs", [
             "Create_or_Update_Documents",
@@ -165,6 +166,7 @@ export default {
             "get_childs",
             "get_User_Taxonomies",
             "quite_creating",
+            "flyToThisDoc",
         ]),
         onUpdate: function (event) {
             console.log({ event });
@@ -252,6 +254,23 @@ export default {
         // 		return;
         // 	} else return;
         // },
+        init() {
+            if (this.newDocs.length) this.UPDATE_DOC_INDEX();
+            // * show document items if invisible
+            const _id = this.$route.params._id;
+            const invisibleDocs = this.DocProp.invisibleDocs || [];
+            const indexOfDoc = invisibleDocs.indexOf(_id);
+            if (indexOfDoc > -1) invisibleDocs.splice(indexOfDoc, 1);
+
+            // * flyToThisDoc
+            setTimeout(() => {
+                this.$store.dispatch("change_map_layers");
+                this.flyToThisDoc();
+            }, 300);
+        },
+    },
+    watch: {
+        $route: "init",
     },
     computed: {
         ...mapState({
@@ -303,6 +322,11 @@ export default {
             });
             return [...new Set(validCats)];
         },
+    },
+    beforeRouteEnter(to, from, next) {
+        next(async (vm) => {
+            vm.init();
+        });
     },
     async beforeDestroy() {
         this.quite_creating();
