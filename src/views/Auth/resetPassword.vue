@@ -2,7 +2,20 @@
     <div class="resetPassword">
         <h1>ریست پسورد</h1>
         <form @submit.prevent="resetPassword()">
-            <input type="text" placeholder="username" v-model="username" />
+            <div class="textField">
+                <label for="username">نام کاربری</label>
+                <input
+                    type="text"
+                    id="username"
+                    v-model="username"
+                    placeholder="aminHashemi"
+                    name="username"
+                    autocomplete="username"
+                    dir="ltr"
+                    autofocus
+                    required
+                />
+            </div>
             <button class="btn btn-green" type="submit">ارسال</button>
         </form>
     </div>
@@ -23,22 +36,8 @@ export default {
         };
     },
     methods: {
-        async resetPassword() {
-            const username = this.username;
-            if (username.length < 5) {
-                this.$toasted.error(
-                    "نام کاربری حداقل 6 کاراکتر باید داشته باشد"
-                );
-                return;
-            }
-            const res = await this.$store.dispatch("sendVerifyCode", {
-                username,
-            });
-            if (!res) return;
-            this.$router.push({
-                path: "/auth/verify-mobile",
-                query: { username, status: "changePass" },
-            });
+        resetPassword() {
+            this.$store.dispatch("resetPassword", this.username);
         },
     },
 };
@@ -52,5 +51,9 @@ export default {
 .resetPassword {
     width: 100%;
     height: 100%;
+
+    h1 {
+        text-align: center;
+    }
 }
 </style>

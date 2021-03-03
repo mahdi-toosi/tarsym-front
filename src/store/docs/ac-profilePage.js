@@ -21,26 +21,33 @@ export default {
         } else return false;
     },
     // !  getUserDocs
-    async getUserDocs({ dispatch, commit }, user_id) {
+    async getUserDocs({ rootState, state, dispatch, commit }, { nextPage }) {
+        const username = rootState.route.params.username;
+        const user_id = await dispatch("setUserProfileAndGet_id", username);
+        if (!user_id) return;
+
         const options = {
             params: {
                 root: true,
                 vitrine: false,
                 "user._id": user_id,
                 "$sort[createdAt]": -1,
+                $limit: 20,
+                $skip: nextPage ? state.profilePage.data.length : 0,
             },
         };
-        const docs = await axios
+        const result = await axios
             .get("/documents", options)
             .then((res) => res.data)
             .catch((error) => {
                 if (error != "Error: Request failed with status code 404")
                     dispatch("handleAxiosError", error, { root: true });
             });
-        if (!docs) return;
-
-        const decoded_docs = await dispatch("decode_the_docs", { docs });
-        docs.data = decoded_docs;
-        await commit("SET_DOCS_TO_Profile_Page", docs);
+        if (!result) return;
+        result.data = await dispatch("decode_the_docs", { docs: result });
+        if (nextPage) {
+            result.merge = true;
+        }
+        await commit("SET_DOCS_TO_Profile_Page", result);
     },
 };

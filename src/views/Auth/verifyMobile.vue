@@ -3,15 +3,19 @@
         <h1>ارسال کد</h1>
         <form @submit.prevent="sendCode()">
             <div class="verifyCode">
-                <input
-                    type="text"
-                    inputmode="numeric"
-                    placeholder="code ..."
-                    v-model="verifyCode"
-                    maxlength="8"
-                    autocomplete="one-time-code"
-                />
-                <span>{{ timeLeft }}</span>
+                <div class="textField">
+                    <label for="code">کد احراز هویت</label>
+                    <input
+                        id="code"
+                        type="text"
+                        inputmode="numeric"
+                        placeholder="123***789"
+                        v-model="verifyCode"
+                        maxlength="8"
+                        autocomplete="one-time-code"
+                    />
+                    <span>{{ timeLeft }}</span>
+                </div>
             </div>
             <button
                 class="btn btn-blue"
@@ -60,6 +64,9 @@ export default {
         };
     },
     methods: {
+        resetPassword() {
+            this.$store.dispatch("resetPassword", this.username);
+        },
         async sendCode() {
             if (this.verifyCode.length < 6) return;
             const params = {
@@ -123,7 +130,6 @@ export default {
         },
     },
     created() {
-        console.log(this.$router.currentRoute);
         const { username, status } = this.$router.currentRoute.query;
         if (!username) {
             this.$toasted.error(
@@ -150,14 +156,14 @@ function zeroPadded(num) {
             letter-spacing: 10px;
             text-align: left;
             direction: ltr;
-
-            &::placeholder {
-                letter-spacing: 1px;
-            }
         }
 
         span {
-            margin-left: 44px;
+            // margin-left: 44px;
+            // top: -20px;
+            display: block;
+            margin: 15px auto 0;
+            width: 40px;
         }
     }
 

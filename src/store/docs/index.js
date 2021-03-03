@@ -29,7 +29,9 @@ export default {
         readDoc: [],
         profilePage: {
             user: {},
-            docs: {},
+            data: [],
+            limit: 20,
+            total: 0,
         },
     },
     mutations: {
@@ -174,8 +176,13 @@ export default {
                 if (isThere === -1) dataSet.push(doc);
             });
         },
-        SET_DOCS_TO_Profile_Page(state, docs) {
-            state.profilePage.docs = docs;
+        SET_DOCS_TO_Profile_Page(state, { data, total, merge }) {
+            if (merge) {
+                state.profilePage.data = [...state.profilePage.data, ...data];
+            } else {
+                state.profilePage.data = data;
+            }
+            state.profilePage.total = total;
         },
         CLEAR_READ_DOC(state) {
             state.readDoc = [];

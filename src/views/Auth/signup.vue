@@ -2,39 +2,59 @@
     <div class="signupForm">
         <h1>ثبت نام در ترسیم</h1>
         <form @submit.prevent="signup()">
-            <input
-                type="text"
-                placeholder="نام و نام خانوادگی"
-                v-model="user.name"
-                name="name"
-                autocomplete="name"
-                autofocus
-                required
-            />
-            <input
-                type="text"
-                placeholder="نام کاربری"
-                v-model="user.username"
-                name="username"
-                autocomplete="username"
-                required
-            />
-            <input
-                type="tel"
-                placeholder="شماره تلفن همراه"
-                v-model="user.mobile"
-                name="mobile"
-                autocomplete="tel"
-                required
-            />
-            <input
-                type="password"
-                placeholder="رمز عبور"
-                v-model="user.password"
-                name="new-password"
-                autocomplete="new-password"
-                required
-            />
+            <div class="textField">
+                <label for="name">نام و نام خانوادگی</label>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="امین هاشمی"
+                    v-model="user.name"
+                    name="name"
+                    autocomplete="name"
+                    autofocus
+                    dir="rtl"
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="username">نام کاربری</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="aminHashemi"
+                    v-model="user.username"
+                    name="username"
+                    autocomplete="username"
+                    dir="ltr"
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="mobile">شماره تلفن همراه</label>
+                <input
+                    id="mobile"
+                    type="tel"
+                    placeholder="0915****123"
+                    v-model="user.mobile"
+                    name="mobile"
+                    autocomplete="tel"
+                    dir="ltr"
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="password">رمز عبور</label>
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="$amin*****%@jh"
+                    v-model="user.password"
+                    name="new-password"
+                    autocomplete="new-password"
+                    dir="auto"
+                    required
+                />
+            </div>
             <p>
                 شما با ثبت نام در ترسیم،
                 <a href="#">شرایط استفاده از خدمات</a> را می‌پذیرید.

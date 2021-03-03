@@ -8,13 +8,11 @@
 
 
 .auth 
-    text-align: center
     display: flex
     flex-direction: column
     align-items: center
-    height: 99vh;
+    // height: 99vh;
     overflow: auto;
-
     .profileAvatar
         position relative
         img
@@ -38,12 +36,10 @@
         a
             color:  #4374ed 
     
-    input, button
+    button
         display: block
         margin: 20px auto
-        text-align: left
         border-radius: 3px
-        direction: ltr
     
     button
         cursor pointer
@@ -53,27 +49,27 @@
     
     button
         margin-bottom: 1rem 
-    // label 
-    //     display block
+    label 
+        font-size: 95%
     input
-        text-align: right
-        direction: rtl
+        display: block
         border-radius: 0
         background: transparent
         border: none
         border-bottom: 2px solid #cacaca
         line-height: 1.5
-        padding: 3px 10px
-    
-    input[type='number']
-        text-align: left
-        direction: ltr
-        -moz-appearance: textfield;
+        padding: 5px 10px 0px
+        width: 190px
+        box-sizing: border-box;
+    input[type="password"] , input[type="tel"]
         &::placeholder
-            text-align: right
-        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button 
-            -webkit-appearance: none;
-            margin: 0;
+            text-align: left
+
+    .textField
+        direction: rtl
+        width: 190px
+        margin: 0 auto
+        margin-bottom: 20px;
 
     h1 
         margin: 2.5rem

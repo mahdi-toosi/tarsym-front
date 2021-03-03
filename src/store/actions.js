@@ -86,11 +86,26 @@ export default {
                 dispatch("handleAxiosError", error);
             });
     },
+    async resetPassword({ dispatch }, { username }) {
+        if (username.length < 5) {
+            this.$toasted.error("نام کاربری حداقل 6 کاراکتر باید داشته باشد");
+            return;
+        }
+        const res = await dispatch("sendVerifyCode", {
+            username,
+        });
+        if (!res) return;
+        router.push({
+            path: "/auth/verify-mobile",
+            query: { username, status: "changePass" },
+        });
+    },
     async sendVerifyCode({ dispatch }, { username, mobile }) {
         return await axios
             .post("/expiring-data", { username, mobile })
             .then(({ data }) => {
                 Vue.toasted[data.type](data.msg);
+                if (data.type === "error") return false;
                 return true;
             })
             .catch((error) => {

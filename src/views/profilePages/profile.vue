@@ -27,13 +27,13 @@
                 وجود ندارد
                 {{ $router.currentRoute.params.username }} کاربری با نام کاربری
             </span>
-            <span v-if="!profile.docs.data" class="notingToShow">
+            <span v-if="!profile.data.length" class="notingToShow">
                 داکیومنتی برای نمایش دادن نیست
             </span>
             <router-link
                 :to="`/read/${doc._id}`"
                 class="point shadow"
-                v-for="doc in profile.docs.data"
+                v-for="doc in profile.data"
                 :key="doc._id"
             >
                 <header>
@@ -86,6 +86,13 @@
                 </footer>
             </router-link>
         </section>
+        <button
+            v-if="profile.data.length < profile.total"
+            class="btn btn-blue"
+            @click="getUserDocs({ nextPage: true })"
+        >
+            load more
+        </button>
     </div>
 </template>
 
@@ -113,8 +120,8 @@ export default {
             "getUserDocs",
             "addNewDoc",
             "Delete_this_Document",
-            "setUserProfileAndGet_id",
         ]),
+
         filterdate(val) {
             return new Date(val).toLocaleDateString("fa-IR");
             // const day = String(val).slice(-2);
@@ -151,10 +158,7 @@ export default {
     // next();
     // },
     async created() {
-        const username = this.$router.currentRoute.params.username;
-        const user_id = await this.setUserProfileAndGet_id(username);
-        if (!user_id) return;
-        this.getUserDocs(user_id);
+        await this.getUserDocs({ nextPage: false });
         if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
         this.$store.dispatch("change_map_layers", true); // mainMap = true
     },

@@ -4,25 +4,33 @@
         <form @submit.prevent="login()">
             <!-- <div class="text-field"> -->
             <!-- <label for="username">نام کاربری</label> -->
-            <input
-                type="text"
-                id="username"
-                placeholder="نام کاربری"
-                v-model="user.username"
-                dir="auto"
-                name="username"
-                autocomplete="username"
-                autofocus
-                required
-            />
-            <input
-                type="password"
-                placeholder="رمز عبور"
-                v-model="user.password"
-                name="current-password"
-                autocomplete="current-password"
-                required
-            />
+            <div class="textField">
+                <label for="username">نام کاربری</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="aminHashemi"
+                    v-model="user.username"
+                    dir="ltr"
+                    name="username"
+                    autocomplete="username"
+                    autofocus
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="password">رمز عبور</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="**********"
+                    v-model="user.password"
+                    name="current-password"
+                    dir="ltr"
+                    autocomplete="current-password"
+                    required
+                />
+            </div>
             <button class="btn btn-green" type="submit">ورود</button>
         </form>
         <router-link to="/Auth/signup" tag="button">ثبت نام</router-link>

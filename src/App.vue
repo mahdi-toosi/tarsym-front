@@ -1,8 +1,8 @@
 <template>
     <div id="app">
         <Sidebar-navigation />
-        <Sidebar />
-        <Tarsym-map />
+        <Sidebar id="content" />
+        <Tarsym-map v-show="showMapInMobile" />
     </div>
 </template>
 <script>
@@ -24,6 +24,24 @@ export default {
                 { name: "robots", content: "index, follow" },
             ],
         };
+    },
+    computed: {
+        showMapInMobile() {
+            const needMapPages = [
+                "profile",
+                "all docs",
+                "list Docs with tag",
+                "list Docs with category",
+                "read doc",
+                "search",
+            ];
+            if (
+                window.innerWidth >= 950 ||
+                needMapPages.includes(this.$route.name)
+            )
+                return true;
+            else return false;
+        },
     },
     components: {
         TarsymMap,

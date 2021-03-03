@@ -5,7 +5,7 @@ export default {
             return state.docs.vitrineDocs.data || [];
         else if (routeName === "read doc") return state.docs.readDoc || [];
         else if (routeName === "search") return state.docs.searchedDocs.data || [];
-        else if (routeName === "profile") return state.docs.profilePage.docs.data || [];
+        else if (routeName === "profile") return state.docs.profilePage.data || [];
         else if (routeName === "update doc" || routeName === "create doc") return state.docs.newDocs || [];
         else return [];
     },

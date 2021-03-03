@@ -97,7 +97,7 @@
 // .vs--single.vs--open .vs__selected 
 //     position: relative !important
 
-//  map
+// *  Map
 .map 
     font-family: 'iranSans'
     height: 100vh !important;
@@ -110,17 +110,26 @@
     // border: red dashed 1px;
     direction: ltr;
     .layerPicker
+        position relative
         background: white
         padding: 5px 10px
         box-shadow 0px 1px 4px rgba(255, 255, 255 , 84%);
         border-radius: 4px
-        .radiobox   
+        .bugFix
+            width: 100%
+            position absolute
+            height: 100%
+            transition: .5s
+        .radiobox
             display: none
         i
             font-size: 20px
         &:hover 
             .radiobox
                 display: flex
+            .bugFix
+                height: 0%
+
             i
                 display none
         label , input
@@ -155,7 +164,7 @@
                 height: 40px;
                 content: "";
                 display: block;
-                border-radius: 50%;
+                border-radius: 50% !important;
                 -webkit-backface-visibility: hidden;
                 animation: wave-animate 3s infinite ease-out;
             &:after 
@@ -167,7 +176,7 @@
                 height: 40px;
                 content: "";
                 display: block;
-                border-radius: 50%;
+                border-radius: 50% !important;
                 -webkit-backface-visibility: hidden;
                 opacity: 0;
                 animation: wave-animate 3s 1.5s infinite ease-out;
@@ -326,6 +335,43 @@
         left: 13px;
         width: 10px;
 
+
+
+
+@keyframes tada {
+    40% {
+    transform: scale3d(1, 1, 1);
+    }
+
+    42.77% {
+    transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -3deg);
+    }
+
+    45.54%,
+    51.08%,
+    56.62%,
+    62.16% {
+    transform: scale3d(1.15, 1.15, 1.15) rotate3d(0, 0, 1, 3deg);
+    }
+
+    48.31%,
+    53.85%,
+    59.39% {
+    transform: scale3d(1.15, 1.15, 1.15) rotate3d(0, 0, 1, -3deg);
+    }
+
+    65% {
+    transform: scale3d(1, 1, 1);
+    }
+}
+
+.tada {
+    animation-name: tada;
+    transform-origin: center bottom;
+    animation-duration: 10s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+}
 
 @media only screen and (max-width: 950px) 
     .map
