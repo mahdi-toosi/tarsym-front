@@ -13,6 +13,7 @@
                         v-model="verifyCode"
                         maxlength="8"
                         autocomplete="one-time-code"
+                        autofocus
                     />
                     <span>{{ timeLeft }}</span>
                 </div>
@@ -65,7 +66,7 @@ export default {
     },
     methods: {
         resetPassword() {
-            this.$store.dispatch("resetPassword", this.username);
+            this.$store.dispatch("resetPassword", { username: this.username });
         },
         async sendCode() {
             if (this.verifyCode.length < 6) return;

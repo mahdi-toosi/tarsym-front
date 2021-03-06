@@ -25,24 +25,53 @@
                 </div>
             </div>
 
-            <input
-                type="text"
-                placeholder="نام کاربری"
-                :value="user.username"
-                disabled
-            />
-            <input
-                type="text"
-                placeholder="نام و نام خانوادگی"
-                v-model="user.name"
-            />
-            <input
-                type="number"
-                placeholder="کد ملی"
-                v-model="user.nationalCode"
-            />
-            <input type="text" placeholder="شهر" v-model="user.city" />
-            <input type="text" placeholder="شغل" v-model="user.job" />
+            <div class="textField">
+                <label for="username">نام کاربری</label>
+                <input type="text" :value="user.username" disabled />
+            </div>
+            <div class="textField">
+                <label for="name">نام و نام خانوادگی</label>
+                <input
+                    type="text"
+                    v-model="user.name"
+                    id="name"
+                    placeholder="امین هاشمی"
+                    name="name"
+                    autocomplete="name"
+                    dir="rtl"
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="nationalCode">کد ملی</label>
+                <input
+                    placeholder="078****215"
+                    type="text"
+                    inputmode="numeric"
+                    dir="ltr"
+                    id="nationalCode"
+                    v-model="user.nationalCode"
+                    required
+                />
+            </div>
+            <div class="textField">
+                <label for="city">شهر</label>
+                <input
+                    type="text"
+                    id="city"
+                    placeholder="تهران"
+                    v-model="user.city"
+                />
+            </div>
+            <div class="textField">
+                <label for="job">شغل</label>
+                <input
+                    type="text"
+                    id="job"
+                    placeholder="دبیر آموزش پرورش"
+                    v-model="user.job"
+                />
+            </div>
 
             <button
                 class="btn btn-green"
@@ -52,19 +81,47 @@
                 "
             ></button>
         </form>
-        <form @submit.prevent="changeMobileNum()" class="changePassFrom">
-            <input placeholder="شماره موبایل" v-model="mobile" />
+        <form @submit.prevent="changeMobileNum()" style="margin-top: 1.5rem">
+            <div class="textField">
+                <label for="mobile">شماره موبایل</label>
+                <input
+                    id="mobile"
+                    type="tel"
+                    placeholder="0915****123"
+                    name="mobile"
+                    autocomplete="tel"
+                    dir="ltr"
+                    required
+                    v-model="mobile"
+                />
+            </div>
             <button class="btn btn-blue" type="submit">
                 تغییر شماره موبایل
             </button>
         </form>
-        <form @submit.prevent="changePass()" class="changePassFrom">
-            <input type="password" placeholder="رمز عبور" v-model="password" />
-            <input
-                type="password"
-                placeholder="تکرار رمز عبور"
-                v-model="rpassword"
-            />
+        <form @submit.prevent="changePass()" style="margin-top: 1.5rem">
+            <div class="textField">
+                <label for="password">رمز عبور</label>
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="$amin*****%@jh"
+                    name="new-password"
+                    autocomplete="new-password"
+                    dir="auto"
+                    required
+                    v-model="password"
+                />
+            </div>
+            <div class="textField">
+                <label for="rpassword">تکرار رمز عبور</label>
+                <input
+                    type="password"
+                    id="rpassword"
+                    placeholder="$amin*****%@jh"
+                    v-model="rpassword"
+                />
+            </div>
             <button class="btn btn-blue" type="submit">تغییر رمز عبور</button>
         </form>
     </div>
@@ -163,7 +220,11 @@ export default {
             this.TrimUserData();
             if (user.name.length < 5)
                 errors.push("نام و نام خانوادگی معتبر نمی باشد");
-            if (!user.nationalCode || user.nationalCode.length < 9)
+            if (
+                user.nationalCode ||
+                user.nationalCode.length < 9 ||
+                typeof +user.nationalCode !== "number"
+            )
                 errors.push("کد ملی معتبر نمی باشد");
             // if (user.city.length < 1) errors.push("نام شهر معتبر نمی باشد");
             // if (user.job.length < 2) errors.push("شغل معتبر نمی باشد");

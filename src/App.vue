@@ -2,7 +2,7 @@
     <div id="app">
         <Sidebar-navigation />
         <Sidebar id="content" />
-        <Tarsym-map v-show="showMapInMobile" />
+        <Tarsym-map v-if="showMapInMobile" />
     </div>
 </template>
 <script>
@@ -25,8 +25,14 @@ export default {
             ],
         };
     },
+    data() {
+        return {
+            triggerShowMapInMobile: 0,
+        };
+    },
     computed: {
         showMapInMobile() {
+            this.triggerShowMapInMobile;
             const needMapPages = [
                 "profile",
                 "all docs",
@@ -68,6 +74,10 @@ export default {
         document.addEventListener("PWAoffline", () => {
             let msg = "مشکل در ارتباط با سرور، اینترنت خود را بررسی کنید ...";
             this.$toasted.error(msg);
+        });
+
+        window.addEventListener("resize", () => {
+            ++this.triggerShowMapInMobile;
         });
     },
 };

@@ -37,7 +37,8 @@ export default {
     },
     methods: {
         resetPassword() {
-            this.$store.dispatch("resetPassword", this.username);
+            console.log();
+            this.$store.dispatch("resetPassword", { username: this.username });
         },
     },
 };
