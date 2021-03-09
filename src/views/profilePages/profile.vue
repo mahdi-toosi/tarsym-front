@@ -86,12 +86,13 @@
                 </footer>
             </router-link>
         </section>
+
         <button
             v-if="profile.data.length < profile.total"
-            class="btn btn-blue"
+            class="btn btn-blue loadMore"
             @click="getUserDocs({ nextPage: true })"
         >
-            load more
+            بارگزاری بیشتر ...
         </button>
     </div>
 </template>

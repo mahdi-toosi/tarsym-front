@@ -26,28 +26,26 @@ export default {
         const user_id = await dispatch("setUserProfileAndGet_id", username);
         if (!user_id) return;
 
-        const options = {
-            params: {
-                root: true,
-                vitrine: false,
-                "user._id": user_id,
-                "$sort[createdAt]": -1,
-                $limit: 20,
-                $skip: nextPage ? state.profilePage.data.length : 0,
-            },
+        const params = {
+            root: true,
+            vitrine: false,
+            "user._id": user_id,
+            "$sort[createdAt]": -1,
+            $limit: 20,
         };
+        if (nextPage) params.$skip = state.profilePage.data.length;
+
         const result = await axios
-            .get("/documents", options)
+            .get("/documents", { params })
             .then((res) => res.data)
             .catch((error) => {
                 if (error != "Error: Request failed with status code 404")
                     dispatch("handleAxiosError", error, { root: true });
             });
         if (!result) return;
-        result.data = await dispatch("decode_the_docs", { docs: result });
-        if (nextPage) {
-            result.merge = true;
-        }
-        await commit("SET_DOCS_TO_Profile_Page", result);
+        result.data = await dispatch("decode_the_docs", { docs: result.data });
+
+        await commit("SET_DOCS_TO", { decoded_docs: result.data, list: "profilePage", merge: nextPage });
+        commit("SET_TOTAL", { list: "profilePage", total: result.total });
     },
 };

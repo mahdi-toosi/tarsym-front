@@ -130,24 +130,22 @@ export default {
         });
     },
     // !  getAllDocs
-    async getAllDocs({ commit, dispatch }, taxonomies = {}) {
-        // if (!rootState.user.username) return; // if authenticated continue
-
-        const options = {
-            params: {
-                root: true,
-                vitrine: true,
-                situation: "publish",
-                "$sort[createdAt]": -1,
-            },
+    async getAllDocs({ state, commit, dispatch }, { tag, category, nextPage }) {
+        const params = {
+            root: true,
+            vitrine: true,
+            $limit: 10,
+            situation: "publish",
+            "$sort[createdAt]": -1,
         };
+        if (nextPage) params.$skip = state.vitrineDocs.data.length;
 
         // * select docs with taxonomies
-        if (taxonomies.tag) options.params.tags = taxonomies.tag;
-        if (taxonomies.category) options.params.categories = taxonomies.category;
+        if (tag) params.tags = tag;
+        if (category) params.categories = category;
 
         const docs = await axios
-            .get("/documents", options)
+            .get("/documents", { params })
             .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
@@ -155,10 +153,10 @@ export default {
             });
         if (!docs) return;
 
-        const decoded_docs = await dispatch("decode_the_docs", { docs });
-        docs.data = decoded_docs;
+        docs.data = await dispatch("decode_the_docs", { docs: docs.data });
 
-        await commit("SET_DOCS_TO", { decoded_docs: docs, list: "vitrineDocs", merge: false });
+        await commit("SET_DOCS_TO", { decoded_docs: docs.data, list: "vitrineDocs", merge: nextPage });
+        commit("SET_TOTAL", { list: "vitrineDocs", total: docs.total });
     },
     // !  get_this_docs
     async get_this_docs({ state, dispatch }, doc_ids) {
@@ -216,11 +214,9 @@ export default {
             }
         }
 
-        await axios
+        doc = await axios
             .get(`/documents/${_id}`)
-            .then(({ data }) => {
-                doc = data;
-            })
+            .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
                 return false;
@@ -245,15 +241,15 @@ export default {
             return;
         }
 
-        if (user.role >= 48 || doc.user._id === user._id) {
-            if (!already_Decoded) decode_doc = await dispatch("decode_the_docs", { docs: [doc] });
-
-            await commit("SET_DOCS_TO", { decoded_docs: decode_doc || [doc], list: "newDocs", merge: false });
-            await dispatch("get_all_childs", decode_doc || doc);
-        } else {
+        if (user.role === 48 || doc.user._id !== user._id) {
             Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
             dispatch("logout", `/profile/${user.username}`, { root: true });
+            return;
         }
+        if (!already_Decoded) decode_doc = await dispatch("decode_the_docs", { docs: [doc] });
+
+        await commit("SET_DOCS_TO", { decoded_docs: decode_doc || [doc], list: "newDocs", merge: false });
+        await dispatch("get_all_childs", decode_doc || doc);
     },
     // ! get_all_childs
     async get_all_childs({ dispatch, commit }, doc) {
@@ -330,22 +326,28 @@ export default {
         return taxonomies;
     },
     // !  searchData
-    async searchData({ dispatch, rootState, commit }) {
-        const queries = rootState.route.query;
-        const url = "/searchInDocs";
+    async searchData({ state, dispatch, rootState, commit }, { nextPage }) {
+        const params = rootState.route.query;
+        if (nextPage) params.$skip = state.searchedDocs.data.length;
+        if (!params.text) {
+            Vue.toasted.error("محتوایی را جستجو نکرده اید ...");
+            router.push({ name: "all docs" });
+            return;
+        }
+
         const searchedDocs = await axios
-            .get(url, { params: { ...queries } })
+            .get("/searchInDocs", { params })
             .then((res) => res.data)
             .catch((error) => {
                 if (error == "Error: Request failed with status code 415") {
                     Vue.toasted.error("محدوده ای که مشخص کرده اید معتبر نمیباشد ...");
-                    return;
                 }
                 dispatch("handleAxiosError", error, { root: true });
             });
-        const decoded_docs = await dispatch("decode_the_docs", { docs: searchedDocs });
+        console.log(searchedDocs);
+        const decoded_docs = await dispatch("decode_the_docs", { docs: searchedDocs.data });
 
-        const docs = { data: decoded_docs };
-        await commit("SET_DOCS_TO", { decoded_docs: docs, list: "searchedDocs", merge: false });
+        await commit("SET_DOCS_TO", { decoded_docs, list: "searchedDocs", merge: nextPage });
+        commit("SET_TOTAL", { list: "searchedDocs", total: searchedDocs.total });
     },
 };

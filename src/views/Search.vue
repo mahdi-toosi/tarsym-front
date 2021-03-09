@@ -43,6 +43,13 @@
                 </footer>
             </router-link>
         </section>
+        <button
+            v-if="searchedDocs.data.length < searchedDocs.total"
+            class="btn btn-blue loadMore"
+            @click="fetch({ nextPage: true })"
+        >
+            بارگزاری بیشتر ...
+        </button>
     </div>
 </template>
 
@@ -61,12 +68,15 @@ export default {
         filterdate(val) {
             return new Date(val).toLocaleDateString("fa-IR");
         },
+        async fetch({ nextPage }) {
+            if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
+            await this.searchData({ nextPage });
+            this.$store.dispatch("change_map_layers", true); // mainMap = true
+        },
     },
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
-            if (vm.$store.state.map.zoom > 5) vm.$store.state.map.zoom = 5;
-            if (to.name === "search") await vm.searchData();
-            vm.$store.dispatch("change_map_layers", true); // mainMap = true
+            await vm.fetch({ nextPage: false });
         });
     },
     components: { SearchField: () => import("@/components/searchField") },

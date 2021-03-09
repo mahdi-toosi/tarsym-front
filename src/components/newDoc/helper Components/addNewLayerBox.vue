@@ -20,7 +20,9 @@
                 </div>
             </template>
         </VSelect>
-        <button @click="addChild()" class="btn btn-blue addNewLayer">+</button>
+        <button @click="addChild()" class="btn btn-blue addNewLayer">
+            <i class="fa fa-plus"></i>
+        </button>
     </div>
 </template>
 
@@ -40,8 +42,8 @@ export default {
                 options = { params: { text: search, forLayers: true } };
             await vm.$axios
                 .get(url, options)
-                .then(async (res) => {
-                    const filteredData = await vm.filterSearchedData(res.data);
+                .then(async ({ data }) => {
+                    const filteredData = await vm.filterSearchedData(data.data);
                     vm.searchBoxOptions = filteredData;
                     loading(false);
                 })

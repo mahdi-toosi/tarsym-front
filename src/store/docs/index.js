@@ -174,23 +174,20 @@ export default {
         },
         SET_DOCS_TO(state, { decoded_docs, list, merge }) {
             if (!merge) {
-                state[list] = decoded_docs;
+                if (state[list].data) state[list].data = decoded_docs;
+                else state[list] = decoded_docs;
                 return;
             }
-            const dataSet = state[list].data || state[list];
+            const store = state[list].data || state[list];
             decoded_docs.forEach((doc) => {
-                const isThere = dataSet.findIndex((d) => d._id == doc._id);
-                if (isThere === -1) dataSet.push(doc);
+                const isThere = store.findIndex((d) => d._id == doc._id);
+                if (isThere === -1) store.push(doc);
             });
         },
-        SET_DOCS_TO_Profile_Page(state, { data, total, merge }) {
-            if (merge) {
-                state.profilePage.data = [...state.profilePage.data, ...data];
-            } else {
-                state.profilePage.data = data;
-            }
-            state.profilePage.total = total;
+        SET_TOTAL(state, { list, total }) {
+            state[list].total = total;
         },
+
         CLEAR_READ_DOC(state) {
             state.readDoc = [];
             state.DocProp = {

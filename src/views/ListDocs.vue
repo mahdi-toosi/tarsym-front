@@ -43,6 +43,14 @@
                 </footer>
             </router-link>
         </section>
+
+        <button
+            v-if="allDocs.data.length < allDocs.total"
+            class="btn btn-blue loadMore"
+            @click="fetch({ nextPage: true })"
+        >
+            بارگزاری بیشتر ...
+        </button>
     </div>
 </template>
 
@@ -61,17 +69,25 @@ export default {
         filterdate(val) {
             return new Date(val).toLocaleDateString("fa-IR");
         },
+        async fetch({ nextPage }) {
+            if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
+            const route = this.$router.currentRoute;
+
+            if (route.name === "all docs") await this.getAllDocs({ nextPage });
+            if (route.name === "list Docs with category")
+                await this.getAllDocs({
+                    category: route.params.name,
+                    nextPage,
+                });
+            if (route.name === "list Docs with tag")
+                await this.getAllDocs({ tag: route.params.name, nextPage });
+
+            this.$store.dispatch("change_map_layers", true); // mainMap = true
+        },
     },
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
-            if (vm.$store.state.map.zoom > 5) vm.$store.state.map.zoom = 5;
-            if (to.name === "all docs") await vm.getAllDocs();
-            if (to.name === "list Docs with category")
-                await vm.getAllDocs({ category: to.params.name });
-            if (to.name === "list Docs with tag")
-                await vm.getAllDocs({ tag: to.params.name });
-
-            vm.$store.dispatch("change_map_layers", true); // mainMap = true
+            await vm.fetch({ nextPage: false });
         });
     },
     components: { SearchField: () => import("@/components/searchField") },

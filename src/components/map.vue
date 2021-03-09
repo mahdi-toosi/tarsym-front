@@ -404,7 +404,7 @@ export default {
         },
         polygonOrPolylineSimolationCoordinates() {
             const tool = this.OnTool; // || this.searchPolygon;
-            // if (!OnTool) return;
+            if (!tool) return [];
             // const isPolygonOrPolylineOn =
             //     OnTool.type === "Polygon" || OnTool.type === "Polyline";
 

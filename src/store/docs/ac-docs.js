@@ -121,10 +121,9 @@ export default {
     },
     // ! decode_the_docs
     async decode_the_docs({ dispatch }, { docs, deleteRoot }) {
-        const Docs = docs.data || docs;
         const newData = [];
-        for (let index = 0; index < Docs.length; index++) {
-            const doc = Docs[index];
+        for (let index = 0; index < docs.length; index++) {
+            const doc = docs[index];
             if (doc.already_fetched) {
                 newData.push(doc);
                 continue;
