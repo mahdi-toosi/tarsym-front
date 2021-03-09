@@ -7,9 +7,14 @@ module.exports = {
     publicPath: process.env.NODE_ENV === "production" ? "/statics/" : "/",
     outputDir: "statics",
     pwa: {
-        name: "Tarsym",
+        name: "ترسیم",
         themeColor: "#4DBA87",
-        msTileColor: "#000000",
+        // msTileColor: "#9fafad",
+        msTileColor: "#9fafad",
+        manifestOptions: {
+            start_url: "/",
+            background_color: "#9fafad",
+        },
         appleMobileWebAppCapable: "yes",
         appleMobileWebAppStatusBarStyle: "#22dda9",
     },

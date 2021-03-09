@@ -12,10 +12,6 @@ export default {
         commit("map/UPDATE_CENTER", center);
         commit("docs/UPDATE_CENTER", center);
     },
-    update_layer({ commit }, layerIndex) {
-        commit("map/UPDATE_LAYER", layerIndex);
-        commit("docs/UPDATE_LAYER", layerIndex);
-    },
     change_map_layers({ commit, state, rootState }, mainMap) {
         if (mainMap) {
             commit("map/SET_THIS_LAYER", 0);

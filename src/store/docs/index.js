@@ -57,17 +57,24 @@ export default {
         SET_DATE(state, date) {
             docLayer(state).date = date;
         },
-        ADD_TAXONOMY(state, { $event, cats }) {
+        ADD_TAXONOMY(state, { $event, isCategory }) {
             if ($event.length && $event[$event.length - 1].length < 3) {
-                Vue.toasted.error(`${cats ? "دسته بندی" : "تگ"} باید حداقل 4 حرف داشته باشد`);
+                Vue.toasted.error(`${isCategory ? "دسته بندی" : "تگ"} باید حداقل 4 حرف داشته باشد`);
                 return;
             }
-            const doc = docLayer(state);
-            if (cats) doc.categories = $event;
-            else doc.tags = $event;
+            const doc = state.newDocs[0];
+            if (doc.root)
+                if (isCategory) doc.categories = $event;
+                else doc.tags = $event;
+            else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
         },
         SET_ZOOM_LEVEL(state, val) {
-            state.newDocs[0].zoomLevel = val;
+            if (state.newDocs[0].root) state.newDocs[0].zoomLevel = val;
+            else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
+        },
+        SET_SITUATION(state, val) {
+            if (state.newDocs[0].root) state.newDocs[0].situation = val;
+            else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
         },
         SET_NEW_DOCUMENT(
             state,
@@ -170,7 +177,7 @@ export default {
                 state[list] = decoded_docs;
                 return;
             }
-            const dataSet = Array.isArray(state[list]) ? state[list] : state[list].data;
+            const dataSet = state[list].data || state[list];
             decoded_docs.forEach((doc) => {
                 const isThere = dataSet.findIndex((d) => d._id == doc._id);
                 if (isThere === -1) dataSet.push(doc);
@@ -199,7 +206,7 @@ export default {
             let doc_index;
             const equal_id = (id) => (doc) => doc._id === id;
             // ? remove from profile page
-            const profilePageDocs = state.profilePage.docs.data;
+            const profilePageDocs = state.profilePage.data;
             if (profilePageDocs && profilePageDocs.length) {
                 doc_index = profilePageDocs.findIndex(equal_id(_id));
                 if (doc_index !== -1) profilePageDocs.splice(doc_index, 1);

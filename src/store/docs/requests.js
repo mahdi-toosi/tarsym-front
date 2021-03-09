@@ -39,6 +39,7 @@ export default {
             );
             if (!remove_children) return;
         }
+
         if (typeof doc._id === "number") {
             commit("REMOVE_THIS_DOC", doc._id);
             // * redirect if need
@@ -229,7 +230,7 @@ export default {
     // !  get_this_doc_for_update
     async get_this_doc_for_update({ state, commit, dispatch, rootState }, doc_id) {
         let doc, already_Decoded, decode_doc;
-        const profileDocs = state.profilePage.docs.data,
+        const profileDocs = state.profilePage.data,
             user = rootState.user;
 
         if (profileDocs && profileDocs.length) {

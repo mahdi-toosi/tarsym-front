@@ -69,9 +69,6 @@ export default {
         UPDATE_CENTER(state, center) {
             state.center = center;
         },
-        UPDATE_LAYER(state, layerIndex) {
-            state.layerIndex = layerIndex;
-        },
         UPDATE_MOUSE_COOR(state, { latlng }) {
             state.MouseCoordinate = latlng;
         },

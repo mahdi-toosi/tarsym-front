@@ -52,29 +52,29 @@ export default {
             }
             query.text = searchedText;
 
-            const polygonCoordinates = this.$store.state.searchPolygon
-                .coordinates;
-            if (polygonCoordinates.length > 2) {
-                query.area = [];
-                polygonCoordinates.forEach((coordinate) => {
-                    query.area.push(coordinate.lat);
-                    query.area.push(coordinate.lng);
-                });
-            }
+            // const polygonCoordinates = this.$store.state.searchPolygon
+            //     .coordinates;
+            // if (polygonCoordinates.length > 2) {
+            //     query.area = [];
+            //     polygonCoordinates.forEach((coordinate) => {
+            //         query.area.push(coordinate.lat);
+            //         query.area.push(coordinate.lng);
+            //     });
+            // }
             this.$router.push({ path: "/search", query });
         },
     },
     computed: {
-        searchPolygon() {
-            return this.$store.state.searchPolygon;
-        },
+        // searchPolygon() {
+        //     return this.$store.state.searchPolygon;
+        // },
     },
 };
 </script>
 
 <style lang="stylus">
 .searchbar {
-    padding: 9px 15px;
+    padding: 5px 15px;
     background: white;
     border-radius: 5px;
     direction: rtl;
@@ -94,7 +94,7 @@ export default {
             width: 86%;
             line-height: 2;
             border: 0;
-            padding: 0px 10px 4px;
+            // padding: 0px 10px 4px;
             // width: 180px;
         }
     }

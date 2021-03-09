@@ -68,7 +68,7 @@
                         </li>
                     </Draggable>
                 </ul>
-                <GooeyMenu />
+                <AddNewTool />
             </div>
             <div class="layers-content" v-show="tabContent === 'layers'">
                 <LayersRelationshipTree @childClicked="tabContent = 'tools'" />
@@ -90,6 +90,19 @@
                     </select>
                 </div>
                 <br />
+                <div>
+                    <label for="zoomLevel" style="top: 4px"
+                        >وضعیت داکیومنت:</label
+                    >
+                    <select
+                        id="zoomLevel"
+                        v-model="situation"
+                        title="سطح زوم 5 بیشترین مقدار زوم است"
+                    >
+                        <option value="publish">عمومی</option>
+                        <option value="private">خصوصی</option>
+                    </select>
+                </div>
             </div>
         </div>
     </section>
@@ -122,10 +135,18 @@ export default {
         },
         zoomLevel: {
             get() {
-                return this.DocLayer.zoomLevel;
+                return this.$store.state.docs.newDocs[0].zoomLevel;
             },
             set(val) {
                 this.SET_ZOOM_LEVEL(val);
+            },
+        },
+        situation: {
+            get() {
+                return this.$store.state.docs.newDocs[0].situation;
+            },
+            set(val) {
+                this.SET_SITUATION(val);
             },
         },
     },
@@ -134,12 +155,13 @@ export default {
             "DRAG_TOOL_UPDATE",
             "UPDATE_ON_TOOL",
             "SET_ZOOM_LEVEL",
+            "SET_SITUATION",
         ]),
     },
     components: {
         Draggable: () => import("vuedraggable"),
-        GooeyMenu: () =>
-            import("@/components/newDoc/helper Components/gooeyMenu"),
+        AddNewTool: () =>
+            import("@/components/newDoc/helper Components/addNewTool"),
         NewPoint: () => import("@/components/newDoc/newPoint"),
         NewPolygon: () => import("@/components/newDoc/newPolygon"),
         NewPolyline: () => import("@/components/newDoc/newPolyline"),

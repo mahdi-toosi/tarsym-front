@@ -1,0 +1,100 @@
+.gooeyMenu
+    position: relative
+    max-height: 50px;
+.menu 
+    filter: url("#shadowed-goo")
+    position: absolute
+    right: 20px
+    font-size: 20px
+    text-align: right 
+    i 
+        margin-top: 3px
+
+.menu-item, .menu-open-button 
+    // background: #00bcd4
+    // border-radius: 100%
+    width: 37px
+    height: 37px
+    border-radius: 100%
+    padding: 0px
+    line-height: 37px
+    font-size: 25px !important;
+    margin-left: -40px
+    position: absolute
+    top: 5px
+    color: white
+    text-align: center
+    transform: translate3d(0, 0, 0)
+    transition: transform ease-out 200ms
+    transition: transform ease-out 200ms
+    box-shadow: unset !important
+
+.menu-open 
+    display: none
+.plus
+    font-size: 30px
+    line-height: 30px
+    display block
+    transition: .3s
+
+.menu-open:checked ~ .menu-open-button .plus
+    transform:  rotate(-45deg)
+    transform-origin: center
+    font-size: 25px
+    line-height: 25px
+    font-weight: 200
+    margin-top: 2px;
+
+.menu-item
+    cursor pointer
+    i
+        margin-top: 6px
+    &:nth-child(3) 
+        transition-duration: 290ms
+    &:nth-child(4) 
+        transition-duration: 490ms
+    &:nth-child(5) 
+        transition-duration: 600ms
+    &:nth-child(6) 
+        transition-duration: 700ms
+    // &:nth-child(7) 
+    //     transition-duration: 800ms
+
+
+.menu-open-button 
+    z-index: 2
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    transition-duration: 400ms
+    cursor: pointer
+
+// .menu-open-button:hover 
+//     transform: scale(1.1, 1.1) translate3d(0, 0, 0)
+
+.menu-open:checked + .menu-open-button 
+    transition-timing-function: linear
+    transition-duration: 200ms
+    transform: scale(0.8, 0.8) translate3d(0, 0, 0)
+
+.menu-open:checked ~ .menu-item 
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1)
+
+.menu-open:checked ~ .menu-item:nth-child(3) 
+    transition-duration: 190ms
+    transform: translate3d(-40px, 0, 0)
+
+.menu-open:checked ~ .menu-item:nth-child(4) 
+    transition-duration: 390ms
+    transform: translate3d(-85px, 0, 0)
+
+.menu-open:checked ~ .menu-item:nth-child(5) 
+    transition-duration: 500ms
+    transform: translate3d(-130px, 0, 0)
+
+.menu-open:checked ~ .menu-item:nth-child(6) 
+    transition-duration: 600ms
+    transform: translate3d(-175px, 0, 0)
+
+// .menu-open:checked ~ .menu-item:nth-child(7) 
+//     transition-duration: 700ms
+//     transform: translate3d(-220px, 0, 0)
+

@@ -14,30 +14,7 @@
             ref="LeafletMap"
         >
             <LControl position="bottomright" class="leaflet-control mapmaker">
-                <div class="layerPicker">
-                    <div class="bugFix"></div>
-                    <div>
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div
-                        class="radiobox"
-                        v-for="(tileProvider, i) in map.tileProviders"
-                        :key="tileProvider.name"
-                        dir="rtl"
-                        v-show="tileProvider"
-                    >
-                        <input
-                            type="radio"
-                            name="picktile"
-                            :id="tileProvider.name"
-                            :value="i"
-                            v-model="tileLayerIndex"
-                        />
-                        <label :for="tileProvider.name">
-                            {{ tileProvider.name }}
-                        </label>
-                    </div>
-                </div>
+                <LayerPicker />
             </LControl>
 
             <LTileLayer
@@ -146,17 +123,19 @@
                             :visible="tool.visible"
                         >
                             <LIcon
-                                :icon-size="dynamicSize(tool.iconSize)"
-                                :icon-anchor="dynamicAnchor(tool.iconSize)"
+                                :icon-size="[
+                                    tool.iconSize,
+                                    tool.iconSize * 1.15,
+                                ]"
+                                :icon-anchor="[
+                                    tool.iconSize / 2,
+                                    tool.iconSize / 2,
+                                ]"
                                 v-if="tool.iconName"
                             >
                                 <div
                                     :class="{ tada: tool.alarm }"
-                                    style="
-                                        display: flex;
-                                        justify-content: center;
-                                        align-items: center;
-                                    "
+                                    class="customIconWrapper"
                                 >
                                     <span>
                                         <!-- if tool is on , this span make ripple wave effect -->
@@ -204,7 +183,10 @@
                             <LIcon
                                 v-if="tool.tooltip.text"
                                 :icon-size="[tool.width, tool.height]"
-                                :icon-anchor="[tool.width / 2, tool.height / 2]"
+                                :icon-anchor="[
+                                    tool.width / 2,
+                                    tool.height / 1.5,
+                                ]"
                             >
                                 <div
                                     class="textBoxTool_inMap"
@@ -246,7 +228,7 @@
             </div>
             <!-- end docs_list -->
 
-            <div v-if="searchPolygon">
+            <!-- <div v-if="searchPolygon">
                 <LPolygon
                     :lat-lngs="polygonOrPolylineSimolationCoordinates"
                     v-if="searchPolygon.isOn"
@@ -261,7 +243,7 @@
                     :color="searchPolygon.color"
                     :lat-lngs="searchPolygon.coordinates"
                 />
-            </div>
+            </div> -->
 
             <VGeosearch :options="geosearchOptions" />
 
@@ -270,10 +252,21 @@
             <LControlZoom position="bottomright"></LControlZoom>
 
             <LControlPolylineMeasure
-                :options="{ showUnitControl: true }"
+                :options="{
+                    showUnitControl: true,
+                    tooltipTextDelete:
+                        'با نگه داشتن دکمه <b>shift</b> و کلیک بر روی نقطه <br/> آن را حذف کنید ...',
+                    tooltipTextFinish:
+                        'برای تمام کردن روی نقطه کلیک کنید. <br/>',
+                    startCircle: { ...PMCO, radius: 5 },
+                    intermedCircle: { ...PMCO, radius: 3 },
+                    currentCircle: { ...PMCO, radius: 5 },
+                    endCircle: { ...PMCO, radius: 3 },
+                }"
                 position="bottomright"
-                v-if="!OnTool && !searchPolygon.isOn"
+                v-if="!OnTool"
             />
+            <!-- && 👆🏼 !searchPolygon.isOn -->
 
             <LControl position="bottomright" class="mapmaker undoControl">
                 <a
@@ -375,30 +368,32 @@ export default {
                     // optional: L.Marker    - default L.Icon.Default
                     icon: defaultIcon,
                 },
-                searchLabel: "جستجو در نقشه ...",
+                searchLabel: "جستجو در نقشه",
                 autoClose: true,
             },
             tooltipOptions: { permanent: false },
+            PMCO: {
+                // * polylineMetureCirclesOptions
+                // Style settings for circle marker indicating the starting point of the polyline
+                color: "#669b86", // Color of the border of the circle
+                weight: 1, // Weight of the circle
+                fillColor: "#00e8ff", // Fill color of the circle
+                fillOpacity: 1, // Fill opacity of the circle
+                // radius: 3, // Radius of the circle
+            },
         };
     },
     computed: {
-        ...mapState(["map", "searchPolygon"]),
+        ...mapState(["map"]), //"searchPolygon"
         ...mapGetters(["DocLayer", "docs_list", "DocWithChildsTools"]),
-        tileLayerIndex: {
-            get() {
-                return this.map.layerIndex;
-            },
-            set(val) {
-                this.SET_THIS_LAYER(val);
-            },
-        },
+
         OnTool() {
             const OnTool = this.$store.state.docs.DocProp.OnTool;
             if (OnTool.condition) return this.DocLayer?.tools[OnTool.index];
             else return false;
         },
         undoCondition() {
-            if (this.searchPolygon.isOn) return true;
+            // if (this.searchPolygon.isOn) return true;
             if (!this.DocLayer) return false;
 
             const thisTool = this.OnTool;
@@ -408,7 +403,7 @@ export default {
             else return false;
         },
         polygonOrPolylineSimolationCoordinates() {
-            const tool = this.OnTool || this.searchPolygon;
+            const tool = this.OnTool; // || this.searchPolygon;
             // if (!OnTool) return;
             // const isPolygonOrPolylineOn =
             //     OnTool.type === "Polygon" || OnTool.type === "Polyline";
@@ -430,8 +425,8 @@ export default {
             "OFF_THE_ON_TOOL",
             "UPDATE_ON_TOOL",
         ]),
-        ...mapMutations("map", ["UPDATE_MOUSE_COOR", "SET_THIS_LAYER"]),
-        ...mapActions(["update_zoom", "update_center", "update_layer"]),
+        ...mapMutations("map", ["UPDATE_MOUSE_COOR"]),
+        ...mapActions(["update_zoom", "update_center"]),
         update_mouse_coor(obj) {
             const editMode = ["update doc", "create doc"].includes(
                 this.$router.currentRoute.name
@@ -439,17 +434,12 @@ export default {
             if (!editMode) return;
             this.UPDATE_MOUSE_COOR(obj);
         },
-        dynamicSize(iconSize) {
-            return [iconSize, iconSize * 1.15];
-        },
-        dynamicAnchor(iconSize) {
-            return [iconSize / 2, iconSize * 1.15];
-        },
+
         setClickCoordinates({ latlng }) {
-            if (this.searchPolygon.isOn) {
-                this.searchPolygon.coordinates.push(latlng);
-                return;
-            }
+            // if (this.searchPolygon.isOn) {
+            //     this.searchPolygon.coordinates.push(latlng);
+            //     return;
+            // }
             const thisTool = this.OnTool;
             if (!thisTool) return;
 
@@ -488,10 +478,10 @@ export default {
             if (path != currentRoute.fullPath) this.$router.push(path);
         },
         undoTools() {
-            if (this.searchPolygon.isOn) {
-                this.searchPolygon.coordinates.pop();
-                return;
-            }
+            // if (this.searchPolygon.isOn) {
+            //     this.searchPolygon.coordinates.pop();
+            //     return;
+            // }
             this.OnTool.coordinates.pop();
             // if (this.OnTool.type === "Heatmap") ++this.OnTool.key; // * rebuild the Heatmap
         },
@@ -502,6 +492,7 @@ export default {
     },
     mounted() {
         const mapObject = this.$refs.LeafletMap.mapObject;
+
         L.easyPrint({
             position: "bottomleft",
             sizeModes: [
@@ -513,7 +504,7 @@ export default {
                 },
             ],
             exportOnly: true,
-            filename: "tarsym",
+            filename: `tarsym-${Date.now()}`,
             hideControlContainer: false,
             hideClasses: [
                 "leaflet-control-easyPrint",
@@ -537,24 +528,6 @@ export default {
             false
         );
 
-        mapObject.on("baselayerchange", (Layer) => {
-            const layerIndex = this.map.tileProviders.findIndex(
-                (el) => el.name === Layer.name
-            );
-            this.update_layer(layerIndex);
-        });
-
-        // * edit search in map
-        setTimeout(() => {
-            const button = document.querySelector(
-                ".leaflet-control-geosearch .reset"
-            );
-            button.innerHTML = "";
-            const closeIcon = document.createElement("i");
-            closeIcon.classList.add("fas", "fa-times");
-            button.appendChild(closeIcon);
-        }, 2000);
-
         document.onkeydown = (evt) => {
             evt = evt || window.event;
             if (evt.keyCode === 27) {
@@ -577,6 +550,7 @@ export default {
         LTooltip,
         // LControlLayers,
         VGeosearch: () => import("vue2-leaflet-geosearch"),
+        LayerPicker: () => import("@/components/layerPicker"),
         // LeafletHeatmap,
     },
 };

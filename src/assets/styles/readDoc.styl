@@ -6,12 +6,10 @@
 }
 
 .point.readPoint {
-    margin: 10px;
-    margin-top: 0px;
-    padding-top: 0px;
     color: #37383a;
     cursor: auto;
     overflow: visible
+    padding: 0 15px
 
     &:hover {
         transform: none;
@@ -20,17 +18,24 @@
     header {
         display: block;
         margin-bottom: 0px;
-        margin-top: -1rem;
-
         div {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        .title {
+            align-items: flex-start
+            .btn-back{
+                position: unset
+                padding: 0px;
+                height: unset
+            }
+        }
     }
 
     main {
         margin-right: 0px;
+        font-size: 100%
     }
 
     time {
@@ -39,9 +44,15 @@
     }
 
     h1 {
-        font-size: 26px;
+        font-size: 24px;
         margin-top: 0px;
         margin-bottom: 10px;
+    }
+    h2 {
+        font-size: 21px;
+    }
+    h3 {
+        font-size: 17px;
     }
 
     h4 {
@@ -83,6 +94,12 @@
 
             li {
                 background: white;
+                padding: 0px
+                .btn-back {
+                    position: unset;
+                    padding: 0;
+                    height: unset
+                }
             }
 
             button {
@@ -118,5 +135,11 @@
 @media only screen and (max-width: 950px) 
     .readPoint.point
         margin-top: 1rem
+        h1
+            font-size: 18px
+        h4
+            font-size: 14px
+            i
+                margin-left: 5px;
         header
             margin-top: unset

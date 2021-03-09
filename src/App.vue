@@ -58,24 +58,10 @@ export default {
         await this.$store.dispatch("set_user_if_exist", 3);
     },
     created() {
-        document.addEventListener("PWAupdatefound", () => {
-            let msg = "آپدیتی برای اپلیکیشن ارائه شد. در حال دانلود ...";
-            this.$toasted.info(msg, {
-                icon: "fa-code",
-            });
-        });
-        document.addEventListener("PWAupdated", () => {
-            let msg = "آپدیت به پایان رسید ، نیاز به رفرش کردن صفحه است ...";
-            this.$toasted.info(msg, {
-                duration: 10 * 1000,
-                icon: "fa-info-circle",
-            });
-        });
         document.addEventListener("PWAoffline", () => {
             let msg = "مشکل در ارتباط با سرور، اینترنت خود را بررسی کنید ...";
             this.$toasted.error(msg);
         });
-
         window.addEventListener("resize", () => {
             ++this.triggerShowMapInMobile;
         });

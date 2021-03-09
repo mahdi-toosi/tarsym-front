@@ -1,9 +1,9 @@
 .sidebarNavigation 
     position: fixed
-    top: 20px
-    left: 20px
+    top: 15px;
+    left: 15px;
     user-select: none
-    z-index: 9999
+    z-index: 99999
     direction: ltr;
     
     img 
@@ -13,11 +13,10 @@
         position: relative
         z-index: 999
         cursor: pointer
-        box-shadow: 0px 1px 4px #ffffffd6 
+        box-shadow: 0px 1px 4px #d2d2d2d6 
     
 
     .sidebar 
-        max-width: 400px
         background: white
         margin-top: -55px
         border-radius: 25px 12px 12px 12px
@@ -26,13 +25,14 @@
         padding: 0px
         transition: all 0.5s ease-in-out
         clip-path: circle(100% at -65% -60%)
+        max-width: 400px
         max-height: 0
 
         &.show 
             max-height: 100%
             padding: 5px 5px 0px
             clip-path: circle(100%)
-            box-shadow: 0px 1px 4px #ffffffd6
+            box-shadow: 0px 1px 4px #d2d2d2d6
         
 
         .router-link-exact-active i 

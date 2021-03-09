@@ -11,12 +11,12 @@ import docs from "./docs/";
 
 export default new Vuex.Store({
     state: {
-        searchPolygon: {
-            coordinates: [],
-            color: "#23A9AEFF",
-            secondaryColor: "#23A9AEFF",
-            isOn: false,
-        },
+        // searchPolygon: {
+        //     coordinates: [],
+        //     color: "#23A9AEFF",
+        //     secondaryColor: "#23A9AEFF",
+        //     isOn: false,
+        // },
         user: {},
     },
     getters,

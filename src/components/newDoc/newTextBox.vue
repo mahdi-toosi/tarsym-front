@@ -52,11 +52,7 @@
         <div class="tool_body">
             <div class="backColor">
                 <label for="backColor">رنگ زمینه:</label>
-                <ColorPicker
-                    id="backColor"
-                    :value="tool.color"
-                    :index="index"
-                />
+                <ColorPicker id="backColor" :value="tool.color" :tool="tool" />
             </div>
 
             <div class="fontColor">
@@ -64,7 +60,7 @@
                 <ColorPicker
                     id="fontColor"
                     :value="tool.secondaryColor"
-                    :index="index"
+                    :tool="tool"
                     :secondaryColor="true"
                 />
             </div>

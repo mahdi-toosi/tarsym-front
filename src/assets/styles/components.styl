@@ -2,6 +2,7 @@
 // @import 'libs/datePicker'
 @import 'libs/sidebarNavigation'
 
+$boxShadow = 0px 1px 4px #ffffffd6
 
 // * VUE DATE PICKER
 .vpd-days 
@@ -52,7 +53,8 @@
 .toasted
     direction: rtl
     justify-content: unset !important
-    i
+    line-height: 1.6em !important;
+    i 
         font-size: 27px
         margin-left: 0.5rem !important;
         margin-right: -0.4rem !important;
@@ -120,11 +122,13 @@
             position absolute
             height: 100%
             transition: .5s
+            top: 0
+            left: 0
         .radiobox
             display: none
         i
             font-size: 20px
-        &:hover 
+        &.showTileProviders
             .radiobox
                 display: flex
             .bugFix
@@ -136,9 +140,10 @@
             cursor pointer
         label 
             width: 100%;
-            margin-right: 5px
+            padding-right: 5px; 
+    
     .leaflet-bar 
-        box-shadow: 0px 1px 4px #ffffffd6 
+        box-shadow: $boxShadow
         border unset !important
         a 
             cursor pointer
@@ -148,13 +153,19 @@
         width: 21px
         height 31px
         position absolute
+    .customIconWrapper
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
     .leaflet-marker-draggable
-        display: grid;
         &:hover
             cursor move
         span
-            margin: auto
-            position relative
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             &:before
                 position: absolute;
                 background: #d3d3d3;
@@ -242,7 +253,7 @@
     opacity 1 !important
     background-color: #ffffffe6 
     padding: 3px !important
-    box-shadow: 0px 1px 4px #ffffffd6 !important;
+    box-shadow: $boxShadow !important;
     p
         margin: 0px
         min-width 110px
@@ -255,6 +266,14 @@
         max-height: 400px
         margin: 6px auto 0px;
 
+.polyline-measure-popupTooltip
+    white-space: nowrap !important;
+    font-family: iranSans
+    line-height: 20px
+.polyline-measure-tooltip
+    font-family: iranSans
+    background-color: white
+    box-shadow: $boxShadow;
 .textBoxTool_inMap
     direction: rtl
     border-radius: 5px
@@ -266,10 +285,11 @@
         margin: 0px
 
 .leaflet-control-attribution
-    box-shadow: 0px 1px 4px #ffffffd6;
+    box-shadow: $boxShadow;
     font-size: 0px !important
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.85) !important;
+    margin: 0 2px 2px 0 !important;
     a:first-child 
         display none
     .attr
@@ -284,8 +304,9 @@
 .leaflet-control-easyPrint-button-export
     display none !important
 .leaflet-control-easyPrint
-    width: 26px
-    height: 26px
+    width: 34px;
+    height: 26px;
+
 .easyPrintHolder
     display block !important
     margin-top: 0px !important
@@ -298,42 +319,45 @@
         background-color: #fff !important
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEPklEQVRoge1ZTWhcVRg9586brmrJLELppCBGCoXoKtkEBH/Qbo2UUapUmsx7d8CFWPuzcCGzE6qkuFD63swQaaTQTNXorhZRArYFS1bGQhdBwaSUIhlqBG0m93ORl/rykmnm3TeQYHNgFu/c77vf+biHe+97A+xgB482mCZZa10AMJFSw6tBENRtk60bGB4e7s5mszMAum3nCHF3aWmpb2xs7K5NsrKt6jjOp0gvHgC6s9nsJ7bJVivQIevEYWWlxA20sM5PCwsLg/V6fbndulrr7wA8H+GsrJTYQhtY5x+SxxKIBwDJZDIugL8inJWVoitArbUGMAygD8DutpSIvFepVD5IWhgAtNZvA/i4zfBFkj8DqPq+X1slGU60j+TnIvJCQg1JrRMHtdZTAJ5JmPetMebNarV6R2GliXEL8TbWiUNEpAjg74R5h5RS5wEgUyqVigDesaj8fhAEXyXNi2N6evqPgYGBJoAXE6Y+2d/f/yu11lcBDK6yJC8vLy+71Wr197TiOolisfh4JpOpItKoiPyoADwVDcxkMt52Ew8AtVrtN6WUF+VIPk2ttUTJIAisrxeFQmFXV1fXEIAhkgMA9oVDt0XkBoDJRqMxWa/X79vWiOu1vkrE4Xne4Vwud5PkRZJHABzAyla8G8ABkkdIXszlcjc9zzvcqbpO2gnK5bKan5//CMDxNlN6SV7SWp/N5/Mny+WySVM/dQMJxUdxfG5uTgCcSFM/lYVCK8TFC8mKMWaw2WzuaTabe4wxgwCqANb4l+S7ae1kvQKFQmEXyQ9j9B2SR33fvxLjrwO4XiqVJkRkHMDe1QGSZ7TW3wRBsGSjw3oFwt3miQglLcQ/gO/7V0gejdG9IvKKrY40FhqKPdceJn4VYUw1ypF82VaEdQPhPv8Axphaq9g4Nogd2DCwDaRZgX3RB2PMTLuJG8TmbUV07CDbKqRp4PaaiZTqa7vo+th5WxHWDYR3m/8mUqrYdtH1sTc2DGxnLttEAJOx52KpVHppsySt9SEAbpQTka9tRVg30Gg0JgHMRiiKyPjDmgjHzsfoWZLWL0bWJ3G9Xr/ved5pkpci9F4Ruay1rhljaqu7jVKqTylVFBE3Pg/JU77vW53CQMpdqFKpfAHgbFwTAFcpdc1xnHuO49xTSl1DzDYAICKjvu9/mUZD6m00n8+fFJHRpHkiMtrT03Mqbf1OvA8YACc8z7tK8gyA3k1SZkXkdLh6qdGxgywUdFBEXgNwAcAtAIvh7xaAC+HYwU6JBzqwAlGEV+IJdP7Db0v8L64Si1HCdd39W6RlU4yMjMQvfYsKwJqboVIq2I5NuK6733Gcc1FORH6h1roE4FyLvO2Ot4iVL8TfA3h2q9UkxFQQBM8pANJsNl8XkR+2WlECTBlj3gAg6/7gIHlMRPoAPLZF4lrhT5IzIvJZEAQBYp9odrCDRxX/AjcsmM+VyOyCAAAAAElFTkSuQmCC') !important
         background-size: contain
-        border-bottom: 1px solid #ccc !important
         width: 34px !important
         height: 26px !important
         line-height: 26px !important
         display: block !important
         text-align: center !important
         text-decoration: none !important
-        color: black !important
+        // color: black !important
 
 .leaflet-control-geosearch
     input
         direction: rtl
         padding-right: 2px;
     form 
-        right: 23px !important;
         max-width: 40vw;
+        box-shadow: $boxShadow
+        right: 20px !important
     .results
         direction: rtl
-    a.reset
-        right unset 
-        left 0px
-        color: #959595;
-        line-height: 29px;
-        font-size: 15px
-        &:hover
-            color: red
-    a.leaflet-bar-part:after
-        top: 5px;
-        left: 5px;
-        height: 14px;
-        width: 14px;
-        background: white;
-    a.leaflet-bar-part:before 
-        top: 17px;
-        left: 13px;
-        width: 10px;
+    a
+        border-radius: 4px !important;
+        &.reset
+            display: none
+            // right unset 
+            // left 0px
+            // color: #959595;
+            // line-height: 29px;
+            // font-size: 15px
+            // &:hover
+            //     color: red
+        &.leaflet-bar-part:after
+            top: 5px;
+            left: 5px;
+            height: 14px;
+            width: 14px;
+            background: white;
+        &.leaflet-bar-part:before 
+            top: 17px;
+            left: 13px;
+            width: 10px;
 
 
 
@@ -376,3 +400,14 @@
 @media only screen and (max-width: 950px) 
     .map
         max-height: 80vh
+        .leaflet-control-geosearch 
+            form
+                max-width: 63vw;
+                height: 30px
+    
+    .toasted-container 
+        min-width: 80%;
+        .toasted
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;

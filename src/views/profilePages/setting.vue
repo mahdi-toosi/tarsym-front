@@ -119,6 +119,8 @@
                     type="password"
                     id="rpassword"
                     placeholder="$amin*****%@jh"
+                    dir="auto"
+                    required
                     v-model="rpassword"
                 />
             </div>

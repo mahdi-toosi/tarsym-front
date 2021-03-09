@@ -32,7 +32,7 @@
                 <v-select
                     :options="validCats"
                     :value="DocLayer.categories"
-                    @input="ADD_TAXONOMY({ $event, cats: true })"
+                    @input="ADD_TAXONOMY({ $event, isCategory: true })"
                     placeholder="دسته بندی ..."
                     multiple
                     :taggable="user.role >= 35"
@@ -64,7 +64,7 @@
                 <v-select
                     :options="taxonomies.tags"
                     :value="DocLayer.tags"
-                    @input="ADD_TAXONOMY({ $event, cats: false })"
+                    @input="ADD_TAXONOMY({ $event, isCategory: false })"
                     placeholder="تگ ..."
                     multiple
                     :taggable="user.role >= 35"

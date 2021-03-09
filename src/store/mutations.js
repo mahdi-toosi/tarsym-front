@@ -1,7 +1,7 @@
 export default {
-    CHANGE_SEARCH_POLYGON_SITUATION(state) {
-        state.searchPolygon.isOn = !state.searchPolygon.isOn;
-    },
+    // CHANGE_SEARCH_POLYGON_SITUATION(state) {
+    //     state.searchPolygon.isOn = !state.searchPolygon.isOn;
+    // },
     SET_USER(state, user) {
         state.user = user;
     },

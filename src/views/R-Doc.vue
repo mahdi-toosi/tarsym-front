@@ -1,18 +1,19 @@
 <template>
     <div class="ReadDoc_wrapper">
-        <header>
-            <button
-                class="btn btn-back"
-                style="position: relative"
-                @click="hasHistory() ? $router.go(-1) : $router.push('/')"
-                aria-label="بازگشت"
-            >
-                <i class="fas fa-arrow-left"></i>
-            </button>
-        </header>
         <article class="point readPoint" v-if="DocLayer">
             <header>
-                <h1 v-text="DocLayer.title"></h1>
+                <div class="title">
+                    <h1 v-text="DocLayer.title"></h1>
+                    <button
+                        class="btn btn-back"
+                        @click="
+                            hasHistory() ? $router.go(-1) : $router.push('/')
+                        "
+                        aria-label="بازگشت"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
                 <div>
                     <h4>
                         <i class="fas fa-tags"></i>

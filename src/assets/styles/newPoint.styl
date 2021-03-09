@@ -1,20 +1,18 @@
 @import 'libs/colorPicker'
 @import 'libs/iconPicker'
-@import 'libs/gooeyMenu'
+@import 'libs/AddNewTool'
+@import 'libs/addNewLayerBox'
     
 .newpoint
-    overflow hidden
-    overflow-y: auto
     direction: ltr
     header 
         direction: rtl
-        margin: 1rem;
+        margin-bottom: 1rem 
     section
         direction: rtl
         padding: 10px;
         background: #fff;
         border-radius: 5px;
-        margin: 0 10px;
         .title
             border: none;
             line-height: 30px;    
@@ -31,7 +29,7 @@
             border-right: 2px solid #d9d9d9;
     section.tools
         background: white;
-        margin: 20px 10px;
+        margin: 1rem 0;
         border-radius: 6px;
         .tools-content
             overflow hidden
@@ -228,7 +226,8 @@
             li ul 
                 margin-right: 15px ;
             .currentLayer
-                background: linear-gradient(90deg, #00d4ff00 20%, rgba(0,255,137,0.271) 100%)
+                // background: linear-gradient(90deg, #00d4ff00 20%, rgba(0,255,137,0.271) 100%)
+                border-right-color: #00ff4e !important;
             .child
                 width: 100%;
                 text-align: right;
