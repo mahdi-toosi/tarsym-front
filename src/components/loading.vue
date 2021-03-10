@@ -3,13 +3,13 @@
         <div v-if="loading && type === 'list'">
             <VueContentLoading
                 :width="500"
-                :height="500"
+                :height="150"
                 :rtl="true"
                 v-for="n in 4"
                 :key="n"
                 style="margin-top: 15px"
                 primary="#e4e4e4"
-                :speed="1.5"
+                :speed="1"
                 secondary="#fff"
             >
                 <!-- Borders -->
@@ -37,7 +37,7 @@
                 :rtl="true"
                 style="margin-top: 15px"
                 primary="#e4e4e4"
-                :speed="1.5"
+                :speed="1"
                 secondary="#fff"
             >
                 <!-- Borders -->
@@ -111,7 +111,6 @@ export default {
     },
     components: { VueContentLoading },
     created() {
-        console.log(this.data);
         setTimeout(() => {
             if (!this.data.length) {
                 this.notingToShow = true;

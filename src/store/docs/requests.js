@@ -240,16 +240,15 @@ export default {
             router.push(`/profile/${user.username}`);
             return;
         }
+        if (user.role >= 48 || doc.user._id === user._id) {
+            if (!already_Decoded) decode_doc = await dispatch("decode_the_docs", { docs: [doc] });
 
-        if (user.role === 48 || doc.user._id !== user._id) {
+            await commit("SET_DOCS_TO", { decoded_docs: decode_doc || [doc], list: "newDocs", merge: false });
+            await dispatch("get_all_childs", decode_doc || doc);
+        } else {
             Vue.toasted.error("شما دسترسی لازم جهت ادیت این داکیومنت را ندارید");
             dispatch("logout", `/profile/${user.username}`, { root: true });
-            return;
         }
-        if (!already_Decoded) decode_doc = await dispatch("decode_the_docs", { docs: [doc] });
-
-        await commit("SET_DOCS_TO", { decoded_docs: decode_doc || [doc], list: "newDocs", merge: false });
-        await dispatch("get_all_childs", decode_doc || doc);
     },
     // ! get_all_childs
     async get_all_childs({ dispatch, commit }, doc) {

@@ -300,32 +300,6 @@ $boxShadow = 0px 1px 4px #ffffffd6
 .leaflet-div-icon
     background: transparent
     border none
-// easy Print for map
-.leaflet-control-easyPrint-button-export
-    display none !important
-.leaflet-control-easyPrint
-    width: 34px;
-    height: 26px;
-
-.easyPrintHolder
-    display block !important
-    margin-top: 0px !important
-    margin-bottom: 0px !important 
-    margin-left: 0px !important 
-    padding-left: 0px !important
-    // .CurrentSize
-    .currentSizeClass
-        border-radius: 4px !important
-        background-color: #fff !important
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEPklEQVRoge1ZTWhcVRg9586brmrJLELppCBGCoXoKtkEBH/Qbo2UUapUmsx7d8CFWPuzcCGzE6qkuFD63swQaaTQTNXorhZRArYFS1bGQhdBwaSUIhlqBG0m93ORl/rykmnm3TeQYHNgFu/c77vf+biHe+97A+xgB482mCZZa10AMJFSw6tBENRtk60bGB4e7s5mszMAum3nCHF3aWmpb2xs7K5NsrKt6jjOp0gvHgC6s9nsJ7bJVivQIevEYWWlxA20sM5PCwsLg/V6fbndulrr7wA8H+GsrJTYQhtY5x+SxxKIBwDJZDIugL8inJWVoitArbUGMAygD8DutpSIvFepVD5IWhgAtNZvA/i4zfBFkj8DqPq+X1slGU60j+TnIvJCQg1JrRMHtdZTAJ5JmPetMebNarV6R2GliXEL8TbWiUNEpAjg74R5h5RS5wEgUyqVigDesaj8fhAEXyXNi2N6evqPgYGBJoAXE6Y+2d/f/yu11lcBDK6yJC8vLy+71Wr197TiOolisfh4JpOpItKoiPyoADwVDcxkMt52Ew8AtVrtN6WUF+VIPk2ttUTJIAisrxeFQmFXV1fXEIAhkgMA9oVDt0XkBoDJRqMxWa/X79vWiOu1vkrE4Xne4Vwud5PkRZJHABzAyla8G8ABkkdIXszlcjc9zzvcqbpO2gnK5bKan5//CMDxNlN6SV7SWp/N5/Mny+WySVM/dQMJxUdxfG5uTgCcSFM/lYVCK8TFC8mKMWaw2WzuaTabe4wxgwCqANb4l+S7ae1kvQKFQmEXyQ9j9B2SR33fvxLjrwO4XiqVJkRkHMDe1QGSZ7TW3wRBsGSjw3oFwt3miQglLcQ/gO/7V0gejdG9IvKKrY40FhqKPdceJn4VYUw1ypF82VaEdQPhPv8Axphaq9g4Nogd2DCwDaRZgX3RB2PMTLuJG8TmbUV07CDbKqRp4PaaiZTqa7vo+th5WxHWDYR3m/8mUqrYdtH1sTc2DGxnLttEAJOx52KpVHppsySt9SEAbpQTka9tRVg30Gg0JgHMRiiKyPjDmgjHzsfoWZLWL0bWJ3G9Xr/ved5pkpci9F4Ruay1rhljaqu7jVKqTylVFBE3Pg/JU77vW53CQMpdqFKpfAHgbFwTAFcpdc1xnHuO49xTSl1DzDYAICKjvu9/mUZD6m00n8+fFJHRpHkiMtrT03Mqbf1OvA8YACc8z7tK8gyA3k1SZkXkdLh6qdGxgywUdFBEXgNwAcAtAIvh7xaAC+HYwU6JBzqwAlGEV+IJdP7Db0v8L64Si1HCdd39W6RlU4yMjMQvfYsKwJqboVIq2I5NuK6733Gcc1FORH6h1roE4FyLvO2Ot4iVL8TfA3h2q9UkxFQQBM8pANJsNl8XkR+2WlECTBlj3gAg6/7gIHlMRPoAPLZF4lrhT5IzIvJZEAQBYp9odrCDRxX/AjcsmM+VyOyCAAAAAElFTkSuQmCC') !important
-        background-size: contain
-        width: 34px !important
-        height: 26px !important
-        line-height: 26px !important
-        display: block !important
-        text-align: center !important
-        text-decoration: none !important
-        // color: black !important
 
 .leaflet-control-geosearch
     input
@@ -404,6 +378,8 @@ $boxShadow = 0px 1px 4px #ffffffd6
             form
                 max-width: 63vw;
                 height: 30px
+        #polyline-measure-control, #unitControlId
+            display: none
     
     .toasted-container 
         min-width: 80%;

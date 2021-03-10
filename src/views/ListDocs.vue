@@ -88,6 +88,9 @@ export default {
             this.$store.dispatch("change_map_layers", true); // mainMap = true
         },
     },
+    destroyed() {
+        this.$store.commit("docs/FLUSH_DATA", { list: "vitrineDocs" });
+    },
     beforeRouteEnter(to, from, next) {
         next(async (vm) => {
             await vm.fetch({ nextPage: false });

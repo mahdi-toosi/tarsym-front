@@ -152,16 +152,9 @@ export default {
         }
         next();
     },
-    // async beforeRouteUpdate(to, from, next) {
-    // console.log("profile beforeRouteUpdate");
-    // const username = this.$router.currentRoute.params.username;
-    // const user_id = await this.setUserProfileAndGet_id(username);
-    // console.log("user_id", user_id);
-    // if (!user_id) return;
-    // this.getUserDocs(user_id);
-    // this.$store.state.map.zoom = 5;
-    // next();
-    // },
+    destroyed() {
+        this.$store.commit("docs/FLUSH_DATA", { list: "profilePage" });
+    },
     async created() {
         await this.getUserDocs({ nextPage: false });
         if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;

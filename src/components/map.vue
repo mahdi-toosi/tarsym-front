@@ -325,7 +325,6 @@ import {
 import LControlPolylineMeasure from "vue2-leaflet-polyline-measure";
 import PolylineDecorator from "@/components/newDoc/helper Components/polyline-decorator";
 
-require("leaflet-easyprint");
 // import LeafletHeatmap from "@/components/newDoc/helper Components/Vue2LeafletHeatmap.common.js";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-geosearch/assets/css/leaflet.css";
@@ -492,28 +491,6 @@ export default {
     },
     mounted() {
         const mapObject = this.$refs.LeafletMap.mapObject;
-
-        L.easyPrint({
-            position: "bottomleft",
-            sizeModes: [
-                {
-                    width: mapObject._size.x,
-                    height: mapObject._size.y,
-                    className: "currentSizeClass",
-                    tooltip: "عکس برداری از نقشه",
-                },
-            ],
-            exportOnly: true,
-            filename: `tarsym-${Date.now()}`,
-            hideControlContainer: false,
-            hideClasses: [
-                "leaflet-control-easyPrint",
-                "layerPicker",
-                "leaflet-control-zoom",
-                // "undoControl",
-                "leaflet-bar",
-            ],
-        }).addTo(mapObject);
 
         document.addEventListener(
             "showThisDoc",

@@ -73,8 +73,11 @@ export default {
             else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
         },
         SET_SITUATION(state, val) {
-            if (state.newDocs[0].root) state.newDocs[0].situation = val;
-            else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
+            if (state.newDocs[0].root) {
+                state.newDocs.forEach((doc) => {
+                    doc.situation = val;
+                });
+            } else Vue.toasted.error(`از طریق پروفایل کاربری اقدام به ادیت داکیومنت نمایید ...`);
         },
         SET_NEW_DOCUMENT(
             state,
@@ -94,6 +97,7 @@ export default {
                 date,
                 desc_imgs: [],
                 all_Images: [],
+                situation: state.newDocs[0]?.situation || "publish",
                 // date_props: date_props || {
                 //     century: null,
                 //     year: null,
@@ -112,7 +116,6 @@ export default {
                 newDoc.categories = [];
                 newDoc.root = true;
                 newDoc.zoomLevel = 4;
-                newDoc.situation = "publish";
                 newDoc.read = false;
                 newDoc.star = false;
                 newDoc.vitrine = false;
@@ -252,7 +255,11 @@ export default {
         SET_IMG(state, img) {
             const split = img.url.split("/");
             const imgName = split[split.length - 1];
-            docLayer(state).imgs.push(imgName);
+            docLayer(state).desc_imgs.push(imgName);
+        },
+        FLUSH_DATA(state, { list }) {
+            state[list].data = [];
+            state[list].total = 0;
         },
     },
 };
