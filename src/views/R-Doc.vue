@@ -52,6 +52,11 @@
                 </ul>
             </footer>
         </article>
+        <Loading
+            :data="DocLayer ? DocLayer.title : undefined"
+            type="read"
+            notingToShowText="داکیومنتی برای نمایش دادن نیست"
+        />
     </div>
 </template>
 

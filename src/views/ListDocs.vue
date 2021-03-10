@@ -2,9 +2,12 @@
     <div class="allpoints">
         <SearchField />
         <section class="points">
-            <span v-if="!allDocs.data.length" class="notingToShow"
-                >داکیومنتی برای نمایش دادن نیست</span
-            >
+            <Loading
+                :data="allDocs.data"
+                type="list"
+                notingToShowText="داکیومنتی برای نمایش دادن نیست"
+            />
+
             <router-link
                 :to="`/read/${doc._id}`"
                 class="point shadow"
@@ -90,6 +93,5 @@ export default {
             await vm.fetch({ nextPage: false });
         });
     },
-    components: { SearchField: () => import("@/components/searchField") },
 };
 </script>

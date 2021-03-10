@@ -27,9 +27,13 @@
                 وجود ندارد
                 {{ $router.currentRoute.params.username }} کاربری با نام کاربری
             </span>
-            <span v-if="!profile.data.length" class="notingToShow">
-                داکیومنتی برای نمایش دادن نیست
-            </span>
+
+            <Loading
+                :data="profile.data"
+                notingToShowText="داکیومنتی برای نمایش دادن نیست"
+                type="list"
+            />
+
             <router-link
                 :to="`/read/${doc._id}`"
                 class="point shadow"

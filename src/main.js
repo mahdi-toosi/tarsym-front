@@ -42,13 +42,18 @@ import store from "./store";
 import vuexSyncWithRouter from "vuex-router-sync";
 vuexSyncWithRouter.sync(store, router);
 
+import Loading from "@/components/loading";
+Vue.component("Loading", Loading);
+import SearchField from "@/components/searchField";
+Vue.component("SearchField", SearchField);
+
 // * add PWA
 import "./registerServiceWorker";
 
 // Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
-// * add root component and
+// * add root component
 import App from "./App.vue";
 
 new Vue({
