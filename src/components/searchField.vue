@@ -9,7 +9,7 @@
                 placeholder="جستجو ..."
                 class="searchBox"
                 v-model.lazy="search"
-                v-debounce="delay"
+                v-debounce="500"
                 :style="{
                     borderBottom: showOptions ? '1px solid silver' : 'none',
                 }"
@@ -35,7 +35,6 @@ export default {
     data() {
         return {
             search: "",
-            delay: 500,
             showOptions: false,
         };
     },

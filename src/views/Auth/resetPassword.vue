@@ -8,7 +8,7 @@
                     type="text"
                     id="username"
                     v-model="username"
-                    placeholder="aminHashemi"
+                    placeholder="mohammadAli.Cley"
                     name="username"
                     autocomplete="username"
                     dir="ltr"

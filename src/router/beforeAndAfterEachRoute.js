@@ -26,7 +26,7 @@ function beforeEach() {
             }
             next();
             return;
-        } else store.dispatch("logout", to.path);
+        } else store.dispatch("logout", to.fullPath);
     };
 }
 function afterEach() {
@@ -46,7 +46,7 @@ function checkForAuth(minimumRole) {
     if (store.getters.isAuthenticated) {
         if (minimumRole <= store.state.user.role) return true;
         else {
-            Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت  ...");
+            Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را ندارید  ...");
             return false;
         }
     }

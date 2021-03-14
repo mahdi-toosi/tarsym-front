@@ -156,6 +156,7 @@ export default {
         localStorage.removeItem("sjufNEbjDmE"); // sjufNEbjDmE = userData
         localStorage.removeItem("kemskDJobjgR"); // kemskDJobjgR = access key
         commit("CLEAR_USER");
+
         router.push({ path: "/Auth", query: { redirect } });
     },
     set_user_if_exist({ state, commit }, minimumRole) {

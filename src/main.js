@@ -34,8 +34,18 @@ Vue.use(Toasted, {
     icon: "fa-times-circle",
 });
 
-// * vuex and vue router
+// * vue router and analytics
 import router from "./router";
+import VueAnalytics from "vue-analytics";
+
+const isProd = process.env.NODE_ENV === "production";
+Vue.use(VueAnalytics, {
+    id: "G-EPDQXDYD1K",
+    router,
+    debug: { enabled: isProd, sendHitTask: isProd },
+});
+
+// * vuex
 import store from "./store";
 
 // * add route data in vuex

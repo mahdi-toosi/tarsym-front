@@ -21,7 +21,7 @@
                 <input
                     type="text"
                     id="username"
-                    placeholder="aminHashemi"
+                    placeholder="mohammadAli.Cley"
                     v-model="user.username"
                     name="username"
                     autocomplete="username"

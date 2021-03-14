@@ -9,7 +9,7 @@
     color: #37383a;
     cursor: auto;
     overflow: visible
-    padding: 15px 15px 10px
+    padding: 5px 0 10px;
     background: #fff;
     margin: 0px
     
@@ -20,6 +20,12 @@
     header {
         display: block;
         margin-bottom: 0px;
+        position sticky
+        top -15px
+        background: white
+        border-radius: 4px
+        padding: 10px 15px 10px
+        box-shadow: white 0px 28px 18px -16px;
         div {
             display: flex;
             justify-content: space-between;
@@ -38,6 +44,8 @@
     main {
         margin-right: 0px;
         font-size: 100%
+        padding: 0 15px
+        line-height: 2
         img {
             max-width: 100%;
             border-radius: 4px;
@@ -64,8 +72,13 @@
     h4 {
         font-size: 15px;
         font-weight: normal;
-        margin: 5px;
+        margin: 0px;
         display: flex;
+        max-width: 80%;
+        overflow: hidden
+        flex-wrap: wrap;
+        line-height: 1.7
+        align-items: center;
 
         i {
             margin-left: 10px;
@@ -94,7 +107,7 @@
         direction: rtl;
         display: flex;
         align-items: center;
-
+        padding: 0 15px
         .share {
             margin-right: auto;
 
@@ -149,3 +162,4 @@
                 margin-left: 5px;
         header
             margin-top: unset
+            top 0px

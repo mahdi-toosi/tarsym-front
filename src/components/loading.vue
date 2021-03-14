@@ -111,12 +111,21 @@ export default {
     },
     components: { VueContentLoading },
     created() {
-        setTimeout(() => {
-            if (!this.data.length) {
-                this.notingToShow = true;
-                this.loading = false;
-            }
-        }, 5000);
+        document.addEventListener("StopLoader", () => {
+            this.loading = false;
+            this.notingToShow = false;
+        });
+        document.addEventListener("dataReceivedStopLoader", () => {
+            setTimeout(() => {
+                if (this.data.length) {
+                    this.loading = false;
+                    this.notingToShow = false;
+                } else {
+                    this.loading = false;
+                    this.notingToShow = true;
+                }
+            }, 500);
+        });
     },
     watch: {
         data() {

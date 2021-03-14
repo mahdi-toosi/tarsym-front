@@ -164,16 +164,16 @@ export default {
             "goBackToParent",
             "get_this_doc_for_update",
             "get_childs",
-            "get_User_Taxonomies",
             "quite_creating",
             "flyToThisDoc",
         ]),
-        onUpdate: function (event) {
-            console.log({ event });
-        },
         insertImage() {
-            // manipulate the DOM to do a click on hidden input
-            this.$refs.quillimageInput.click();
+            if (this.user.role > 35 && this.user.role !== 37)
+                this.$refs.quillimageInput.click();
+            else
+                this.$toasted.error(
+                    "برای آپلود عکس باید به اکانت نقره ای ارتقاء پیدا کنید ..."
+                );
         },
         async quillUploadImage(event) {
             // for simplicity I only upload the first image
@@ -233,27 +233,19 @@ export default {
             return false;
         },
         async getAndSetTaxonomies() {
-            const tags = [],
-                cats = [];
-            const taxs = await this.get_User_Taxonomies();
-            taxs.forEach((el) => {
-                el.tags.forEach((tag) => tags.push(tag));
-                cats.push(el.categories);
-            });
-            this.taxonomies.tags = [...new Set(tags)];
-            this.taxonomies.categories = [
-                ...this.taxonomies.categories,
-                ...cats,
-            ];
+            await this.$axios
+                .get("/documents/buu/taxonomies")
+                .then((res) => {
+                    this.taxonomies.tags = res.data.tags;
+                    this.taxonomies.categories = [
+                        ...this.taxonomies.categories,
+                        ...res.data.categories,
+                    ];
+                })
+                .catch((error) => {
+                    this.$store.dispatch("handleAxiosError", error);
+                });
         },
-
-        // keyPressed(e) {
-        // 	const OnTool = this.DocProp.OnTool;
-        // 	if (e.keyCode === 27 && OnTool.condition) {
-        // 		this.toolSwitch(OnTool.index);
-        // 		return;
-        // 	} else return;
-        // },
         init() {
             if (this.newDocs.length) this.UPDATE_DOC_INDEX();
             // * show document items if invisible
@@ -332,17 +324,17 @@ export default {
         this.quite_creating();
     },
     async created() {
-        this.getAndSetTaxonomies();
-
         const routeName = this.$route.name;
         const route_id = this.$route.params._id;
         if (routeName === "create doc") {
             const lastAddedDocID = this.lastAddedDocID();
             if (Number(route_id) !== lastAddedDocID) await this.addNewDoc();
-            return;
-        } else if (routeName === "update doc")
+        } else if (routeName === "update doc") {
             await this.get_this_doc_for_update(route_id);
+        }
+
         // document.addEventListener("keyup", this.keyPressed);
+        this.getAndSetTaxonomies();
     },
     mounted() {
         // this.get_childs();

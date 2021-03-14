@@ -8,11 +8,7 @@
             maxlength="120"
         />
         <div class="tooltipImage">
-            <i
-                class="far fa-image"
-                @click="$refs.tooltipImageInput.click()"
-                v-if="toolTipModel"
-            ></i>
+            <i class="far fa-image" @click="setImage()" v-if="toolTipModel"></i>
             <i
                 class="fas fa-slash"
                 v-if="tooltip.image"
@@ -53,7 +49,14 @@ export default {
     },
     methods: {
         ...mapMutations("docs", ["CHANGE_TOOLTIP"]),
-
+        setImage() {
+            const role = this.$store.state.user.role;
+            if (role > 35 && role !== 37) this.$refs.tooltipImageInput.click();
+            else
+                this.$toasted.error(
+                    "برای آپلود عکس باید به اکانت نقره ای ارتقاء پیدا کنید ..."
+                );
+        },
         async uploadTooltipImage(event) {
             const image = event.target.files[0];
             if (!image) return;

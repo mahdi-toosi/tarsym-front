@@ -16,9 +16,40 @@ const documentsRoutes = [
         },
     },
     {
+        path: "/profile/:username/tag/:name",
+        name: "user Docs with tag",
+        component: () => import("@/views/profilePages/profile.vue"),
+        meta: {
+            withoutAuth: true,
+        },
+    },
+    {
         path: "/category/:name",
         name: "list Docs with category",
         component: () => import("@/views/ListDocs.vue"),
+        meta: {
+            withoutAuth: true,
+        },
+    },
+    {
+        path: "/profile/:username/category/:name",
+        name: "user Docs with category",
+        component: () => import("@/views/profilePages/profile.vue"),
+        meta: {
+            withoutAuth: true,
+        },
+    },
+    {
+        path: "/profile/:username",
+        component: () => import("@/views/profilePages/profile.vue"),
+        name: "profile",
+        meta: {
+            withoutAuth: true,
+        },
+    },
+    {
+        path: "/profile",
+        name: "forward profile",
         meta: {
             withoutAuth: true,
         },

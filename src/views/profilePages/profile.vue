@@ -30,7 +30,7 @@
 
             <Loading
                 :data="profile.data"
-                notingToShowText="داکیومنتی برای نمایش دادن نیست"
+                notingToShowText="داکیومنتی طراحی نکرده اید ..."
                 type="list"
             />
 
@@ -94,7 +94,7 @@
         <button
             v-if="profile.data.length < profile.total"
             class="btn btn-blue loadMore"
-            @click="getUserDocs({ nextPage: true })"
+            @click="fetch({ nextPage: true })"
         >
             بارگزاری بیشتر ...
         </button>
@@ -142,6 +142,24 @@ export default {
             // const date = month === "00" ? JustYear : FullDate;
             // return date + `<span> ه‍.ق</span>`;
         },
+        async fetch({ nextPage }) {
+            const route = this.$router.currentRoute;
+
+            if (route.name === "profile") await this.getUserDocs({ nextPage });
+            else if (route.name === "user Docs with tag")
+                await this.getUserDocs({
+                    nextPage,
+                    tag: route.params.name,
+                });
+            else if (route.name === "user Docs with category")
+                await this.getUserDocs({
+                    nextPage,
+                    category: route.params.name,
+                });
+
+            if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
+            this.$store.dispatch("change_map_layers", true); // mainMap = true
+        },
     },
     beforeRouteEnter(to, from, next) {
         if (to.params.username === "forward") {
@@ -150,15 +168,12 @@ export default {
             });
             return;
         }
-        next();
+        next(async (vm) => {
+            await vm.fetch({ nextPage: false });
+        });
     },
     destroyed() {
         this.$store.commit("docs/FLUSH_DATA", { list: "profilePage" });
-    },
-    async created() {
-        await this.getUserDocs({ nextPage: false });
-        if (this.$store.state.map.zoom > 5) this.$store.state.map.zoom = 5;
-        this.$store.dispatch("change_map_layers", true); // mainMap = true
     },
 };
 </script>

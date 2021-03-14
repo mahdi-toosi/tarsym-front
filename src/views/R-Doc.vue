@@ -21,7 +21,12 @@
                             v-for="(cat, index) in DocLayer.categories"
                             :key="index"
                             v-text="cat"
-                            @click="$router.push(`/category/${cat}`)"
+                            @click="
+                                showDocumentWithThisTaxonomy({
+                                    taxonomy: 'category',
+                                    value: cat,
+                                })
+                            "
                         ></span>
                     </h4>
                     <time v-html="filterdate(DocLayer.date)"></time>
@@ -33,12 +38,17 @@
                     <li
                         v-for="(tag, index) in DocLayer.tags"
                         :key="index"
-                        @click="$router.push(`/tag/${tag}`)"
+                        @click="
+                            showDocumentWithThisTaxonomy({
+                                taxonomy: 'tag',
+                                value: tag,
+                            })
+                        "
                     >
                         <i class="fas fa-hashtag"></i> {{ tag }}
                     </li>
                 </ul>
-                <ul class="share">
+                <ul class="share" v-if="DocLayer.user.role >= 37">
                     <li>
                         <button
                             class="btn btn-back"
@@ -92,6 +102,14 @@ export default {
     methods: {
         hasHistory() {
             return window.history.length > 2;
+        },
+        showDocumentWithThisTaxonomy({ taxonomy, value }) {
+            if (this.DocLayer.vitrine)
+                this.$router.push(`/${taxonomy}/${value}`);
+            else
+                this.$router.push(
+                    `/profile/${this.DocLayer.user.username}/${taxonomy}/${value}`
+                );
         },
         filterdate(val) {
             return new Date(val).toLocaleDateString("fa-IR");

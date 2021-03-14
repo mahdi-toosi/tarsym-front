@@ -186,6 +186,7 @@ export default {
             if (index > -1) copy_ids.splice(index, 1);
         });
         if (copy_ids.length === 0) {
+            document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
             return docs;
         }
 
@@ -197,6 +198,7 @@ export default {
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
             });
+        document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
         return docs;
     },
     // !  get_this_doc
@@ -210,6 +212,7 @@ export default {
             doc = database.find((doc) => doc._id === _id);
             if (doc) {
                 doc.already_fetched = true;
+                document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
                 return doc;
             }
         }
@@ -221,6 +224,7 @@ export default {
                 dispatch("handleAxiosError", error, { root: true });
                 return false;
             });
+        document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
         return doc;
     },
     // !  get_this_doc_for_update
@@ -266,13 +270,20 @@ export default {
         await commit("SET_DOCS_TO", { decoded_docs: decoded_childs, list: "newDocs", merge: true });
     },
     // !  read_this_doc
-    async read_this_doc({ commit, dispatch }, id) {
+    async read_this_doc({ commit, dispatch, rootState }, id) {
         const _id = id || router.currentRoute.params._id;
         let doc, decoded_docs;
 
         // * not exist , get doc from server
         doc = await dispatch("get_this_doc", _id);
         if (!doc) return;
+
+        if (doc.situation !== "publish" && doc.user._id !== rootState.user._id) {
+            Vue.toasted.error("این داکیومنت خصوصی است ...");
+            await dispatch("logout", null, { root: true });
+            return;
+        }
+
         decoded_docs = await dispatch("decode_the_docs", { docs: [doc] });
 
         await commit("SET_DOCS_TO", { decoded_docs: decoded_docs || [doc], list: "readDoc", merge: true });
@@ -305,24 +316,6 @@ export default {
                 return false;
             });
         return result;
-    },
-    // !  get_User_Cat_and_Tags
-    async get_User_Taxonomies({ dispatch, rootState }) {
-        const options = {
-            params: {
-                root: true,
-                "user._id": rootState.user._id,
-                $select: ["tags", "categories"],
-            },
-        };
-        const taxonomies = await axios
-            .get("/documents", options)
-            .then((res) => res.data.data)
-            .catch((error) => {
-                dispatch("handleAxiosError", error, { root: true });
-                return false;
-            });
-        return taxonomies;
     },
     // !  searchData
     async searchData({ state, dispatch, rootState, commit }, { nextPage }) {

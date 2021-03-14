@@ -11,7 +11,7 @@ export default {
 
         const user = await axios
             .get("/users", { params: { username } })
-            .then((res) => res.data)
+            .then((res) => res.data.data[0])
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
             });
@@ -21,10 +21,13 @@ export default {
         } else return false;
     },
     // !  getUserDocs
-    async getUserDocs({ rootState, state, dispatch, commit }, { nextPage }) {
+    async getUserDocs({ rootState, state, dispatch, commit }, { nextPage, tag, category }) {
         const username = rootState.route.params.username;
         const user_id = await dispatch("setUserProfileAndGet_id", username);
-        if (!user_id) return;
+        if (!user_id) {
+            document.dispatchEvent(new CustomEvent("StopLoader"));
+            return;
+        }
 
         const params = {
             root: true,
@@ -33,7 +36,10 @@ export default {
             "$sort[createdAt]": -1,
             $limit: 20,
         };
+        if (user_id !== rootState.user._id) params.situation = "publish";
         if (nextPage) params.$skip = state.profilePage.data.length;
+        if (tag) params.tags = tag;
+        if (category) params.categories = category;
 
         const result = await axios
             .get("/documents", { params })
@@ -42,10 +48,14 @@ export default {
                 if (error != "Error: Request failed with status code 404")
                     dispatch("handleAxiosError", error, { root: true });
             });
-        if (!result) return;
+        if (!result) {
+            document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
+            return;
+        }
         result.data = await dispatch("decode_the_docs", { docs: result.data });
 
         await commit("SET_DOCS_TO", { decoded_docs: result.data, list: "profilePage", merge: nextPage });
         commit("SET_TOTAL", { list: "profilePage", total: result.total });
+        document.dispatchEvent(new CustomEvent("dataReceivedStopLoader"));
     },
 };
