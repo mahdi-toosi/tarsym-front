@@ -97,7 +97,7 @@ export default {
                 date,
                 desc_imgs: [],
                 all_Images: [],
-                situation: state.newDocs[0]?.situation || "publish",
+                situation: state.newDocs[0]?.situation || "private",
                 // date_props: date_props || {
                 //     century: null,
                 //     year: null,
