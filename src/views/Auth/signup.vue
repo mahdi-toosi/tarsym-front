@@ -7,7 +7,7 @@
                 <input
                     type="text"
                     id="name"
-                    placeholder="امین هاشمی"
+                    placeholder="محمد علی کلی"
                     v-model="user.name"
                     name="name"
                     autocomplete="name"
@@ -47,7 +47,7 @@
                 <input
                     id="password"
                     type="password"
-                    placeholder="$amin*****%@jh"
+                    placeholder="$cley*****%@jh"
                     v-model="user.password"
                     name="new-password"
                     autocomplete="new-password"
