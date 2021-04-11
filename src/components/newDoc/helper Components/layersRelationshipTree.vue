@@ -15,11 +15,11 @@
                 @click="changeVisibility(firstNewDoc._id)"
             >
                 <i
-                    class="far"
+                    class="mdi"
                     :class="
                         invisibleDocs.includes(firstNewDoc._id)
-                            ? 'fa-eye-slash'
-                            : 'fa-eye'
+                            ? 'mdi-eye-outline'
+                            : 'mdi-eye-off-outline'
                     "
                 ></i>
             </button>

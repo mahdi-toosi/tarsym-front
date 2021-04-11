@@ -17,9 +17,9 @@
                 <header>
                     <i
                         class="logo"
-                        :class="
-                            doc.tools[0].iconName || 'fas fa-map-marker-alt'
-                        "
+                        :class="`mdi mdi-${
+                            doc.tools[0].iconName || 'map-marker'
+                        }`"
                         :style="{
                             color: doc.tools[0].iconName
                                 ? doc.tools[0].secondaryColor.hex8 ||
@@ -38,7 +38,7 @@
                 <footer>
                     <ul>
                         <li v-if="doc.desc_imgs.length">
-                            <i class="far fa-images" />
+                            <i class="mdi mdi-image-multiple-outline" />
                             <span v-text="doc.desc_imgs.length"></span>
                             تصویر
                         </li>

@@ -10,20 +10,20 @@
             />
             <label class="menu-open-button btn btn-blue" for="menu-open">
                 <a class="plus" rel="nofollow">
-                    <i class="fa fa-plus"></i>
+                    <i class="mdi mdi-plus"></i>
                 </a>
             </label>
             <button class="menu-item btn btn-blue" @click="setTool('Point')">
-                <i class="fas fa-map-marker-alt"></i>
+                <i class="mdi mdi-map-marker"></i>
             </button>
             <button class="menu-item btn btn-blue" @click="setTool('Polygon')">
-                <i class="fas fa-draw-polygon"></i>
+                <i class="mdi mdi-vector-polygon"></i>
             </button>
             <button class="menu-item btn btn-blue" @click="setTool('Polyline')">
-                <i class="fas fa-long-arrow-alt-up"></i>
+                <i class="mdi mdi-vector-polyline"></i>
             </button>
             <button class="menu-item btn btn-blue" @click="setTool('Textbox')">
-                <i class="far fa-comment-alt"></i>
+                <i class="mdi mdi-comment-outline"></i>
             </button>
             <!-- <button class="menu-item" @click="setTool('Heatmap')">
                 <i class="fas fa-fire-alt"></i>

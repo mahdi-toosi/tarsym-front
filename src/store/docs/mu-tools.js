@@ -85,7 +85,7 @@ export default {
         if (type === "Polyline") {
             obj.showIcon = false;
             obj.showArrow = false;
-            obj.iconName = "fa fa-plane";
+            obj.iconName = "mdi mdi-airplane";
             obj.iconSize = 35;
             obj.angle = 0;
             obj.iconRepeat = 30;

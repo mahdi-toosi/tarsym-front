@@ -6,7 +6,7 @@
     >
         <div class="bugFix" @click.self="toggleTileProviders()"></div>
         <div>
-            <i class="fas fa-layer-group"></i>
+            <i class="mdi mdi-layers-triple"></i>
         </div>
         <div
             class="radiobox"

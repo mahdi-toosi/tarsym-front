@@ -24,10 +24,10 @@
         <div class="content">
             <div class="tools-content" v-show="tabContent === 'tools'">
                 <ul class="tools">
-                    <Draggable v-model="DocTools" handle=".fa-grip-vertical">
+                    <Draggable v-model="DocTools" handle=".mdi-grain">
                         <li v-for="(tool, index) in DocTools" :key="index">
                             <i
-                                class="fas fa-grip-vertical"
+                                class="mdi mdi-grain"
                                 v-if="tool.isOn && index !== 0"
                             ></i>
                             <NewPoint

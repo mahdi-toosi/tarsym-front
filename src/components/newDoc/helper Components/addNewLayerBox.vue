@@ -21,7 +21,7 @@
             </template>
         </VSelect>
         <button @click="addChild()" class="btn btn-blue addNewLayer">
-            <i class="fa fa-plus"></i>
+            <i class="mdi mdi-plus"></i>
         </button>
     </div>
 </template>

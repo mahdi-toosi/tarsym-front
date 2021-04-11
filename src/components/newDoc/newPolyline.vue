@@ -3,7 +3,7 @@
         <div class="tool_header">
             <IconPicker :index="index" :tool="tool" v-if="tool.showIcon" />
             <i
-                class="fas fa-long-arrow-alt-up"
+                class="mdi mdi-vector-polyline"
                 :style="{ color: tool.color.hex8 || tool.color }"
                 style="font-size: 25px; padding: 3px 5px"
                 v-else
@@ -17,7 +17,7 @@
                 :class="tool.isOn ? 'tool_is_on' : ''"
                 title="ویرایش ابزار"
             >
-                <i class="fas fa-pencil-alt"></i>
+                <i class="mdi mdi-pencil"></i>
             </button>
 
             <button
@@ -26,8 +26,10 @@
                 title="نمایش / عدم نمایش"
             >
                 <i
-                    class="far"
-                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
+                    class="mdi"
+                    :class="
+                        tool.visible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                    "
                 ></i>
             </button>
 
@@ -36,7 +38,7 @@
                 class="copy_button"
                 v-if="!tool.searchable"
             >
-                <i class="far fa-copy"></i>
+                <i class="mdi mdi-content-copy"></i>
             </button>
 
             <button
@@ -44,7 +46,7 @@
                 class="delete_button"
                 title="حذف ابزار"
             >
-                <i class="far fa-trash-alt"></i>
+                <i class="mdi mdi-delete-outline"></i>
             </button>
         </div>
         <div class="tool_body">
@@ -113,8 +115,8 @@
                     v-model="IconSizeModel"
                     :width="100"
                     :height="6"
-                    :min="10"
-                    :max="45"
+                    :min="20"
+                    :max="60"
                 />
             </div>
             <div class="lineIconRepeat" v-if="tool.showIcon">

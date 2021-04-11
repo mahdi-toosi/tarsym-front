@@ -40,7 +40,7 @@ const props = {
     },
     iconName: {
         type: String,
-        default: "fa fa-plane",
+        default: "mdi mdi-airplane",
     },
     iconColor: {
         type: String,

@@ -8,9 +8,13 @@
             maxlength="120"
         />
         <div class="tooltipImage">
-            <i class="far fa-image" @click="setImage()" v-if="toolTipModel"></i>
             <i
-                class="fas fa-slash"
+                class="mdi mdi-image-area"
+                @click="setImage()"
+                v-if="toolTipModel"
+            ></i>
+            <i
+                class="mdi mdi-slash-forward"
                 v-if="tooltip.image"
                 @click="cleanImage()"
             ></i>

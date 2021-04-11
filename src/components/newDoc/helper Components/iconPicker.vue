@@ -1,18 +1,22 @@
 <template>
     <div class="icons_box_wrapper" ref="iconpicker">
         <i
-            :class="tool.iconName || 'fas fa-map-marker-alt'"
+            :class="
+                tool.iconName
+                    ? `mdi mdi-${tool.iconName}`
+                    : 'mdi mdi-map-marker'
+            "
             :style="{
                 color: tool.iconName
                     ? tool.secondaryColor.hex8 || tool.secondaryColor
-                    : '#277696',
+                    : '#2f8eb4',
             }"
             @click="togglePicker()"
             title="انتخاب آیکون"
         />
         <div class="icons_box" :class="displayPicker ? 'show' : ''">
             <i
-                class="fa fa-search"
+                class="mdi mdi-magnify"
                 aria-hidden="true"
                 style="position: relative; left: -16px"
             />
@@ -24,7 +28,7 @@
             />
             <ul>
                 <li @click="REMOVE_ICON()">
-                    <i class="fas fa-map-marker-alt" style="color: #277696"></i>
+                    <i class="mdi mdi-map-marker" style="color: #277696"></i>
                 </li>
                 <!-- <transition-group name="flip-list"> -->
                 <li
@@ -32,7 +36,7 @@
                     :key="icon"
                     @click="ADD_ICON(icon)"
                 >
-                    <i :class="icon" />
+                    <i :class="`mdi mdi-${icon}`" />
                 </li>
                 <!-- </transition-group> -->
             </ul>
@@ -41,7 +45,7 @@
 </template>
 
 <script>
-import icons from "@/assets/icons.json";
+import icons from "@/assets/icons2.json";
 import debounce from "v-debounce";
 export default {
     props: ["index", "tool"],

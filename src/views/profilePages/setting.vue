@@ -12,7 +12,7 @@
                 />
                 <div class="image_input">
                     <i
-                        class="fa fa-camera"
+                        class="mdi mdi-camera"
                         @click="$refs.avatarInput.click()"
                     ></i>
                     <input
@@ -203,7 +203,7 @@ export default {
                             "پس از بررسی اطلاعات شما ، شما به نقشه ساز ارتقاء خواهید یافت";
                     else msg = "اطلاعات شما با موفقیت بروزرسانی شد";
                     this.$toasted.success(msg, {
-                        icon: "fa-check-circle",
+                        icon: "mdi mdi-checkbox-marked-circle-outline",
                     });
                 })
                 .catch((error) => {
@@ -264,7 +264,7 @@ export default {
                 })
                 .then(() => {
                     this.$toasted.success("پسورد با موفقیت تغییر کرد", {
-                        icon: "fa-check-circle",
+                        icon: "mdi mdi-checkbox-marked-circle-outline",
                     });
                     this.$store.dispatch(
                         "logout",

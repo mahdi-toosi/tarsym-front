@@ -105,6 +105,7 @@ export default {
 
 <style lang="stylus">
 @import './assets/styles/main.styl';
+@import './assets/styles/libs/fontIcon.styl';
 
 .toasted-primary {
     border-radius: 5px !important;

@@ -2,7 +2,7 @@
     <div class="newPoint">
         <div class="tool_header">
             <i
-                class="far fa-comment-alt"
+                class="mdi mdi-comment-outline"
                 style="font-size: 25px; padding: 3px 5px"
             />
 
@@ -18,7 +18,7 @@
                 :class="tool.isOn ? 'tool_is_on' : ''"
                 title="ویرایش ابزار"
             >
-                <i class="fas fa-pencil-alt"></i>
+                <i class="mdi mdi-pencil"></i>
             </button>
 
             <button
@@ -27,8 +27,10 @@
                 title="نمایش / عدم نمایش"
             >
                 <i
-                    class="far"
-                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
+                    class="mdi"
+                    :class="
+                        tool.visible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                    "
                 ></i>
             </button>
 
@@ -37,7 +39,7 @@
                 class="copy_button"
                 v-if="!tool.searchable"
             >
-                <i class="far fa-copy"></i>
+                <i class="mdi mdi-content-copy"></i>
             </button>
 
             <button
@@ -46,7 +48,7 @@
                 v-if="!tool.searchable"
                 title="حذف ابزار"
             >
-                <i class="far fa-trash-alt"></i>
+                <i class="mdi mdi-delete-outline"></i>
             </button>
         </div>
         <div class="tool_body">

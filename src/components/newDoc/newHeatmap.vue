@@ -2,7 +2,7 @@
     <div class="newHeatmap">
         <div class="tool_header">
             <i
-                class="fas fa-fire-alt"
+                class="mdi mdi-fire"
                 style="font-size: 24px; padding: 3px 4px"
             ></i>
             <button
@@ -11,18 +11,20 @@
                 :class="tool.isOn ? 'tool_is_on' : ''"
                 aria-label="تغییر"
             >
-                <i class="fas fa-pencil-alt"></i>
+                <i class="mdi mdi-pencil"></i>
             </button>
 
             <button class="visibility" @click="CHANGE_VISIBILITY(index)">
                 <i
-                    class="far"
-                    :class="tool.visible ? 'fa-eye' : 'fa-eye-slash'"
+                    class="mdi"
+                    :class="
+                        tool.visible ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
+                    "
                 ></i>
             </button>
 
             <button @click="deleteTool(index)" class="delete_button">
-                <i class="far fa-trash-alt"></i>
+                <i class="mdi mdi-delete-outline"></i>
             </button>
         </div>
     </div>

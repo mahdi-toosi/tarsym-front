@@ -22,7 +22,7 @@
                 </router-link>
                 <li @click="$store.dispatch('logout')" v-if="user.role">
                     خروج
-                    <i class="fas fa-sign-out-alt"></i>
+                    <i class="mdi mdi-logout-variant"></i>
                 </li>
             </ul>
         </div>
@@ -46,28 +46,28 @@ export default {
                 {
                     name: "صفحه نخست",
                     addr: "/",
-                    icon: "far fa-circle",
+                    icon: "mdi mdi-radiobox-blank",
                     class: "home",
                     show: true,
                 },
                 {
                     name: "پروفایل",
                     addr: `/profile/${user.username}`,
-                    icon: "far fa-user",
+                    icon: "mdi mdi-account",
                     class: "profile",
                     show: user.username,
                 },
                 {
                     name: "تنظیمات حساب کاربری",
                     addr: `/profile/${user.username}/setting`,
-                    icon: "fas fa-cogs",
+                    icon: "mdi mdi-cog",
                     class: "options",
                     show: user.username,
                 },
                 {
                     name: "ورود",
                     addr: `/auth`,
-                    icon: "fas fa-sign-in-alt",
+                    icon: "mdi mdi-login-variant",
                     class: "login",
                     show: !user.username,
                 },

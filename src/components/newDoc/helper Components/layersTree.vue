@@ -10,16 +10,16 @@
             </button>
             <button class="visibility" @click="changeVisibility(child._id)">
                 <i
-                    class="far"
+                    class="mdi"
                     :class="
                         invisibleDocs.includes(child._id)
-                            ? 'fa-eye-slash'
-                            : 'fa-eye'
+                            ? 'mdi-eye-outline'
+                            : 'mdi-eye-off-outline'
                     "
                 ></i>
             </button>
             <button @click="delete_this_child(child)" class="delete_button">
-                <i class="far fa-trash-alt"></i>
+                <i class="mdi mdi-delete-outline"></i>
             </button>
             <Layer-childs v-if="child.childs_id.length" :father="child" />
         </li>

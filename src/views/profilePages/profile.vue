@@ -19,7 +19,7 @@
                 v-if="profile.user.role >= 35"
             >
                 نقطه ی جدید ایجاد کن
-                <i class="fas fa-plus" />
+                <i class="mdi mdi-plus" />
             </button>
         </header>
         <section class="points">
@@ -43,9 +43,9 @@
                 <header>
                     <i
                         class="logo"
-                        :class="
-                            doc.tools[0].iconName || 'fas fa-map-marker-alt'
-                        "
+                        :class="`mdi mdi-${
+                            doc.tools[0].iconName || 'map-marker'
+                        }`"
                         :style="{
                             color: doc.tools[0].iconName
                                 ? doc.tools[0].secondaryColor.hex8 ||
@@ -65,7 +65,7 @@
                         tag="button"
                         title="تغییر داکیومنت"
                     >
-                        <i class="far fa-edit"></i>
+                        <i class="mdi mdi-pencil"></i>
                     </router-link>
                     <button
                         @click.stop.prevent="
@@ -75,14 +75,14 @@
                         v-if="profile.user._id === user._id"
                         title="حذف داکیومنت"
                     >
-                        <i class="far fa-trash-alt"></i>
+                        <i class="mdi mdi-delete-outline"></i>
                     </button>
                 </header>
                 <main v-text="doc.excerpt + ' ...'"></main>
                 <footer>
                     <ul>
                         <li v-if="doc.desc_imgs.length">
-                            <i class="far fa-images" />
+                            <i class="mdi mdi-image-multiple-outline" />
                             <span v-text="doc.desc_imgs.length"></span>
                             تصویر
                         </li>

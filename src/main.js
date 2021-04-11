@@ -30,8 +30,8 @@ Vue.use(Toasted, {
     position: "bottom-left",
     duration: 5 * 1000,
     keepOnHover: true,
-    iconPack: "fontawesome",
-    icon: "fa-times-circle",
+    iconPack: "custom-class",
+    icon: "mdi mdi-close-circle-outline",
 });
 
 // * vue router and analytics

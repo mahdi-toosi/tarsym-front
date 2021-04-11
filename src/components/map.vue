@@ -94,7 +94,7 @@
                             @dblclick="goToThisDoc(tool._id)"
                             :lat-lngs="tool.coordinates"
                             :icon-size="tool.iconSize"
-                            :icon-name="tool.iconName"
+                            :icon-name="`mdi mdi-${tool.iconName}`"
                             :icon-color="
                                 tool.secondaryColor.hex8 || tool.secondaryColor
                             "
@@ -141,7 +141,7 @@
                                         <!-- if tool is on , this span make ripple wave effect -->
                                     </span>
                                     <i
-                                        :class="tool.iconName"
+                                        :class="`mdi mdi-${tool.iconName}`"
                                         :style="{
                                             fontSize: `${tool.iconSize}px`,
                                             color:
@@ -275,7 +275,7 @@
                     v-if="undoCondition"
                     rel="nofollow"
                 >
-                    <i class="fa fa-undo" aria-hidden="true"></i>
+                    <i class="mdi mdi-undo-variant" aria-hidden="true"></i>
                 </a>
             </LControl>
             <!-- <LControl position="bottomright" class="leaflet-control mapmaker">
@@ -298,10 +298,10 @@
                 ></path>
             </svg>
             <span class="arrow primera next"
-                ><i class="fas fa-chevron-up"></i
+                ><i class="mdi mdi-chevron-up"></i
             ></span>
             <span class="arrow segunda next"
-                ><i class="fas fa-chevron-up"></i
+                ><i class="mdi mdi-chevron-up"></i
             ></span>
         </button>
     </div>

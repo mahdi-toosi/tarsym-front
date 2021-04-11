@@ -126,7 +126,7 @@ export default {
         await commit("CLEAR_NEW_DOC");
         await router.push(`/profile/${rootState.user.username}`);
         Vue.toasted.success(`داکیومنت با موفقیت ${verb} ...`, {
-            icon: "fa-check-circle",
+            icon: "mdi mdi-checkbox-marked-circle-outline",
         });
     },
     // !  getAllDocs

@@ -11,12 +11,12 @@
                         "
                         aria-label="بازگشت"
                     >
-                        <i class="fas fa-arrow-left"></i>
+                        <i class="mdi mdi-arrow-left"></i>
                     </button>
                 </div>
                 <div>
                     <h4>
-                        <i class="fas fa-tags"></i>
+                        <i class="mdi mdi-tag-multipul"></i>
                         <span
                             v-for="(cat, index) in DocLayer.categories"
                             :key="index"
@@ -45,7 +45,8 @@
                             })
                         "
                     >
-                        <i class="fas fa-hashtag"></i> {{ tag }}
+                        <i class="mdi mdi-music-accidental-sharp"></i>
+                        {{ tag }}
                     </li>
                 </ul>
                 <ul class="share" v-if="DocLayer.user.role >= 37">
@@ -56,7 +57,7 @@
                             @click="copyIframe(DocLayer._id, DocLayer.title)"
                             aria-label="کپی کردن آیفریم"
                         >
-                            <i class="fas fa-code"></i>
+                            <i class="mdi mdi-content-copy"></i>
                         </button>
                     </li>
                 </ul>
@@ -148,7 +149,7 @@ export default {
             document.body.removeChild(el);
 
             this.$toasted.success("آیفریم کپی شد ...", {
-                icon: "fa-copy",
+                icon: "mdi mdi-content-copy",
             });
         },
         async read_this_doc() {

@@ -6,11 +6,11 @@
                 @click="$router.push(`/profile/${user.username}`)"
             >
                 منصرف شدم
-                <i class="fas fa-times"></i>
+                <i class="mdi mdi-close"></i>
             </button>
             <button class="btn btn-green" @click="Create_or_Update_Documents()">
                 {{ $route.name === "create doc" ? "ثبت" : "بروزرسانی" }}
-                <i class="fas fa-save"></i>
+                <i class="mdi mdi-check"></i>
             </button>
             <!-- back button -->
             <button
@@ -18,7 +18,7 @@
                 @click="goBackToParent()"
                 v-if="DocProp.index !== 0"
             >
-                <i class="fas fa-arrow-left"></i>
+                <i class="mdi mdi-arrow-left"></i>
             </button>
         </header>
         <div v-if="newDocs.length">

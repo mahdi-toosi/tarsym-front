@@ -10,7 +10,7 @@
             v-if="picked.month != '00'"
             @click="$store.commit('docs/CLEAR_DATE')"
         >
-            <i class="fas fa-times"></i>
+            <i class="mdi mdi-close"></i>
         </span>
         <div class="date_time_picker" :class="displayPicker ? 'show' : ''">
             <header>

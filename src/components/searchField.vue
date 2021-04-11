@@ -2,7 +2,7 @@
     <form class="searchbar shadow" @submit.prevent="fetchSearchResult()">
         <div class="searchInput">
             <button style="font-size: 22px" type="submit" aria-label="جستجو">
-                <i class="fas fa-search" />
+                <i class="mdi mdi-magnify" />
             </button>
             <input
                 type="text"

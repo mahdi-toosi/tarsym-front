@@ -8,7 +8,7 @@
                 v-show="visible"
                 @click="backToTop"
             >
-                <i class="fas fa-arrow-up"></i>
+                <i class="mdi mdi-arrow-up"></i>
             </div>
         </transition>
     </div>
