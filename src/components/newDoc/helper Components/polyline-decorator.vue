@@ -65,7 +65,6 @@ export default {
     data: () => ({
         ready: false,
     }),
-
     methods: {
         remove() {
             const parent = findRealParent(this.$parent);
@@ -98,7 +97,8 @@ export default {
 				<i class="${this.iconName}" 
 					style=" color: ${this.iconColor};
 								font-size: ${this.iconSize - 2}px; 
-								transform: rotate(${this.iconRotate}deg)" 
+								transform: rotate(${this.iconRotate}deg) translateX(2px);
+                                position: absolute;" 
 					aria-hidden="true">
 				</i>`;
             return HTMLicon;

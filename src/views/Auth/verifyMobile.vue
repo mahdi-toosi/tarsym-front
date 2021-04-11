@@ -36,6 +36,7 @@
         <button
             :class="timeLeft == '00:00' ? 'active' : ''"
             @click="resetPasswordPage = true"
+            v-if="status === 'changePass'"
             :disabled="!buttonsSituation"
         >
             تغییر نام کاربری
@@ -77,12 +78,24 @@ export default {
             await this.$axios
                 .delete("/expiring-data", { params })
                 .then(async ({ data }) => {
-                    // * login
+                    // * reset pass
                     if (this.status === "changePass") {
                         await this.$store.dispatch("set_user_data", data);
                         this.$toasted.info("پسورد خود را تغییر دهید ...");
+                        this.$router.push(`/profile/${this.username}/setting`);
                     }
-                    this.$router.push(`/profile/${this.username}/setting`);
+                    // * change mobile
+                    else if (this.status === "change mobile num") {
+                        this.$toasted.info(
+                            "شماره شما با موفقیت  تغییر پیدا کرد ..."
+                        );
+                        this.$router.push(`/`);
+                    }
+                    // * verify mobile
+                    else {
+                        this.$toasted.info("شماره شما تایید شد ...");
+                        this.$router.push(`/`);
+                    }
                 })
                 .catch((error) => {
                     const errMsg = error.response.data.message;
@@ -136,7 +149,7 @@ export default {
             this.$toasted.error(
                 "فقط از طریق لینک های معتبر میتوانید از این صفحه استفاده کنید ..."
             );
-            // this.$router.push("/");
+            this.$router.push("/");
         }
         this.username = username;
         this.status = status;

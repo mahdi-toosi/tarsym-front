@@ -4,14 +4,13 @@ import NProgress from "nprogress";
 
 function beforeEach() {
     return async (to, from, next) => {
-        if (to.path) {
-            NProgress.start();
-        }
+        if (to.path) NProgress.start();
+
         if (to.matched.some((record) => record.meta.withoutAuth)) {
             // * scape authenticate
             next();
             return;
-        } else if (checkForAuth(to.meta.minimumRole)) {
+        } else if (await checkForAuth(to.meta.minimumRole)) {
             if (to.name === "forward profile") {
                 next(`/profile/${store.state.user.username}`);
                 return;
@@ -19,14 +18,16 @@ function beforeEach() {
             // * check authenticate
             next();
             return;
-        } else if (store.dispatch("set_user_if_exist", to.meta.minimumRole)) {
+        } else if (await store.dispatch("set_user_if_exist", to.meta.minimumRole)) {
             if (to.name === "forward profile") {
                 next(`/profile/${store.state.user.username}`);
                 return;
             }
             next();
             return;
-        } else store.dispatch("logout", to.fullPath);
+        } else {
+            await store.dispatch("logout", to.fullPath);
+        }
     };
 }
 function afterEach() {
@@ -41,7 +42,7 @@ export default {
 
 // * Helper Functions
 
-function checkForAuth(minimumRole) {
+async function checkForAuth(minimumRole) {
     // * validate user role for route if exist
     if (store.getters.isAuthenticated) {
         if (minimumRole <= store.state.user.role) return true;

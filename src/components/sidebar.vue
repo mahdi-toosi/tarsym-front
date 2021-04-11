@@ -31,30 +31,6 @@ export default {
             const el = document.getElementById("content");
             if (el) el.scrollIntoView();
         },
-        mediaText(media) {
-            switch (media) {
-                case "img":
-                    return "عکس";
-                case "video":
-                    return "فیلم";
-            }
-        },
-        mediaImage(media) {
-            switch (media) {
-                case "img":
-                    return "fa-image";
-                case "video":
-                    return "fa-video";
-            }
-        },
-        mediaClass(media) {
-            switch (media) {
-                case "img":
-                    return "";
-                case "video":
-                    return "video";
-            }
-        },
     },
     destroyed() {
         if (window.innerWidth <= 950)

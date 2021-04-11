@@ -310,9 +310,7 @@ export default {
             .then((res) => res.data)
             .catch((error) => {
                 dispatch("handleAxiosError", error, { root: true });
-                Vue.toasted.success("ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...", {
-                    icon: "fa-check-circle",
-                });
+                Vue.toasted.error("ساخت رابطه ی داکیومنت ها با مشکل مواجه شد ...");
                 return false;
             });
         return result;

@@ -174,12 +174,13 @@ export default {
             const res = await this.$store.dispatch("sendVerifyCode", {
                 username,
                 mobile,
+                reason: "reset mobile",
             });
             if (!res) return;
 
             this.$router.push({
                 path: "/auth/verify-mobile",
-                query: { username },
+                query: { username, status: "change mobile num" },
             });
         },
         async updateUserData() {

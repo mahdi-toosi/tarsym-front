@@ -89,6 +89,7 @@ export default {
         }
         const res = await dispatch("sendVerifyCode", {
             username,
+            reason: "reset password",
         });
         if (!res) return;
         router.push({
@@ -96,9 +97,9 @@ export default {
             query: { username, status: "changePass" },
         });
     },
-    async sendVerifyCode({ dispatch }, { username, mobile }) {
+    async sendVerifyCode({ dispatch }, { username, mobile, reason }) {
         return await axios
-            .post("/expiring-data", { username, mobile })
+            .post("/expiring-data", { username, mobile, reason })
             .then(({ data }) => {
                 Vue.toasted[data.type](data.msg);
                 if (data.type === "error") return false;
@@ -142,7 +143,8 @@ export default {
         await axios
             .post("/users", userData)
             .then(async () => {
-                await dispatch("login", { userData, redirectTo: "/verify-mobile" });
+                await dispatch("login", { userData, redirectTo: `/Auth/verify-mobile?username=${userData.username}` });
+                Vue.toasted.info("مسیج حاوی کد احراز هویت برای شما ارسال شد ...");
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
@@ -166,7 +168,7 @@ export default {
         commit("SET_USER", userData.user);
         commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
 
-        if (userData && userData.expire > now) {
+        if (userData && userData.expire > now + 60 * 60 * 1000 * 24) {
             // * add user
             // * validate user role for route
             if (minimumRole <= state.user.role) return true;
