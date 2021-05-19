@@ -49,7 +49,7 @@
                         {{ tag }}
                     </li>
                 </ul>
-                <ul class="share" v-if="DocLayer.user.role >= 37">
+                <ul class="share" v-if="DocLayer.vitrine">
                     <li>
                         <button
                             class="btn btn-back"

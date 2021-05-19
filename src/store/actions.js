@@ -130,7 +130,7 @@ export default {
             delete data.user[element];
         });
         // * add Data To Axios And Local Storage
-        const day = 60 * 60 * 1000 * 24; //* 24 hours
+        const day = 1000 * 60 * 60 * 24; // 24 hours
         data.expire = new Date().getTime() + day;
         localStorage.setItem("sjufNEbjDmE", JSON.stringify(data)); //* sjufNEbjDmE = userData
         localStorage.setItem("kemskDJobjgR", data.accessToken); //* kemskDJobjgR = access key
@@ -144,7 +144,7 @@ export default {
             .post("/users", userData)
             .then(async () => {
                 await dispatch("login", { userData, redirectTo: `/Auth/verify-mobile?username=${userData.username}` });
-                Vue.toasted.info("مسیج حاوی کد احراز هویت برای شما ارسال شد ...");
+                Vue.toasted.info("پیامک حاوی کد احراز هویت برای شما ارسال شد ...");
             })
             .catch((error) => {
                 if (error == "Error: Request failed with status code 409") {
@@ -165,14 +165,15 @@ export default {
         const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
         if (!userData) return false;
         const now = new Date().getTime();
-        commit("SET_USER", userData.user);
-        commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
-
-        if (userData && userData.expire > now + 60 * 60 * 1000 * 24) {
+        console.log(userData && userData.expire > now);
+        if (userData && userData.expire > now) {
             // * add user
+            commit("SET_USER", userData.user);
+            commit("SET_USER_ACCESS_TOKEN", userData.accessToken);
             // * validate user role for route
-            if (minimumRole <= state.user.role) return true;
-            else {
+            if (minimumRole <= state.user.role) {
+                return true;
+            } else {
                 // Vue.toasted.error("اکانت شما دسترسی لازم برای استفاده از این صفحه را نداشت   ...");
                 return false;
             }

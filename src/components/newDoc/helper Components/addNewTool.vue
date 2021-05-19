@@ -10,7 +10,7 @@
             />
             <label class="menu-open-button btn btn-blue" for="menu-open">
                 <a class="plus" rel="nofollow">
-                    <i class="mdi mdi-plus"></i>
+                    <i class="mdi mdi-plus" style="font-size: 33px"></i>
                 </a>
             </label>
             <button class="menu-item btn btn-blue" @click="setTool('Point')">

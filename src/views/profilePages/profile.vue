@@ -189,6 +189,11 @@ export default {
         .btn {
             margin-right: auto;
         }
+
+        .mdi {
+            font-size: 28px !important;
+            line-height: 20px !important;
+        }
     }
 
     .profileData {

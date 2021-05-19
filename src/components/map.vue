@@ -10,6 +10,7 @@
             :options="{ zoomControl: false }"
             @update:center="update_center"
             @mousemove="update_mouse_coor"
+            @contextmenu="showNavigate"
             :minZoom="4"
             ref="LeafletMap"
         >
@@ -245,6 +246,12 @@
                 />
             </div> -->
 
+            <LMarker
+                :lat-lng="map.navigate.latlng"
+                :icon="defaultIcon"
+                v-if="map.navigate.show"
+            ></LMarker>
+
             <VGeosearch :options="geosearchOptions" />
 
             <!-- <LControlLayers position="bottomright"></LControlLayers> -->
@@ -380,6 +387,7 @@ export default {
                 fillOpacity: 1, // Fill opacity of the circle
                 // radius: 3, // Radius of the circle
             },
+            clickCount: 0,
         };
     },
     computed: {
@@ -424,7 +432,7 @@ export default {
             "OFF_THE_ON_TOOL",
             "UPDATE_ON_TOOL",
         ]),
-        ...mapMutations("map", ["UPDATE_MOUSE_COOR"]),
+        ...mapMutations("map", ["UPDATE_MOUSE_COOR", "SET_NAVIGATION_ICON"]),
         ...mapActions(["update_zoom", "update_center"]),
         update_mouse_coor(obj) {
             const editMode = ["update doc", "create doc"].includes(
@@ -434,6 +442,40 @@ export default {
             this.UPDATE_MOUSE_COOR(obj);
         },
 
+        showNavigate({ latlng }) {
+            const condition = ["create doc", "update doc"].includes(
+                this.$router.currentRoute.name
+            );
+            if (condition) return;
+
+            ++this.clickCount;
+            if (this.clickCount % 2 == 0) {
+                this.SET_NAVIGATION_ICON();
+                this.$toasted.clear();
+                return;
+            }
+            this.SET_NAVIGATION_ICON(latlng);
+
+            this.$toasted.clear();
+            this.$toasted.info("مسیر یابی با گوگل مپ", {
+                icon: "mdi mdi-arrow-decision-outline",
+                position: "bottom-center",
+                duration: 30 * 1000,
+                className: "navigate",
+                action: [
+                    {
+                        text: "هدایت",
+                        onClick: async (e, toastObject) => {
+                            window.open(
+                                `https://www.google.com/maps/dir//${latlng.lat},${latlng.lng}/@${latlng.lat},${latlng.lng},5.25z`,
+                                "_blank"
+                            );
+                            toastObject.goAway(0);
+                        },
+                    },
+                ],
+            });
+        },
         setClickCoordinates({ latlng }) {
             // if (this.searchPolygon.isOn) {
             //     this.searchPolygon.coordinates.push(latlng);

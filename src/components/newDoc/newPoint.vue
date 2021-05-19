@@ -87,6 +87,7 @@
 <script>
 import { mapMutations } from "vuex";
 import mixins from "./mixins";
+
 export default {
     name: "newPoint",
     mixins: [mixins],

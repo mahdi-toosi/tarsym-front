@@ -10,7 +10,7 @@ function beforeEach() {
             // * scape authenticate
             next();
             return;
-        } else if (await checkForAuth(to.meta.minimumRole)) {
+        } else if (checkForAuth(to.meta.minimumRole)) {
             if (to.name === "forward profile") {
                 next(`/profile/${store.state.user.username}`);
                 return;
@@ -42,7 +42,7 @@ export default {
 
 // * Helper Functions
 
-async function checkForAuth(minimumRole) {
+function checkForAuth(minimumRole) {
     // * validate user role for route if exist
     if (store.getters.isAuthenticated) {
         if (minimumRole <= store.state.user.role) return true;

@@ -40,7 +40,7 @@ import VueAnalytics from "vue-analytics";
 
 const isProd = process.env.NODE_ENV === "production";
 Vue.use(VueAnalytics, {
-    id: "G-EPDQXDYD1K",
+    id: "G-ZDXE12YQ7G",
     router,
     debug: { enabled: isProd, sendHitTask: isProd },
 });

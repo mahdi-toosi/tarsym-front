@@ -7,6 +7,7 @@ export default {
         MouseCoordinate: null,
         center: ["32.879587173066305", "54.01105444025955"],
         layerIndex: 0,
+        navigate: { show: false, latlng: null },
         tileProviders: [
             {
                 name: "اُپن استریت مپ",
@@ -63,6 +64,15 @@ export default {
         ],
     },
     mutations: {
+        SET_NAVIGATION_ICON(state, latlng) {
+            if (latlng) {
+                state.navigate.latlng = latlng;
+                state.navigate.show = true;
+                return;
+            }
+            state.navigate.latlng = null;
+            state.navigate.show = false;
+        },
         UPDATE_ZOOM(state, zoom) {
             state.zoom = zoom;
         },

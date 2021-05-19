@@ -11,7 +11,10 @@
             <i
                 class="mdi mdi-image-area"
                 @click="setImage()"
-                v-if="toolTipModel"
+                :style="{
+                    color: unvalidTooltip ? 'gray' : undefined,
+                    cursor: unvalidTooltip ? 'not-allowed' : undefined,
+                }"
             ></i>
             <i
                 class="mdi mdi-slash-forward"
@@ -50,10 +53,20 @@ export default {
                 });
             },
         },
+        unvalidTooltip() {
+            return !this.toolTipModel || this.toolTipModel.length === 5;
+        },
     },
     methods: {
         ...mapMutations("docs", ["CHANGE_TOOLTIP"]),
         setImage() {
+            if (this.unvalidTooltip) {
+                this.$toasted.info(
+                    "ابتدا توضیح کوتاه برای برای آیکون بگذارید ..."
+                );
+                return;
+            }
+
             const role = this.$store.state.user.role;
             if (role > 35 && role !== 37) this.$refs.tooltipImageInput.click();
             else
