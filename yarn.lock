@@ -5589,6 +5589,11 @@ leaflet-rotatedmarker@^0.2.0:
   resolved "https://registry.yarnpkg.com/leaflet-rotatedmarker/-/leaflet-rotatedmarker-0.2.0.tgz#4467f49f98d1bfd56959bd9c6705203dd2601277"
   integrity sha1-RGf0n5jRv9VpWb2cZwUgPdJgEnc=
 
+leaflet.heat@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet.heat/-/leaflet.heat-0.2.0.tgz#109d8cf586f0adee41f05aff031e27a77fecc229"
+  integrity sha1-EJ2M9Ybwre5B8Fr/Ax4np3/swik=
+
 "leaflet.polylinemeasure@github:ppete2/Leaflet.PolylineMeasure#b85a4b9":
   version "1.0.0"
   resolved "https://codeload.github.com/ppete2/Leaflet.PolylineMeasure/tar.gz/b85a4b9d3541e4339f9b25ca2264f5af8b42344d"

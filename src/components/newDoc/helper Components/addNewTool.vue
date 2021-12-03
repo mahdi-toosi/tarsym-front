@@ -10,7 +10,10 @@
             />
             <label class="menu-open-button btn btn-blue" for="menu-open">
                 <a class="plus" rel="nofollow">
-                    <i class="mdi mdi-plus" style="font-size: 33px"></i>
+                    <i
+                        class="mdi mdi-plus"
+                        style="font-size: 33px; display: block"
+                    ></i>
                 </a>
             </label>
             <button class="menu-item btn btn-blue" @click="setTool('Point')">
@@ -25,9 +28,9 @@
             <button class="menu-item btn btn-blue" @click="setTool('Textbox')">
                 <i class="mdi mdi-comment-outline"></i>
             </button>
-            <!-- <button class="menu-item" @click="setTool('Heatmap')">
-                <i class="fas fa-fire-alt"></i>
-            </button> -->
+            <button class="menu-item btn btn-blue" @click="setTool('Heatmap')">
+                <i class="mdi mdi-fire"></i>
+            </button>
         </nav>
         <!-- filters -->
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1">

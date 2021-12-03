@@ -58,13 +58,13 @@
                                 class="tool"
                                 :class="{ active: tool.isOn }"
                             />
-                            <!-- <NewHeatmap
-                                        :tool="tool"
-                                        :index="index"
-                                        v-if="tool.type === 'Heatmap'"
-                                        class="tool"
-                                        :class="{ active: tool.isOn }"
-                                    /> -->
+                            <NewHeatmap
+                                :tool="tool"
+                                :index="index"
+                                v-if="tool.type === 'Heatmap'"
+                                class="tool"
+                                :class="{ active: tool.isOn }"
+                            />
                         </li>
                     </Draggable>
                 </ul>
@@ -114,7 +114,7 @@ import { mapGetters, mapMutations } from "vuex";
 import "vue-slider-component/theme/antd.css";
 
 // * components
-// import NewHeatmap from "@/components/newDoc/newHeatmap";
+import NewHeatmap from "@/components/newDoc/newHeatmap";
 // import datePicker from "@/components/newDoc/helper Components/datePicker";
 
 export default {
@@ -166,7 +166,7 @@ export default {
         NewPolygon: () => import("@/components/newDoc/newPolygon"),
         NewPolyline: () => import("@/components/newDoc/newPolyline"),
         NewTextBox: () => import("@/components/newDoc/newTextBox"),
-        // NewHeatmap,
+        NewHeatmap,
         AddNewLayerBox: () =>
             import("@/components/newDoc/helper Components/addNewLayerBox"),
         LayersRelationshipTree: () =>

@@ -165,7 +165,6 @@ export default {
         const userData = JSON.parse(localStorage.getItem("sjufNEbjDmE")); // sjufNEbjDmE = userData
         if (!userData) return false;
         const now = new Date().getTime();
-        console.log(userData && userData.expire > now);
         if (userData && userData.expire > now) {
             // * add user
             commit("SET_USER", userData.user);

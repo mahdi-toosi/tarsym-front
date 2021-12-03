@@ -38,11 +38,11 @@ Vue.use(Toasted, {
 import router from "./router";
 import VueAnalytics from "vue-analytics";
 
-const isProd = process.env.NODE_ENV === "production";
+// const isProd = process.env.NODE_ENV === "production";
 Vue.use(VueAnalytics, {
-    id: "G-ZDXE12YQ7G",
+    id: "UA-146575520-8",
     router,
-    debug: { enabled: isProd, sendHitTask: isProd },
+    // debug: { enabled: isProd, sendHitTask: isProd },
 });
 
 // * vuex
